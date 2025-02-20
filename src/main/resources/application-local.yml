@@ -3,7 +3,8 @@ spring:
   # JPA
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+
 # Log
 logging:
   level:

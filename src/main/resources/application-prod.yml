@@ -4,6 +4,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
 # Log
 logging:
   level:
