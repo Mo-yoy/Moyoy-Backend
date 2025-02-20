@@ -1,13 +1,11 @@
 spring:
 
-  # RDB
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
   # JPA
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
+# Log
+logging:
+  level:
+    root: info
+    org.springframework.security: debug
