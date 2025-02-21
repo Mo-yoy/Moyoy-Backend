@@ -10,12 +10,16 @@ spring:
   # Redis
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   # JWT
   jwt:
     secret: ${JWT_SECRET_KEY}
+
+  # CORS Allow Origin
+  cors:
+    allow-origin: ${ALLOW_ORIGIN:http://localhost:3000}
 
   # Security
   security:
