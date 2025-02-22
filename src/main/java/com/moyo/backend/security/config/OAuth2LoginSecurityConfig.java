@@ -1,5 +1,7 @@
 package com.moyo.backend.security.config;
 
+import com.moyo.backend.security.oauth.handler.OAuthLoginSuccessHandler;
+import com.moyo.backend.security.oauth.service.GithubOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class OAuth2LoginSecurityConfig {
+
+    private final GithubOAuth2UserService userService;
+    private final OAuthLoginSuccessHandler loginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,10 +45,10 @@ public class OAuth2LoginSecurityConfig {
                                 .baseUri("/auth/login")
                         )
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService()
+                                .userService(userService)
                         )
-                        .successHandler()
-                        .failureHandler()
+                        .successHandler(loginSuccessHandler)
+//                        .failureHandler()
                 );
 
         return http.build();
