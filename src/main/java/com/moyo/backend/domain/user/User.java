@@ -1,6 +1,6 @@
 package com.moyo.backend.domain.user;
 
-import com.moyo.backend.security.oauth.dto.GithubProfile;
+import com.moyo.backend.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,24 +21,26 @@ public class User {
     @Column(nullable = false)
     private String profileImgUrl;
 
+    @Column(unique = true)
     private String providerId;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder
-    public User(String username, String profileImgUrl, String providerId, String role){
+    public User(String username, String profileImgUrl, String providerId, Role role){
         this.username = username;
         this.profileImgUrl = profileImgUrl;
         this.providerId = providerId;
         this.role = role;
     }
 
-    public static User fromGithubProfile(GithubProfile githubProfile){
+    public static User fromGithubProfile(GithubUserProfile githubUserProfile){
         return User.builder()
-                .username(githubProfile.getUsername())
-                .profileImgUrl(githubProfile.getProfileImgUrl())
-                .providerId(githubProfile.getProviderId())
-                .role("ROLE_USER")
+                .username(githubUserProfile.getUsername())
+                .profileImgUrl(githubUserProfile.getProfileImgUrl())
+                .providerId(githubUserProfile.getProviderId())
+                .role(Role.USER)
                 .build();
     }
 

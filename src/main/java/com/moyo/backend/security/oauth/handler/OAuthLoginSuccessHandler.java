@@ -1,5 +1,7 @@
 package com.moyo.backend.security.oauth.handler;
 
+import com.moyo.backend.common.util.CookieUtils;
+import com.moyo.backend.domain.user.Role;
 import com.moyo.backend.security.jwt.util.JwtPayloadReader;
 import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.oauth.dto.GitHubOAuth2User;
@@ -38,15 +40,8 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String jwtRefresh = jwtProvider.createJwtRefresh(providerId);
         loginRepository.save(gitHubOAuth2User.getName(), jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
-        ResponseCookie cookie = ResponseCookie.from("jwtRefresh", jwtRefresh)
-                .path("/")
-                .maxAge(600)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Lax")
-                .build();
-
-        response.addHeader(SET_COOKIE, cookie.toString());
+        response.addHeader(SET_COOKIE,
+                CookieUtils.createJwtRefreshCookie(jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh).getTime()/1000).toString());
         response.sendRedirect("http://localhost:3000/test");
     }
 }

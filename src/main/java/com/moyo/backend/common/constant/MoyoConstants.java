@@ -2,9 +2,17 @@ package com.moyo.backend.common.constant;
 
 public class MoyoConstants {
 
-    public static final String JWT = "JWT";
+
     public static final String BEARER = "Bearer";
     public static final String SET_COOKIE = "Set-Cookie";
+
+
+    public static final String JWT = "JWT";
+    public static final String JWT_PAYLOAD_ACCESS_TYPE = "access";
+    public static final String JWT_PAYLOAD_REFRESH_TYPE = "refresh";
+    public static final String JWT_PAYLOAD_TOKEN_TYPE = "tokenType";
+    public static final String JWT_PAYLOAD_PROVIDER_ID = "providerId";
+    public static final String JWT_PAYLOAD_ROLE = "role";
 
     public static final int OK = 200;
     public static final int NO_CONTENT = 204;

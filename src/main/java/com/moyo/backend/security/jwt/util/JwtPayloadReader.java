@@ -9,6 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static com.moyo.backend.common.constant.MoyoConstants.*;
+
 @Component
 public class JwtPayloadReader {
 
@@ -19,15 +21,15 @@ public class JwtPayloadReader {
     }
 
     public String getTokenType(String token){
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("tokenType", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_TOKEN_TYPE, String.class);
     }
 
-    public String getUserAppId(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("providerId", String.class);
+    public String getProviderId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_PROVIDER_ID, String.class);
     }
 
-    public String getUserRole(String token){
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    public String getRole(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_ROLE, String.class);
     }
 
     public Date getExpiration(String token) {

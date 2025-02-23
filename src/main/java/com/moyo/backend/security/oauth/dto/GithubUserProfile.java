@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class GithubProfile {
+public class GithubUserProfile {
 
     private static final String GITHUB_OAUTH_APP_USER_ID = "id";
     private static final String GITHUB_USER_PROFILE_IMAGE_URL = "avatar_url";
