@@ -1,8 +1,6 @@
 package com.moyo.backend.common.config;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +17,6 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-
-        System.out.println(redisProperties.host);
-
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisProperties.host, redisProperties.port);
         return new LettuceConnectionFactory(configuration);
     }

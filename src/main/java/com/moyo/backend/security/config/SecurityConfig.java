@@ -1,8 +1,7 @@
 package com.moyo.backend.security.config;
 
-import com.moyo.backend.security.jwt.filter.JWTFilter;
+import com.moyo.backend.security.jwt.filter.JWTAuthenticationFilter;
 import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.jwt.util.JwtValidator;
 import com.moyo.backend.security.oauth.handler.OAuthLoginSuccessHandler;
 import com.moyo.backend.security.oauth.service.GithubOAuth2UserService;
@@ -15,12 +14,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -43,12 +41,12 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/reissue/token", "/health", "/").permitAll()
+                .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test").permitAll()
                 .anyRequest().authenticated()
         );
 
         http
-                .addFilterAfter(new JWTFilter(jwtValidator,jwtPayloadReader), OAuth2LoginAuthenticationFilter.class);
+                .addFilterAfter(new JWTAuthenticationFilter(jwtValidator,jwtPayloadReader), OAuth2LoginAuthenticationFilter.class);
 
         http
                 .oauth2Login(oauth2 -> oauth2
@@ -59,7 +57,6 @@ public class SecurityConfig {
                                 .userService(userService)
                         )
                         .successHandler(loginSuccessHandler)
-//                        .failureHandler()
                 );
 
         return http.build();

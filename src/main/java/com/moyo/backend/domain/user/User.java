@@ -35,7 +35,7 @@ public class User {
         this.role = role;
     }
 
-    public static User fromGithubProfile(GithubUserProfile githubUserProfile){
+    public static User from(GithubUserProfile githubUserProfile){
         return User.builder()
                 .username(githubUserProfile.getUsername())
                 .profileImgUrl(githubUserProfile.getProfileImgUrl())

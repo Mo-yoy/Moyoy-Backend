@@ -1,7 +1,6 @@
 package com.moyo.backend.security.oauth.handler;
 
-import com.moyo.backend.common.util.CookieUtils;
-import com.moyo.backend.domain.user.Role;
+import com.moyo.backend.common.util.CookieFactory;
 import com.moyo.backend.security.jwt.util.JwtPayloadReader;
 import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.oauth.dto.GitHubOAuth2User;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -28,6 +26,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     private final JwtProvider jwtProvider;
     private final JwtPayloadReader jwtPayloadReader;
     private final LoginRepository loginRepository;
+    private final CookieFactory cookieFactory;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -36,12 +35,12 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
 
         String providerId = gitHubOAuth2User.getName();
+        String role = String.valueOf(gitHubOAuth2User.getAuthorities().stream().findFirst().orElseThrow(RuntimeException::new));
 
-        String jwtRefresh = jwtProvider.createJwtRefresh(providerId);
-        loginRepository.save(gitHubOAuth2User.getName(), jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
+        String jwtRefresh = jwtProvider.createJwtRefresh(providerId,role);
+        loginRepository.save(providerId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
-        response.addHeader(SET_COOKIE,
-                CookieUtils.createJwtRefreshCookie(jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh).getTime()/1000).toString());
+        response.addHeader(SET_COOKIE, cookieFactory.createJwtRefreshCookie(jwtRefresh).toString());
         response.sendRedirect("http://localhost:3000/test");
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static com.moyo.backend.common.constant.MoyoConstants.AUTHORIZATION;
+
 @Configuration
 public class MVCCorsConfig implements WebMvcConfigurer {
 
@@ -17,7 +19,7 @@ public class MVCCorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(allowOrigin)
                 .allowedMethods("*")
                 .allowedHeaders("*")
-                .exposedHeaders("Authorization")
+                .exposedHeaders(AUTHORIZATION)
                 .allowCredentials(true);
     }
 }

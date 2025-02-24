@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt;
+package com.moyo.backend.security.jwt.service;
 
 import com.moyo.backend.security.jwt.util.JwtPayloadReader;
 import com.moyo.backend.security.jwt.util.JwtProvider;
@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+
+import static com.moyo.backend.common.constant.MoyoConstants.ACCESS_TYPE;
+import static com.moyo.backend.common.constant.MoyoConstants.REFRESH_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +31,15 @@ public class JwtReissueService {
         if(whiteListTokenKey==null) throw new RuntimeException("차단된 리프레시토큰 입니다.");
 
         // 유효한 토큰이고 화이트 리스트에 등록된 토큰이라면 기존의 refresh를 이용해 jwtaccess, jwtrefresh 재발급
-        String newAccess = jwtProvider.createJwtAccess(providerId);
-        String newRefresh = jwtProvider.createJwtRefresh(providerId);
+        String role = jwtPayloadReader.getRole(jwtRefreshToken);
+        String newAccess = jwtProvider.createJwtAccess(providerId,role);
+        String newRefresh = jwtProvider.createJwtRefresh(providerId,role);
 
         // RTR
         redisRepository.delete(whiteListTokenKey);
         redisRepository.save(providerId,newRefresh,jwtPayloadReader.getExpiration(newRefresh));
 
-        return Map.of("access", newAccess,"refresh", newRefresh);
+        return Map.of(ACCESS_TYPE, newAccess, REFRESH_TYPE, newRefresh);
     }
 }
 

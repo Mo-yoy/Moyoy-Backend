@@ -21,15 +21,15 @@ public class JwtPayloadReader {
     }
 
     public String getTokenType(String token){
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_TOKEN_TYPE, String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(TOKEN_TYPE, String.class);
     }
 
     public String getProviderId(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_PROVIDER_ID, String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(PROVIDER_ID, String.class);
     }
 
     public String getRole(String token){
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(JWT_PAYLOAD_ROLE, String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(ROLE, String.class);
     }
 
     public Date getExpiration(String token) {

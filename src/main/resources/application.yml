@@ -21,6 +21,10 @@ spring:
   cors:
     allow-origin: ${ALLOW_ORIGIN:http://localhost:3000}
 
+  # Cookie Domain
+  cookie:
+    domain: ${COOKIE_DOMAIN:localhost}
+
   # Security
   security:
     oauth2:
@@ -29,7 +33,6 @@ spring:
           github:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
-            redirect-uri: ${REDIRECT_URI}
             scope:
               - read:user
               - user:follow

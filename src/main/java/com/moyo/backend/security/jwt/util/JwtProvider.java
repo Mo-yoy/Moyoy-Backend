@@ -16,8 +16,8 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 @Component
 public class JwtProvider {
 
-    private static final long JWT_ACCESS_EXPIRES_MS = 60 * 1000;
-    private static final long JWT_REFRESH_EXPIRES_MS = 60 * 1000 * 5;
+    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60;
+    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 5;
 
 
     private final SecretKey secretKey;
@@ -26,22 +26,22 @@ public class JwtProvider {
         this.secretKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createJwtAccess(String providerId) {
+    public String createJwtAccess(String providerId, String role) {
         return Jwts.builder()
-                .claim(JWT_PAYLOAD_TOKEN_TYPE, JWT_PAYLOAD_ACCESS_TYPE)
-                .claim(JWT_PAYLOAD_PROVIDER_ID, providerId)
-                .claim(JWT_PAYLOAD_ROLE, Role.USER)
+                .claim(TOKEN_TYPE, ACCESS_TYPE)
+                .claim(PROVIDER_ID, providerId)
+                .claim(ROLE, Role.USER)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_ACCESS_EXPIRES_MS))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public String createJwtRefresh(String providerId) {
+    public String createJwtRefresh(String providerId, String role) {
         return Jwts.builder()
-                .claim(JWT_PAYLOAD_TOKEN_TYPE, JWT_PAYLOAD_REFRESH_TYPE)
-                .claim(JWT_PAYLOAD_PROVIDER_ID, providerId)
-                .claim(JWT_PAYLOAD_ROLE, Role.USER)
+                .claim(TOKEN_TYPE, REFRESH_TYPE)
+                .claim(PROVIDER_ID, providerId)
+                .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_REFRESH_EXPIRES_MS))
                 .signWith(secretKey)

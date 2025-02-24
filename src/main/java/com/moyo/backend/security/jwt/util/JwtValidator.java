@@ -43,7 +43,7 @@ public class JwtValidator {
     }
 
     private void isAccessToken(String token){
-        if(!jwtPayloadReader.getTokenType(token).equals("access")) throw new RuntimeException("유효하지 않은 JWT 예외 발생");
+        if(!jwtPayloadReader.getTokenType(token).equals("access")) throw new RuntimeException("액세스에 리프레시 들어감");
     }
 
 
@@ -65,7 +65,7 @@ public class JwtValidator {
     }
 
     private void isRefreshToken(String token){
-        if(!jwtPayloadReader.getTokenType(token).equals("refresh")) throw new RuntimeException("유효하지 않은 JWT 예외 발생");
+        if(!jwtPayloadReader.getTokenType(token).equals("refresh")) throw new RuntimeException("리프레시에 액세스 들어감");
     }
 
 }

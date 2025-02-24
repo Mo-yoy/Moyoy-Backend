@@ -37,7 +37,7 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
         if (user == null) {
 
             log.info("신규 회원 회원 가입 진행, Username : {}", githubUserProfile.getUsername());
-            user = User.fromGithubProfile(githubUserProfile);
+            user = User.from(githubUserProfile);
             userRepository.save(user);
         }
         else {
