@@ -6,3 +6,33 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # JWT
+  jwt:
+    secret: ${JWT_SECRET_KEY}
+
+  # CORS Allow Origin
+  cors:
+    allow-origin: ${ALLOW_ORIGIN:http://localhost:3000}
+
+  # Cookie Domain
+  cookie:
+    domain: ${COOKIE_DOMAIN:localhost}
+
+  # Security
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:follow

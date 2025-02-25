@@ -4,8 +4,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
 # Log
 logging:
   level:
     root: info
     org.springframework.security: debug
+    org.springframework.cache: trace

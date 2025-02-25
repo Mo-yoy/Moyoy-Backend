@@ -3,9 +3,11 @@ spring:
   # JPA
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+
 # Log
 logging:
   level:
     root: info
     org.springframework.security: debug
+    org.springframework.cache: trace
