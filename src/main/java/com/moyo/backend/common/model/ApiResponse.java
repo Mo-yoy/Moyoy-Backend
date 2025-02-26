@@ -1,6 +1,7 @@
 package com.moyo.backend.common.model;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.moyo.backend.common.exception.ErrorReason;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,5 +30,10 @@ public class ApiResponse <T>{
     public static <S> ApiResponse<S> noContent(){
 
         return new ApiResponse<>(NO_CONTENT, "NO_CONTENT", null, null);
+    }
+
+    public static <S> ApiResponse<S> fail(ErrorReason errorReason){
+
+        return new ApiResponse<>(errorReason.getStatus(), errorReason.getCode(), errorReason.getErrorMessage(), null);
     }
 }
