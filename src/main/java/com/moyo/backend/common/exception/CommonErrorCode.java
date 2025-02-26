@@ -1,10 +1,11 @@
 package com.moyo.backend.common.exception;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import static com.moyo.backend.common.constant.MoyoConstants.SERVER_ERROR;
 
-
+@Getter
 @RequiredArgsConstructor
 public enum CommonErrorCode implements BaseErrorCode{
 
