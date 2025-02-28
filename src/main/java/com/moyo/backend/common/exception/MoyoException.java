@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MoyoException extends RuntimeException{
 
-    private final BaseErrorCode baseErrorCode;
+    private final BaseErrorCode errorCode;
 
     public ErrorReason getErrorReason(){
-        return baseErrorCode.getErrorReason();
+        return errorCode.getErrorReason();
     }
 }

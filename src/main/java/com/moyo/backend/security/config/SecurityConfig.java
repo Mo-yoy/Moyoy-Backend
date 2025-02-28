@@ -41,7 +41,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test").permitAll()
+                .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test", "/error/**").permitAll()
                 .anyRequest().authenticated()
         );
 

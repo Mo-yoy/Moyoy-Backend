@@ -6,7 +6,12 @@ import lombok.*;
 @AllArgsConstructor
 public class ErrorReason {
 
-    private Integer status;
-    private String code;
+    private final Integer status;
+    private final String code;
     private String errorMessage;
+
+    public void addDetailErrorMessage(String detailMessage){
+
+        errorMessage += detailMessage;
+    }
 }
