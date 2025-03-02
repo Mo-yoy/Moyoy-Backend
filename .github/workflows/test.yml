@@ -1,0 +1,71 @@
+name: Moyo API Test Server Deploy
+
+on:
+  push:
+    branches:
+      - test
+    path: backend/**
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Github Repository 에서 파일 불러 오기
+        uses: actions/checkout@v4
+
+      - name: JDK 21버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle',''**/*.gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: 빌드
+        run: ./gradlew clean build
+
+      - name: 빌드된 JAR 파일 이름 변경
+        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
+
+      - name: EC2 서버로 JAR 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: project.jar
+          target: /home/ubuntu/moyo-test/tobe
+
+      - name: SSH로 EC2에 접속 후 애플리케이션 실행
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            source ${{ secrets.ENV_FILE_PATH }}
+            rm -rf /home/ubuntu/moyo-test/current
+            mkdir /home/ubuntu/moyo-test/current
+            mv /home/ubuntu/moyo-test/tobe/project.jar /home/ubuntu/moyo-test/current/project.jar
+            cd /home/ubuntu/moyo-test/current
+            
+            sudo fuser -k -n tcp 8080 || true
+            sudo fuser -k -n tcp 8081 || true
+  
+            nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 > output_8080.log 2>&1 &
+            nohup java -jar project.jar --spring.profiles.active=test --server.port=8081 > output_8081.log 2>&1 &
+           
+            rm -rf /home/ubuntu/moyo-test/tobe
