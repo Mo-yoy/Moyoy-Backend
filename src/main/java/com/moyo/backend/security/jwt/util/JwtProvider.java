@@ -1,7 +1,6 @@
 package com.moyo.backend.security.jwt.util;
 
 
-import com.moyo.backend.domain.user.Role;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .claim(TOKEN_TYPE, ACCESS_TYPE)
                 .claim(PROVIDER_ID, providerId)
-                .claim(ROLE, Role.USER)
+                .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_ACCESS_EXPIRES_MS))
                 .signWith(secretKey)
