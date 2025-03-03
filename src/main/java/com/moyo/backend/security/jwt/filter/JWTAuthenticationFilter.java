@@ -47,7 +47,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         jwtValidator.validateJwtAccessToken(accessToken);
 
         String providerId = jwtPayloadReader.getProviderId(accessToken);
-        Role role = Role.valueOf(jwtPayloadReader.getRole(accessToken));
+        Role role = Role.valueOf(jwtPayloadReader.getRole(accessToken).substring(5));
         UserDto userDto = new UserDto(role,providerId);
 
         GitHubOAuth2User gitHubOAuth2User = new GitHubOAuth2User(userDto);
