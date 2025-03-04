@@ -19,7 +19,7 @@ spring:
 
   # CORS Allow Origin
   cors:
-    allow-origin: ${ALLOW_ORIGIN:http://localhost:3000}
+    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
 
   # Login
   cookie:
