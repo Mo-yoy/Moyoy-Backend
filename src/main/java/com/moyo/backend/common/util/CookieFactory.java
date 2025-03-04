@@ -18,10 +18,10 @@ public class CookieFactory {
     public ResponseCookie createJwtRefreshCookie(String jwtRefresh) {
         return ResponseCookie.from(REFRESH_TYPE, jwtRefresh)
                 .path("/")
-                .maxAge(300)
+                .maxAge(6000)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .domain(domain)
                 .build();
     }

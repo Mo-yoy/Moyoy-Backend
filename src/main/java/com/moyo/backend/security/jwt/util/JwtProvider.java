@@ -15,8 +15,8 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 @Component
 public class JwtProvider {
 
-    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60;
-    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 5;
+    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60 *10;
+    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 100;
 
 
     private final SecretKey secretKey;

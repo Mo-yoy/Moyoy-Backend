@@ -21,9 +21,11 @@ spring:
   cors:
     allow-origin: ${ALLOW_ORIGIN:http://localhost:3000}
 
-  # Cookie Domain
+  # Login
   cookie:
     domain: ${COOKIE_DOMAIN:localhost}
+  login:
+    default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
 
   # Security
   security:
