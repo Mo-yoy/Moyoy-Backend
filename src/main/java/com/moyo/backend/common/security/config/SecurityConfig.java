@@ -1,10 +1,12 @@
-package com.moyo.backend.security.config;
+package com.moyo.backend.common.security.config;
 
-import com.moyo.backend.security.jwt.filter.JWTAuthenticationFilter;
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtValidator;
-import com.moyo.backend.security.oauth.handler.OAuthLoginSuccessHandler;
-import com.moyo.backend.security.oauth.service.GithubOAuth2UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moyo.backend.common.security.jwt.filter.JWTAuthenticationExceptionHandleFilter;
+import com.moyo.backend.common.security.jwt.filter.JWTAuthenticationFilter;
+import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.common.security.jwt.util.JwtValidator;
+import com.moyo.backend.common.security.oauth.handler.OAuthLoginSuccessHandler;
+import com.moyo.backend.common.security.oauth.service.GithubOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final ObjectMapper objectMapper;
     private final GithubOAuth2UserService userService;
     private final OAuthLoginSuccessHandler loginSuccessHandler;
     private final JwtPayloadReader jwtPayloadReader;
@@ -46,7 +49,8 @@ public class SecurityConfig {
         );
 
         http
-                .addFilterAfter(new JWTAuthenticationFilter(jwtValidator,jwtPayloadReader), OAuth2LoginAuthenticationFilter.class);
+                .addFilterAfter(new JWTAuthenticationFilter(jwtValidator,jwtPayloadReader), OAuth2LoginAuthenticationFilter.class)
+                .addFilterBefore(new JWTAuthenticationExceptionHandleFilter(objectMapper), JWTAuthenticationFilter.class);
 
         http
                 .oauth2Login(oauth2 -> oauth2

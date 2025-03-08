@@ -1,8 +1,8 @@
-package com.moyo.backend.security.jwt.controller;
+package com.moyo.backend.common.security.jwt.controller;
 
 
+import com.moyo.backend.common.security.jwt.service.JwtReissueService;
 import com.moyo.backend.common.util.CookieFactory;
-import com.moyo.backend.security.jwt.service.JwtReissueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;

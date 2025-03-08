@@ -1,10 +1,10 @@
-package com.moyo.backend.security.oauth.handler;
+package com.moyo.backend.common.security.oauth.handler;
 
+import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.common.security.jwt.util.JwtProvider;
+import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
+import com.moyo.backend.common.security.oauth.repository.LoginRepository;
 import com.moyo.backend.common.util.CookieFactory;
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtProvider;
-import com.moyo.backend.security.oauth.dto.GitHubOAuth2User;
-import com.moyo.backend.security.oauth.repository.LoginRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +40,6 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         this.frontLoginSuccessURI = frontLoginSuccessURI;
     }
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -51,9 +50,12 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String role = String.valueOf(gitHubOAuth2User.getAuthorities().stream().findFirst().orElseThrow(RuntimeException::new));
 
         String jwtRefresh = jwtProvider.createJwtRefresh(providerId,role);
+        String expiredJwtAccess = jwtProvider.createExpiredJwtAccess();
+
         loginRepository.save(providerId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
         response.addHeader(SET_COOKIE, cookieFactory.createJwtRefreshCookie(jwtRefresh).toString());
+        response.addHeader(SET_COOKIE, cookieFactory.createExpiredAccessTokenCookie(expiredJwtAccess).toString());
         response.sendRedirect(frontLoginSuccessURI);
     }
 }

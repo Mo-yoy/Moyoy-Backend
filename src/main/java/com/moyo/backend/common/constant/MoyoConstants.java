@@ -5,6 +5,8 @@ public class MoyoConstants {
     public static final String BEARER = "Bearer";
     public static final String SET_COOKIE = "Set-Cookie";
     public static final String AUTHORIZATION = "Authorization";
+
+    public static final String JSON = "application/json";
     public static final String GITHUB_REGISTRATION_ID = "github";
     public static final String ANONYMOUS_USER = "anonymousUser";
 

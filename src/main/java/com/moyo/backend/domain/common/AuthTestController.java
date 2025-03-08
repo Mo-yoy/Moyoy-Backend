@@ -1,6 +1,6 @@
 package com.moyo.backend.domain.common;
 
-import com.moyo.backend.security.oauth.dto.GitHubOAuth2User;
+import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

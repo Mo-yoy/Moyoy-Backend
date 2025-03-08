@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.util;
+package com.moyo.backend.common.security.jwt.util;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
