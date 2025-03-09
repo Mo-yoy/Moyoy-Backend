@@ -21,10 +21,10 @@ spring:
   cors:
     allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
 
-  # Login
+  # Cookie
   cookie:
-    domain: ${COOKIE_DOMAIN:localhost}
-    samesite: ${COOKIE_SAME_SITE:Strict}
+    domain: ${COOKIE_DOMAIN}
+    samesite: ${COOKIE_SAME_SITE}
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
