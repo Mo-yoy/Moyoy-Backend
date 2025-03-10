@@ -1,10 +1,10 @@
-package com.moyo.backend.security.oauth.service;
+package com.moyo.backend.common.security.oauth.service;
 
+import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
+import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
 import com.moyo.backend.domain.user.User;
 import com.moyo.backend.domain.user.UserRepository;
-import com.moyo.backend.security.oauth.dto.GitHubOAuth2User;
-import com.moyo.backend.security.oauth.dto.GithubUserProfile;
-import com.moyo.backend.security.oauth.dto.UserDto;
+import com.moyo.backend.common.security.oauth.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

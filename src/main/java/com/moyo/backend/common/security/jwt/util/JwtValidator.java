@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.util;
+package com.moyo.backend.common.security.jwt.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -36,7 +36,9 @@ public class JwtValidator {
             isAccessToken(token);
 
         } catch (ExpiredJwtException e){   // ExpiredJwtException -> ClaimJwtException -> JwtException
-            throw new RuntimeException("JWT Access 만료 예외 발생");
+
+            log.warn("JWT Access Expired");
+            throw e;
         } catch (JwtException | IllegalArgumentException e) {
             throw new RuntimeException("유효하지 않은 JWT 예외 발생");
         }

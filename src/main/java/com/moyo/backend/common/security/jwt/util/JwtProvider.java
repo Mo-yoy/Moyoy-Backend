@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.util;
+package com.moyo.backend.common.security.jwt.util;
 
 
 import io.jsonwebtoken.Jwts;
@@ -15,14 +15,24 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 @Component
 public class JwtProvider {
 
-    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60;
-    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 5;
+    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60 *10;
+    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 100;
 
 
     private final SecretKey secretKey;
 
     public JwtProvider(@Value("${spring.jwt.secret}") String jwtSecret) {
         this.secretKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+    }
+
+    // Reissue Trigger JWT Access
+    public String createExpiredJwtAccess(){
+        return Jwts.builder()
+                .claim(TOKEN_TYPE, ACCESS_TYPE)
+                .issuedAt(new Date(System.currentTimeMillis() - 60000))
+                .expiration(new Date(System.currentTimeMillis() - 30000))
+                .signWith(secretKey)
+                .compact();
     }
 
     public String createJwtAccess(String providerId, String role) {

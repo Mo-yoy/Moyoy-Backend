@@ -1,6 +1,6 @@
 package com.moyo.backend.domain.user;
 
-import com.moyo.backend.security.oauth.dto.GithubUserProfile;
+import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;
 import lombok.*;
 

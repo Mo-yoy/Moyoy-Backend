@@ -3,7 +3,7 @@ name: Moyo API Test Server Deploy
 on:
   push:
     branches:
-      - test
+      - develop
     path: backend/**
 
 jobs:
