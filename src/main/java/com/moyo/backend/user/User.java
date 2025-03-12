@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.user;
+package com.moyo.backend.user;
 
 import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;

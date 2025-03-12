@@ -14,10 +14,14 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,6 +36,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
     }
+
+    // HTTP Client Error Exception
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ApiResponse<?>> handleHttpClientErrorException(HttpClientErrorException ex){
+
+        ErrorReason errorReason = CommonErrorCode.HTTP_CLIENT_ERROR.getErrorReason();
+
+        String detailMessage = " Github Error Message : " + ex.getResponseBodyAsString();
+
+        errorReason.addDetailErrorMessage(detailMessage);
+
+        return ResponseEntity.status(500).body(ApiResponse.fail(errorReason));
+    }
+
 
     // @Valid
     @Override

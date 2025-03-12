@@ -2,7 +2,6 @@ package com.moyo.backend.common.security.oauth.handler;
 
 import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
 import com.moyo.backend.common.security.jwt.util.JwtProvider;
-import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
 import com.moyo.backend.common.security.oauth.repository.LoginRepository;
 import com.moyo.backend.common.util.CookieFactory;
 import jakarta.servlet.ServletException;
@@ -44,7 +43,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         log.info("로그인 성공 후 JWT 발급 시작");
-        GitHubOAuth2User gitHubOAuth2User = (GitHubOAuth2User) authentication.getPrincipal();
+        GithubOAuth2User gitHubOAuth2User = (GithubOAuth2User) authentication.getPrincipal();
 
         String providerId = gitHubOAuth2User.getName();
         String role = String.valueOf(gitHubOAuth2User.getAuthorities().stream().findFirst().orElseThrow(RuntimeException::new));

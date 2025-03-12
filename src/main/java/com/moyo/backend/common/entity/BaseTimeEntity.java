@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.common;
+package com.moyo.backend.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

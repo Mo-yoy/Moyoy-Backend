@@ -1,9 +1,9 @@
 package com.moyo.backend.common.security.oauth.service;
 
-import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
+
 import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
-import com.moyo.backend.domain.user.User;
-import com.moyo.backend.domain.user.UserRepository;
+import com.moyo.backend.user.User;
+import com.moyo.backend.user.UserRepository;
 import com.moyo.backend.common.security.oauth.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +47,6 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
             user.changeProfileImgUrl(githubUserProfile.getProfileImgUrl());
         }
 
-        return new GitHubOAuth2User(UserDto.from(user));
+        return new GithubOAuth2User(UserDto.from(user));
     }
 }
