@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.user;
+package com.moyo.backend.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

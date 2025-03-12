@@ -1,9 +1,8 @@
 package com.moyo.backend.common.security.jwt.filter;
 
 import com.moyo.backend.common.security.jwt.util.JwtValidator;
-import com.moyo.backend.domain.user.Role;
 import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.common.security.oauth.dto.GitHubOAuth2User;
+import com.moyo.backend.user.Role;
 import com.moyo.backend.common.security.oauth.dto.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,7 +49,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         Role role = Role.valueOf(jwtPayloadReader.getRole(accessToken).substring(5));
         UserDto userDto = new UserDto(role,providerId);
 
-        GitHubOAuth2User gitHubOAuth2User = new GitHubOAuth2User(userDto);
+        GithubOAuth2User gitHubOAuth2User = new GithubOAuth2User(userDto);
 
         OAuth2AuthenticationToken authenticationToken =
                 new OAuth2AuthenticationToken(gitHubOAuth2User,gitHubOAuth2User.getAuthorities(),GITHUB_REGISTRATION_ID);

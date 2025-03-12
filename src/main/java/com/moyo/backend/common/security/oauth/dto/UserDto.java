@@ -1,7 +1,8 @@
 package com.moyo.backend.common.security.oauth.dto;
 
-import com.moyo.backend.domain.user.Role;
-import com.moyo.backend.domain.user.User;
+import com.moyo.backend.user.Role;
+import com.moyo.backend.user.User;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
