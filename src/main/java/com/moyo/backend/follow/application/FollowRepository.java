@@ -1,16 +1,11 @@
 package com.moyo.backend.follow.application;
 
-import com.moyo.backend.follow.dto.GithubUserResponse;
-
-import java.util.List;
+import com.moyo.backend.follow.domain.entity.GithubUser;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface FollowRepository {
-
-    int follow(String username, String accessToken);
-
-    int unfollow(String username, String accessToken);
-
-    List<GithubUserResponse> getFollowingList(String accessToken);
-
-    List<GithubUserResponse> getFollowerList(String accessToken);
+    Slice<GithubUser> findMutualFollowGithubUsers(Long userId, Pageable pageable);
+    Slice<GithubUser> findFollowerOnlyList(Long userId, Pageable pageable);
+    Slice<GithubUser> findFollowingOnlyList(Long userId, Pageable pageable);
 }

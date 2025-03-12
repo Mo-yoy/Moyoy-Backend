@@ -1,7 +1,7 @@
 package com.moyo.backend.follow.infrastructure.httpClient;
 
-import com.moyo.backend.follow.application.FollowRepository;
-import com.moyo.backend.follow.dto.GithubUserResponse;
+import com.moyo.backend.follow.infrastructure.httpClient.dto.GithubUserResponse;
+import com.moyo.backend.follow.legacy.FollowRepositoryLegacy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class FollowHttpClient implements FollowRepository {
+public class FollowHttpClientLegacy implements FollowRepositoryLegacy{
 
     private final RestClient restClient;
 

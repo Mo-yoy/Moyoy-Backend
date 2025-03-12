@@ -1,8 +1,14 @@
 package com.moyo.backend.user;
 
 import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
+import com.moyo.backend.follow.domain.entity.Follower;
+import com.moyo.backend.follow.domain.entity.Following;
+import com.moyo.backend.follow.domain.entity.GithubUser;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "users")
 @Entity

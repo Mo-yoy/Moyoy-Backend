@@ -2,6 +2,14 @@ package com.moyo.backend.common.security.oauth.service;
 
 
 import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
+import com.moyo.backend.follow.domain.entity.Follower;
+import com.moyo.backend.follow.domain.entity.Following;
+import com.moyo.backend.follow.domain.entity.GithubUser;
+import com.moyo.backend.follow.infrastructure.httpClient.FollowHttpClientLegacy;
+import com.moyo.backend.follow.infrastructure.httpClient.dto.GithubUserResponse;
+import com.moyo.backend.follow.infrastructure.repository.FollowerJpaRepository;
+import com.moyo.backend.follow.infrastructure.repository.FollowingJpaRepository;
+import com.moyo.backend.follow.infrastructure.repository.GithubUserJpaRepository;
 import com.moyo.backend.user.User;
 import com.moyo.backend.user.UserRepository;
 import com.moyo.backend.common.security.oauth.dto.UserDto;
@@ -12,6 +20,9 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  *  우리 서비스는 내부 로직의 거의 모든 부분 에서 GitHub OAuth App Access Token을 이용한 API가 필요 합니다.
@@ -20,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
@@ -34,6 +46,7 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
         User user = userRepository.findByProviderId(githubUserProfile.getProviderId());
 
+        // 회원가입, 프로필 업데이트
         if (user == null) {
 
             log.info("신규 회원 회원 가입 진행, Username : {}", githubUserProfile.getUsername());
