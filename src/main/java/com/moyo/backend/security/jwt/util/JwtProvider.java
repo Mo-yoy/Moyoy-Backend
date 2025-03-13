@@ -1,4 +1,4 @@
-package com.moyo.backend.common.security.jwt.util;
+package com.moyo.backend.security.jwt.util;
 
 
 import io.jsonwebtoken.Jwts;
@@ -35,10 +35,10 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createJwtAccess(String providerId, String role) {
+    public String createJwtAccess(Long userId, String role) {
         return Jwts.builder()
                 .claim(TOKEN_TYPE, ACCESS_TYPE)
-                .claim(PROVIDER_ID, providerId)
+                .claim(USER_ID, userId)
                 .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_ACCESS_EXPIRES_MS))
@@ -46,10 +46,10 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createJwtRefresh(String providerId, String role) {
+    public String createJwtRefresh(Long userId, String role) {
         return Jwts.builder()
                 .claim(TOKEN_TYPE, REFRESH_TYPE)
-                .claim(PROVIDER_ID, providerId)
+                .claim(USER_ID, userId)
                 .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_REFRESH_EXPIRES_MS))

@@ -1,9 +1,10 @@
-package com.moyo.backend.common.security.jwt.filter;
+package com.moyo.backend.security.jwt.filter;
 
-import com.moyo.backend.common.security.jwt.util.JwtValidator;
-import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.security.jwt.util.JwtValidator;
+import com.moyo.backend.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.security.oauth.dto.UserDto;
 import com.moyo.backend.user.Role;
-import com.moyo.backend.common.security.oauth.dto.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,9 +46,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         // 추출한 jwt AccessToken JWT Validator로 검증
         jwtValidator.validateJwtAccessToken(accessToken);
 
-        String providerId = jwtPayloadReader.getProviderId(accessToken);
+        Long userId = jwtPayloadReader.getUserId(accessToken);
         Role role = Role.valueOf(jwtPayloadReader.getRole(accessToken).substring(5));
-        UserDto userDto = new UserDto(role,providerId);
+        UserDto userDto = new UserDto(userId,role);
 
         GithubOAuth2User gitHubOAuth2User = new GithubOAuth2User(userDto);
 

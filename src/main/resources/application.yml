@@ -46,4 +46,3 @@ spring:
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
-

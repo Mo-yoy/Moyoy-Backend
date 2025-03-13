@@ -1,4 +1,4 @@
-package com.moyo.backend.common.security.oauth.dto;
+package com.moyo.backend.security.oauth.dto;
 
 import com.moyo.backend.user.Role;
 import com.moyo.backend.user.User;
@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDto {
 
+    private final Long id;
     private final Role role;
-    private final String providerId;
 
-    public static UserDto from(User user){
-        return new UserDto(user.getRole(),user.getProviderId());
+    public static UserDto userEntityToUserDto(User user){
+        return new UserDto(user.getId(),user.getRole());
     }
 }

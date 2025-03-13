@@ -1,14 +1,8 @@
 package com.moyo.backend.user;
 
-import com.moyo.backend.common.security.oauth.dto.GithubUserProfile;
-import com.moyo.backend.follow.domain.entity.Follower;
-import com.moyo.backend.follow.domain.entity.Following;
-import com.moyo.backend.follow.domain.entity.GithubUser;
+import com.moyo.backend.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "users")
 @Entity
@@ -16,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
+    // 깃허브와 연동
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -27,25 +21,22 @@ public class User {
     @Column(nullable = false)
     private String profileImgUrl;
 
-    @Column(unique = true)
-    private String providerId;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Builder
-    public User(String username, String profileImgUrl, String providerId, Role role){
+    @Builder(access = AccessLevel.PRIVATE)
+    private User(Long id, String username, String profileImgUrl, Role role){
+        this.id = id;
         this.username = username;
         this.profileImgUrl = profileImgUrl;
-        this.providerId = providerId;
         this.role = role;
     }
 
     public static User from(GithubUserProfile githubUserProfile){
         return User.builder()
+                .id(githubUserProfile.getId())
                 .username(githubUserProfile.getUsername())
                 .profileImgUrl(githubUserProfile.getProfileImgUrl())
-                .providerId(githubUserProfile.getProviderId())
                 .role(Role.USER)
                 .build();
     }

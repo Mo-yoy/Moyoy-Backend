@@ -1,4 +1,4 @@
-package com.moyo.backend.common.security.oauth.repository;
+package com.moyo.backend.security.oauth.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
@@ -16,9 +16,9 @@ public class LoginRepositoryImpl implements LoginRepository{
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void save(String providerId, String refreshToken, Date expiration) {
+    public void save(Long userId, String refreshToken, Date expiration) {
 
-        String memberKey = "members:" + providerId;
+        String memberKey = "members:" + userId;
 
         // idx 필드를 관리하고, 새 토큰을 저장
         Long idx = redisTemplate.opsForHash().increment(memberKey, "idx", 1); // idx 값을 증가시킴
@@ -34,13 +34,13 @@ public class LoginRepositoryImpl implements LoginRepository{
 
 
     @Override
-    public String findWhiteListTokenKey(String providerId, String jwtRefreshToken){
+    public String findWhiteListTokenKey(Long userId, String jwtRefreshToken){
 
         // 화이트리스트에 있는 토큰이 맞는지 체크
         String whiteListRefreshTokenKey = null;
 
         // 특정 회원의 토큰 패턴: "members:{memberId}:token:*"
-        String memberKeyPattern = "members:" + providerId + ":token:*";
+        String memberKeyPattern = "members:" + userId + ":token:*";
 
         // SCAN 옵션 설정: 해당 패턴과 일치하는 키를 찾음
         ScanOptions options = ScanOptions.scanOptions().match(memberKeyPattern).build();

@@ -1,4 +1,4 @@
-package com.moyo.backend.common.security.jwt.exception;
+package com.moyo.backend.security.jwt.exception;
 
 import com.moyo.backend.common.exception.BaseErrorCode;
 import com.moyo.backend.common.exception.ErrorReason;

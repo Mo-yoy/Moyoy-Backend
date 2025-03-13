@@ -36,7 +36,7 @@ public class FollowHttpClientLegacy implements FollowRepositoryLegacy{
     @Override
     public int unfollow(String username, String accessToken){
         return restClient.delete()
-                .uri("https://api.github.com/user/following/"+username)
+                .uri("https://api.github.com/user/following/" + username)
                 .headers(
                         header ->{
                             header.setBearerAuth(accessToken);

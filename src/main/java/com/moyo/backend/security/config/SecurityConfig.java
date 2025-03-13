@@ -1,12 +1,12 @@
-package com.moyo.backend.common.security.config;
+package com.moyo.backend.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moyo.backend.common.security.jwt.filter.JWTAuthenticationExceptionHandleFilter;
-import com.moyo.backend.common.security.jwt.filter.JWTAuthenticationFilter;
-import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.common.security.jwt.util.JwtValidator;
-import com.moyo.backend.common.security.oauth.handler.OAuthLoginSuccessHandler;
-import com.moyo.backend.common.security.oauth.service.GithubOAuth2UserService;
+import com.moyo.backend.security.jwt.filter.JWTAuthenticationExceptionHandleFilter;
+import com.moyo.backend.security.jwt.filter.JWTAuthenticationFilter;
+import com.moyo.backend.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.security.jwt.util.JwtValidator;
+import com.moyo.backend.security.oauth.handler.OAuthLoginSuccessHandler;
+import com.moyo.backend.security.oauth.service.GithubOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
