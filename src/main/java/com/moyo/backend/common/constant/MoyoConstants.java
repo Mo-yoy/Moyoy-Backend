@@ -14,7 +14,7 @@ public class MoyoConstants {
     public static final String ACCESS_TYPE = "access";
     public static final String REFRESH_TYPE = "refresh";
     public static final String TOKEN_TYPE = "tokenType";
-    public static final String PROVIDER_ID = "providerId";
+    public static final String USER_ID = "userId";
     public static final String ROLE = "role";
 
     public static final int OK = 200;

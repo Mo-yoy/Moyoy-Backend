@@ -3,15 +3,11 @@ spring:
   # JPA
   jpa:
     hibernate:
-<<<<<<< HEAD
       ddl-auto: create
-=======
-      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         format_sql: true
->>>>>>> 8b13383 (맞팔 탐지기 일부 구현)
 
 # Log
 logging:

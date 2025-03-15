@@ -1,8 +1,9 @@
-package com.moyo.backend.common.security.oauth.handler;
+package com.moyo.backend.security.oauth.handler;
 
-import com.moyo.backend.common.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.common.security.jwt.util.JwtProvider;
-import com.moyo.backend.common.security.oauth.repository.LoginRepository;
+import com.moyo.backend.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.security.jwt.util.JwtProvider;
+import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.security.oauth.repository.LoginRepository;
 import com.moyo.backend.common.util.CookieFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,16 +43,17 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        log.info("로그인 성공 후 JWT 발급 시작");
         GithubOAuth2User gitHubOAuth2User = (GithubOAuth2User) authentication.getPrincipal();
 
-        String providerId = gitHubOAuth2User.getName();
+        Long userId = gitHubOAuth2User.getId();
         String role = String.valueOf(gitHubOAuth2User.getAuthorities().stream().findFirst().orElseThrow(RuntimeException::new));
 
-        String jwtRefresh = jwtProvider.createJwtRefresh(providerId,role);
+        log.info("Id : {} 회원 로그인 성공 후 JWT 발급 시작", userId);
+
+        String jwtRefresh = jwtProvider.createJwtRefresh(userId,role);
         String expiredJwtAccess = jwtProvider.createExpiredJwtAccess();
 
-        loginRepository.save(providerId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
+        loginRepository.save(userId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
         response.addHeader(SET_COOKIE, cookieFactory.createJwtRefreshCookie(jwtRefresh).toString());
         response.addHeader(SET_COOKIE, cookieFactory.createExpiredAccessTokenCookie(expiredJwtAccess).toString());

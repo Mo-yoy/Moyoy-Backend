@@ -1,5 +1,6 @@
 package com.moyo.backend.common.controller;
 
+import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -108,7 +109,7 @@ public class AuthTestController {
         GithubOAuth2User userPrincipal = (GithubOAuth2User) auth.getPrincipal();
         log.info("===== SecurityContextHolder에서 Authentication.getPrincipal에 넣어둔 GithubOAuth2User 조회 =====");
 
-        log.info("ProviderId : {}", userPrincipal.getName());
+        log.info("userId : {}", userPrincipal.getName());
 
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient("github", userPrincipal.getName());
         log.info("===== OAuth2AuthorizedClient 조회 : {}  =====", oAuth2AuthorizedClient);

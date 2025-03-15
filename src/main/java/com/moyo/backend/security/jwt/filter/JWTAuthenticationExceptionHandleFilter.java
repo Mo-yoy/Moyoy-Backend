@@ -1,9 +1,9 @@
-package com.moyo.backend.common.security.jwt.filter;
+package com.moyo.backend.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.ErrorReason;
 import com.moyo.backend.common.model.ApiResponse;
-import com.moyo.backend.common.security.jwt.exception.LoginErrorCode;
+import com.moyo.backend.security.jwt.exception.LoginErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,7 +32,7 @@ public class JWTAuthenticationExceptionHandleFilter extends OncePerRequestFilter
         }
         catch (ExpiredJwtException ex){
 
-            createErrorResponse(response,LoginErrorCode.JWT_EXPIRED.getErrorReason());
+            createErrorResponse(response, LoginErrorCode.JWT_EXPIRED.getErrorReason());
         }
     }
 

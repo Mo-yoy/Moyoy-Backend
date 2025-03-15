@@ -1,6 +1,7 @@
 package com.moyo.backend.follow.legacy;
 
 import com.moyo.backend.follow.infrastructure.httpClient.dto.GithubUserResponse;
+import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
