@@ -1,14 +1,17 @@
 package com.moyo.backend.user;
 
+import com.moyo.backend.common.entity.BaseTimeEntity;
 import com.moyo.backend.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Table(name = "users")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseTimeEntity {
 
     // 깃허브와 연동
     @Id
@@ -20,6 +23,9 @@ public class User {
 
     @Column(nullable = false)
     private String profileImgUrl;
+
+    @Column
+    private LocalDateTime lastFollowUpdatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -47,6 +53,10 @@ public class User {
 
     public void changeProfileImgUrl(String profileImgUrl){
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public void changeLastFollowUpdatedAt(LocalDateTime lastFollowUpdatedAt){
+        this.lastFollowUpdatedAt = lastFollowUpdatedAt;
     }
 }
 
