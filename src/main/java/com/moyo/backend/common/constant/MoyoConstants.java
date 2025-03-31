@@ -17,6 +17,9 @@ public class MoyoConstants {
     public static final String USER_ID = "userId";
     public static final String ROLE = "role";
 
+    public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 2;
+    public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;
+
     public static final int OK = 200;
     public static final int NO_CONTENT = 204;
     public static final int FOUND = 302;
