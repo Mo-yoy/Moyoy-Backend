@@ -1,6 +1,7 @@
 package com.moyo.backend.pr_review.domain;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
+import com.moyo.backend.pr_review.domain.position.Position;
 import com.moyo.backend.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -38,17 +39,16 @@ public class PrReview extends BaseTimeEntity {
 
     // 직군 태그는 null이 가능하므로 enum 대신 String 선택.
     @Column(nullable = true)
-    private String position;
+    private Position position;
 
     @Column(nullable = false)
     private int hitCount;
 
     @Column(nullable = false)
-//    private boolean isCompleted; // 접두사 is 들어가면 직렬화와 jpa 사용에 헷갈림, Boolean도 있지만 status로 통합.
-    private Boolean status; // 마감 여부.
+    private Boolean status; // open, closed 여부.
 
     @Builder
-    public PrReview(String title, String content, User user, String prUrl, String position, int hitCount, boolean status) {
+    public PrReview(String title, String content, User user, String prUrl, Position position, int hitCount, boolean status) {
         this.title = title;
         this.content = content;
         this.user = user;
@@ -62,7 +62,7 @@ public class PrReview extends BaseTimeEntity {
         this.hitCount++;
     }
 
-    public void updateDetail(String title, String content, String prUrl, String position) {
+    public void updateDetail(String title, String content, String prUrl, Position position) {
         this.title = title;
         this.content = content;
         this.prUrl = prUrl;

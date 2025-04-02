@@ -1,4 +1,4 @@
-package com.moyo.backend.pr_review.dto.response;
+package com.moyo.backend.pr_review.dto;
 
 import lombok.Getter;
 

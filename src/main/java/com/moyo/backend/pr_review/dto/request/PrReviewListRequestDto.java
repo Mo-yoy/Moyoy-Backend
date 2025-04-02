@@ -1,5 +1,6 @@
 package com.moyo.backend.pr_review.dto.request;
 
+import com.moyo.backend.pr_review.domain.position.Position;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,10 @@ public class PrReviewListRequestDto {
 
     public Boolean getStatus() {
         return "open".equalsIgnoreCase(status); // "open"이면 true, 아니면 false.
+    }
+
+    public Position getPositionEnum() {
+        return position != null ? Position.fromString(position) : null;
     }
 
     public Sort toSort() {

@@ -8,12 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface PrReviewRepository extends JpaRepository<PrReview, Long> {
+public interface PrReviewJpaRepository extends JpaRepository<PrReview, Long> {
 
-    // Pageable로 정렬 & 페이징 처리.
     Page<PrReview> findAllByStatusAndPosition(Boolean status, String position, Pageable pageable);
 
     Page<PrReview> findAllByUserAndStatusAndPosition(User user, Boolean status, String position, Pageable pageable);
-
-    Optional<PrReview> findById(Long reviewId);
 }

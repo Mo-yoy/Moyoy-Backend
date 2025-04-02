@@ -5,7 +5,7 @@ import com.moyo.backend.pr_review.dto.request.PrReviewCreateRequestDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewListRequestDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewUpdateRequestDto;
 import com.moyo.backend.pr_review.dto.response.*;
-import com.moyo.backend.pr_review.service.PrReviewService;
+import com.moyo.backend.pr_review.application.PrReviewService;
 import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +41,6 @@ public class PrReviewController {
     @GetMapping("/{pr-reviewId}")
     public ResponseEntity<ApiResponse<PrReviewDetailResponseDto>> prReviewDetail(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                                                  @PathVariable("pr-reviewId") Long reviewId) {
-
-        log.info("현재 요청을 보낸 사용자 provider Id: {}", userPrincipal.getName());
 
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewDetail(reviewId, userPrincipal.getId())));
     }

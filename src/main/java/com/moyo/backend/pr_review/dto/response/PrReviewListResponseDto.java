@@ -1,5 +1,6 @@
 package com.moyo.backend.pr_review.dto.response;
 
+import com.moyo.backend.pr_review.dto.PrReviewDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

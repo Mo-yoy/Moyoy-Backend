@@ -4,21 +4,20 @@ import com.moyo.backend.common.entity.BaseTimeEntity;
 import com.moyo.backend.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "pr_review_view", uniqueConstraints = {
+@Table(name = "pr_review_hits", uniqueConstraints = {
                 @UniqueConstraint(name = "unique_user_pr", columnNames = {"user_id", "pr_review_id"})
         }
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PrReviewView extends BaseTimeEntity {
+public class PrReviewHits extends BaseTimeEntity {
 
     @Id
-    @Column(name = "pr_review_view_id")
+    @Column(name = "pr_review_hits_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -30,8 +29,7 @@ public class PrReviewView extends BaseTimeEntity {
     @JoinColumn(name = "pr_review_id", nullable = false)
     private PrReview prReview;
 
-    @Builder
-    public PrReviewView(User user, PrReview prReview) {
+    public PrReviewHits(User user, PrReview prReview) {
         this.user = user;
         this.prReview = prReview;
     }
