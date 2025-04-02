@@ -1,6 +1,7 @@
 package com.moyo.backend.pr_review.dto.request;
 
-import com.moyo.backend.pr_review.domain.position.Position;
+import com.moyo.backend.common.exception.CommonErrorCode;
+import com.moyo.backend.common.exception.MoyoException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
@@ -18,15 +19,21 @@ public class PrReviewListRequestDto {
     private int size;
 
     public Boolean getStatus() {
-        return "open".equalsIgnoreCase(status); // "open"이면 true, 아니면 false.
+        return "open".equalsIgnoreCase(status);
     }
 
     public Sort toSort() {
         String[] tokens = order.split(",");
-        if (tokens.length != 2) throw new IllegalArgumentException("맞지 않는 형식"); // FIXME
+        if (tokens.length != 2) {
+            throw new MoyoException(CommonErrorCode.INVALID_PARAM);
+        }
 
-        Sort.Direction direction = Sort.Direction.fromString(tokens[1].toUpperCase());
-        return Sort.by(direction, tokens[0]); // 예시: Sort.by(Sort.Direction.DESC, "createdAt").
+        try {
+            Sort.Direction direction = Sort.Direction.fromString(tokens[1].toUpperCase());
+            return Sort.by(direction, tokens[0]); // 예시: Sort.by(Sort.Direction.DESC, "createdAt").
+        } catch (IllegalArgumentException e) {
+            throw new MoyoException(CommonErrorCode.PARAM_TYPE_MISMATCH);
+        }
     }
 
     public Pageable toPageable() {
