@@ -13,7 +13,4 @@ public class PrReviewCreateRequestDto {
     private String prUrl;
     private String content;
 
-    public Position getPositionEnum() {
-        return position != null ? Position.fromString(position) : null;
-    }
 }

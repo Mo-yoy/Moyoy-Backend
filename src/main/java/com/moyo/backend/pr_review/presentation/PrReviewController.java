@@ -21,7 +21,6 @@ public class PrReviewController {
 
     private final PrReviewService prReviewService;
 
-    // 요청글 전체 조회.
     @GetMapping
     public ResponseEntity<ApiResponse<PrReviewListResponseDto>> prReviewList(
             @RequestParam(value = "status", defaultValue = "open") String status,
@@ -31,13 +30,11 @@ public class PrReviewController {
             @RequestParam(value = "size") int size) {
 
         // Dto에서 입력값 검증 추가 필요.
-
         PrReviewListRequestDto requestDto = new PrReviewListRequestDto(status, order, position, page, size);
 
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewList(requestDto)));
     }
 
-    // 요청글 상세 조회.
     @GetMapping("/{pr-reviewId}")
     public ResponseEntity<ApiResponse<PrReviewDetailResponseDto>> prReviewDetail(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                                                  @PathVariable("pr-reviewId") Long reviewId) {
@@ -45,7 +42,6 @@ public class PrReviewController {
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewDetail(reviewId, userPrincipal.getId())));
     }
 
-    // 요청 글 생성.
     @PostMapping
     public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                                          @RequestBody PrReviewCreateRequestDto requestDto) {
@@ -53,7 +49,6 @@ public class PrReviewController {
         return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
     }
 
-    // 요청 글 수정 폼.
     @GetMapping("/{pr-reviewId}/form")
     public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                                                     @PathVariable("pr-reviewId") Long reviewId) {
@@ -61,7 +56,6 @@ public class PrReviewController {
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
     }
 
-    // 요청 글 수정.
     @PatchMapping("/{pr-reviewId}")
     public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                                          @PathVariable("pr-reviewId") Long reviewId,
@@ -70,7 +64,6 @@ public class PrReviewController {
         return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
     }
 
-    // 요청 글 삭제.
     @DeleteMapping("/{pr-reviewId}")
     public ResponseEntity<ApiResponse<Void>> delete(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                     @PathVariable("pr-reviewId") Long reviewId) {
@@ -79,7 +72,6 @@ public class PrReviewController {
         return ResponseEntity.ok(ApiResponse.noContent());
     }
 
-    // 내 리뷰 요청글 모아보기
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<PrReviewListResponseDto>> myPrReviewList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
             @RequestParam(value = "status", defaultValue = "open") String status,
@@ -89,7 +81,6 @@ public class PrReviewController {
             @RequestParam(value = "size") int size) {
 
         // Dto에서 입력값 검증 추가 필요.
-
         PrReviewListRequestDto requestDto = new PrReviewListRequestDto(status, order, position, page, size);
 
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getMyPrReviewList(requestDto, userPrincipal.getId())));

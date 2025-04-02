@@ -37,8 +37,8 @@ public class PrReview extends BaseTimeEntity {
     @Column(nullable = false)
     private String prUrl;
 
-    // 직군 태그는 null이 가능하므로 enum 대신 String 선택.
     @Column(nullable = true)
+    @Enumerated(EnumType.STRING)
     private Position position;
 
     @Column(nullable = false)

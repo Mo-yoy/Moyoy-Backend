@@ -6,6 +6,7 @@ import com.moyo.backend.pr_review.application.port.PrReviewHitsRepository;
 import com.moyo.backend.pr_review.application.port.PrReviewRepository;
 import com.moyo.backend.pr_review.domain.PrReview;
 import com.moyo.backend.pr_review.domain.PrReviewHits;
+import com.moyo.backend.pr_review.domain.position.Position;
 import com.moyo.backend.pr_review.dto.PrReviewDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewCreateRequestDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewListRequestDto;
@@ -31,11 +32,18 @@ public class PrReviewService {
     private final UserRepository userRepository;
     private final PrReviewHitsRepository prReviewHitsRepository;
 
+    private void validateUserExists(Long userId) {
+
+        if (userId == null || !userRepository.existsById(userId)) {
+            throw new MoyoException(CommonErrorCode.USER_NOT_FOUND);
+        }
+    }
+
     public PrReviewListResponseDto getPrReviewList(PrReviewListRequestDto requestDto) {
 
         Page<PrReview> prReviews = prReviewRepository.findAllByStatusAndPosition(
                 requestDto.getStatus(),
-                requestDto.getPosition(),
+                Position.fromString(requestDto.getPosition()),
                 requestDto.toPageable()
         );
 
@@ -55,11 +63,13 @@ public class PrReviewService {
     }
 
     public PrReviewDetailResponseDto getPrReviewDetail(Long reviewId, Long userId) {
+
         PrReview prReview = prReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
 
         boolean isWriter = false;
 
+        // 비로그인 유저도 있기 때문.
         if (userId != null) {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
@@ -73,9 +83,7 @@ public class PrReviewService {
                 if (!hasViewed) {
                     prReview.increaseHitCount();
 
-                    PrReviewHits prReviewHits = new PrReviewHits(user, prReview);
-
-                    prReviewHitsRepository.save(prReviewHits);
+                    prReviewHitsRepository.save(new PrReviewHits(user, prReview));
                 }
             }
         }
@@ -102,11 +110,11 @@ public class PrReviewService {
         PrReview review = PrReview.builder()
                 .title(requestDto.getTitle())
                 .user(user)
-                .position(requestDto.getPositionEnum())
+                .position(Position.fromString(requestDto.getPosition()))
                 .prUrl(requestDto.getPrUrl())
                 .content(requestDto.getContent())
                 .hitCount(0)
-                .status(true) // 현재 opened 인지는 github에 상태 확인해봐야 함.
+                .status(true) // 현재 상태를 깃허브에서 확인하고 가져와야 함. FIXME
                 .build();
 
         PrReview savedReview = prReviewRepository.save(review);
@@ -116,8 +124,7 @@ public class PrReviewService {
 
     public PrReviewUpdateFormResponseDto getUpdateForm(Long reviewId, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+        validateUserExists(userId);
 
         PrReview review = prReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
@@ -131,8 +138,7 @@ public class PrReviewService {
 
     public PrReviewUpdateResponseDto updatePrReview(PrReviewUpdateRequestDto requestDto, Long reviewId, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+        validateUserExists(userId);
 
         PrReview review = prReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
@@ -145,7 +151,7 @@ public class PrReviewService {
                 requestDto.getTitle(),
                 requestDto.getContent(),
                 requestDto.getPrUrl(),
-                requestDto.getPositionEnum()
+                Position.fromString(requestDto.getPosition())
         );
 
         return new PrReviewUpdateResponseDto(reviewId);
@@ -153,8 +159,7 @@ public class PrReviewService {
 
     public void deletePrReview(Long reviewId, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+        validateUserExists(userId);
 
         PrReview review = prReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
@@ -176,7 +181,7 @@ public class PrReviewService {
         Page<PrReview> prReviews = prReviewRepository.findAllByUserAndStatusAndPosition(
                 user,
                 requestDto.getStatus(),
-                requestDto.getPosition(),
+                Position.fromString(requestDto.getPosition()),
                 requestDto.toPageable()
         );
 
