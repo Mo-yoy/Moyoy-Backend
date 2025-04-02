@@ -32,6 +32,8 @@ public class PrReviewController {
         // Dto에서 입력값 검증 추가 필요.
         PrReviewListRequestDto requestDto = new PrReviewListRequestDto(status, order, position, page, size);
 
+        log.info("[요청글 전체 조회] 들어온 요청의 position: {}, ", position);
+
         return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewList(requestDto)));
     }
 

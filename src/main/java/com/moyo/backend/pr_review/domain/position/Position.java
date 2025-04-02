@@ -20,8 +20,11 @@ public enum Position {
     }
 
     public static Position fromString(String value) {
+
+        if (value == null) return null; // 직군 태그 null 허용할 건지, 다음 회의 안건 등록. FIXME
+
         return Arrays.stream(Position.values())
-                .filter(position -> position.value.equalsIgnoreCase(value))
+                .filter(position -> position.name().equalsIgnoreCase(value) || position.value.equals(value))
                 .findFirst()
                 .orElseThrow(() ->  new MoyoException(CommonErrorCode.POSITION_TAG_NOT_FOUND));
     }
