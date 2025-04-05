@@ -6,15 +6,15 @@ import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode
-public class GithubFollowUser {
+public class GithubFollowUserResponse {
 
     private final Long id;
     private final String username;
     private final String profileImgUrl;
 
-    public GithubFollowUser(@JsonProperty("id")Long id,
-                            @JsonProperty("login") String login,
-                            @JsonProperty("avatar_url") String avatarUrl) {
+    public GithubFollowUserResponse(@JsonProperty("id")Long id,
+                                    @JsonProperty("login") String login,
+                                    @JsonProperty("avatar_url") String avatarUrl) {
         this.id = id;
         this.username = login;
         this.profileImgUrl = avatarUrl;

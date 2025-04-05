@@ -1,9 +1,10 @@
 package com.moyo.backend.githubfollow.infra;
 
-import com.moyo.backend.githubfollow.dto.GithubFollowUser;
+import com.moyo.backend.githubfollow.dto.GithubFollowUserResponse;
 import com.moyo.backend.githubfollow.dto.UserFollowCommandMeta;
 import com.moyo.backend.githubfollow.dto.UserFollowDetectMeta;
 import com.moyo.backend.githubfollow.dto.UserFollowStats;
+import com.moyo.backend.githubfollow.model.FollowUser;
 import com.moyo.backend.githubfollow.service.GithubFollowClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -61,37 +62,52 @@ public class GithubFollowClientImpl implements GithubFollowClient {
     }
 
     @Override
-    public UserFollowCommandMeta getUserFollowCommandMeta(String accessToken, String username) {
+    public UserFollowCommandMeta getUserFollowCommandMeta(String accessToken, String targetUsername) {
 
         ResponseEntity<?> response = restClient.get()
-                .uri("/users/{username}", username)
+                .uri("/users/{username}", targetUsername)
                 .headers(header -> header.setBearerAuth(accessToken))
                 .retrieve()
-                .toBodilessEntity();
+                .toEntity(GithubFollowUserResponse.class);
 
         int rateLimitRemaining = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
 
-        return new UserFollowCommandMeta(rateLimitRemaining);
+        GithubFollowUserResponse userResponse = (GithubFollowUserResponse) response.getBody();
+
+        return UserFollowCommandMeta.builder()
+                .rateLimitRemaining(rateLimitRemaining)
+                .targetUserId(userResponse.getId())
+                .targetUsername(userResponse.getUsername())
+                .targetUserProfileImgUrl(userResponse.getProfileImgUrl())
+                .build();
     }
 
     // 깃허브 페이지는 1부터 시작
     @Override
-    public List<GithubFollowUser> getFollowingList(String accessToken, int curPage){
+    public List<FollowUser> getFollowingList(String accessToken, int curPage){
 
-        return restClient.get()
+        List<GithubFollowUserResponse> userResponses = restClient.get()
                 .uri("/user/following?per_page=" + GITHUB_FOLLOW_QUERY_PAGING_SIZE +"&page=" + curPage)
                 .headers(header -> header.setBearerAuth(accessToken))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
+
+        return userResponses.stream()
+                .map(userResponse -> new FollowUser(userResponse.getId(), userResponse.getUsername(), userResponse.getProfileImgUrl()))
+                .toList();
     }
 
     @Override
-    public List<GithubFollowUser> getFollowerList(String accessToken, int curPage) {
+    public List<FollowUser> getFollowerList(String accessToken, int curPage) {
 
-        return restClient.get()
+        List<GithubFollowUserResponse> userResponses = restClient.get()
                 .uri("/user/followers?per_page="+ GITHUB_FOLLOW_QUERY_PAGING_SIZE+ "&page=" + curPage)
                 .headers(header -> header.setBearerAuth(accessToken))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
+
+        return userResponses.stream()
+                .map(userResponse -> new FollowUser(userResponse.getId(), userResponse.getUsername(), userResponse.getProfileImgUrl()))
+                .toList();
     }
 }

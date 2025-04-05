@@ -10,4 +10,5 @@ public class FollowCommandRequest {
     private Long currentUserId;
     private String currentUserPrincipalName;
     private String targetUsername;
+    private Long targetUserId;
 }

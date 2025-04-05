@@ -1,8 +1,8 @@
 package com.moyo.backend.githubfollow.service;
 
-import com.moyo.backend.githubfollow.dto.GithubFollowUser;
 import com.moyo.backend.githubfollow.dto.UserFollowCommandMeta;
 import com.moyo.backend.githubfollow.dto.UserFollowDetectMeta;
+import com.moyo.backend.githubfollow.model.FollowUser;
 
 import java.util.List;
 
@@ -16,7 +16,8 @@ public interface GithubFollowClient {
 
     UserFollowCommandMeta getUserFollowCommandMeta(String oauthAccessToken, String username);
 
-    List<GithubFollowUser> getFollowingList(String accessToken, int curPage);
+    List<FollowUser> getFollowingList(String accessToken, int curPage);
 
-    List<GithubFollowUser> getFollowerList(String accessToken, int curPage);
+    List<FollowUser> getFollowerList(String accessToken, int curPage);
+
 }

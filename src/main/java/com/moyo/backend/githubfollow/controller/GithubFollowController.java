@@ -19,12 +19,11 @@ public class GithubFollowController {
 
     private final GithubFollowService githubFollowService;
 
-
     @GetMapping("/users/me/followings/{detectType}")
     public ResponseEntity<ApiResponse<FollowDetectResponse>> getFollowUserList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-                                                            @PathVariable("detectType") String detectType,
-                                                            @RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
-                                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize){
+                                                                               @PathVariable("detectType") String detectType,
+                                                                               @RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
+                                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize){
 
         FollowDetectRequest request = FollowDetectRequest.builder()
                 .lastUserId(lastUserId)
@@ -35,36 +34,47 @@ public class GithubFollowController {
                 .build();
 
         long startTime = System.currentTimeMillis();
-        FollowDetectResponse response = githubFollowService.detectFollowUserList(request);
+        FollowDetectResponse response = githubFollowService.getFollowUserList(request);
 
         log.info("동기식 맞팔 탐지기 요청 소요 시간 : {}",System.currentTimeMillis() - startTime);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @PostMapping("/follow/{username}")
+    @DeleteMapping("/users/me/followings")
+    public ResponseEntity<ApiResponse<Void>> syncGithubFollowCache(@AuthenticationPrincipal GithubOAuth2User userPrincipal){
+
+        githubFollowService.deleteCache(userPrincipal.getId());
+
+        return ResponseEntity.ok(ApiResponse.noContent());
+    }
+
+    @PostMapping("/users/me/follow")
     public ResponseEntity<ApiResponse<Void>> followGithubUser(@AuthenticationPrincipal GithubOAuth2User githubOAuth2User,
-                                                              @PathVariable("username") String username){
+                                                              @RequestBody FollowRequest followRequest){
 
         FollowCommandRequest request = FollowCommandRequest.builder()
                 .currentUserId(githubOAuth2User.getId())
                 .currentUserPrincipalName(githubOAuth2User.getName())
-                .targetUsername(username)
+                .targetUsername(followRequest.getTargetUsername())
+                .targetUserId(followRequest.getTargetId())
                 .build();
 
         githubFollowService.follow(request);
 
-        return ResponseEntity.ok().body(ApiResponse.noContent());
+        return ResponseEntity.ok(ApiResponse.noContent());
     }
 
-    @DeleteMapping("/unfollow/{username}")
+    @DeleteMapping("/users/me/unfollow/{username}/{userId}")
     public ResponseEntity<ApiResponse<Void>> unFollowGithubUser(@AuthenticationPrincipal GithubOAuth2User githubOAuth2User,
-                                                                @PathVariable("username") String username){
+                                                                @PathVariable("username") String username,
+                                                                @PathVariable("userId") Long targetUserId){
 
         FollowCommandRequest request = FollowCommandRequest.builder()
                 .currentUserId(githubOAuth2User.getId())
                 .currentUserPrincipalName(githubOAuth2User.getName())
                 .targetUsername(username)
+                .targetUserId(targetUserId)
                 .build();
 
         githubFollowService.unfollow(request);

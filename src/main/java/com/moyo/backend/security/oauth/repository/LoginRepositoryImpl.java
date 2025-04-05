@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class LoginRepositoryImpl implements LoginRepository{
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     public void save(Long userId, String refreshToken, Date expiration) {
