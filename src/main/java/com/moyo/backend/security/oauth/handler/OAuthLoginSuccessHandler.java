@@ -51,13 +51,10 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         log.info("Id : {} 회원 로그인 성공 후 JWT 발급 시작", userId);
 
         String jwtRefresh = jwtProvider.createJwtRefresh(userId,role);
-        String expiredJwtAccess = jwtProvider.createExpiredJwtAccess();
 
         loginRepository.save(userId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
         response.addHeader(SET_COOKIE, cookieFactory.createJwtRefreshCookie(jwtRefresh).toString());
-        response.addHeader(SET_COOKIE, cookieFactory.createExpiredAccessTokenCookie(expiredJwtAccess).toString());
         response.sendRedirect(frontLoginSuccessURI);
-
     }
 }

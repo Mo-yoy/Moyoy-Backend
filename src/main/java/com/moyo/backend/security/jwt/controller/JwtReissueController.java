@@ -1,6 +1,7 @@
 package com.moyo.backend.security.jwt.controller;
 
 
+import com.moyo.backend.common.model.ApiResponse;
 import com.moyo.backend.security.jwt.service.JwtReissueService;
 import com.moyo.backend.common.util.CookieFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,12 @@ public class JwtReissueController {
     private final CookieFactory cookieFactory;
 
     @PostMapping("/auth/reissue/token")
-    public ResponseEntity<Void> reissueJwtTokens(@CookieValue("refresh") String jwtRefreshToken){
+    public ResponseEntity<ApiResponse<?>> reissueJwtTokens(@CookieValue("refresh") String jwtRefreshToken){
 
         Map<String, String> reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
 
         return ResponseEntity.status(OK)
-                .header(AUTHORIZATION, BEARER + " " + reIssueTokens.get(ACCESS_TYPE))
                 .header(SET_COOKIE, cookieFactory.createJwtRefreshCookie(reIssueTokens.get(REFRESH_TYPE)).toString())
-                .build();
+                .body(ApiResponse.success(new JwtReissueResponse(reIssueTokens.get(ACCESS_TYPE))));
     }
 }

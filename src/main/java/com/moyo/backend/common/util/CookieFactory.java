@@ -30,15 +30,4 @@ public class CookieFactory {
                 .build();
     }
 
-    // Reissue Trigger Access Token Cookie (HTTP Only false)
-    public ResponseCookie createExpiredAccessTokenCookie(String jwtAccess) {
-        return ResponseCookie.from(ACCESS_TYPE, jwtAccess)
-                .path("/")
-                .httpOnly(false)
-                .secure(true)
-                .sameSite(samesite)
-                .maxAge(600)
-                .build();
-    }
-
 }
