@@ -81,4 +81,5 @@ public class GithubFollowController {
 
         return ResponseEntity.ok().body(ApiResponse.noContent());
     }
+
 }

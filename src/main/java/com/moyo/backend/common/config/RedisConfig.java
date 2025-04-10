@@ -10,10 +10,8 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import static org.springframework.data.redis.serializer.StringRedisSerializer.UTF_8;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,9 +20,8 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisProperties.host, redisProperties.port);
-        return new LettuceConnectionFactory(configuration);
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisProperties.host, redisProperties.port));
     }
 
     @Bean
@@ -33,18 +30,17 @@ public class RedisConfig {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        redisTemplate.setDefaultSerializer(UTF_8);
         return redisTemplate;
     }
 
     @Bean
     public RedisTemplate<String, FollowUser> followUserRedisTemplate() {
+
         RedisTemplate<String, FollowUser> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setDefaultSerializer(UTF_8);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(FollowUser.class));
 
         return redisTemplate;
     }

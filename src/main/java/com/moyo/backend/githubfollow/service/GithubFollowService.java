@@ -48,11 +48,15 @@ public class GithubFollowService {
             UserFollowDetectMeta followDetectMeta = githubFollowClient.getUserFollowDetectMeta(oauthAccessToken, user.getUsername());
             logFollowDetectMeta(request.getCurrentUserId(), followDetectMeta);
 
+            long startTime = System.currentTimeMillis();
+
             for (int page=1; page <= followDetectMeta.getMaxFollowingPage(); page++)
                 followings.addAll(githubFollowClient.getFollowingList(oauthAccessToken, page));
 
             for (int page=1; page <= followDetectMeta.getMaxFollowerPage(); page++)
                 followers.addAll(githubFollowClient.getFollowerList(oauthAccessToken, page));
+
+            log.info("팔로우 네트워크 응답 시간 측정 : {}", System.currentTimeMillis() - startTime);
 
             githubFollowRepository.saveFollowingList(request.getCurrentUserId(), followings);
             githubFollowRepository.saveFollowerList(request.getCurrentUserId(), followers);
