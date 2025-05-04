@@ -5,7 +5,7 @@ import com.moyo.backend.githubfollow.dto.FollowCommandRequest;
 import com.moyo.backend.githubfollow.dto.FollowDetectRequest;
 import com.moyo.backend.githubfollow.dto.FollowDetectResponse;
 import com.moyo.backend.githubfollow.service.GithubFollowService;
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

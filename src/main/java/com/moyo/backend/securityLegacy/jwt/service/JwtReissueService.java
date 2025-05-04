@@ -1,9 +1,9 @@
-package com.moyo.backend.security.jwt.service;
+package com.moyo.backend.securityLegacy.jwt.service;
 
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtProvider;
-import com.moyo.backend.security.jwt.util.JwtValidator;
-import com.moyo.backend.security.oauth.repository.LoginRepository;
+import com.moyo.backend.securityLegacy.jwt.util.JwtPayloadReader;
+import com.moyo.backend.securityLegacy.jwt.util.JwtProvider;
+import com.moyo.backend.securityLegacy.jwt.util.JwtValidator;
+import com.moyo.backend.securityLegacy.oauth.repository.LoginRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

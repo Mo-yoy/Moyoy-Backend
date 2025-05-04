@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.util;
+package com.moyo.backend.securityLegacy.jwt.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

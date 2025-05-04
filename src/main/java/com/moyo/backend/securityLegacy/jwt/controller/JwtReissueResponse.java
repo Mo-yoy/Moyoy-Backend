@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.controller;
+package com.moyo.backend.securityLegacy.jwt.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

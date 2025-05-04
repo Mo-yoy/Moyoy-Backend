@@ -1,4 +1,4 @@
-package com.moyo.backend.security.oauth.dto;
+package com.moyo.backend.securityLegacy.oauth.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

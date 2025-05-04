@@ -1,4 +1,4 @@
-package com.moyo.backend.security.oauth.repository;
+package com.moyo.backend.securityLegacy.oauth.repository;
 
 import java.util.Date;
 

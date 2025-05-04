@@ -1,9 +1,9 @@
-package com.moyo.backend.security.jwt.filter;
+package com.moyo.backend.securityLegacy.jwt.filter;
 
-import com.moyo.backend.security.jwt.util.JwtValidator;
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
-import com.moyo.backend.security.oauth.dto.UserDto;
+import com.moyo.backend.securityLegacy.jwt.util.JwtValidator;
+import com.moyo.backend.securityLegacy.jwt.util.JwtPayloadReader;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.securityLegacy.oauth.dto.UserDto;
 import com.moyo.backend.user.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

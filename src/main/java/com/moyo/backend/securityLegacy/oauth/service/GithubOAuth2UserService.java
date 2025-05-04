@@ -1,8 +1,8 @@
-package com.moyo.backend.security.oauth.service;
+package com.moyo.backend.securityLegacy.oauth.service;
 
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
-import com.moyo.backend.security.oauth.dto.GithubUserProfile;
-import com.moyo.backend.security.oauth.dto.UserDto;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubUserProfile;
+import com.moyo.backend.securityLegacy.oauth.dto.UserDto;
 import com.moyo.backend.user.User;
 import com.moyo.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  *  우리 서비스는 내부 로직의 거의 모든 부분 에서 GitHub OAuth App Access Token을 이용한 API가 필요 합니다.
@@ -34,10 +32,10 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
         // Default OAuth2 User Service로 깃허브 유저 정보 받아옴
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        
+
         // 받아온 정보 중 필요한 데이터 파싱
         GithubUserProfile githubUserProfile = new GithubUserProfile(oAuth2User.getAttributes());
-        
+
         // Id로 이미 가입한 적 있는 회원인지 조회
         User user = userRepository.findById(githubUserProfile.getId()).orElse(null);
 
@@ -45,10 +43,10 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
         if (user == null) {
 
             log.info("신규 회원 회원 가입 진행, Username : {}", githubUserProfile.getUsername());
-            user = User.from(githubUserProfile);
+//            user = User.from(githubUserProfile);
             userRepository.save(user);
         }
-        
+
         // 프로필 업데이트
         else {
 

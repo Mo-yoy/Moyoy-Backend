@@ -1,9 +1,9 @@
-package com.moyo.backend.security.jwt.filter;
+package com.moyo.backend.securityLegacy.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.ErrorReason;
 import com.moyo.backend.common.model.ApiResponse;
-import com.moyo.backend.security.jwt.exception.LoginErrorCode;
+import com.moyo.backend.securityLegacy.jwt.exception.LoginErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

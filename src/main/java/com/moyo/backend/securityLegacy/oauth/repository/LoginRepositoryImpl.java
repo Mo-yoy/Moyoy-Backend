@@ -1,4 +1,4 @@
-package com.moyo.backend.security.oauth.repository;
+package com.moyo.backend.securityLegacy.oauth.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;

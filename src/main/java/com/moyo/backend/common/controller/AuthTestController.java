@@ -1,6 +1,7 @@
 package com.moyo.backend.common.controller;
 
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class AuthTestController {
 
     private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/auth/only/test")
     public String authOnly(Authentication authentication, @AuthenticationPrincipal GithubOAuth2User githubOAuth2User){

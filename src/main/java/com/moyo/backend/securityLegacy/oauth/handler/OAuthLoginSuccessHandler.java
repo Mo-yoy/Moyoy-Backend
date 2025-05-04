@@ -1,10 +1,10 @@
-package com.moyo.backend.security.oauth.handler;
+package com.moyo.backend.securityLegacy.oauth.handler;
 
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtProvider;
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
-import com.moyo.backend.security.oauth.repository.LoginRepository;
-import com.moyo.backend.common.util.CookieFactory;
+import com.moyo.backend.securityLegacy.jwt.util.JwtPayloadReader;
+import com.moyo.backend.securityLegacy.jwt.util.JwtProvider;
+import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.securityLegacy.oauth.repository.LoginRepository;
+import com.moyo.backend.common.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,18 +25,18 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     private final JwtProvider jwtProvider;
     private final JwtPayloadReader jwtPayloadReader;
     private final LoginRepository loginRepository;
-    private final CookieFactory cookieFactory;
+    private final CookieUtils cookieUtils;
     private final String frontLoginSuccessURI;
 
     public OAuthLoginSuccessHandler(JwtProvider jwtProvider,
                                     JwtPayloadReader jwtPayloadReader,
                                     LoginRepository loginRepository,
-                                    CookieFactory cookieFactory,
+                                    CookieUtils cookieUtils,
                                     @Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
         this.jwtProvider = jwtProvider;
         this.jwtPayloadReader = jwtPayloadReader;
         this.loginRepository = loginRepository;
-        this.cookieFactory = cookieFactory;
+        this.cookieUtils = cookieUtils;
         this.frontLoginSuccessURI = frontLoginSuccessURI;
     }
 
@@ -54,7 +54,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         loginRepository.save(userId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
-        response.addHeader(SET_COOKIE, cookieFactory.createJwtRefreshCookie(jwtRefresh).toString());
+        response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshCookie(jwtRefresh).toString());
         response.sendRedirect(frontLoginSuccessURI);
     }
 }

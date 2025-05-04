@@ -1,9 +1,12 @@
 package com.moyo.backend.user;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.security.oauth.dto.GithubUserProfile;
+import com.moyo.backend.security.oauth.GithubOAuth2User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -24,9 +27,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String profileImgUrl;
 
-    @Column
-    private LocalDateTime lastFollowUpdatedAt;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -38,12 +38,11 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static User from(GithubUserProfile githubUserProfile){
+    public static User from(GithubOAuth2User githubOAuth2User){
         return User.builder()
-                .id(githubUserProfile.getId())
-                .username(githubUserProfile.getUsername())
-                .profileImgUrl(githubUserProfile.getProfileImgUrl())
-                .role(Role.USER)
+                .id(githubOAuth2User.getId())
+                .username(githubOAuth2User.getUsername())
+                .profileImgUrl(githubOAuth2User.getProfileImageUrl())
                 .build();
     }
 
@@ -55,8 +54,5 @@ public class User extends BaseTimeEntity {
         this.profileImgUrl = profileImgUrl;
     }
 
-    public void changeLastFollowUpdatedAt(LocalDateTime lastFollowUpdatedAt){
-        this.lastFollowUpdatedAt = lastFollowUpdatedAt;
-    }
 }
 
