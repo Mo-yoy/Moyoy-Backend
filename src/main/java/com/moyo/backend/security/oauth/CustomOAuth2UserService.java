@@ -45,8 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
 
-    // 이 부분 트랜잭션 적용은 추후 처리함
-
+    // 이 부분 트랜잭션은 추후 처리함
     private void signUp(GithubOAuth2User githubOAuth2User){
 
         log.info("신규 회원 회원 가입 진행, Username : {}", githubOAuth2User.getUsername());
