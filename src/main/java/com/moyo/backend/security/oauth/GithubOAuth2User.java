@@ -33,11 +33,9 @@ public class GithubOAuth2User implements OAuth2User {
         return Long.parseLong(attributes.get("id").toString());
     }
 
-    public String getProfileImageUrl() {
-        return (String) attributes.get("profile_img_url");
-    }
-
     public String getUsername() {
         return this.getName();
     }
+
+
 }

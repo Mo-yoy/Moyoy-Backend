@@ -6,6 +6,8 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
         show_sql: true
         format_sql: true
 

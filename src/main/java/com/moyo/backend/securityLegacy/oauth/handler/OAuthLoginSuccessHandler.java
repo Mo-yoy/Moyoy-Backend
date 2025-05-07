@@ -54,7 +54,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         loginRepository.save(userId, jwtRefresh, jwtPayloadReader.getExpiration(jwtRefresh));
 
-        response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshCookie(jwtRefresh).toString());
+        response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefresh).toString());
         response.sendRedirect(frontLoginSuccessURI);
     }
 }

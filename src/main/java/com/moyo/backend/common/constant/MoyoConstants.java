@@ -11,8 +11,8 @@ public class MoyoConstants {
     public static final String ANONYMOUS_USER = "anonymousUser";
 
     public static final String JWT = "JWT";
-    public static final String ACCESS_TYPE = "access";
-    public static final String REFRESH_TYPE = "refresh";
+    public static final String JWT_ACCESS_TYPE = "access";
+    public static final String JWT_REFRESH_TYPE = "refresh";
     public static final String TOKEN_TYPE = "tokenType";
     public static final String USER_ID = "userId";
     public static final String ROLE = "role";

@@ -12,7 +12,6 @@ import java.util.Set;
 public class GithubOAuth2UserConverter {
 
     private static final String GITHUB_OAUTH2_USER_ID = "id";
-    private static final String GITHUB_OAUTH2_USER_PROFILE_IMAGE_URL = "avatar_url";
     private static final String GITHUB_OAUTH2_USER_TAG = "login";
 
 
@@ -27,7 +26,6 @@ public class GithubOAuth2UserConverter {
 
         // GitHub 사용자 정보 추출
         attributes.put("id", oAuth2User.getAttribute(GITHUB_OAUTH2_USER_ID));
-        attributes.put("profile_img_url", oAuth2User.getAttribute(GITHUB_OAUTH2_USER_PROFILE_IMAGE_URL));
         attributes.put("username", oAuth2User.getAttribute(GITHUB_OAUTH2_USER_TAG));
 
         // GitHubOAuth2User 객체 생성 및 반환

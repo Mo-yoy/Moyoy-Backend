@@ -1,9 +1,7 @@
 package com.moyo.backend.security.config;
 
-import com.moyo.backend.security.oauth.CustomOAuth2UserService;
-import com.moyo.backend.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.moyo.backend.security.oauth.OAuth2AuthenticationFailureHandler;
-import com.moyo.backend.security.oauth.RdbOAuth2AuthorizedClientService;
+import com.moyo.backend.security.jwt.filter.JwtAuthenticationFilter;
+import com.moyo.backend.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,8 +19,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService oAuth2UserService;
-    private final RdbOAuth2AuthorizedClientService authorizedClientService;
     private final OAuth2AuthenticationFailureHandler failureHandler;
+    private final OAuth2AuthenticationSuccessHandler successHandler;
+    private final RdbOAuth2AuthorizedClientService authorizedClientService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
 
 
@@ -31,11 +32,11 @@ public class SecurityConfig {
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .csrf(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
+                .addFilterBefore(jwtAuthenticationFilter, OAuth2LoginAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test", "/error/**","/favicon.ico").permitAll()
                         .anyRequest().authenticated())
@@ -50,10 +51,10 @@ public class SecurityConfig {
                                 .userService(oAuth2UserService)
                         )
                         .authorizedClientService(authorizedClientService)
+                        .successHandler(successHandler)
                         .failureHandler(failureHandler)
                 );
 
         return http.build();
     }
-
 }

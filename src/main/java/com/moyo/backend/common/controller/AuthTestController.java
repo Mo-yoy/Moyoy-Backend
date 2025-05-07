@@ -1,7 +1,7 @@
 package com.moyo.backend.common.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moyo.backend.securityLegacy.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.security.oauth.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

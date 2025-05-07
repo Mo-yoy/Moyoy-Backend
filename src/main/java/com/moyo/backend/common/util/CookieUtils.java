@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Base64;
 import java.util.Optional;
 
-import static com.moyo.backend.common.constant.MoyoConstants.REFRESH_TYPE;
+import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
 
 @Component
 public class CookieUtils {
@@ -26,8 +26,8 @@ public class CookieUtils {
         this.samesite = samesite;
     }
 
-    public ResponseCookie createJwtRefreshCookie(String jwtRefresh) {
-        return ResponseCookie.from(REFRESH_TYPE, jwtRefresh)
+    public ResponseCookie createJwtRefreshTokenCookie(String jwtRefresh) {
+        return ResponseCookie.from(JWT_REFRESH_TYPE, jwtRefresh)
                 .path("/")
                 .maxAge(6000)
                 .httpOnly(true)

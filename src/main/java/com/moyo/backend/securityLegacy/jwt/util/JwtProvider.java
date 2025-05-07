@@ -28,7 +28,7 @@ public class JwtProvider {
     // Reissue Trigger JWT Access
     public String createExpiredJwtAccess(){
         return Jwts.builder()
-                .claim(TOKEN_TYPE, ACCESS_TYPE)
+                .claim(TOKEN_TYPE, JWT_ACCESS_TYPE)
                 .issuedAt(new Date(System.currentTimeMillis() - 60000))
                 .expiration(new Date(System.currentTimeMillis() - 30000))
                 .signWith(secretKey)
@@ -37,7 +37,7 @@ public class JwtProvider {
 
     public String createJwtAccess(Long userId, String role) {
         return Jwts.builder()
-                .claim(TOKEN_TYPE, ACCESS_TYPE)
+                .claim(TOKEN_TYPE, JWT_ACCESS_TYPE)
                 .claim(USER_ID, userId)
                 .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -48,7 +48,7 @@ public class JwtProvider {
 
     public String createJwtRefresh(Long userId, String role) {
         return Jwts.builder()
-                .claim(TOKEN_TYPE, REFRESH_TYPE)
+                .claim(TOKEN_TYPE, JWT_REFRESH_TYPE)
                 .claim(USER_ID, userId)
                 .claim(ROLE, role)
                 .issuedAt(new Date(System.currentTimeMillis()))

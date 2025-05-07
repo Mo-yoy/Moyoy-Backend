@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 
@@ -38,11 +39,11 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static User from(GithubOAuth2User githubOAuth2User){
+    public static User from(GithubOAuth2User githubOAuth2User, OAuth2User oAuth2User){
         return User.builder()
                 .id(githubOAuth2User.getId())
                 .username(githubOAuth2User.getUsername())
-                .profileImgUrl(githubOAuth2User.getProfileImageUrl())
+                .profileImgUrl(oAuth2User.getAttribute("avatar_url"))
                 .build();
     }
 
