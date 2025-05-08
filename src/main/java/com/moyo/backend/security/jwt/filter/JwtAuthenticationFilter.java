@@ -1,14 +1,11 @@
 package com.moyo.backend.security.jwt.filter;
 
-import com.moyo.backend.security.jwt.exception.JwtTokenBlockedException;
 import com.moyo.backend.security.jwt.exception.JwtTokenExpiredException;
 import com.moyo.backend.security.jwt.exception.JwtTokenInvalidException;
 import com.moyo.backend.security.jwt.exception.JwtTokenTypeMismatchException;
-import com.moyo.backend.security.jwt.repository.JwtWhiteListRepository;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
@@ -30,18 +27,24 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.moyo.backend.common.constant.MoyoConstants.*;
+import static com.moyo.backend.common.constant.MoyoConstants.AUTHORIZATION;
+import static com.moyo.backend.common.constant.MoyoConstants.JWT_ACCESS_TYPE;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final OctetSequenceKey jwk;
-    private final JwtWhiteListRepository jwtWhiteListRepository;
+    private final MACVerifier macVerifier;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String requestURI = request.getRequestURI();
+        if (requestURI.equals("/auth/login/github") || requestURI.equals("/login/oauth2/code/github")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String header = request.getHeader(AUTHORIZATION);
         if(header == null){
@@ -50,25 +53,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if(!header.startsWith("Bearer ")) throw new JwtTokenInvalidException();
-
         String accessToken = header.replace("Bearer ", "");
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(accessToken);
-            MACVerifier macVerifier = new MACVerifier(jwk.toSecretKey());
             boolean verifyResult = signedJWT.verify(macVerifier);
-
             JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
             if(verifyResult){
-
                 String type = jwtClaimsSet.getClaim("type").toString();
-                if(!type.equals(JWT_ACCESS_TYPE)) throw new JwtTokenTypeMismatchException();
+
+                if(type != null && !type.equals(JWT_ACCESS_TYPE)) throw new JwtTokenTypeMismatchException();
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
-                if(!jwtWhiteListRepository.existByTokenValue(accessToken)) throw new JwtTokenBlockedException();
 
                 Long id = (Long)jwtClaimsSet.getClaim("id");
-                String username = jwtClaimsSet.getClaim("username").toString();
                 Object rawAuthority = jwtClaimsSet.getClaim("authority");
 
                 Set<GrantedAuthority> authorities =
@@ -84,7 +82,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("id", id);
-                attributes.put("username", username);
 
                 GithubOAuth2User userPrincipal = new GithubOAuth2User(authorities, attributes);
                 Authentication authentication = new OAuth2AuthenticationToken(userPrincipal, userPrincipal.getAuthorities(), "github");

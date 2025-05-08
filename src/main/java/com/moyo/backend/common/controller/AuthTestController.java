@@ -31,7 +31,6 @@ public class AuthTestController {
 
     private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-    private final ObjectMapper objectMapper;
 
     @GetMapping("/auth/only/test")
     public String authOnly(Authentication authentication, @AuthenticationPrincipal GithubOAuth2User githubOAuth2User){

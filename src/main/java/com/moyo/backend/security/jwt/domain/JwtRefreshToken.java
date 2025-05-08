@@ -11,17 +11,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Table(name = "jwt_white_list")
+@Table(name = "jwt_refresh_token")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JwtWhiteList {
+public class JwtRefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String tokenType;
 
     @Column(length = 500, nullable = false, unique = true)
     private String value;
@@ -29,16 +27,14 @@ public class JwtWhiteList {
     private LocalDateTime expiresAt;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private JwtWhiteList(String  tokenType, String value, LocalDateTime expiresAt) {
-        this.tokenType = tokenType;
+    private JwtRefreshToken(String value, LocalDateTime expiresAt) {
         this.value = value;
         this.expiresAt = expiresAt;
     }
 
-    public static JwtWhiteList from(JWTClaimsSet claimsSet, String jwtRefreshToken){
+    public static JwtRefreshToken from(JWTClaimsSet claimsSet, String jwtRefreshToken){
 
-        return JwtWhiteList.builder()
-                .tokenType(claimsSet.getClaim("type").toString())
+        return JwtRefreshToken.builder()
                 .value(jwtRefreshToken)
                 .expiresAt(LocalDateTime.ofInstant(((Date) claimsSet.getClaim("exp")).toInstant(),ZoneId.systemDefault()))
                 .build();

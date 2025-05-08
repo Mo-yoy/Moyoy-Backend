@@ -12,8 +12,6 @@ import java.util.Set;
 public class GithubOAuth2UserConverter {
 
     private static final String GITHUB_OAUTH2_USER_ID = "id";
-    private static final String GITHUB_OAUTH2_USER_TAG = "login";
-
 
     public static GithubOAuth2User convert(OAuth2User oAuth2User) {
 
@@ -21,12 +19,9 @@ public class GithubOAuth2UserConverter {
         Set<GrantedAuthority> authorities = new HashSet<>();
         oAuth2User.getAuthorities().forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getAuthority())));
 
-        // GitHub 에서 반환된 속성들
+        // GitHub 사용자 정보 중 Principal에 유지할 정보 추출
         Map<String, Object> attributes = new HashMap<>();
-
-        // GitHub 사용자 정보 추출
         attributes.put("id", oAuth2User.getAttribute(GITHUB_OAUTH2_USER_ID));
-        attributes.put("username", oAuth2User.getAttribute(GITHUB_OAUTH2_USER_TAG));
 
         // GitHubOAuth2User 객체 생성 및 반환
         return new GithubOAuth2User(authorities, attributes);

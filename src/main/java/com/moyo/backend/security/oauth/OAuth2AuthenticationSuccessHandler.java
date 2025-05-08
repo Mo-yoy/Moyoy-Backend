@@ -1,9 +1,9 @@
 package com.moyo.backend.security.oauth;
 
 import com.moyo.backend.common.util.CookieUtils;
-import com.moyo.backend.security.jwt.MacSecuritySigner;
-import com.moyo.backend.security.jwt.domain.JwtWhiteList;
-import com.moyo.backend.security.jwt.repository.JwtWhiteListRepository;
+import com.moyo.backend.security.jwt.util.JwtProvider;
+import com.moyo.backend.security.jwt.domain.JwtRefreshToken;
+import com.moyo.backend.security.jwt.repository.JwtRefreshTokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -30,17 +30,17 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final CookieUtils cookieUtils;
     private final OctetSequenceKey jwk;
-    private final MacSecuritySigner macSecuritySigner;
-    private final JwtWhiteListRepository jwtWhiteListRepository;
+    private final JwtProvider jwtProvider;
+    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
     private final String frontLoginSuccessURI;
 
-    public OAuth2AuthenticationSuccessHandler(CookieUtils cookieUtils, OctetSequenceKey jwk, MacSecuritySigner macSecuritySigner,
-                                              JwtWhiteListRepository jwtWhiteListRepository, @Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
+    public OAuth2AuthenticationSuccessHandler(CookieUtils cookieUtils, OctetSequenceKey jwk, JwtProvider jwtProvider,
+                                              JwtRefreshTokenRepository jwtRefreshTokenRepository, @Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
 
         this.cookieUtils = cookieUtils;
         this.jwk = jwk;
-        this.macSecuritySigner = macSecuritySigner;
-        this.jwtWhiteListRepository = jwtWhiteListRepository;
+        this.jwtProvider = jwtProvider;
+        this.jwtRefreshTokenRepository = jwtRefreshTokenRepository;
         this.frontLoginSuccessURI = frontLoginSuccessURI;
     }
 
@@ -51,14 +51,14 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         GithubOAuth2User userPrincipal = (GithubOAuth2User) authentication.getPrincipal();
 
         try {
-            jwtRefreshToken = macSecuritySigner.getJwtToken(userPrincipal, jwk, JWT_REFRESH_TYPE);
+            jwtRefreshToken = jwtProvider.createJwtToken(userPrincipal, jwk, JWT_REFRESH_TYPE);
             response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
             log.info("Id : {} 회원 로그인 성공 후 JWT 발급", userPrincipal.getId());
 
             SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
 
-            jwtWhiteListRepository.save(JwtWhiteList.from(claimsSet, jwtRefreshToken));
+            jwtRefreshTokenRepository.save(JwtRefreshToken.from(claimsSet, jwtRefreshToken));
 
             // 스프린트 1의 요구사항 에서는 인증 후 사용자의 이전 요청이 있었을 때에 대한 후 처리를 진행 하지 않고
             // 무조건 default URI로 리다이렉트 함.

@@ -1,6 +1,7 @@
 package com.moyo.backend.security.config;
 
 import com.moyo.backend.security.jwt.filter.JwtAuthenticationFilter;
+import com.moyo.backend.security.jwt.filter.JwtExceptionHandleFilter;
 import com.moyo.backend.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -22,9 +23,9 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler failureHandler;
     private final OAuth2AuthenticationSuccessHandler successHandler;
     private final RdbOAuth2AuthorizedClientService authorizedClientService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
-
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionHandleFilter jwtExceptionHandleFilter;
 
     @Bean
     public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
@@ -36,11 +37,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(jwtAuthenticationFilter, OAuth2LoginAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+                .addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test", "/error/**","/favicon.ico").permitAll()
                         .anyRequest().authenticated())
-
                 .oauth2Login(oauth2  -> oauth2
                         .loginPage("/login")
                         .authorizationEndpoint(authorization -> authorization

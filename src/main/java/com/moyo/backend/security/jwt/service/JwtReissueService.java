@@ -1,12 +1,12 @@
 package com.moyo.backend.security.jwt.service;
 
-import com.moyo.backend.security.jwt.MacSecuritySigner;
-import com.moyo.backend.security.jwt.domain.JwtWhiteList;
+import com.moyo.backend.security.jwt.util.JwtProvider;
+import com.moyo.backend.security.jwt.domain.JwtRefreshToken;
 import com.moyo.backend.security.jwt.exception.JwtTokenBlockedException;
 import com.moyo.backend.security.jwt.exception.JwtTokenExpiredException;
 import com.moyo.backend.security.jwt.exception.JwtTokenInvalidException;
 import com.moyo.backend.security.jwt.exception.JwtTokenTypeMismatchException;
-import com.moyo.backend.security.jwt.repository.JwtWhiteListRepository;
+import com.moyo.backend.security.jwt.repository.JwtRefreshTokenRepository;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -32,8 +32,9 @@ import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
 public class JwtReissueService {
 
     private final OctetSequenceKey jwk;
-    private final MacSecuritySigner macSecuritySigner;
-    private final JwtWhiteListRepository jwtWhiteListRepository;
+    private final JwtProvider jwtProvider;
+    private final MACVerifier macVerifier;
+    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
     public Map<String, String> reIssueJwt(String jwtRefreshToken) {
 
@@ -42,21 +43,17 @@ public class JwtReissueService {
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
-            MACVerifier macVerifier = new MACVerifier(jwk.toSecretKey());
             boolean verifyResult = signedJWT.verify(macVerifier);
 
             JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
             if (verifyResult) {
-
                 String type = jwtClaimsSet.getClaim("type").toString();
-                if(!type.equals(JWT_REFRESH_TYPE)) throw new JwtTokenTypeMismatchException();
-
+                if(type != null && !type.equals(JWT_REFRESH_TYPE)) throw new JwtTokenTypeMismatchException();
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
-                if(!jwtWhiteListRepository.existByTokenValue(jwtRefreshToken)) throw new JwtTokenBlockedException();
+                if(!jwtRefreshTokenRepository.existByTokenValue(jwtRefreshToken)) throw new JwtTokenBlockedException();
 
                 String id = jwtClaimsSet.getClaim("id").toString();
-                String username = jwtClaimsSet.getClaim("username").toString();
                 Object rawAuthority = jwtClaimsSet.getClaim("authority");
 
                 Set<GrantedAuthority> authorities =
@@ -72,20 +69,15 @@ public class JwtReissueService {
 
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("id", id);
-                attributes.put("username", username);
 
                 GithubOAuth2User user = new GithubOAuth2User(authorities, attributes);
 
-                reissueRefresh = macSecuritySigner.getJwtToken(user, jwk, JWT_REFRESH_TYPE);
-                reissueAccess = macSecuritySigner.getJwtToken(user, jwk, JWT_ACCESS_TYPE);
+                reissueRefresh = jwtProvider.createJwtToken(user, jwk, JWT_REFRESH_TYPE);
+                reissueAccess = jwtProvider.createJwtToken(user, jwk, JWT_ACCESS_TYPE);
 
-                jwtWhiteListRepository.deleteByTokenValue(jwtRefreshToken);
-
-                JwtWhiteList reissueRefreshWhiteList = JwtWhiteList.from(SignedJWT.parse(reissueRefresh).getJWTClaimsSet(), reissueRefresh);
-                JwtWhiteList reissueAccessWhiteList = JwtWhiteList.from(SignedJWT.parse(reissueAccess).getJWTClaimsSet(), reissueAccess);
-
-                jwtWhiteListRepository.save(reissueRefreshWhiteList);
-                jwtWhiteListRepository.save(reissueAccessWhiteList);
+                JwtRefreshToken reissuedRefreshToken = JwtRefreshToken.from(SignedJWT.parse(reissueRefresh).getJWTClaimsSet(), reissueRefresh);
+                jwtRefreshTokenRepository.deleteByTokenValue(jwtRefreshToken);
+                jwtRefreshTokenRepository.save(reissuedRefreshToken);
             }
             else throw new JwtTokenInvalidException();
 

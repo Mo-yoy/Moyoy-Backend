@@ -30,8 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             User user = userRepository.findById(githubOAuth2User.getId()).orElse(null);
 
-            if (user == null) signUp(githubOAuth2User, oAuth2User);
-            else updateProfile(user, githubOAuth2User, oAuth2User);
+            if (user == null) signUp(oAuth2User);
+            else updateProfile(user, oAuth2User);
 
             return githubOAuth2User;
 
@@ -46,17 +46,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 
     // 이 부분 트랜잭션은 추후 처리함
-    private void signUp(GithubOAuth2User githubOAuth2User, OAuth2User oAuth2User){
+    private void signUp(OAuth2User oAuth2User){
 
-        log.info("신규 회원 회원 가입 진행, Username : {}", githubOAuth2User.getUsername());
-        User user = User.from(githubOAuth2User, oAuth2User);
+        log.info("신규 회원 회원 가입 진행, UserId : {}", oAuth2User.getAttribute("id").toString());
+        User user = User.from(oAuth2User);
         userRepository.save(user);
     }
 
-    private void updateProfile(User user, GithubOAuth2User githubOAuth2User, OAuth2User oAuth2User){
+    private void updateProfile(User user, OAuth2User oAuth2User){
 
-        log.info("이미 가입된 회원 Username, ProfileImgUrl 갱신, Username: {}", githubOAuth2User.getUsername());
-        user.changeUsername(githubOAuth2User.getUsername());
+        log.info("이미 가입된 회원 Username, ProfileImgUrl 갱신, UserId : {}", oAuth2User.getAttribute("id").toString());
+        user.changeUsername(oAuth2User.getAttribute("login"));
         user.changeProfileImgUrl(oAuth2User.getAttribute("avatar_url"));
     }
 

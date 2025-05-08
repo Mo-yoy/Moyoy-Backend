@@ -1,7 +1,10 @@
 package com.moyo.backend.security.jwt.config;
 
-import com.moyo.backend.security.jwt.MacSecuritySigner;
+import com.moyo.backend.security.jwt.util.JwtProvider;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.util.Base64URL;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,17 +16,27 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class SignatureConfig {
+public class JwtConfig {
 
     private final SecretKey jwtSecret;
 
-    public SignatureConfig(@Value("${spring.jwt.secret}") String jwtSecret) {
+    public JwtConfig(@Value("${spring.jwt.secret}") String jwtSecret) {
         this.jwtSecret = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), JWSAlgorithm.HS256.getName());
     }
 
     @Bean
-    public MacSecuritySigner macSecuritySigner(){
-        return new MacSecuritySigner();
+    public JwtProvider macSecuritySigner() throws JOSEException {
+        return new JwtProvider(macSigner());
+    }
+
+    @Bean
+    public MACSigner macSigner() throws JOSEException{
+        return new MACSigner(jwtSecret);
+    }
+
+    @Bean
+    public MACVerifier macVerifier() throws JOSEException {
+        return new MACVerifier(jwtSecret);
     }
 
     @Bean

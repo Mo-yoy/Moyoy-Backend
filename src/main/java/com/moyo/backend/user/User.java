@@ -28,21 +28,17 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String profileImgUrl;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Builder(access = AccessLevel.PRIVATE)
-    private User(Long id, String username, String profileImgUrl, Role role){
+    private User(Long id, String username, String profileImgUrl){
         this.id = id;
         this.username = username;
         this.profileImgUrl = profileImgUrl;
-        this.role = role;
     }
 
-    public static User from(GithubOAuth2User githubOAuth2User, OAuth2User oAuth2User){
+    public static User from(OAuth2User oAuth2User){
         return User.builder()
-                .id(githubOAuth2User.getId())
-                .username(githubOAuth2User.getUsername())
+                .id(Long.parseLong(oAuth2User.getAttribute("id").toString()))
+                .username(oAuth2User.getAttribute("login"))
                 .profileImgUrl(oAuth2User.getAttribute("avatar_url"))
                 .build();
     }

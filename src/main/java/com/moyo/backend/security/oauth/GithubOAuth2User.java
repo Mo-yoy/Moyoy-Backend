@@ -26,16 +26,11 @@ public class GithubOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return (String) attributes.get("username");
+        return String.valueOf(attributes.get("id"));
     }
 
     public Long getId() {
         return Long.parseLong(attributes.get("id").toString());
     }
-
-    public String getUsername() {
-        return this.getName();
-    }
-
 
 }

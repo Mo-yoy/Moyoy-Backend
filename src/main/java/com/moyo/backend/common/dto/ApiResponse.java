@@ -1,4 +1,4 @@
-package com.moyo.backend.common.model;
+package com.moyo.backend.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.moyo.backend.common.exception.ErrorReason;

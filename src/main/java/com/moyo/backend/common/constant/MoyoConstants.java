@@ -13,9 +13,6 @@ public class MoyoConstants {
     public static final String JWT = "JWT";
     public static final String JWT_ACCESS_TYPE = "access";
     public static final String JWT_REFRESH_TYPE = "refresh";
-    public static final String TOKEN_TYPE = "tokenType";
-    public static final String USER_ID = "userId";
-    public static final String ROLE = "role";
 
     public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 2;
     public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;

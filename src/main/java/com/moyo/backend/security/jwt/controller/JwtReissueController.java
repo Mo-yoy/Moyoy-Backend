@@ -1,11 +1,11 @@
 package com.moyo.backend.security.jwt.controller;
 
 
-import com.moyo.backend.common.model.ApiResponse;
+import com.moyo.backend.common.dto.ApiResponse;
 import com.moyo.backend.common.util.CookieUtils;
+import com.moyo.backend.security.jwt.dto.JwtReissueResponse;
 import com.moyo.backend.security.jwt.exception.JwtRefreshTokenNotExistException;
 import com.moyo.backend.security.jwt.service.JwtReissueService;
-import com.moyo.backend.securityLegacy.jwt.controller.JwtReissueResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
