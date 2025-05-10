@@ -52,12 +52,11 @@ public class JwtReissueService {
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
                 if(!jwtRefreshTokenRepository.existByTokenValue(jwtRefreshToken)) throw new JwtTokenBlockedException();
 
+                String authority = jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY).toString();
+                Set<GrantedAuthority> authorities = new HashSet<>();
+                authorities.add(new SimpleGrantedAuthority(authority));
+
                 String id = jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID).toString();
-
-                Set<GrantedAuthority> authorities = ((List<String>)jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY)).stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toSet());
-
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("id", id);
 

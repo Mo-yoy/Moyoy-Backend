@@ -69,12 +69,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if(type != null && !type.equals(JWT_ACCESS_TYPE)) throw new JwtTokenTypeMismatchException();
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
 
+                String authority = jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY).toString();
+                Set<GrantedAuthority> authorities = new HashSet<>();
+                authorities.add(new SimpleGrantedAuthority(authority));
+
                 Long id = (Long)jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID);
-
-                Set<GrantedAuthority> authorities = ((List<String>)jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY)).stream()
-                                .map(SimpleGrantedAuthority::new)
-                                .collect(Collectors.toSet());
-
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("id", id);
 

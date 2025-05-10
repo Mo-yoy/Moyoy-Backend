@@ -1,10 +1,7 @@
 package com.moyo.backend.user;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +25,16 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String profileImgUrl;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private User(Long id, String username, String profileImgUrl){
+    private User(Long id, String username, String profileImgUrl, Role role){
         this.id = id;
         this.username = username;
         this.profileImgUrl = profileImgUrl;
+        this.role = role;
     }
 
     public static User from(OAuth2User oAuth2User){
@@ -51,5 +53,8 @@ public class User extends BaseTimeEntity {
         this.profileImgUrl = profileImgUrl;
     }
 
+    public void changeRole(Role role){
+        this.role = role;
+    }
 }
 

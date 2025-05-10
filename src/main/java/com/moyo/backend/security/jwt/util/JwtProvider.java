@@ -11,7 +11,6 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
@@ -45,14 +44,15 @@ public class JwtProvider {
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .claim(JWT_CLAIM_USER_ID, user.getId())
                 .claim(JWT_CLAIM_TOKEN_TYPE, type)
-                .claim(JWT_CLAIM_AUTHORITY, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .claim(JWT_CLAIM_AUTHORITY, user.getAuthorities().stream()
+                                                .map(GrantedAuthority::getAuthority)
+                                                .findFirst().orElseThrow(()->new RuntimeException("권한 부여 실패")))
                 .expirationTime(expirationTime)
                 .build();
 
         // header + claim 으로 JWT 생성, 사인 하지 않으면 유효 하지 않은 JWT
         SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
         signedJWT.sign(macSigner);
-
 
         return signedJWT.serialize();
     }
