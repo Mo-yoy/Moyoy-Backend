@@ -4,6 +4,6 @@ import com.moyo.backend.common.exception.MoyoException;
 
 public class JwtTokenBlockedException extends MoyoException {
     public JwtTokenBlockedException() {
-        super(LoginErrorCode.BLOCKED_TOKEN);
+        super(AuthErrorCode.BLOCKED_TOKEN);
     }
 }

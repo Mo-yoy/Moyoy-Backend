@@ -3,7 +3,7 @@ package com.moyo.backend.security.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.security.jwt.exception.LoginErrorCode;
+import com.moyo.backend.security.jwt.exception.AuthErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         log.error("Access Denied Handler 예외 처리 : {}",accessDeniedException.getMessage());
 
-        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(LoginErrorCode.ACCESS_DENIED.getErrorReason()));
+        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.ACCESS_DENIED.getErrorReason()));
         response.getWriter().write(jsonResponse);
     }
 }

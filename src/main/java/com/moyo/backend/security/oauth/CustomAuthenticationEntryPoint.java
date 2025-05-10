@@ -2,7 +2,7 @@ package com.moyo.backend.security.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.security.jwt.exception.LoginErrorCode;
+import com.moyo.backend.security.jwt.exception.AuthErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         log.error("Authentication Entry Point 예외 처리 : {}",authException.getMessage());
 
-        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(LoginErrorCode.UNAUTHORIZED_USER.getErrorReason()));
+        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.UNAUTHORIZED_USER.getErrorReason()));
         response.getWriter().write(jsonResponse);
     }
 }

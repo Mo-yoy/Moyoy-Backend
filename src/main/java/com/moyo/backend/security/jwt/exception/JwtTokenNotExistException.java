@@ -5,6 +5,6 @@ import com.moyo.backend.common.exception.MoyoException;
 public class JwtTokenNotExistException extends MoyoException {
 
     public JwtTokenNotExistException() {
-        super(LoginErrorCode.TOKEN_NOT_EXIST);
+        super(AuthErrorCode.TOKEN_NOT_EXIST);
     }
 }

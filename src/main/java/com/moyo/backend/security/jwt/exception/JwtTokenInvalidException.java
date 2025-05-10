@@ -4,6 +4,6 @@ import com.moyo.backend.common.exception.MoyoException;
 
 public class JwtTokenInvalidException extends MoyoException {
     public JwtTokenInvalidException() {
-        super(LoginErrorCode.INVALID_TOKEN);
+        super(AuthErrorCode.INVALID_TOKEN);
     }
 }

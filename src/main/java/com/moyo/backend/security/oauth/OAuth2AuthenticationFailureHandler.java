@@ -2,7 +2,7 @@ package com.moyo.backend.security.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.security.jwt.exception.LoginErrorCode;
+import com.moyo.backend.security.jwt.exception.AuthErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
 
         log.error("OAuth 인증 필터 에서 인증 처리 중 예외 발생 : {}",exception.getMessage());
 
-        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(LoginErrorCode.UNAUTHORIZED_USER.getErrorReason()));
+        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.UNAUTHORIZED_USER.getErrorReason()));
         response.getWriter().write(jsonResponse);
     }
 }

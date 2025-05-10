@@ -4,6 +4,6 @@ import com.moyo.backend.common.exception.MoyoException;
 
 public class JwtTokenExpiredException extends MoyoException {
     public JwtTokenExpiredException() {
-        super(LoginErrorCode.EXPIRED_TOKEN);
+        super(AuthErrorCode.EXPIRED_TOKEN);
     }
 }

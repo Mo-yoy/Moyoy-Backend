@@ -1,10 +1,7 @@
 package com.moyo.backend.security.jwt.service;
 
 import com.moyo.backend.security.jwt.domain.JwtRefreshToken;
-import com.moyo.backend.security.jwt.exception.JwtTokenBlockedException;
-import com.moyo.backend.security.jwt.exception.JwtTokenExpiredException;
-import com.moyo.backend.security.jwt.exception.JwtTokenInvalidException;
-import com.moyo.backend.security.jwt.exception.JwtTokenTypeMismatchException;
+import com.moyo.backend.security.jwt.exception.*;
 import com.moyo.backend.security.jwt.repository.JwtRefreshTokenRepository;
 import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
@@ -36,6 +33,8 @@ public class JwtReissueService {
     private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
     public Map<String, String> reIssueJwt(String jwtRefreshToken) {
+
+        if (jwtRefreshToken.isEmpty() || jwtRefreshToken.isBlank()) throw new JwtTokenNotExistException();
 
         String reissueAccess;
         String reissueRefresh;
