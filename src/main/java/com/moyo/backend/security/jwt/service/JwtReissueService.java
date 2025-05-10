@@ -1,12 +1,12 @@
 package com.moyo.backend.security.jwt.service;
 
-import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.jwt.domain.JwtRefreshToken;
 import com.moyo.backend.security.jwt.exception.JwtTokenBlockedException;
 import com.moyo.backend.security.jwt.exception.JwtTokenExpiredException;
 import com.moyo.backend.security.jwt.exception.JwtTokenInvalidException;
 import com.moyo.backend.security.jwt.exception.JwtTokenTypeMismatchException;
 import com.moyo.backend.security.jwt.repository.JwtRefreshTokenRepository;
+import com.moyo.backend.security.jwt.util.JwtProvider;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -23,8 +23,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.moyo.backend.common.constant.MoyoConstants.JWT_ACCESS_TYPE;
-import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 @Service
 @Transactional
@@ -48,24 +47,16 @@ public class JwtReissueService {
             JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
             if (verifyResult) {
-                String type = jwtClaimsSet.getClaim("type").toString();
+                String type = jwtClaimsSet.getClaim(JWT_CLAIM_TOKEN_TYPE).toString();
                 if(type != null && !type.equals(JWT_REFRESH_TYPE)) throw new JwtTokenTypeMismatchException();
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
                 if(!jwtRefreshTokenRepository.existByTokenValue(jwtRefreshToken)) throw new JwtTokenBlockedException();
 
-                String id = jwtClaimsSet.getClaim("id").toString();
-                Object rawAuthority = jwtClaimsSet.getClaim("authority");
+                String id = jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID).toString();
 
-                Set<GrantedAuthority> authorities =
-                        ((List<?>) rawAuthority).stream()
-                                .filter(Objects::nonNull)
-                                .filter(Map.class::isInstance)
-                                .map(Map.class::cast)
-                                .map(map -> map.get("role"))
-                                .filter(Objects::nonNull)
-                                .map(Object::toString)
-                                .map(SimpleGrantedAuthority::new)
-                                .collect(Collectors.toSet());
+                Set<GrantedAuthority> authorities = ((List<String>)jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY)).stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toSet());
 
                 Map<String, Object> attributes = new HashMap<>();
                 attributes.put("id", id);

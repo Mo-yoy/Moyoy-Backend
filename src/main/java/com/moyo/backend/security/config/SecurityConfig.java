@@ -40,7 +40,11 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test", "/error/**","/favicon.ico").permitAll()
+                        .requestMatchers("/health", "/").permitAll()               // Health Check
+                        .requestMatchers("/permit/all/test").permitAll()             // Test
+                        .requestMatchers("/login").permitAll()                       // Authentication Entry Point
+                        .requestMatchers("/error/**","/favicon.ico" ).permitAll()  // Default
+                        .requestMatchers("/auth/reissue/token").permitAll()          // Token Reissue
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2  -> oauth2
                         .loginPage("/login")

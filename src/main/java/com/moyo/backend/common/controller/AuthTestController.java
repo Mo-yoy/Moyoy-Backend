@@ -1,9 +1,10 @@
 package com.moyo.backend.common.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -25,13 +26,15 @@ import java.util.StringTokenizer;
 import static com.moyo.backend.common.constant.MoyoConstants.ANONYMOUS_USER;
 
 @Slf4j
+@Profile({"local", "test"})
 @RestController
 @RequiredArgsConstructor
 public class AuthTestController {
 
-    private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
 
+    @Hidden
     @GetMapping("/auth/only/test")
     public String authOnly(Authentication authentication, @AuthenticationPrincipal GithubOAuth2User githubOAuth2User){
 
@@ -43,7 +46,7 @@ public class AuthTestController {
         return "OK";
     }
 
-
+    @Hidden
     @GetMapping("/permit/all/test")
     public String permitAll(Authentication authentication,
                             @AuthenticationPrincipal GithubOAuth2User githubOAuth2User,

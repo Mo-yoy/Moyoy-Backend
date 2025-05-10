@@ -27,13 +27,16 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.moyo.backend.common.constant.MoyoConstants.AUTHORIZATION;
-import static com.moyo.backend.common.constant.MoyoConstants.JWT_ACCESS_TYPE;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final String GITHUB_LOGIN_REDIRECT_URL = "/auth/login/github";
+    private static final String GITHUB_LOGIN_AUTHORIZATION_CODE_URL = "/login/oauth2/code/github";
+    private static final String TOKEN_REISSUE_URL = "/auth/reissue/token";
 
     private final MACVerifier macVerifier;
 
@@ -41,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-        if (requestURI.equals("/auth/login/github") || requestURI.equals("/login/oauth2/code/github")) {
+        if (requestURI.equals(GITHUB_LOGIN_REDIRECT_URL) || requestURI.equals(GITHUB_LOGIN_AUTHORIZATION_CODE_URL) || requestURI.equals(TOKEN_REISSUE_URL)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -61,22 +64,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
             if(verifyResult){
-                String type = jwtClaimsSet.getClaim("type").toString();
+                String type = jwtClaimsSet.getClaim(JWT_CLAIM_TOKEN_TYPE).toString();
 
                 if(type != null && !type.equals(JWT_ACCESS_TYPE)) throw new JwtTokenTypeMismatchException();
                 if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
 
-                Long id = (Long)jwtClaimsSet.getClaim("id");
-                Object rawAuthority = jwtClaimsSet.getClaim("authority");
+                Long id = (Long)jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID);
 
-                Set<GrantedAuthority> authorities =
-                        ((List<?>) rawAuthority).stream()
-                                .filter(Objects::nonNull)
-                                .filter(Map.class::isInstance)
-                                .map(Map.class::cast)
-                                .map(map -> map.get("role"))
-                                .filter(Objects::nonNull)
-                                .map(Object::toString)
+                Set<GrantedAuthority> authorities = ((List<String>)jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY)).stream()
                                 .map(SimpleGrantedAuthority::new)
                                 .collect(Collectors.toSet());
 
@@ -84,13 +79,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 attributes.put("id", id);
 
                 GithubOAuth2User userPrincipal = new GithubOAuth2User(authorities, attributes);
-                Authentication authentication = new OAuth2AuthenticationToken(userPrincipal, userPrincipal.getAuthorities(), "github");
+                Authentication authentication = new OAuth2AuthenticationToken(userPrincipal, userPrincipal.getAuthorities(), GITHUB_REGISTRATION_ID);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             else throw new JwtTokenInvalidException();
 
         } catch (ParseException | JOSEException e) {
-            log.error("JWT 인증 필터에서 에러 발생 : {}", e.getMessage());
+            log.error("JWT 인증 필터 에서 에러 발생 : {}", e.getMessage());
             throw new JwtTokenInvalidException();
         }
 

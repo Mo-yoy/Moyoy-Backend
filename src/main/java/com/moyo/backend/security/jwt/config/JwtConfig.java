@@ -45,7 +45,7 @@ public class JwtConfig {
         byte[] secretBytes = jwtSecret.getEncoded();
 
         return new OctetSequenceKey.Builder(Base64URL.encode(secretBytes))
-                .keyID("macKey")
+                .keyID("macKey_2025_05")    // for Key Rolling
                 .algorithm(JWSAlgorithm.HS256)
                 .build();
     }

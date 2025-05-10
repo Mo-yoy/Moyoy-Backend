@@ -1,15 +1,15 @@
 package com.moyo.backend.user;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.security.oauth.GithubOAuth2User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import java.time.LocalDateTime;
 
 @Table(name = "users")
 @Entity
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
-    // 깃허브와 연동
+    // ID 직접 관리
     @Id
     @Column(name = "user_id")
     private Long id;

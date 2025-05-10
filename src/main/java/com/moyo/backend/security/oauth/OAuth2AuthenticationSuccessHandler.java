@@ -28,11 +28,11 @@ import static com.moyo.backend.common.constant.MoyoConstants.SET_COOKIE;
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final CookieUtils cookieUtils;
     private final OctetSequenceKey jwk;
     private final JwtProvider jwtProvider;
-    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
+    private final CookieUtils cookieUtils;
     private final String frontLoginSuccessURI;
+    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
     public OAuth2AuthenticationSuccessHandler(CookieUtils cookieUtils, OctetSequenceKey jwk, JwtProvider jwtProvider,
                                               JwtRefreshTokenRepository jwtRefreshTokenRepository, @Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
@@ -51,17 +51,19 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         GithubOAuth2User userPrincipal = (GithubOAuth2User) authentication.getPrincipal();
 
         try {
+            log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", userPrincipal.getId());
             jwtRefreshToken = jwtProvider.createJwtToken(userPrincipal, jwk, JWT_REFRESH_TYPE);
             response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
-            log.info("Id : {} 회원 로그인 성공 후 JWT 발급", userPrincipal.getId());
 
             SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
 
             jwtRefreshTokenRepository.save(JwtRefreshToken.from(claimsSet, jwtRefreshToken));
 
-            // 스프린트 1의 요구사항 에서는 인증 후 사용자의 이전 요청이 있었을 때에 대한 후 처리를 진행 하지 않고
-            // 무조건 default URI로 리다이렉트 함.
+            /**
+             *   스프린트 1의 요구사항을 반영하여 GitHub OAuth 인증 후 사용자를 무조건 Default URI로 리다이렉트 함.
+             *   추후, 요구사항에 따라서 쿠키에 Redirect 경로를 추가해 처리하거나 Request Cache를 사용해서 기능을 확장할 예정
+             */
             response.sendRedirect(frontLoginSuccessURI);
         }
         catch (JOSEException | DataAccessException | ParseException ex){

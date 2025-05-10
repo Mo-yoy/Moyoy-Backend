@@ -13,9 +13,13 @@ import java.util.Base64;
 import java.util.Optional;
 
 import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
+import static com.moyo.backend.security.jwt.util.JwtProvider.JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
+import static com.moyo.backend.security.jwt.util.JwtProvider.ONE_MINUTE;
 
 @Component
 public class CookieUtils {
+
+    public static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE / ONE_MINUTE;
 
     private final String domain;
     private final String samesite;
@@ -29,7 +33,7 @@ public class CookieUtils {
     public ResponseCookie createJwtRefreshTokenCookie(String jwtRefresh) {
         return ResponseCookie.from(JWT_REFRESH_TYPE, jwtRefresh)
                 .path("/")
-                .maxAge(6000)
+                .maxAge(JWT_REFRESH_TOKEN_COOKIE_AGE)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(samesite)
@@ -59,7 +63,7 @@ public class CookieUtils {
                 .httpOnly(true)
                 .maxAge(1800)
                 .sameSite("Strict")
-                .secure(false)
+                .secure(true)
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());

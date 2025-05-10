@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static com.moyo.backend.common.constant.MoyoConstants.JWT_CLAIM_EXPIRATION;
+
 @Table(name = "jwt_refresh_token")
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import java.util.Date;
 public class JwtRefreshToken {
 
     @Id
+    @Column(name = "jwt_refresh_token_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -36,7 +39,7 @@ public class JwtRefreshToken {
 
         return JwtRefreshToken.builder()
                 .value(jwtRefreshToken)
-                .expiresAt(LocalDateTime.ofInstant(((Date) claimsSet.getClaim("exp")).toInstant(),ZoneId.systemDefault()))
+                .expiresAt(LocalDateTime.ofInstant(((Date) claimsSet.getClaim(JWT_CLAIM_EXPIRATION)).toInstant(),ZoneId.systemDefault()))
                 .build();
     }
 
