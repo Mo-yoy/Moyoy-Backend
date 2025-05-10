@@ -6,6 +6,8 @@ import com.moyo.backend.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,6 +15,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.fromHierarchy;
 
 @Configuration
 @RequiredArgsConstructor
@@ -67,4 +71,11 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return fromHierarchy("ROLE_ADMIN > ROLE_USER\n" +
+                             "ROLE_USER > ROLE_ANONYMOUS");
+    }
+
 }
