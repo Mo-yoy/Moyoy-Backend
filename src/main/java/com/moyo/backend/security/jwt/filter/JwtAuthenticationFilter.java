@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(!header.startsWith("Bearer ")) throw new JwtTokenInvalidException();
         String accessToken = header.replace("Bearer ", "");
+        if(accessToken.isEmpty() || accessToken.isBlank()) throw new JwtTokenInvalidException();
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(accessToken);

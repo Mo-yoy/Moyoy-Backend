@@ -31,6 +31,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(JSON);
         response.setCharacterEncoding("UTF-8");
 
+        log.error("Authentication Entry Point 예외 처리 : {}",authException.getMessage());
+
         String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(LoginErrorCode.UNAUTHORIZED_USER.getErrorReason()));
         response.getWriter().write(jsonResponse);
     }
