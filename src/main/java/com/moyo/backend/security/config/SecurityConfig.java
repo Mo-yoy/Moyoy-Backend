@@ -26,6 +26,8 @@ public class SecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionHandleFilter jwtExceptionHandleFilter;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
@@ -42,12 +44,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health", "/").permitAll()               // Health Check
                         .requestMatchers("/permit/all/test").permitAll()             // Test
-                        .requestMatchers("/login").permitAll()                       // Authentication Entry Point
+                        .requestMatchers("/auth/test/admin").hasRole("ADMIN")
                         .requestMatchers("/error/**","/favicon.ico" ).permitAll()  // Default
                         .requestMatchers("/auth/reissue/token").permitAll()          // Token Reissue
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2  -> oauth2
-                        .loginPage("/login")
                         .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/auth/login")
                                 .authorizationRequestRepository(authorizationRequestRepository)
@@ -58,6 +59,10 @@ public class SecurityConfig {
                         .authorizedClientService(authorizedClientService)
                         .successHandler(successHandler)
                         .failureHandler(failureHandler)
+                )
+                .exceptionHandling(exception-> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 );
 
         return http.build();

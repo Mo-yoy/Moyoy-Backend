@@ -64,6 +64,14 @@ public class AuthTestController {
         return "OK";
     }
 
+    @Hidden
+    @GetMapping("/auth/test/admin")
+    public String adminTest(@AuthenticationPrincipal GithubOAuth2User githubOAuth2User){
+        log.info("권한 : {} ", githubOAuth2User.getAuthorities());
+
+        return "OK";
+    }
+
     private void loggingPageable(Pageable pageable) {
         log.info("pageable.getPageNumber() : {} " , pageable.getPageNumber());
         log.info("pageable.getSort() : {}" , pageable.getSort());

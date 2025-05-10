@@ -5,6 +5,6 @@ import com.moyo.backend.common.exception.MoyoException;
 public class JwtRefreshTokenNotExistException extends MoyoException {
 
     public JwtRefreshTokenNotExistException() {
-        super(JwtErrorCode.REFRESH_NOT_EXIST);
+        super(LoginErrorCode.REFRESH_NOT_EXIST);
     }
 }
