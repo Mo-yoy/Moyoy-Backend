@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health", "/").permitAll()               // Health Check
                         .requestMatchers("/permit/all/test").permitAll()             // Test
-                        .requestMatchers("/auth/test/admin").hasRole("ADMIN")
+                        .requestMatchers("/auth/only/test").hasRole("ADMIN")
                         .requestMatchers("/error/**","/favicon.ico" ).permitAll()  // Default
                         .requestMatchers("/auth/reissue/token").permitAll()          // Token Reissue
                         .anyRequest().authenticated())
