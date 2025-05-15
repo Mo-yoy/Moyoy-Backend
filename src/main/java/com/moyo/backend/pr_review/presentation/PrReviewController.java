@@ -1,12 +1,12 @@
 package com.moyo.backend.pr_review.presentation;
 
-import com.moyo.backend.common.model.ApiResponse;
+import com.moyo.backend.common.dto.ApiResponse;
+import com.moyo.backend.pr_review.application.PrReviewService;
 import com.moyo.backend.pr_review.dto.request.PrReviewCreateRequestDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewListRequestDto;
 import com.moyo.backend.pr_review.dto.request.PrReviewUpdateRequestDto;
 import com.moyo.backend.pr_review.dto.response.*;
-import com.moyo.backend.pr_review.application.PrReviewService;
-import com.moyo.backend.security.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.security.oauth.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
