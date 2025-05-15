@@ -42,7 +42,7 @@ spring:
   # Cookie
   cookie:
     domain: ${COOKIE_DOMAIN}
-    samesite: ${COOKIE_SAME_SITE}
+    samesite: ${COOKIE_SAME_SITE:Strict}
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}

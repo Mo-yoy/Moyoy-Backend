@@ -1,60 +1,59 @@
 package com.moyo.backend.security.jwt.util;
 
+import com.moyo.backend.security.oauth.GithubOAuth2User;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
 
-@Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
-    private static final long JWT_ACCESS_EXPIRES_MS = 1000 * 60 * 10;
-    private static final long JWT_REFRESH_EXPIRES_MS = 1000 * 60 * 100;
+    public static final long ONE_MINUTE = 60 * 1000;
+    public static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE * 10;
+    public static final long JWT_REFRESH_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE * 300;
 
+    private final MACSigner macSigner;
 
-    private final SecretKey secretKey;
+    public String createJwtToken(GithubOAuth2User user, JWK jwk, String type) throws JOSEException {
 
-    public JwtProvider(@Value("${spring.jwt.secret}") String jwtSecret) {
-        this.secretKey = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        Date expirationTime;
+
+        if(type.equals(JWT_REFRESH_TYPE)) expirationTime = new Date(new Date().getTime() + JWT_REFRESH_TOKEN_EXPIRATION_MINUTE);
+        else if(type.equals(JWT_ACCESS_TYPE)) expirationTime = new Date(new Date().getTime() + JWT_ACCESS_TOKEN_EXPIRATION_MINUTE);
+        else throw new JOSEException();
+
+        return createJwtTokenInternal(macSigner, user, jwk, type, expirationTime);
     }
 
-    // Reissue Trigger JWT Access
-    public String createExpiredJwtAccess(){
-        return Jwts.builder()
-                .claim(TOKEN_TYPE, ACCESS_TYPE)
-                .issuedAt(new Date(System.currentTimeMillis() - 60000))
-                .expiration(new Date(System.currentTimeMillis() - 30000))
-                .signWith(secretKey)
-                .compact();
-    }
+    private String createJwtTokenInternal(MACSigner macSigner, GithubOAuth2User user, JWK jwk, String type, Date expirationTime) throws JOSEException {
 
-    public String createJwtAccess(Long userId, String role) {
-        return Jwts.builder()
-                .claim(TOKEN_TYPE, ACCESS_TYPE)
-                .claim(USER_ID, userId)
-                .claim(ROLE, role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + JWT_ACCESS_EXPIRES_MS))
-                .signWith(secretKey)
-                .compact();
-    }
+        JWSHeader header = new JWSHeader.Builder((JWSAlgorithm) jwk.getAlgorithm())
+                .keyID(jwk.getKeyID())
+                .build();
 
-    public String createJwtRefresh(Long userId, String role) {
-        return Jwts.builder()
-                .claim(TOKEN_TYPE, REFRESH_TYPE)
-                .claim(USER_ID, userId)
-                .claim(ROLE, role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + JWT_REFRESH_EXPIRES_MS))
-                .signWith(secretKey)
-                .compact();
-    }
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .claim(JWT_CLAIM_USER_ID, user.getId())
+                .claim(JWT_CLAIM_TOKEN_TYPE, type)
+                .claim(JWT_CLAIM_AUTHORITY, user.getAuthorities().stream()
+                                                .map(GrantedAuthority::getAuthority)
+                                                .findFirst().orElseThrow(()->new RuntimeException("권한 부여 실패")))
+                .expirationTime(expirationTime)
+                .build();
 
+        // header + claim 으로 JWT 생성, 사인 하지 않으면 유효 하지 않은 JWT
+        SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
+        signedJWT.sign(macSigner);
+
+        return signedJWT.serialize();
+    }
 }

@@ -25,41 +25,33 @@ repositories {
 
 dependencies {
 
-    // web
+    // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // lombok
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // validation
+    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // mysql
+    // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    // redis
+    // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
-    // jpa
+    // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // security
+    // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    // webflux for webclient
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    // jwt
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-
-    // test
+    // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

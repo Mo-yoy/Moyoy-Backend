@@ -1,11 +1,12 @@
 package com.moyo.backend.user;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.security.oauth.dto.GithubUserProfile;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Table(name = "users")
 @Entity
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
-    // 깃허브와 연동
+    // ID 직접 관리
     @Id
     @Column(name = "user_id")
     private Long id;
@@ -24,9 +25,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String profileImgUrl;
 
-    @Column
-    private LocalDateTime lastFollowUpdatedAt;
-
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -38,12 +37,11 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static User from(GithubUserProfile githubUserProfile){
+    public static User from(OAuth2User oAuth2User){
         return User.builder()
-                .id(githubUserProfile.getId())
-                .username(githubUserProfile.getUsername())
-                .profileImgUrl(githubUserProfile.getProfileImgUrl())
-                .role(Role.USER)
+                .id(Long.parseLong(oAuth2User.getAttribute("id").toString()))
+                .username(oAuth2User.getAttribute("login"))
+                .profileImgUrl(oAuth2User.getAttribute("avatar_url"))
                 .build();
     }
 
@@ -55,8 +53,8 @@ public class User extends BaseTimeEntity {
         this.profileImgUrl = profileImgUrl;
     }
 
-    public void changeLastFollowUpdatedAt(LocalDateTime lastFollowUpdatedAt){
-        this.lastFollowUpdatedAt = lastFollowUpdatedAt;
+    public void changeRole(Role role){
+        this.role = role;
     }
 }
 

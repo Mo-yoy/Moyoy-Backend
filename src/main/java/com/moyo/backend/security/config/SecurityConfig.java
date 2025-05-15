@@ -1,68 +1,80 @@
 package com.moyo.backend.security.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moyo.backend.security.jwt.filter.JWTAuthenticationExceptionHandleFilter;
-import com.moyo.backend.security.jwt.filter.JWTAuthenticationFilter;
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
-import com.moyo.backend.security.jwt.util.JwtValidator;
-import com.moyo.backend.security.oauth.handler.OAuthLoginSuccessHandler;
-import com.moyo.backend.security.oauth.service.GithubOAuth2UserService;
+import com.moyo.backend.security.jwt.filter.JwtAuthenticationFilter;
+import com.moyo.backend.security.jwt.filter.JwtExceptionHandleFilter;
+import com.moyo.backend.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.fromHierarchy;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
-    private final ObjectMapper objectMapper;
-    private final GithubOAuth2UserService userService;
-    private final OAuthLoginSuccessHandler loginSuccessHandler;
-    private final JwtPayloadReader jwtPayloadReader;
-    private final JwtValidator jwtValidator;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2AuthenticationFailureHandler failureHandler;
+    private final OAuth2AuthenticationSuccessHandler successHandler;
+    private final RdbOAuth2AuthorizedClientService authorizedClientService;
+    private final HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionHandleFilter jwtExceptionHandleFilter;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-
-        http
+                )
+                .addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+                .addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/reissue/token", "/health", "/","/permit/all/test", "/error/**").permitAll()
-                .anyRequest().authenticated()
-        );
-
-        http
-                .addFilterAfter(new JWTAuthenticationFilter(jwtValidator,jwtPayloadReader), OAuth2LoginAuthenticationFilter.class)
-                .addFilterBefore(new JWTAuthenticationExceptionHandleFilter(objectMapper), JWTAuthenticationFilter.class);
-
-        http
-                .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(auth-> auth
+                        .requestMatchers("/health", "/").permitAll()               // Health Check
+                        .requestMatchers("/permit/all/test").permitAll()             // Test
+                        .requestMatchers("/auth/only/test").hasRole("ADMIN")
+                        .requestMatchers("/error/**","/favicon.ico" ).permitAll()  // Default
+                        .requestMatchers("/auth/reissue/token").permitAll()          // Token Reissue
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2  -> oauth2
+                        .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/auth/login")
+                                .authorizationRequestRepository(authorizationRequestRepository)
                         )
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(userService)
+                                .userService(oAuth2UserService)
                         )
-                        .successHandler(loginSuccessHandler)
+                        .authorizedClientService(authorizedClientService)
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                )
+                .exceptionHandling(exception-> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 );
 
         return http.build();
     }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return fromHierarchy("ROLE_ADMIN > ROLE_USER\n" +
+                             "ROLE_USER > ROLE_ANONYMOUS");
+    }
+
 }

@@ -1,45 +1,79 @@
 package com.moyo.backend.security.jwt.service;
 
-import com.moyo.backend.security.jwt.util.JwtPayloadReader;
+import com.moyo.backend.security.jwt.domain.JwtRefreshToken;
+import com.moyo.backend.security.jwt.exception.*;
+import com.moyo.backend.security.jwt.repository.JwtRefreshTokenRepository;
 import com.moyo.backend.security.jwt.util.JwtProvider;
-import com.moyo.backend.security.jwt.util.JwtValidator;
-import com.moyo.backend.security.oauth.repository.LoginRepository;
+import com.moyo.backend.security.oauth.GithubOAuth2User;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static com.moyo.backend.common.constant.MoyoConstants.ACCESS_TYPE;
-import static com.moyo.backend.common.constant.MoyoConstants.REFRESH_TYPE;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class JwtReissueService {
 
+    private final OctetSequenceKey jwk;
     private final JwtProvider jwtProvider;
-    private final JwtValidator jwtValidator;
-    private final JwtPayloadReader jwtPayloadReader;
-    private final LoginRepository redisRepository;
+    private final MACVerifier macVerifier;
+    private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
+
     public Map<String, String> reIssueJwt(String jwtRefreshToken) {
 
-        // 리프레시 토큰 검증
-        jwtValidator.validateJwtRefreshToken(jwtRefreshToken);
+        if (jwtRefreshToken.isEmpty() || jwtRefreshToken.isBlank()) throw new JwtTokenNotExistException();
 
-        // 화이트리스트에 토큰이 없다면 차단 처리
-        Long userId = jwtPayloadReader.getUserId(jwtRefreshToken);
-        String whiteListTokenKey = redisRepository.findWhiteListTokenKey(userId, jwtRefreshToken);
-        if(whiteListTokenKey==null) throw new RuntimeException("차단된 리프레시토큰 입니다.");
+        String reissueAccess;
+        String reissueRefresh;
 
-        // 유효한 토큰이고 화이트 리스트에 등록된 토큰이라면 기존의 refresh를 이용해 jwtaccess, jwtrefresh 재발급
-        String role = jwtPayloadReader.getRole(jwtRefreshToken);
-        String newAccess = jwtProvider.createJwtAccess(userId,role);
-        String newRefresh = jwtProvider.createJwtRefresh(userId,role);
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
+            boolean verifyResult = signedJWT.verify(macVerifier);
 
-        // RTR
-        redisRepository.delete(whiteListTokenKey);
-        redisRepository.save(userId,newRefresh,jwtPayloadReader.getExpiration(newRefresh));
+            JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
-        return Map.of(ACCESS_TYPE, newAccess, REFRESH_TYPE, newRefresh);
+            if (verifyResult) {
+                String type = jwtClaimsSet.getClaim(JWT_CLAIM_TOKEN_TYPE).toString();
+                if(type != null && !type.equals(JWT_REFRESH_TYPE)) throw new JwtTokenTypeMismatchException();
+                if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date())) throw new JwtTokenExpiredException();
+                if(!jwtRefreshTokenRepository.existByTokenValue(jwtRefreshToken)) throw new JwtTokenBlockedException();
+
+                String authority = jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY).toString();
+                Set<GrantedAuthority> authorities = new HashSet<>();
+                authorities.add(new SimpleGrantedAuthority(authority));
+
+                String id = jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID).toString();
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("id", id);
+
+                GithubOAuth2User user = new GithubOAuth2User(authorities, attributes);
+
+                reissueRefresh = jwtProvider.createJwtToken(user, jwk, JWT_REFRESH_TYPE);
+                reissueAccess = jwtProvider.createJwtToken(user, jwk, JWT_ACCESS_TYPE);
+
+                JwtRefreshToken reissuedRefreshToken = JwtRefreshToken.from(SignedJWT.parse(reissueRefresh).getJWTClaimsSet(), reissueRefresh);
+                jwtRefreshTokenRepository.deleteByTokenValue(jwtRefreshToken);
+                jwtRefreshTokenRepository.save(reissuedRefreshToken);
+            }
+            else throw new JwtTokenInvalidException();
+
+        } catch (ParseException | JOSEException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Map.of(JWT_ACCESS_TYPE, reissueAccess, JWT_REFRESH_TYPE, reissueRefresh);
     }
 }
-
