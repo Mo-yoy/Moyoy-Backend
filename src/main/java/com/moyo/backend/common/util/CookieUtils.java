@@ -19,7 +19,7 @@ import static com.moyo.backend.security.jwt.util.JwtProvider.ONE_MINUTE;
 @Component
 public class CookieUtils {
 
-    public static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE / ONE_MINUTE;
+    public static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE;
 
     private final String domain;
     private final String samesite;

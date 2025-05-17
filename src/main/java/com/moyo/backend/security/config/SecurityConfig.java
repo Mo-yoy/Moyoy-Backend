@@ -50,7 +50,9 @@ public class SecurityConfig {
                         .requestMatchers("/auth/test/admin").hasRole("ADMIN")
                         .requestMatchers("/error/**","/favicon.ico" ).permitAll()  // Default
                         .requestMatchers("/auth/reissue/token").permitAll()          // Token Reissue
-                        .anyRequest().authenticated())
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .oauth2Login(oauth2  -> oauth2
                         .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/auth/login")

@@ -2,6 +2,7 @@ package com.moyo.backend.common.controller;
 
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -34,7 +35,8 @@ public class AuthTestController {
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
 
-    @Hidden
+
+    @SecurityRequirement(name = "jwt_access")
     @GetMapping("/auth/only/test")
     public String authOnly(Authentication authentication, @AuthenticationPrincipal GithubOAuth2User githubOAuth2User){
 

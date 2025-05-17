@@ -7,12 +7,16 @@ import com.moyo.backend.githubfollow.dto.FollowDetectResponse;
 import com.moyo.backend.githubfollow.service.GithubFollowService;
 
 import com.moyo.backend.security.oauth.GithubOAuth2User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "2. 맞팔 탐지기 👀")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class GithubFollowController {
     private final GithubFollowService githubFollowService;
 
 
+    @Operation(summary = "")
     @GetMapping("/users/me/followings/{detectType}")
     public ResponseEntity<ApiResponse<FollowDetectResponse>> getFollowUserList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
                                                             @PathVariable("detectType") String detectType,

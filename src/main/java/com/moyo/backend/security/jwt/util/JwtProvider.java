@@ -19,7 +19,7 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 public class JwtProvider {
 
     public static final long ONE_MINUTE = 60 * 1000;
-    public static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE * 10;
+    public static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE * 30;
     public static final long JWT_REFRESH_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE * 300;
 
     private final MACSigner macSigner;
