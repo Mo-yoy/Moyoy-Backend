@@ -8,10 +8,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.Date;
 
-@EnableJpaAuditing
 @ConfigurationPropertiesScan
 @SpringBootApplication
-@EnableAsync
 public class MoyoBackendApplication {
 
     public static void main(String[] args) {

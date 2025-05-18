@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -37,6 +38,6 @@ class HealthControllerTest {
     void testHealth() throws Exception {
         mockMvc.perform(get("/health"))
                 .andExpect(status().isOk())
-                .andDo(document("sample"));
+                .andDo(document("Server healthCheck"));
     }
 }

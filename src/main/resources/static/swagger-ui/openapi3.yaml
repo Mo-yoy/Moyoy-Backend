@@ -1,0 +1,29 @@
+openapi: 3.0.1
+info:
+  title: Moyoy API Server
+  description: Moyoy API Server description
+  version: v1.0.0
+servers:
+- url: http://localhost:8080
+- url: https://api.cafehub.site
+tags: []
+paths:
+  /health:
+    get:
+      tags:
+      - health
+      operationId: Server healthCheck
+      responses:
+        "200":
+          description: "200"
+          content:
+            text/plain;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/health486549215"
+              examples:
+                Server healthCheck:
+                  value: "Server Status : UP"
+components:
+  schemas:
+    health486549215:
+      type: object
