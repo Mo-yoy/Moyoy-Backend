@@ -63,6 +63,10 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+bootJar {
+    dependsOn 'copyOasToSwagger'
+}
+
 openapi3 {
     servers = [
             { url = 'http://localhost:8080' },
