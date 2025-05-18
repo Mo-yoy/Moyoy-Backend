@@ -1,0 +1,28 @@
+openapi: 3.0.1
+info:
+  title: Moyoy API
+  description: Moyoy API description
+  version: v1.0.0
+servers:
+- url: http://localhost:8080
+tags: []
+paths:
+  /health:
+    get:
+      tags:
+      - health
+      operationId: sample
+      responses:
+        "200":
+          description: "200"
+          content:
+            text/plain;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/health486549215"
+              examples:
+                sample:
+                  value: "Server Status : UP"
+components:
+  schemas:
+    health486549215:
+      type: object
