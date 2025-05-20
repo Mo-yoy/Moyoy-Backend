@@ -1,7 +1,6 @@
 package com.moyo.backend.common.controller;
 
 import com.moyo.backend.security.oauth.GithubOAuth2User;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -34,7 +33,7 @@ public class AuthTestController {
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
 
-    @Hidden
+
     @GetMapping("/auth/only/test")
     public String authOnly(Authentication authentication, @AuthenticationPrincipal GithubOAuth2User githubOAuth2User){
 
@@ -46,7 +45,6 @@ public class AuthTestController {
         return "OK";
     }
 
-    @Hidden
     @GetMapping("/permit/all/test")
     public String permitAll(Authentication authentication,
                             @AuthenticationPrincipal GithubOAuth2User githubOAuth2User,
@@ -64,7 +62,6 @@ public class AuthTestController {
         return "OK";
     }
 
-    @Hidden
     @GetMapping("/auth/test/admin")
     public String adminTest(@AuthenticationPrincipal GithubOAuth2User githubOAuth2User){
         log.info("권한 : {} ", githubOAuth2User.getAuthorities());

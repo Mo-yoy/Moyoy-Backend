@@ -2,7 +2,6 @@ package com.moyo.backend.common.constant;
 
 public class MoyoConstants {
 
-    public static final String BEARER = "Bearer";
     public static final String SET_COOKIE = "Set-Cookie";
     public static final String AUTHORIZATION = "Authorization";
 
@@ -10,7 +9,6 @@ public class MoyoConstants {
     public static final String GITHUB_REGISTRATION_ID = "github";
     public static final String ANONYMOUS_USER = "anonymousUser";
 
-    public static final String JWT = "JWT";
     public static final String JWT_ACCESS_TYPE = "access";
     public static final String JWT_REFRESH_TYPE = "refresh";
     public static final String JWT_CLAIM_USER_ID = "id";

@@ -17,7 +17,7 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 @RestController
 @RequiredArgsConstructor
-public class JwtReissueController {
+public class JwtReissueController{
 
     private final CookieUtils cookieUtils;
     private final JwtReissueService jwtReissueService;

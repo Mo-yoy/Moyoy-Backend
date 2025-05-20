@@ -34,7 +34,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 빌드
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: 빌드된 JAR 파일 이름 변경
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar

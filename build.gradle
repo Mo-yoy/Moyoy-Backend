@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.epages.restdocs-api-spec' version '0.19.2'
 }
 
 group = 'com.Moyo'
@@ -25,6 +26,8 @@ repositories {
 
 dependencies {
 
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+
     // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -41,9 +44,6 @@ dependencies {
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
-
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -54,9 +54,41 @@ dependencies {
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+bootJar {
+    dependsOn 'copyOasToSwagger'
+}
+
+openapi3 {
+    servers = [
+            { url = "https://api.cafehub.site"},
+            { url = "http://localhost:8080" }
+    ]
+    title = "Moyoy API Server"
+    description = "Moyoy API Server description"
+    version = "v1.0.0"
+    format = "yaml"
+}
+
+
+tasks.register('copyOasToSwagger', Copy) {
+
+    dependsOn 'openapi3'
+
+    doFirst {
+        delete file('src/main/resources/static/swagger-ui/openapi3.yaml')
+    }
+
+    from("$buildDir/api-spec/openapi3.yaml")
+
+    into('src/main/resources/static/swagger-ui')
 }

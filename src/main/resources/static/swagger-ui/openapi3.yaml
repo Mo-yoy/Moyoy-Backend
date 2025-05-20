@@ -1,0 +1,90 @@
+openapi: 3.0.1
+info:
+  title: Moyoy API Server
+  description: Moyoy API Server description
+  version: v1.0.0
+servers:
+- url: https://api.cafehub.site
+- url: http://localhost:8080
+tags: []
+paths:
+  /auth/reissue/token:
+    post:
+      tags:
+      - 1. JWT 재발급 🔄
+      summary: JWT 토큰 재발급 API
+      description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
+        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다."
+      operationId: 200 OKLOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/auth-reissue-token1995903112"
+              examples:
+                "200 OK":
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"accessToken\":\"newAccessToken\"}}"
+        "401":
+          description: "401"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/auth-reissue-token-1735855461"
+              examples:
+                LOGIN_401_1:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_1\",\"message\":\"인\
+                    증 헤더나 쿠키에 JWT 토큰이 존재 하지 않습니다.\",\"data\":null}"
+                LOGIN_401_2:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_2\",\"message\":\"토\
+                    큰 타입이 올바르지 않습니다.\",\"data\":null}"
+                LOGIN_401_3:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_3\",\"message\":\"유\
+                    효하지 않은 토큰입니다.\",\"data\":null}"
+                LOGIN_401_4:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_4\",\"message\":\"만\
+                    료된 토큰입니다.\",\"data\":null}"
+                LOGIN_401_5:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
+                    랙리스트 처리된 토큰 입니다.\",\"data\":null}"
+components:
+  schemas:
+    auth-reissue-token-1735855461:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 에러 코드
+        message:
+          type: string
+          description: 📝 에러 메시지
+        status:
+          type: number
+          description: ❌ 응답 상태 코드
+    auth-reissue-token1995903112:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - accessToken
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: 🔑 새로 발급된 Access Token
+        status:
+          type: number
+          description: ✅ 응답 상태 코드

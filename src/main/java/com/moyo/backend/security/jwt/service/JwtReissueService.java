@@ -11,6 +11,7 @@ import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -71,7 +72,8 @@ public class JwtReissueService {
             else throw new JwtTokenInvalidException();
 
         } catch (ParseException | JOSEException e) {
-            throw new RuntimeException(e);
+            log.error(e.toString());
+            throw new JwtTokenInvalidException();
         }
 
         return Map.of(JWT_ACCESS_TYPE, reissueAccess, JWT_REFRESH_TYPE, reissueRefresh);
