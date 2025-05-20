@@ -1,6 +1,6 @@
-package com.moyo.backend.githubfollow.service;
+package com.moyo.backend.follow.application;
 
-import com.moyo.backend.githubfollow.dto.*;
+import com.moyo.backend.follow.dto.*;
 import com.moyo.backend.user.User;
 import com.moyo.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;

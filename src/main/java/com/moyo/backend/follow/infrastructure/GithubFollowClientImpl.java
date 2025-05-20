@@ -1,10 +1,10 @@
-package com.moyo.backend.githubfollow.infra;
+package com.moyo.backend.follow.infrastructure;
 
-import com.moyo.backend.githubfollow.dto.GithubFollowUser;
-import com.moyo.backend.githubfollow.dto.UserFollowCommandMeta;
-import com.moyo.backend.githubfollow.dto.UserFollowDetectMeta;
-import com.moyo.backend.githubfollow.dto.UserFollowStats;
-import com.moyo.backend.githubfollow.service.GithubFollowClient;
+import com.moyo.backend.follow.dto.GithubFollowUser;
+import com.moyo.backend.follow.dto.UserFollowCommandMeta;
+import com.moyo.backend.follow.dto.UserFollowDetectMeta;
+import com.moyo.backend.follow.dto.UserFollowStats;
+import com.moyo.backend.follow.application.GithubFollowClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;

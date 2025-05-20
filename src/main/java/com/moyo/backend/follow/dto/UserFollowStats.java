@@ -1,4 +1,4 @@
-package com.moyo.backend.githubfollow.dto;
+package com.moyo.backend.follow.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

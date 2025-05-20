@@ -1,10 +1,10 @@
-package com.moyo.backend.githubfollow.controller;
+package com.moyo.backend.follow.presentation;
 
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.githubfollow.dto.FollowCommandRequest;
-import com.moyo.backend.githubfollow.dto.FollowDetectRequest;
-import com.moyo.backend.githubfollow.dto.FollowDetectResponse;
-import com.moyo.backend.githubfollow.service.GithubFollowService;
+import com.moyo.backend.follow.dto.FollowCommandRequest;
+import com.moyo.backend.follow.dto.FollowDetectRequest;
+import com.moyo.backend.follow.dto.FollowDetectResponse;
+import com.moyo.backend.follow.application.GithubFollowService;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ public class GithubFollowController {
 
     @GetMapping("/users/me/followings/{detectType}")
     public ResponseEntity<ApiResponse<FollowDetectResponse>> getFollowUserList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-                                                            @PathVariable("detectType") String detectType,
-                                                            @RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
-                                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize){
+                                                                               @PathVariable("detectType") String detectType,
+                                                                               @RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
+                                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize){
 
         FollowDetectRequest request = FollowDetectRequest.builder()
                 .lastUserId(lastUserId)
