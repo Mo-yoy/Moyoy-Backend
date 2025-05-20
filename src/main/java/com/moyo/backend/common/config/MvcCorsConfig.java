@@ -8,15 +8,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import static com.moyo.backend.common.constant.MoyoConstants.AUTHORIZATION;
 
 @Configuration
-public class MVCCorsConfig implements WebMvcConfigurer {
+public class MvcCorsConfig implements WebMvcConfigurer {
 
     @Value("${spring.cors.allow-origin}")
-    private String allowOrigin;
+    private String allowOrigins;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(allowOrigin)
+                .allowedOrigins(allowOrigins.split(","))
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .exposedHeaders(AUTHORIZATION)
