@@ -17,7 +17,7 @@ public class MoyoConstants {
     public static final String JWT_CLAIM_EXPIRATION = "exp";
 
 
-    public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 2;
+    public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 100;
     public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;
 
     public static final int OK = 200;

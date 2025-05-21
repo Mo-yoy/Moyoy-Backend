@@ -1,10 +1,9 @@
 package com.moyo.backend.follow.infrastructure;
 
-import com.moyo.backend.follow.dto.GithubFollowUser;
+import com.moyo.backend.follow.application.GithubFollowApiClient;
+import com.moyo.backend.follow.domain.GithubFollowDetectInfo;
 import com.moyo.backend.follow.dto.UserFollowCommandMeta;
-import com.moyo.backend.follow.dto.UserFollowDetectMeta;
-import com.moyo.backend.follow.dto.UserFollowStats;
-import com.moyo.backend.follow.application.GithubFollowClient;
+import com.moyo.backend.follow.dto.response.GithubFollowUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_FOLLOW_QUERY
 
 @Component
 @RequiredArgsConstructor
-public class GithubFollowClientImpl implements GithubFollowClient {
+public class GithubFollowApiClientImpl implements GithubFollowApiClient {
 
     private final RestClient restClient;
 
@@ -42,25 +41,6 @@ public class GithubFollowClientImpl implements GithubFollowClient {
     }
 
     @Override
-    public UserFollowDetectMeta getUserFollowDetectMeta(String accessToken, String username) {
-
-        ResponseEntity<?> response = restClient.get()
-                .uri("/users/{username}", username)
-                .headers(header -> header.setBearerAuth(accessToken))
-                .retrieve()
-                .toEntity(UserFollowStats.class);
-
-        UserFollowStats userFollowStats = (UserFollowStats) response.getBody();
-        int rateLimitRemaining = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
-
-        return UserFollowDetectMeta.builder()
-                .followerCnt(userFollowStats.getFollowerCnt())
-                .followingCnt(userFollowStats.getFollowingCnt())
-                .rateLimitRemaining(rateLimitRemaining)
-                .build();
-    }
-
-    @Override
     public UserFollowCommandMeta getUserFollowCommandMeta(String accessToken, String username) {
 
         ResponseEntity<?> response = restClient.get()
@@ -76,7 +56,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 
     // 깃허브 페이지는 1부터 시작
     @Override
-    public List<GithubFollowUser> getFollowingList(String accessToken, int curPage){
+    public List<GithubFollowUserInfoResponse> getFollowingList(String accessToken, int curPage){
 
         return restClient.get()
                 .uri("/user/following?per_page=" + GITHUB_FOLLOW_QUERY_PAGING_SIZE +"&page=" + curPage)
@@ -86,7 +66,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
     }
 
     @Override
-    public List<GithubFollowUser> getFollowerList(String accessToken, int curPage) {
+    public List<GithubFollowUserInfoResponse> getFollowerList(String accessToken, int curPage) {
 
         return restClient.get()
                 .uri("/user/followers?per_page="+ GITHUB_FOLLOW_QUERY_PAGING_SIZE+ "&page=" + curPage)
@@ -94,4 +74,22 @@ public class GithubFollowClientImpl implements GithubFollowClient {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
     }
+
+    @Override
+    public GithubFollowDetectInfo fetchFollowDetectInfo(String currentUsername, String oauthAccessToken) {
+
+        ResponseEntity<GithubFollowStatsResponse> response = restClient.get()
+                .uri("/users/{username}", currentUsername)
+                .headers(header -> header.setBearerAuth(oauthAccessToken))
+                .retrieve()
+                .toEntity(GithubFollowStatsResponse.class);
+
+        int rateLimitRemaining = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
+        GithubFollowStatsResponse githubFollowStatsResponse = response.getBody();
+        githubFollowStatsResponse.setRateLimitRemaining(rateLimitRemaining);
+
+        return GithubFollowDetectInfo.from(githubFollowStatsResponse);
+    }
+
+
 }

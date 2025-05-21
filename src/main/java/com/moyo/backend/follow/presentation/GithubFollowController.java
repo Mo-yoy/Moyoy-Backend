@@ -1,10 +1,14 @@
 package com.moyo.backend.follow.presentation;
 
+import com.moyo.backend.common.annotation.CurrentUserId;
+import com.moyo.backend.common.annotation.LastFetchedUserId;
+import com.moyo.backend.common.annotation.ValidPageSize;
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.follow.dto.FollowCommandRequest;
-import com.moyo.backend.follow.dto.FollowDetectRequest;
-import com.moyo.backend.follow.dto.FollowDetectResponse;
 import com.moyo.backend.follow.application.GithubFollowService;
+import com.moyo.backend.follow.domain.DetectType;
+import com.moyo.backend.follow.dto.FollowCommandRequest;
+import com.moyo.backend.follow.dto.request.GithubFollowDetectRequest;
+import com.moyo.backend.follow.dto.response.FollowDetectResponse;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +25,19 @@ public class GithubFollowController {
 
 
     @GetMapping("/users/me/followings/{detectType}")
-    public ResponseEntity<ApiResponse<FollowDetectResponse>> getFollowUserList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-                                                                               @PathVariable("detectType") String detectType,
-                                                                               @RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
-                                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize){
+    public ResponseEntity<ApiResponse<FollowDetectResponse>> getFollowUserList(@CurrentUserId Long currentUserId,
+                                                                               @PathVariable("detectType") DetectType detectType,
+                                                                               @RequestParam(value = "lastUserId", required = false, defaultValue = "0") @LastFetchedUserId Long lastUserId,
+                                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ValidPageSize int pageSize){
 
-        FollowDetectRequest request = FollowDetectRequest.builder()
-                .lastUserId(lastUserId)
-                .detectType(detectType)
-                .currentUserId(userPrincipal.getId())
+        GithubFollowDetectRequest request = GithubFollowDetectRequest.builder()
+                .lastFetchedUserId(lastUserId)
+                .detectType(detectType.getValue())
                 .pagingSize(pageSize)
-                .currentUserPrincipalName(userPrincipal.getName())
                 .build();
 
         long startTime = System.currentTimeMillis();
-        FollowDetectResponse response = githubFollowService.detectFollowUserList(request);
-
+        FollowDetectResponse response = githubFollowService.detectFollowUserList(currentUserId, request);
         log.info("동기식 맞팔 탐지기 요청 소요 시간 : {}",System.currentTimeMillis() - startTime);
 
         return ResponseEntity.ok(ApiResponse.success(response));

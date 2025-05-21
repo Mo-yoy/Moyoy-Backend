@@ -1,4 +1,4 @@
-package com.moyo.backend.follow.dto;
+package com.moyo.backend.follow.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 public class FollowDetectResponse {
 
-    private List<GithubFollowUser> githubFollowUserList;
+    private List<GithubFollowUserInfoResponse> userList;
     private boolean lastPage;
+    private int totalUserCount;
 }
