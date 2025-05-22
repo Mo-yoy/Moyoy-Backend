@@ -1,9 +1,9 @@
 package com.moyo.backend.follow.application;
 
-import com.moyo.backend.common.constant.MoyoConstants;
 import com.moyo.backend.follow.domain.FollowRelation;
 import com.moyo.backend.follow.domain.GithubFollowDetectInfo;
-import com.moyo.backend.follow.dto.*;
+import com.moyo.backend.follow.dto.FollowCommandRequest;
+import com.moyo.backend.follow.dto.UserFollowCommandMeta;
 import com.moyo.backend.follow.dto.request.GithubFollowDetectRequest;
 import com.moyo.backend.follow.dto.response.FollowDetectResponse;
 import com.moyo.backend.follow.dto.response.GithubFollowUserInfoResponse;
@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_FOLLOW_QUERY_PAGING_SIZE;
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_REGISTRATION_ID;
@@ -30,49 +31,51 @@ public class GithubFollowService {
 
     private final UserRepository userRepository;
     private final GithubFollowApiClient githubFollowApiClient;
+    private final FollowRelationRepository followRelationRepository;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     public FollowDetectResponse detectFollowUserList(Long currentUserId, GithubFollowDetectRequest request) {
 
-        FollowRelation followRelation = null;
-
         // 캐시 (Redis) 에서 FollowRelation 도메인 모델 조회
+        FollowRelation followRelation  = followRelationRepository.findByUserId(currentUserId).orElse(null);
         
-
-
-
         // 캐시 미스
+        if(followRelation == null) {
 
-        // 깃허브에 현재 사용자가 요청을 보낼 수 있는지 예비 요청을 보냄 (username, oauthAccessToken 필요)
-        String currentUsername = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new).getUsername();
-        String oauthAccessToken = oAuth2AuthorizedClientService.loadAuthorizedClient(GITHUB_REGISTRATION_ID, currentUserId.toString()).getAccessToken().getTokenValue();
-        GithubFollowDetectInfo followDetectInfo = githubFollowApiClient.fetchFollowDetectInfo(currentUsername, oauthAccessToken);
-        logFollowDetectInfo(currentUserId, followDetectInfo);
+            // 깃허브에 현재 사용자가 요청을 보낼 수 있는지 예비 요청을 보냄 (username, oauthAccessToken 필요)
+            String currentUsername = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new).getUsername();
+            String oauthAccessToken = oAuth2AuthorizedClientService.loadAuthorizedClient(GITHUB_REGISTRATION_ID, currentUserId.toString()).getAccessToken().getTokenValue();
+            GithubFollowDetectInfo followDetectInfo = githubFollowApiClient.fetchFollowDetectInfo(currentUsername, oauthAccessToken);
+            logFollowDetectInfo(currentUserId, followDetectInfo);   // 임시 로그
 
-        // Github API 에서 FollowRelation 도메인 모델 조회
-        if(followDetectInfo.canFollowFetchRequest()){
+            // Github API 에서 FollowRelation 도메인 모델 조회
+            if (followDetectInfo.canFollowFetchRequest()) {
 
-            List<GithubFollowUserInfoResponse> followers = new ArrayList<>();
-            List<GithubFollowUserInfoResponse> followings = new ArrayList<>();
+                List<GithubFollowUserInfoResponse> followers = new ArrayList<>();
+                List<GithubFollowUserInfoResponse> followings = new ArrayList<>();
 
-            for (int currentPage = 1; currentPage <= followDetectInfo.getMaxFollowerPage(); currentPage++){
+                for (int currentPage = 1; currentPage <= followDetectInfo.getMaxFollowerPage(); currentPage++) {
 
-                followers.addAll(githubFollowApiClient.getFollowerList(oauthAccessToken, currentPage));
-            }
+                    followers.addAll(githubFollowApiClient.getFollowerList(oauthAccessToken, currentPage));
+                }
 
-            for (int currentPage = 1; currentPage <= followDetectInfo.getMaxFollowingPage(); currentPage++){
+                for (int currentPage = 1; currentPage <= followDetectInfo.getMaxFollowingPage(); currentPage++) {
 
-                followings.addAll(githubFollowApiClient.getFollowingList(oauthAccessToken, currentPage));
-            }
+                    followings.addAll(githubFollowApiClient.getFollowingList(oauthAccessToken, currentPage));
+                }
 
-            followRelation = FollowRelation.builder()
-                    .userId(currentUserId)
-                    .githubFollowers(followers)
-                    .githubFollowings(followings)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+                followRelation = FollowRelation.builder()
+                        .userId(currentUserId)
+                        .githubFollowers(followers)
+                        .githubFollowings(followings)
+                        .createdAt(LocalDateTime.now())
+                        .build();
+                
+            } else throw new GithubRateLimitRemainingExceedException();
+
+            // 캐시에 조회된 FollowRelation 저장
+            followRelationRepository.save(currentUserId, followRelation);
         }
-        else throw new GithubRateLimitRemainingExceedException();
 
         // FollowRelation 도메인 객체의 비즈니스 로직 수행
         List<GithubFollowUserInfoResponse> followUserList = followRelation.filterUsersByDetectType(request.getDetectType());

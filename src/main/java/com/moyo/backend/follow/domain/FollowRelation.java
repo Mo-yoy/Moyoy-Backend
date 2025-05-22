@@ -3,13 +3,14 @@ package com.moyo.backend.follow.domain;
 import com.moyo.backend.follow.dto.response.GithubFollowUserInfoResponse;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 
 @Getter
-@Builder
+@NoArgsConstructor
 public class FollowRelation {
 
     private Long userId;
@@ -17,8 +18,15 @@ public class FollowRelation {
     private List<GithubFollowUserInfoResponse> githubFollowings;
     private LocalDateTime createdAt;
 
+    @Builder
+    private FollowRelation(Long userId, List<GithubFollowUserInfoResponse> githubFollowers, List<GithubFollowUserInfoResponse> githubFollowings, LocalDateTime createdAt) {
+        this.userId = userId;
+        this.githubFollowers = githubFollowers;
+        this.githubFollowings = githubFollowings;
+        this.createdAt = createdAt;
+    }
 
-    public List<GithubFollowUserInfoResponse> filterUsersByDetectType(String detectType){
+    public List<GithubFollowUserInfoResponse> filterUsersByDetectType(DetectType detectType){
 
         // 깃허브 API의 기본 정렬 순서는 userId ASC, 이를 그대로 사용
         Set<GithubFollowUserInfoResponse> followerSet = new LinkedHashSet<>(githubFollowers);
@@ -26,15 +34,15 @@ public class FollowRelation {
         Set<GithubFollowUserInfoResponse> resultSet = new LinkedHashSet<>();
 
         switch (detectType) {
-            case "mutual" -> {
+            case MUTUAL -> {
                 followingSet.retainAll(followerSet);
                 resultSet = followingSet;
             }
-            case "following-only" -> {
+            case FOLLOW_ONLY -> {
                 followingSet.removeAll(followerSet);
                 resultSet = followingSet;
             }
-            case "follower-only" -> {
+            case FOLLOWED_ONLY -> {
                 followerSet.removeAll(followingSet);
                 resultSet = followerSet;
             }

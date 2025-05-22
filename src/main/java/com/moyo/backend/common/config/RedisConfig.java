@@ -1,5 +1,8 @@
 package com.moyo.backend.common.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.moyo.backend.follow.domain.FollowRelation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,8 +33,13 @@ public class RedisConfig {
         RedisTemplate<String, FollowRelation> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
+        // LocalDateTime 직렬화 / 역직렬화를 위한 설정 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(FollowRelation.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, FollowRelation.class));
 
         return redisTemplate;
     }

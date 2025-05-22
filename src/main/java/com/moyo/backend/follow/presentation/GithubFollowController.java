@@ -30,9 +30,10 @@ public class GithubFollowController {
                                                                                @RequestParam(value = "lastUserId", required = false, defaultValue = "0") @LastFetchedUserId Long lastUserId,
                                                                                @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ValidPageSize int pageSize){
 
+
         GithubFollowDetectRequest request = GithubFollowDetectRequest.builder()
                 .lastFetchedUserId(lastUserId)
-                .detectType(detectType.getValue())
+                .detectType(detectType)
                 .pagingSize(pageSize)
                 .build();
 
