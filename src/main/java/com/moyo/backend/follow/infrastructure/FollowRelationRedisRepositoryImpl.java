@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,6 +32,23 @@ public class FollowRelationRedisRepositoryImpl implements FollowRelationReposito
 
         String key = getFollowRelationKey(currentUserId);
         redisTemplate.opsForValue().set(key, followRelation, Duration.ofMinutes(FOLLOW_RELATION_TTL_MINUTES));
+    }
+
+    @Override
+    public void clearFollowCache(Long currentUserId) {
+
+        String key = getFollowRelationKey(currentUserId);
+        redisTemplate.delete(key);
+    }
+
+    @Override
+    public void update(Long currentUserId, FollowRelation followRelation) {
+
+        String key = getFollowRelationKey(currentUserId);
+
+        Long ttl = redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, followRelation);
+        redisTemplate.expire(key, ttl, TimeUnit.SECONDS);   // ttl 유지
     }
 
     private String getFollowRelationKey(Long currentUserId){

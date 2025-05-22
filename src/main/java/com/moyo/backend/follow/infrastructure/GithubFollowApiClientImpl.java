@@ -2,7 +2,6 @@ package com.moyo.backend.follow.infrastructure;
 
 import com.moyo.backend.follow.application.GithubFollowApiClient;
 import com.moyo.backend.follow.domain.GithubFollowDetectInfo;
-import com.moyo.backend.follow.dto.UserFollowCommandMeta;
 import com.moyo.backend.follow.dto.response.GithubFollowUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -40,19 +39,6 @@ public class GithubFollowApiClientImpl implements GithubFollowApiClient {
                 .getStatusCode().value();
     }
 
-    @Override
-    public UserFollowCommandMeta getUserFollowCommandMeta(String accessToken, String username) {
-
-        ResponseEntity<?> response = restClient.get()
-                .uri("/users/{username}", username)
-                .headers(header -> header.setBearerAuth(accessToken))
-                .retrieve()
-                .toBodilessEntity();
-
-        int rateLimitRemaining = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
-
-        return new UserFollowCommandMeta(rateLimitRemaining);
-    }
 
     // 깃허브 페이지는 1부터 시작
     @Override
@@ -91,5 +77,16 @@ public class GithubFollowApiClientImpl implements GithubFollowApiClient {
         return GithubFollowDetectInfo.from(githubFollowStatsResponse);
     }
 
+    @Override
+    public GithubFollowUserInfoResponse getFollowUserInfo(Long userId, String accessToken) {
+
+        ResponseEntity<?> response = restClient.get()
+                .uri("/user/{targetUserId}", userId)
+                .headers(header -> header.setBearerAuth(accessToken))
+                .retrieve()
+                .toEntity(GithubFollowUserInfoResponse.class);
+
+        return (GithubFollowUserInfoResponse) response.getBody();
+    }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class FollowDetectResponse {
+public class GithubFollowDetectResponse {
 
     private List<GithubFollowUserInfoResponse> userList;
     private boolean lastPage;

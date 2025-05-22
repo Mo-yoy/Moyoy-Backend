@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static com.moyo.backend.common.constant.MoyoConstants.BAD_REQUEST;
+import static com.moyo.backend.common.constant.MoyoConstants.SERVER_ERROR;
 
 @Getter
 @AllArgsConstructor

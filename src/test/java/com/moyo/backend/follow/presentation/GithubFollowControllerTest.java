@@ -2,7 +2,7 @@ package com.moyo.backend.follow.presentation;
 
 import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.follow.application.GithubFollowService;
-import com.moyo.backend.follow.dto.response.FollowDetectResponse;
+import com.moyo.backend.follow.dto.response.GithubFollowDetectResponse;
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +62,7 @@ class GithubFollowControllerTest {
     void testGetFollowUserList_success() throws Exception {
 
         // given
-        FollowDetectResponse mockResponse = FollowDetectResponse.builder()
+        GithubFollowDetectResponse mockResponse = GithubFollowDetectResponse.builder()
                 .userList(List.of())
                 .totalUserCount(0)
                 .lastPage(true)
