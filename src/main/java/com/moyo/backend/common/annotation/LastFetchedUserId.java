@@ -1,13 +1,13 @@
 package com.moyo.backend.common.annotation;
 
-import com.moyo.backend.common.validator.LastFetchedUserIdParameterValidator;
+import com.moyo.backend.common.validator.LastFetchedUserIdValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = LastFetchedUserIdParameterValidator.class)
+@Constraint(validatedBy = LastFetchedUserIdValidator.class)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LastFetchedUserId {

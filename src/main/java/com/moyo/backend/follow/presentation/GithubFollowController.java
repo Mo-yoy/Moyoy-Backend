@@ -38,7 +38,7 @@ public class GithubFollowController {
 
         long startTime = System.currentTimeMillis();
         FollowDetectResponse response = githubFollowService.detectFollowUserList(currentUserId, request);
-        log.info("동기식 맞팔 탐지기 요청 소요 시간 : {}",System.currentTimeMillis() - startTime);
+        log.info("개발용 로그 동기식 맞팔 탐지기 요청 소요 시간 : {}",System.currentTimeMillis() - startTime);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }

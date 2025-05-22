@@ -4,6 +4,7 @@ import com.moyo.backend.follow.dto.response.GithubFollowUserInfoResponse;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -14,6 +15,8 @@ public class FollowRelation {
     private Long userId;
     private List<GithubFollowUserInfoResponse> githubFollowers;
     private List<GithubFollowUserInfoResponse> githubFollowings;
+    private LocalDateTime createdAt;
+
 
     public List<GithubFollowUserInfoResponse> filterUsersByDetectType(String detectType){
 

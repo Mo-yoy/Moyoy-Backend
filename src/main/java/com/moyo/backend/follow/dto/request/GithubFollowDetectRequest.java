@@ -7,7 +7,6 @@ import lombok.Getter;
 public class GithubFollowDetectRequest {
 
     private String detectType;
-
     private Long lastFetchedUserId;
     private int pagingSize;
 

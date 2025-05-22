@@ -12,4 +12,5 @@ public class FollowDetectResponse {
     private List<GithubFollowUserInfoResponse> userList;
     private boolean lastPage;
     private int totalUserCount;
+    private String lastSyncAt;
 }

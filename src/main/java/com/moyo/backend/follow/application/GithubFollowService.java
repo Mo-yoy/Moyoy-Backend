@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_FOLLOW_QUERY_PAGING_SIZE;
@@ -67,12 +69,11 @@ public class GithubFollowService {
                     .userId(currentUserId)
                     .githubFollowers(followers)
                     .githubFollowings(followings)
+                    .createdAt(LocalDateTime.now())
                     .build();
-
         }
         else throw new GithubRateLimitRemainingExceedException();
 
-        
         // FollowRelation 도메인 객체의 비즈니스 로직 수행
         List<GithubFollowUserInfoResponse> followUserList = followRelation.filterUsersByDetectType(request.getDetectType());
 
@@ -80,20 +81,26 @@ public class GithubFollowService {
         long lastFetchedId = request.getLastFetchedUserId();
         int pageSize = request.getPagingSize();
 
-        List<GithubFollowUserInfoResponse> pagingList = new ArrayList<>(
+        // 불변 리스트 -> 가변 리스트 처리
+        List<GithubFollowUserInfoResponse> pagingList = new ArrayList<>( 
                 followUserList.stream()
                         .filter(user -> lastFetchedId == 0 || user.getId() > lastFetchedId)
                         .limit(pageSize + 1)
-                        .toList()   // 불변 리스트
+                        .toList()   
         );
 
+        // Slice 처리
         boolean lastPage = pagingList.size() <= pageSize;
         if (!lastPage) pagingList.removeLast();
+
+        // 캐시 히트일 경우, TTL이 분 단위를 넘지 않기 때문에 분으로 조회
+        long minutes = Duration.between(followRelation.getCreatedAt(), LocalDateTime.now()).toMinutes()+1;
 
         return FollowDetectResponse.builder()
                 .userList(pagingList)
                 .lastPage(lastPage)
                 .totalUserCount(followUserList.size())
+                .lastSyncAt(minutes + " 분전")
                 .build();
     }
 
