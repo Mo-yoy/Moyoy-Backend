@@ -4,6 +4,7 @@ import com.moyo.backend.follow.application.FollowRelationRepository;
 import com.moyo.backend.follow.domain.FollowRelation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;

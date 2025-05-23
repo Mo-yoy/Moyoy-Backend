@@ -14,8 +14,9 @@ paths:
       - 1. JWT 재발급 🔄
       summary: JWT 토큰 재발급 API
       description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
-        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다."
-      operationId: 200 OKLOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
+        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드\
+        를 참고 해 주세요"
+      operationId: JWT 재발급 성공LOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
       responses:
         "200":
           description: "200"
@@ -24,7 +25,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/auth-reissue-token1995903112"
               examples:
-                "200 OK":
+                JWT 재발급 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"accessToken\":\"newAccessToken\"}}"
         "401":
@@ -49,8 +50,153 @@ paths:
                 LOGIN_401_5:
                   value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
                     랙리스트 처리된 토큰 입니다.\",\"data\":null}"
+  /follow/{targetUserId}:
+    post:
+      tags:
+      - 2. 깃허브 팔로우 관계 탐지 👥
+      summary: 깃허브 사용자 팔로우 API
+      description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.
+      operationId: 팔로우 성공
+      parameters:
+      - name: targetUserId
+        in: path
+        description: 팔로우 대상 사용자 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/unfollow-targetUserId-767089392"
+              examples:
+                팔로우 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
+  /unfollow/{targetUserId}:
+    delete:
+      tags:
+      - 2. 깃허브 팔로우 관계 탐지 👥
+      summary: 깃허브 사용자 언팔로우 API
+      description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.
+      operationId: 언팔로우 성공
+      parameters:
+      - name: targetUserId
+        in: path
+        description: 언 팔로우 대상 사용자 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/unfollow-targetUserId-767089392"
+              examples:
+                언팔로우 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
+  /users/me/followings/{detectType}:
+    get:
+      tags:
+      - 2. 깃허브 팔로우 관계 탐지 👥
+      summary: 깃허브 팔로우 관계 탐지 API
+      description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
+        우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\
+        \ 한 번이라도 진행한 적이 있어야 사용 가능합니다."
+      operationId: FOLLOW_400_1맞팔탐지기 조회 성공
+      parameters:
+      - name: detectType
+        in: path
+        description: mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only
+          (상대만 나를 팔로우)
+        required: true
+        schema:
+          type: string
+      - name: lastUserId
+        in: query
+        description: "이전 페이지에서 조회한 회원중 마지막 회원의 userId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주\
+          \ 합니다. "
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: "조회할 사용자 수 (default: 10)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users-me-followings-detectType492296449"
+              examples:
+                FOLLOW_400_1:
+                  value: "{\"status\":400,\"code\":\"FOLLOW_400_1\",\"message\":\"\
+                    Github API 호출이 제한 되었습니다. 1시간 뒤 다시 시도해 주세요\",\"data\":null}"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users-me-followings-detectType1480676095"
+              examples:
+                맞팔탐지기 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"id\":12345,\"username\":\"username1\",\"profileImgUrl\"\
+                    :\"http://profileImgUrl\"}],\"lastPage\":true,\"totalUserCount\"\
+                    :1,\"lastSyncAt\":\"5 분전\"}}"
+      security:
+      - bearerAuthJWT: []
+  /users/me/followings/cache/clear:
+    delete:
+      tags:
+      - 2. 깃허브 팔로우 관계 탐지 👥
+      summary: 깃허브 팔로우 캐시 삭제 API
+      description: 현재 로그인한 사용자의 깃허브 팔로우 관계 캐시를 삭제합니다. 해당 API를 실행 후 다시 맞팔탐지기를 실행하면
+        깃허브에서 최신 상태의 데이터를 받아옵니다.
+      operationId: 맞팔탐지기 캐시 삭제 성공
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users-me-followings-cache-clear63148865"
+              examples:
+                맞팔탐지기 캐시 삭제 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
 components:
   schemas:
+    users-me-followings-cache-clear63148865:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     auth-reissue-token-1735855461:
       required:
       - code
@@ -67,6 +213,83 @@ components:
         status:
           type: number
           description: ❌ 응답 상태 코드
+    users-me-followings-detectType492296449:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 도메인 에러 코드
+        message:
+          type: string
+          description: 📝 상세 에러 메시지
+        status:
+          type: number
+          description: ❌ 응답 상태 코드 (HTTP status)
+    unfollow-targetUserId-767089392:
+      required:
+      - code
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    users-me-followings-detectType1480676095:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - lastSyncAt
+          - totalUserCount
+          - userList
+          type: object
+          properties:
+            totalUserCount:
+              type: number
+              description: 📊 총 사용자 수
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - id
+                - profileImgUrl
+                - username
+                type: object
+                properties:
+                  profileImgUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  id:
+                    type: number
+                    description: 사용자 ID
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            lastSyncAt:
+              type: string
+              description: ⏱ 마지막 싱크 시간 (x 분전)
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     auth-reissue-token1995903112:
       required:
       - code
@@ -88,3 +311,8 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
+  securitySchemes:
+    bearerAuthJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -3,11 +3,13 @@ package com.moyo.backend.common.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.moyo.backend.common.util.RedisHealthChecker;
 import com.moyo.backend.follow.domain.FollowRelation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -29,7 +31,7 @@ public class RedisConfig {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisProperties.host, redisProperties.port);
 
         LettuceClientConfiguration timeoutConfig = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.ofSeconds(5))
+                .commandTimeout(Duration.ofSeconds(3))
                 .build();
         
         return new LettuceConnectionFactory(configuration, timeoutConfig);
@@ -50,6 +52,11 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, FollowRelation.class));
 
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisHealthChecker redisHealthChecker(RedisConnectionFactory factory) {
+        return new RedisHealthChecker(factory);
     }
 
     @RequiredArgsConstructor

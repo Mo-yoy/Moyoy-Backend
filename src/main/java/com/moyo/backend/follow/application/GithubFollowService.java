@@ -1,5 +1,6 @@
 package com.moyo.backend.follow.application;
 
+import com.moyo.backend.common.util.RedisHealthChecker;
 import com.moyo.backend.follow.domain.FollowRelation;
 import com.moyo.backend.follow.domain.GithubFollowDetectInfo;
 import com.moyo.backend.follow.dto.request.GithubFollowDetectRequest;
@@ -11,6 +12,7 @@ import com.moyo.backend.user.UserRepository;
 import com.moyo.backend.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.QueryTimeoutException;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class GithubFollowService {
     private final GithubFollowApiClient githubFollowApiClient;
     private final FollowRelationRepository followRelationRepository;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    private final RedisHealthChecker redisHealthChecker;
+
 
     public GithubFollowDetectResponse detectFollowUserList(Long currentUserId, GithubFollowDetectRequest request) {
 
@@ -74,6 +78,7 @@ public class GithubFollowService {
 
 
             try {
+                if(!redisHealthChecker.isHealthy()) throw new RedisConnectionFailureException("Redis Server Down");
                 followRelationRepository.save(currentUserId, followRelation);
             } catch (RedisConnectionFailureException ex) {
                 log.warn("Redis Server Down");
@@ -115,7 +120,7 @@ public class GithubFollowService {
         // 레디스 서버 다운으로 캐시 초기화를 진행 못해도 서버가 다운되면서 데이터가 날아가서 상관없이 정상 처리 하면 됨.
         try {
             followRelationRepository.clearFollowCache(currentUserId);
-        } catch (RedisConnectionFailureException ex) {
+        } catch (RedisConnectionFailureException | QueryTimeoutException ex) {
             log.warn("Redis Server Down");
         }
     }
@@ -207,9 +212,10 @@ public class GithubFollowService {
     private FollowRelation getFollowRelationInCache(Long userId){
 
         try {
+            if(!redisHealthChecker.isHealthy()) throw new RedisConnectionFailureException("Redis Server Down");
             return followRelationRepository.findByUserId(userId).orElse(null);
         }
-        catch (RedisConnectionFailureException ex) {
+        catch (RedisConnectionFailureException | QueryTimeoutException ex) {
             log.warn("Redis Server Down");
             return null;
         }
@@ -227,6 +233,5 @@ public class GithubFollowService {
 
         log.info("{}의 남은 요청 수 : ({}/5000)", userId, followDetectInfo.getRateLimitRemaining());
     }
-
 
 }
