@@ -3,23 +3,27 @@ package com.moyo.backend.common.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.moyo.backend.common.util.RedisHealthChecker;
-import com.moyo.backend.follow.domain.FollowRelation;
+import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
 @Configuration
+@EnableCaching
 @RequiredArgsConstructor
 public class RedisConfig {
 
@@ -38,9 +42,30 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, FollowRelation> followRelationRedisTemplate() {
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
-        RedisTemplate<String, FollowRelation> redisTemplate = new RedisTemplate<>();
+        // LocalDateTime 직렬화 / 역직렬화를 위한 설정 추가
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, GithubFollowRelation.class);
+
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+                .entryTtl(Duration.ofMinutes(15))
+                .disableCachingNullValues();
+
+
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(config)
+                .build();
+    }
+
+    @Bean
+    public RedisTemplate<String, GithubFollowRelation> followRelationRedisTemplate() {
+
+        RedisTemplate<String, GithubFollowRelation> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         // LocalDateTime 직렬화 / 역직렬화를 위한 설정 추가
@@ -49,14 +74,9 @@ public class RedisConfig {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, FollowRelation.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, GithubFollowRelation.class));
 
         return redisTemplate;
-    }
-
-    @Bean
-    public RedisHealthChecker redisHealthChecker(RedisConnectionFactory factory) {
-        return new RedisHealthChecker(factory);
     }
 
     @RequiredArgsConstructor

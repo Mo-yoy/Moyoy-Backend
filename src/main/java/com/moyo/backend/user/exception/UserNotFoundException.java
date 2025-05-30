@@ -1,6 +1,5 @@
 package com.moyo.backend.user.exception;
 
-import com.moyo.backend.common.exception.BaseErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
 
 public class UserNotFoundException extends MoyoException {
