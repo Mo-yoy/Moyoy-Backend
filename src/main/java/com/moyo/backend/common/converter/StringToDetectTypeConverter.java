@@ -1,4 +1,4 @@
-package com.moyo.backend.githubFollow.converter;
+package com.moyo.backend.common.converter;
 
 import com.moyo.backend.githubFollow.domain.DetectType;
 import org.springframework.core.convert.converter.Converter;

@@ -1,4 +1,4 @@
-package com.moyo.backend.common.annotation;
+package com.moyo.backend.security.annotation;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

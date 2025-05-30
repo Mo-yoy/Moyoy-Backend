@@ -1,6 +1,7 @@
 package com.moyo.backend.githubFollow.infrastructure;
 
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
+import com.moyo.backend.githubFollow.infrastructure.GithubFollowDetectInfo;
 
 import java.util.List;
 

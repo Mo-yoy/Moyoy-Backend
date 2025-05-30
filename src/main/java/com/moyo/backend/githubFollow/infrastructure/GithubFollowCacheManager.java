@@ -4,12 +4,13 @@ import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CacheService {
+public class GithubFollowCacheManager {
 
     private final CacheManager cacheManager;
 
@@ -51,5 +52,10 @@ public class CacheService {
         if (githubFollowRelation != null) githubFollowRelation.removeFollower(currentUserId);
 
         return githubFollowRelation;
+    }
+
+    @CacheEvict(value = "followRelation", key = "#userId")
+    public void evictCache(Long userId){
+
     }
 }

@@ -1,9 +1,12 @@
-package com.moyo.backend.githubFollow.infrastructure;
+package com.moyo.backend.githubFollow.application;
 
 import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
 import com.moyo.backend.githubFollow.domain.GithubFollowRelationClient;
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import com.moyo.backend.githubFollow.exception.GithubRateLimitRemainingExceedException;
+import com.moyo.backend.githubFollow.infrastructure.GithubFollowCacheManager;
+import com.moyo.backend.githubFollow.infrastructure.GithubFollowApiClient;
+import com.moyo.backend.githubFollow.infrastructure.GithubFollowDetectInfo;
 import com.moyo.backend.user.User;
 import com.moyo.backend.user.UserRepository;
 import com.moyo.backend.user.exception.UserNotFoundException;
@@ -26,7 +29,7 @@ public class GithubFollowRelationClientImpl implements GithubFollowRelationClien
 
     private final UserRepository userRepository;
     private final GithubFollowApiClient githubFollowApiClient;
-    private final CacheService cacheService;
+    private final GithubFollowCacheManager githubFollowCacheManager;
 
     @Cacheable(value = "followRelation", key = "#userId")
     @Override
@@ -75,14 +78,14 @@ public class GithubFollowRelationClientImpl implements GithubFollowRelationClien
 
         if(responseStatus == 204){
 
-            cacheService.addFollowingToCurrentUser(currentUserId, targetUser);
+            githubFollowCacheManager.addFollowingToCurrentUser(currentUserId, targetUser);
 
             // 팔로우 당하는 타겟 유저가 우리 서비스의 유저인지 체크
             if(userRepository.existsById(targetUser.id())) {
 
                 User user = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
                 GithubFollowUser currentUser = new GithubFollowUser(user.getId(), user.getUsername(), user.getProfileImgUrl());
-                cacheService.addFollowerToTargetUser(targetUserId, currentUser);
+                githubFollowCacheManager.addFollowerToTargetUser(targetUserId, currentUser);
             }
 
         }
@@ -99,10 +102,10 @@ public class GithubFollowRelationClientImpl implements GithubFollowRelationClien
 
         if(responseStatus == 204){
 
-            cacheService.deleteFollowingToCurrentUser(currentUserId, targetUserId);
+            githubFollowCacheManager.deleteFollowingToCurrentUser(currentUserId, targetUserId);
 
             // 언 팔로우 당하는 타겟 유저가 우리 서비스의 유저인지 체크
-            if(userRepository.existsById(targetUser.id())) cacheService.deleteFollowerToTargetUser(currentUserId, targetUserId);
+            if(userRepository.existsById(targetUser.id())) githubFollowCacheManager.deleteFollowerToTargetUser(currentUserId, targetUserId);
 
         }
         else throw new RuntimeException("깃허브 언 팔로우 중 에러 발생"); // 에러 처리 계획중

@@ -1,4 +1,4 @@
-package com.moyo.backend.githubFollow.pagination;
+package com.moyo.backend.githubFollow.application;
 
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import org.springframework.data.domain.Pageable;

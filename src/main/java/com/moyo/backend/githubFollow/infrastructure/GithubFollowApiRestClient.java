@@ -13,7 +13,7 @@ import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_FOLLOW_QUERY
 
 @Component
 @RequiredArgsConstructor
-public class GithubFollowApiRestClient implements GithubFollowApiClient{
+public class GithubFollowApiRestClient implements GithubFollowApiClient {
 
     private final RestClient restClient;
 

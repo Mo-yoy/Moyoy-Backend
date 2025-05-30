@@ -1,4 +1,4 @@
-package com.moyo.backend.common.controller;
+package com.moyo.backend.common.presentation;
 
 import com.moyo.backend.security.oauth.GithubOAuth2User;
 import lombok.RequiredArgsConstructor;

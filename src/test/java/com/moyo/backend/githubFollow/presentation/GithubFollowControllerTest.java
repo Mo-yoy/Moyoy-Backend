@@ -4,7 +4,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
 import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
-import com.moyo.backend.githubFollow.application.GithubFollowServiceLegacy;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectResponse;
 import com.moyo.backend.githubFollow.infrastructure.dto.GithubFollowUserInfoResponse;
 import com.moyo.backend.githubFollow.exception.FollowErrorCode;

@@ -1,8 +1,8 @@
 package com.moyo.backend.githubFollow.presentation;
 
-import com.moyo.backend.common.annotation.CurrentUserId;
-import com.moyo.backend.common.annotation.LastFetchedUserId;
-import com.moyo.backend.common.annotation.ValidPageSize;
+import com.moyo.backend.security.annotation.CurrentUserId;
+import com.moyo.backend.common.validation.annotation.LastFetchedUserId;
+import com.moyo.backend.common.validation.annotation.ValidPageSize;
 import com.moyo.backend.common.dto.ApiResponse;
 import com.moyo.backend.githubFollow.application.GithubFollowService;
 import com.moyo.backend.githubFollow.domain.DetectType;
