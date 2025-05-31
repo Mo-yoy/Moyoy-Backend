@@ -4,8 +4,8 @@ import com.moyo.backend.common.exception.MoyoException;
 
 import static com.moyo.backend.githubFollow.exception.FollowErrorCode.LIMIT_EXCEED;
 
-public class GithubRateLimitRemainingExceedException extends MoyoException {
-    public GithubRateLimitRemainingExceedException() {
+public class GithubRateLimitExceedException extends MoyoException {
+    public GithubRateLimitExceedException() {
         super(LIMIT_EXCEED);
     }
 }

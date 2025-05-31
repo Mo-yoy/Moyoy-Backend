@@ -1,10 +1,11 @@
 package com.moyo.backend.githubFollow.presentation;
 
+import com.moyo.backend.githubFollow.application.GithubFollowCommandService;
+import com.moyo.backend.githubFollow.application.GithubFollowRelationService;
 import com.moyo.backend.security.annotation.CurrentUserId;
 import com.moyo.backend.common.validation.annotation.LastFetchedUserId;
 import com.moyo.backend.common.validation.annotation.ValidPageSize;
 import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.githubFollow.application.GithubFollowService;
 import com.moyo.backend.githubFollow.domain.DetectType;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectRequest;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectResponse;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class GithubFollowController {
 
-    private final GithubFollowService githubFollowService;
-
+    private final GithubFollowRelationService githubFollowRelationService;
+    private final GithubFollowCommandService githubFollowCommandService;
 
     @GetMapping("/users/me/followings/{detectType}")
     public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> getFollowUserList(@CurrentUserId Long currentUserId,
@@ -34,13 +35,13 @@ public class GithubFollowController {
                 .pagingSize(pageSize)
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.success(githubFollowService.detectFollowUserList(currentUserId, request)));
+        return ResponseEntity.ok(ApiResponse.success(githubFollowRelationService.detectFollowUserList(currentUserId, request)));
     }
 
     @DeleteMapping("/users/me/followings/cache/clear")
     public ResponseEntity<ApiResponse<Void>> clearFollowRelationCache(@CurrentUserId Long currentUserId){
 
-        githubFollowService.clearFollowCache(currentUserId);
+        githubFollowCommandService.clearFollowCache(currentUserId);
 
         return ResponseEntity.ok(ApiResponse.noContent());
     }
@@ -49,7 +50,7 @@ public class GithubFollowController {
     public ResponseEntity<ApiResponse<Void>> followGithubUser(@CurrentUserId Long currentUserId,
                                                               @PathVariable("targetUserId") Long targetUserId){
 
-        githubFollowService.follow(currentUserId, targetUserId);
+        githubFollowCommandService.follow(currentUserId, targetUserId);
 
         return ResponseEntity.ok(ApiResponse.noContent());
     }
@@ -58,7 +59,7 @@ public class GithubFollowController {
     public ResponseEntity<ApiResponse<Void>> unFollowGithubUser(@CurrentUserId Long currentUserId,
                                                                 @PathVariable("targetUserId") Long targetUserId){
 
-        githubFollowService.unfollow(currentUserId, targetUserId);
+        githubFollowCommandService.unfollow(currentUserId, targetUserId);
 
         return ResponseEntity.ok(ApiResponse.noContent());
     }
