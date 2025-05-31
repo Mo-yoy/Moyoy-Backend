@@ -4,8 +4,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
 import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
+import com.moyo.backend.githubFollow.application.GithubFollowCommandService;
+import com.moyo.backend.githubFollow.application.GithubFollowRelationService;
+import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectResponse;
-import com.moyo.backend.githubFollow.infrastructure.dto.GithubFollowUserInfoResponse;
 import com.moyo.backend.githubFollow.exception.FollowErrorCode;
 import com.moyo.common.annotation.WithMockGithubOAuth2User;
 import org.junit.jupiter.api.Order;
@@ -20,12 +22,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,9 +44,11 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,23 +66,31 @@ class GithubFollowControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GithubFollowServiceLegacy githubFollowServiceLegacy;
+    private GithubFollowCommandService githubFollowCommandService;
 
-    @Order(1)
+    @MockitoBean
+    private GithubFollowRelationService githubFollowRelationService;
+
+
     @WithMockGithubOAuth2User
     @Test
     void 맞팔탐지기_성공() throws Exception {
 
-        // given
-        GithubFollowDetectResponse mockResponse = GithubFollowDetectResponse.builder()
-                .userList(List.of(new GithubFollowUserInfoResponse(12345L,"username1", "http://profileImgUrl")))
-                .totalUserCount(1)
-                .lastPage(true)
-                .lastSyncAt("5 분전")
-                .build();
 
-        // GithubFollowService는 Mockito 빈을 사용하는데 해당 빈의 어떤 메서드에 어떤 입력을 넣었을 때 원하는 응답이 오도록 조절함.
-        given(githubFollowServiceLegacy.detectFollowUserList(anyLong(), any())).willReturn(mockResponse);
+        // given
+        GithubFollowUser user1 = new GithubFollowUser(12345L, "username1", "http://profile.image/1");
+        GithubFollowUser user2 = new GithubFollowUser(67890L, "username2", "http://profile.image/2");
+
+        List<GithubFollowUser> userList = List.of(user1, user2);
+        int totalUserCount = userList.size();
+        LocalDateTime createdAt = LocalDateTime.now().minusMinutes(5);
+
+        Slice<GithubFollowUser> userSlice = new SliceImpl<>(userList);
+
+        GithubFollowDetectResponse mockResponse = GithubFollowDetectResponse.of(userSlice, createdAt, totalUserCount);
+
+        // Mockito 빈을 사용하는데 해당 빈의 어떤 메서드에 어떤 입력을 넣었을 때 원하는 응답이 오도록 조절함.
+        given(githubFollowRelationService.detectFollowUserList(anyLong(), any())).willReturn(mockResponse);
 
 
         // when
@@ -83,8 +98,9 @@ class GithubFollowControllerTest {
                         .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
                         .param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
                         .param("pageSize", "1"))
+                        .andExpect(status().isOk())
                         .andExpect(jsonPath("$.data.userList").isArray())
-                        .andExpect(jsonPath("$.data.totalUserCount").value(1))
+                        .andExpect(jsonPath("$.data.totalUserCount").value(2))
                         .andExpect(jsonPath("$.data.lastPage").value(true))
 
                         // REST Docs
@@ -124,7 +140,7 @@ class GithubFollowControllerTest {
     @MethodSource("followDetectorErrorCodes")
     void 맞팔탐지기_에러코드_문서화(FollowErrorCode errorCode) throws Exception {
         // given
-        doThrow(new MoyoException(errorCode)).when(githubFollowServiceLegacy).detectFollowUserList(anyLong(), any());
+        doThrow(new MoyoException(errorCode)).when(githubFollowRelationService).detectFollowUserList(anyLong(), any());
 
         // when & then
         mockMvc.perform(get("/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
@@ -159,99 +175,99 @@ class GithubFollowControllerTest {
 
 
 
-//    @WithMockGithubOAuth2User
-//    @Test
-//    void 깃허브_팔로우_캐시_삭제_성공() throws Exception {
-//        // given
-//        willDoNothing().given(githubFollowServiceLegacy).clearFollowCache(anyLong());
-//
-//        // when
-//        mockMvc.perform(delete("/users/me/followings/cache/clear")
-//                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value(204))
-//                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
-//                .andExpect(jsonPath("$.message").isEmpty())
-//                .andExpect(jsonPath("$.data").isEmpty())
-//
-//
-//                // REST Docs
-//                .andDo(document("맞팔탐지기 캐시 삭제 성공",
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
-//                                .summary("깃허브 팔로우 캐시 삭제 API")
-//                                .description("현재 로그인한 사용자의 깃허브 팔로우 관계 캐시를 삭제합니다. 해당 API를 실행 후 다시 맞팔탐지기를 실행하면 깃허브에서 최신 상태의 데이터를 받아옵니다.")
-//                                .responseFields(
-//                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
-//                                        fieldWithPath("code").description("🔢 응답 코드"),
-//                                        fieldWithPath("message").description("📝 응답 메시지"),
-//                                        fieldWithPath("data").description("🚫 응답 데이터 없음 (null)").optional()
-//                                )
-//                                .build()
-//                        )));
-//    }
+    @WithMockGithubOAuth2User
+    @Test
+    void 깃허브_팔로우_캐시_삭제_성공() throws Exception {
+        // given
+        willDoNothing().given(githubFollowCommandService).clearFollowCache(anyLong());
+
+        // when
+        mockMvc.perform(delete("/users/me/followings/cache/clear")
+                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(204))
+                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
+                .andExpect(jsonPath("$.message").isEmpty())
+                .andExpect(jsonPath("$.data").isEmpty())
 
 
-//    @Test
-//    void 팔로우_성공() throws Exception {
-//
-//        willDoNothing().given(githubFollowServiceLegacy).follow(anyLong(), anyLong());
-//
-//        mockMvc.perform(post("/follow/{targetUserId}", 12345L)
-//                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value(204))
-//                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
-//                .andExpect(jsonPath("$.message").isEmpty())
-//                .andExpect(jsonPath("$.data").isEmpty())
-//                .andDo(document("팔로우 성공",
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
-//                                .summary("깃허브 사용자 팔로우 API")
-//                                .description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.")
-//                                .pathParameters(
-//                                        parameterWithName("targetUserId").description("팔로우 대상 사용자 ID")
-//                                )
-//                                .responseFields(
-//                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
-//                                        fieldWithPath("code").description("🔢 응답 코드"),
-//                                        fieldWithPath("message").description("📝 응답 메시지 (비어 있을 수 있음)").optional(),
-//                                        fieldWithPath("data").description("🚫 데이터 없음 (null)").optional()
-//                                )
-//                                .build()
-//                        )));
-//    }
-//
-//
-//    @Test
-//    void 언팔로우_성공() throws Exception {
-//
-//        willDoNothing().given(githubFollowServiceLegacy).unfollow(anyLong(), anyLong());
-//
-//        mockMvc.perform(delete("/unfollow/{targetUserId}", 12345L)
-//                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value(204)) // noContent 응답 코드
-//                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
-//                .andExpect(jsonPath("$.message").isEmpty())
-//                .andExpect(jsonPath("$.data").isEmpty())
-//                .andDo(document("언팔로우 성공",
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
-//                                .summary("깃허브 사용자 언팔로우 API")
-//                                .description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.")
-//                                .pathParameters(
-//                                        parameterWithName("targetUserId").description("언 팔로우 대상 사용자 ID")
-//                                )
-//                                .responseFields(
-//                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
-//                                        fieldWithPath("code").description("🔢 응답 코드"),
-//                                        fieldWithPath("message").description("📝 응답 메시지 (비어 있을 수 있음)").optional(),
-//                                        fieldWithPath("data").description("🚫 데이터 없음 (null)").optional()
-//                                )
-//                                .build()
-//                        )));
-//    }
+                // REST Docs
+                .andDo(document("맞팔탐지기 캐시 삭제 성공",
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
+                                .summary("깃허브 팔로우 캐시 삭제 API")
+                                .description("현재 로그인한 사용자의 깃허브 팔로우 관계 캐시를 삭제합니다. 해당 API를 실행 후 다시 맞팔탐지기를 실행하면 깃허브에서 최신 상태의 데이터를 받아옵니다.")
+                                .responseFields(
+                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
+                                        fieldWithPath("code").description("🔢 응답 코드"),
+                                        fieldWithPath("message").description("📝 응답 메시지"),
+                                        fieldWithPath("data").description("🚫 응답 데이터 없음 (null)").optional()
+                                )
+                                .build()
+                        )));
+    }
+
+
+    @Test
+    void 팔로우_성공() throws Exception {
+
+        willDoNothing().given(githubFollowCommandService).follow(anyLong(), anyLong());
+
+        mockMvc.perform(post("/follow/{targetUserId}", 12345L)
+                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(204))
+                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
+                .andExpect(jsonPath("$.message").isEmpty())
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andDo(document("팔로우 성공",
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
+                                .summary("깃허브 사용자 팔로우 API")
+                                .description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.")
+                                .pathParameters(
+                                        parameterWithName("targetUserId").description("팔로우 대상 사용자 ID")
+                                )
+                                .responseFields(
+                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
+                                        fieldWithPath("code").description("🔢 응답 코드"),
+                                        fieldWithPath("message").description("📝 응답 메시지 (비어 있을 수 있음)").optional(),
+                                        fieldWithPath("data").description("🚫 데이터 없음 (null)").optional()
+                                )
+                                .build()
+                        )));
+    }
+
+
+    @Test
+    void 언팔로우_성공() throws Exception {
+
+        willDoNothing().given(githubFollowCommandService).unfollow(anyLong(), anyLong());
+
+        mockMvc.perform(delete("/unfollow/{targetUserId}", 12345L)
+                        .header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(204)) // noContent 응답 코드
+                .andExpect(jsonPath("$.code").value("NO_CONTENT"))
+                .andExpect(jsonPath("$.message").isEmpty())
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andDo(document("언팔로우 성공",
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("2. 깃허브 팔로우 관계 탐지 👥")
+                                .summary("깃허브 사용자 언팔로우 API")
+                                .description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.")
+                                .pathParameters(
+                                        parameterWithName("targetUserId").description("언 팔로우 대상 사용자 ID")
+                                )
+                                .responseFields(
+                                        fieldWithPath("status").description("✅ 응답 상태 코드"),
+                                        fieldWithPath("code").description("🔢 응답 코드"),
+                                        fieldWithPath("message").description("📝 응답 메시지 (비어 있을 수 있음)").optional(),
+                                        fieldWithPath("data").description("🚫 데이터 없음 (null)").optional()
+                                )
+                                .build()
+                        )));
+    }
 
 
 

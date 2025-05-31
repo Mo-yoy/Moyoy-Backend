@@ -24,13 +24,13 @@ public class GithubFollowDetectResponse {
     static class GithubFollowUserDto {
         private Long id;
         private String username;
-        private String avatarUrl;
+        private String profileImgUrl;
 
         public static GithubFollowUserDto from(GithubFollowUser user) {
             return GithubFollowUserDto.builder()
                     .id(user.id())
                     .username(user.username())
-                    .avatarUrl(user.profileImgUrl())
+                    .profileImgUrl(user.profileImgUrl())
                     .build();
         }
     }
