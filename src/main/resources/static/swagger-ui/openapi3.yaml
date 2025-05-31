@@ -157,8 +157,9 @@ paths:
                 맞팔탐지기 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"userList\":[{\"id\":12345,\"username\":\"username1\",\"profileImgUrl\"\
-                    :\"http://profileImgUrl\"}],\"lastPage\":true,\"totalUserCount\"\
-                    :1,\"lastSyncAt\":\"5 분전\"}}"
+                    :\"http://profile.image/1\"},{\"id\":67890,\"username\":\"username2\"\
+                    ,\"profileImgUrl\":\"http://profile.image/2\"}],\"lastPage\":true,\"\
+                    totalUserCount\":2,\"lastSyncAt\":\"5 분전\"}}"
       security:
       - bearerAuthJWT: []
   /users/me/followings/cache/clear:

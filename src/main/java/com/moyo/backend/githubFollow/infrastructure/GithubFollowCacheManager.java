@@ -14,7 +14,7 @@ public class GithubFollowCacheManager {
 
     private final CacheManager cacheManager;
 
-    @CachePut(value = "followRelation", key = "#currentUserId")
+    @CachePut(value = "followRelation", key = "#currentUserId", unless = "#result == null")
     public GithubFollowRelation addFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
@@ -24,7 +24,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#currentUserId")
+    @CachePut(value = "followRelation", key = "#currentUserId", unless = "#result == null")
     public GithubFollowRelation deleteFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
@@ -34,7 +34,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#targetUserId")
+    @CachePut(value = "followRelation", key = "#targetUserId", unless = "#result == null")
     public GithubFollowRelation addFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
@@ -44,7 +44,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#targetUserId")
+    @CachePut(value = "followRelation", key = "#targetUserId", unless = "#result == null")
     public GithubFollowRelation deleteFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
