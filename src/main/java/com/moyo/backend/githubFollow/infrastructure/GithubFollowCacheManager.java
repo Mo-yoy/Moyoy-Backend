@@ -4,17 +4,19 @@ import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "followRelation")
 public class GithubFollowCacheManager {
 
     private final CacheManager cacheManager;
 
-    @CachePut(value = "followRelation", key = "#currentUserId", unless = "#result == null")
+    @CachePut(key = "#currentUserId", unless = "#result == null")
     public GithubFollowRelation addFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
@@ -24,7 +26,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#currentUserId", unless = "#result == null")
+    @CachePut(key = "#currentUserId", unless = "#result == null")
     public GithubFollowRelation deleteFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
@@ -34,7 +36,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#targetUserId", unless = "#result == null")
+    @CachePut(key = "#targetUserId", unless = "#result == null")
     public GithubFollowRelation addFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
@@ -44,7 +46,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CachePut(value = "followRelation", key = "#targetUserId", unless = "#result == null")
+    @CachePut(key = "#targetUserId", unless = "#result == null")
     public GithubFollowRelation deleteFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
         GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
@@ -54,7 +56,7 @@ public class GithubFollowCacheManager {
         return githubFollowRelation;
     }
 
-    @CacheEvict(value = "followRelation", key = "#userId")
+    @CacheEvict(key = "#userId")
     public void evictCache(Long userId){
 
     }

@@ -4,11 +4,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.redis.core.RedisHash;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 @Getter
@@ -17,7 +18,7 @@ public class GithubFollowRelation {
 
     private Long userId;
     
-    // 팔로워, 팔로잉 리스트는 깃허브 응답을 그대로 저장 하고 Id 오름차 순으로 저장됨
+    // Id ASC
     private TreeSet<GithubFollowUser> githubFollowers;
     private TreeSet<GithubFollowUser> githubFollowings;
     private LocalDateTime createdAt;
