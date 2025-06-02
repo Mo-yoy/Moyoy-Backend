@@ -10,4 +10,5 @@ public class GithubFollowDetectRequest {
     private DetectType detectType;
     private Long lastFetchedUserId;
     private int pagingSize;
+    private boolean forceSync;
 }

@@ -136,6 +136,12 @@ paths:
         schema:
           type: integer
           format: int32
+      - name: forceSync
+        in: query
+        description: "강제 동기화 여부 (default: false)"
+        required: false
+        schema:
+          type: boolean
       responses:
         "400":
           description: "400"
@@ -162,42 +168,8 @@ paths:
                     totalUserCount\":2,\"lastSyncAt\":\"5 분전\"}}"
       security:
       - bearerAuthJWT: []
-  /users/me/followings/cache/clear:
-    delete:
-      tags:
-      - 2. 깃허브 팔로우 관계 탐지 👥
-      summary: 깃허브 팔로우 캐시 삭제 API
-      description: 현재 로그인한 사용자의 깃허브 팔로우 관계 캐시를 삭제합니다. 해당 API를 실행 후 다시 맞팔탐지기를 실행하면
-        깃허브에서 최신 상태의 데이터를 받아옵니다.
-      operationId: 맞팔탐지기 캐시 삭제 성공
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/users-me-followings-cache-clear63148865"
-              examples:
-                맞팔탐지기 캐시 삭제 성공:
-                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
-                    data\":null}"
-      security:
-      - bearerAuthJWT: []
 components:
   schemas:
-    users-me-followings-cache-clear63148865:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
     auth-reissue-token-1735855461:
       required:
       - code

@@ -27,23 +27,17 @@ public class GithubFollowController {
     public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> getFollowUserList(@CurrentUserId Long currentUserId,
                                                                                      @PathVariable("detectType") DetectType detectType,
                                                                                      @RequestParam(value = "lastUserId", required = false, defaultValue = "0") @LastFetchedUserId Long lastUserId,
-                                                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ValidPageSize int pageSize){
+                                                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ValidPageSize int pageSize,
+                                                                                     @RequestParam(value = "forceSync", required = false) boolean forceSync){
 
         GithubFollowDetectRequest request = GithubFollowDetectRequest.builder()
                 .lastFetchedUserId(lastUserId)
                 .detectType(detectType)
                 .pagingSize(pageSize)
+                .forceSync(forceSync)
                 .build();
 
         return ResponseEntity.ok(ApiResponse.success(githubFollowRelationService.detectFollowUserList(currentUserId, request)));
-    }
-
-    @DeleteMapping("/users/me/followings/cache/clear")
-    public ResponseEntity<ApiResponse<Void>> clearFollowRelationCache(@CurrentUserId Long currentUserId){
-
-        githubFollowCommandService.clearFollowCache(currentUserId);
-
-        return ResponseEntity.ok(ApiResponse.noContent());
     }
 
     @PostMapping("/follow/{targetUserId}")

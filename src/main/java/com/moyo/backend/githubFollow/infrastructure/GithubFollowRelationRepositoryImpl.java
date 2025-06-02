@@ -7,7 +7,9 @@ import com.moyo.backend.githubFollow.exception.GithubRateLimitExceedException;
 import com.moyo.backend.security.oauth.GithubOAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +28,11 @@ public class GithubFollowRelationRepositoryImpl implements GithubFollowRelationR
     private final GithubOAuthTokenProvider githubOAuthTokenProvider;
 
     @Override
-    @Cacheable(value = "followRelation", key = "#userId")
-    public GithubFollowRelation findByUserId(Long userId) {
+    @Caching(
+            cacheable = @Cacheable(value = "followRelation", key = "#userId", condition = "!#forceSync"),
+            put = @CachePut(value = "followRelation", key = "#userId", condition = "#forceSync")
+    )
+    public GithubFollowRelation findByUserId(Long userId, boolean forceSync) {
 
         String githubAccessToken = githubOAuthTokenProvider.getGithubAccessToken(userId);
         ResponseEntity<GithubUserFollowStats> response = githubFollowHttpClient.fetchFollowStatsByUserId(userId, githubAccessToken);

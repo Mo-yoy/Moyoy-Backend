@@ -26,7 +26,9 @@ public class GithubFollowRelationService {
 
     public GithubFollowDetectResponse detectFollowUserList(Long userId, GithubFollowDetectRequest request){
 
-        GithubFollowRelation githubFollowRelation = githubFollowRelationRepository.findByUserId(userId);
+        // forceSync 악용 검증 로직 추후 추가
+
+        GithubFollowRelation githubFollowRelation = githubFollowRelationRepository.findByUserId(userId, request.isForceSync());
         List<GithubFollowUser> githubFollowUsers = githubFollowRelation.filterUsersByDetectType(request.getDetectType());
 
         Slice<GithubFollowUser> pagedSlice = getSlice(githubFollowUsers, request.getLastFetchedUserId(), request.getPagingSize());
