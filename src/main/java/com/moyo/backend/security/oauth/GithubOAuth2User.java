@@ -24,6 +24,8 @@ public class GithubOAuth2User implements OAuth2User {
         return authorities;
     }
 
+
+    // OAuth Authorized Client Id (String)
     @Override
     public String getName() {
         return String.valueOf(attributes.get("id"));

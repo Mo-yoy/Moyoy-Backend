@@ -1,6 +1,6 @@
 package com.moyo.backend.user;
 
-import com.moyo.backend.common.entity.BaseTimeEntity;
+import com.moyo.backend.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

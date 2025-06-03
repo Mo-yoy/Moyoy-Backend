@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -82,9 +84,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-        ErrorReason errorReason = CommonErrorCode.PARAM_TYPE_MISMATCH.getErrorReason();
+        ErrorReason errorReason = CommonErrorCode.INVALID_PARAM.getErrorReason();
 
-        String detailErrorMessage = "요구 타입: " + ex.getRequiredType().getName() + ", 입력 값: " + ex.getValue();
+        String detailErrorMessage = "입력 값: " + ex.getValue();
+        errorReason.addDetailErrorMessage(detailErrorMessage);
+
+        return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
+    }
+
+    // @RequestParam Validation
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        ErrorReason errorReason = CommonErrorCode.INVALID_PARAM.getErrorReason();
+
+        String detailErrorMessage = ex.getParameterValidationResults().stream()
+                .map(result -> {
+                    String paramName = result.getMethodParameter().getParameterName();
+
+                    String messages = result.getResolvableErrors().stream()
+                            .map(MessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.joining("; "));
+                    return "[" + paramName + "] " + ": " + messages;
+                })
+                .collect(Collectors.joining(", "));
+
         errorReason.addDetailErrorMessage(detailErrorMessage);
 
         return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));

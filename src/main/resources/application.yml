@@ -46,11 +46,3 @@ spring:
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
-
-# Spring Doc
-springdoc:
-  cache:
-    disabled: true
-  swagger-ui:
-    tags-sorter: alpha
-    default-models-expand-depth: -1
