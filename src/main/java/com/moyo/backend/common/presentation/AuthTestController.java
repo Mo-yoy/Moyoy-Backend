@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 import static com.moyo.backend.common.constant.MoyoConstants.ANONYMOUS_USER;
 
+@Deprecated
 @Slf4j
 @Profile({"local", "test"})
 @RestController

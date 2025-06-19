@@ -1,6 +1,7 @@
-package com.moyo.backend.user;
+package com.moyo.backend.user.domain;
 
 import com.moyo.backend.common.domain.BaseTimeEntity;
+import com.moyo.backend.ranking.implement.Ranking;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,12 +30,16 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private Ranking ranking;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private User(Long id, String username, String profileImgUrl, Role role){
+    public User(Long id, String username, String profileImgUrl, Role role, Ranking ranking){
         this.id = id;
         this.username = username;
         this.profileImgUrl = profileImgUrl;
         this.role = role;
+        this.ranking = ranking;
     }
 
     public static User from(OAuth2User oAuth2User){

@@ -1,7 +1,7 @@
 package com.moyo.backend.security.oauth;
 
-import com.moyo.backend.user.Role;
-import com.moyo.backend.user.User;
+import com.moyo.backend.user.domain.Role;
+import com.moyo.backend.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

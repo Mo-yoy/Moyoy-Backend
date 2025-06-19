@@ -1,7 +1,7 @@
 package com.moyo.backend.pr_review.domain;
 
 import com.moyo.backend.common.domain.BaseTimeEntity;
-import com.moyo.backend.user.User;
+import com.moyo.backend.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

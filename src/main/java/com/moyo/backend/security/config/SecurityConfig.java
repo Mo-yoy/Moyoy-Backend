@@ -46,11 +46,12 @@ public class SecurityConfig {
                 .addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health", "/").permitAll()                                   // Health Check
-                        .requestMatchers("/permit/all/test").permitAll()                                 // Test
+                        .requestMatchers("/permit/all/test", "/test/**").permitAll()                                 // Test
                         .requestMatchers("/auth/test/admin").hasRole("ADMIN")
                         .requestMatchers("/error/**","/favicon.ico" ).permitAll()                     // Server Default
                         .requestMatchers("/auth/reissue/token").permitAll()                             // Token Reissue
                         .requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll()     // Swagger UI
+                        .requestMatchers("/ranking").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2  -> oauth2
