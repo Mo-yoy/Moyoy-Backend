@@ -11,6 +11,5 @@ public class MoyoBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(MoyoBackendApplication.class, args);
     }
-
 }
 

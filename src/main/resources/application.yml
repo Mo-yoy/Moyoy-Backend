@@ -30,6 +30,8 @@ spring:
             scope:
               - read:user
               - user:follow
+              - read:org
+
 
   # JWT
   jwt:

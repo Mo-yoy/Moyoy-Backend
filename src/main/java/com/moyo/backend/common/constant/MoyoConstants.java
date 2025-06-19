@@ -18,6 +18,8 @@ public class MoyoConstants {
 
 
     public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 100;
+
+    public static final int GITHUB_QUERY_PAGING_SIZE = 100;
     public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;
 
     public static final int OK = 200;

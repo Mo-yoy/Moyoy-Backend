@@ -5,16 +5,11 @@ import com.moyo.backend.githubFollow.domain.GithubFollowRelationRepository;
 import com.moyo.backend.githubFollow.domain.GithubFollowUser;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectRequest;
 import com.moyo.backend.githubFollow.dto.GithubFollowDetectResponse;
-import com.moyo.backend.githubFollow.util.GithubFollowUserSliceUtil;
-import com.moyo.backend.user.User;
-import com.moyo.backend.user.UserRepository;
-import com.moyo.backend.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.TreeSet;
 
 import static com.moyo.backend.githubFollow.util.GithubFollowUserSliceUtil.*;
 

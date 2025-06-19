@@ -1,4 +1,4 @@
-package com.moyo.backend.user;
+package com.moyo.backend.user.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

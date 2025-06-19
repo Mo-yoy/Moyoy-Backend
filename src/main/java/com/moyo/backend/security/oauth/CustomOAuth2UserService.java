@@ -1,12 +1,11 @@
 package com.moyo.backend.security.oauth;
 
-import com.moyo.backend.user.Role;
-import com.moyo.backend.user.User;
-import com.moyo.backend.user.UserRepository;
+import com.moyo.backend.user.domain.Role;
+import com.moyo.backend.user.domain.User;
+import com.moyo.backend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
