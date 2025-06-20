@@ -1,22 +1,22 @@
 package com.moyo.backend.ranking.presentation.dto;
 
-import com.moyo.backend.ranking.implement.RankingDuration;
-import com.moyo.backend.user.domain.User;
-import org.springframework.data.domain.Slice;
-
 import java.util.List;
 
+import org.springframework.data.domain.Slice;
+
+import com.moyo.backend.ranking.implement.RankingDuration;
+import com.moyo.backend.user.domain.User;
+
 public record RankingSearchResponse(
-        List<UserRankingDetails> userList,
-        boolean lastPage
-) {
+	List<UserRankingDetails> userList,
+	boolean lastPage) {
 
-    public static RankingSearchResponse from (Slice<User> users, RankingDuration duration){
+	public static RankingSearchResponse from(Slice<User> users, RankingDuration duration) {
 
-        List<UserRankingDetails> userList = users.getContent().stream()
-                .map(user -> UserRankingDetails.from(user, duration))
-                .toList();
+		List<UserRankingDetails> userList = users.getContent().stream()
+			.map(user -> UserRankingDetails.from(user, duration))
+			.toList();
 
-        return new RankingSearchResponse(userList, users.isLast());
-    }
+		return new RankingSearchResponse(userList, users.isLast());
+	}
 }

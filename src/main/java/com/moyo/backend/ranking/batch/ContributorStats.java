@@ -1,40 +1,41 @@
 package com.moyo.backend.ranking.batch;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
 public class ContributorStats {
 
-    @JsonProperty("author")
-    private Author author;
+	@JsonProperty("author")
+	private Author author;
 
-    @JsonProperty("weeks")
-    private List<Week> weeks;
+	@JsonProperty("weeks")
+	private List<Week> weeks;
 
-    @Getter
-    @Setter
-    static class Author {
+	@Getter
+	@Setter
+	static class Author {
 
-        @JsonProperty("login")
-        private String username;
-    }
+		@JsonProperty("login")
+		private String username;
+	}
 
-    @Getter
-    @Setter
-    static class Week {
+	@Getter
+	@Setter
+	static class Week {
 
-        @JsonProperty("w")
-        private long weekTimeStamp;
+		@JsonProperty("w")
+		private long weekTimeStamp;
 
-        @JsonProperty("a")
-        private int addCodeLine;
+		@JsonProperty("a")
+		private int addCodeLine;
 
-        @JsonProperty("c")
-        private int commit;
-    }
+		@JsonProperty("c")
+		private int commit;
+	}
 }

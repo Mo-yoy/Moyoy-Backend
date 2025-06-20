@@ -5,9 +5,9 @@ import com.moyo.backend.pr_review.domain.PrReviewHits;
 
 public interface PrReviewHitsRepository {
 
-    boolean existsByPrReviewIdAndUserId(Long prReviewRequestId, Long userId);
+	boolean existsByPrReviewIdAndUserId(Long prReviewRequestId, Long userId);
 
-    void deleteByPrReview(PrReview prReview);
+	void deleteByPrReview(PrReview prReview);
 
-    void save(PrReviewHits prReviewHits);
+	void save(PrReviewHits prReviewHits);
 }

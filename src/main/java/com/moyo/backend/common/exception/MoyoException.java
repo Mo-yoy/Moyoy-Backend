@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MoyoException extends RuntimeException{
+public class MoyoException extends RuntimeException {
 
-    private final BaseErrorCode errorCode;
+	private final BaseErrorCode errorCode;
 
-    public ErrorReason getErrorReason(){
-        return errorCode.getErrorReason();
-    }
+	public ErrorReason getErrorReason() {
+		return errorCode.getErrorReason();
+	}
 }

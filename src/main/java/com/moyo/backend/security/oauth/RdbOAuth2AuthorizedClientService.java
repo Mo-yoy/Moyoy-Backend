@@ -8,10 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RdbOAuth2AuthorizedClientService extends JdbcOAuth2AuthorizedClientService {
 
-    public RdbOAuth2AuthorizedClientService(JdbcOperations jdbcOperations, ClientRegistrationRepository clientRegistrationRepository) {
-        super(jdbcOperations, clientRegistrationRepository);
-    }
+	public RdbOAuth2AuthorizedClientService(JdbcOperations jdbcOperations, ClientRegistrationRepository clientRegistrationRepository) {
+		super(jdbcOperations, clientRegistrationRepository);
+	}
 
-    
-    // 추후 AccessToken Value와 RefreshToken Value에 대한 암호화를 여기서 진행
+	// 추후 AccessToken Value와 RefreshToken Value에 대한 암호화를 여기서 진행
 }
