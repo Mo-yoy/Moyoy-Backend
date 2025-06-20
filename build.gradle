@@ -94,6 +94,10 @@ tasks.register('copyOasToSwagger', Copy) {
     into('src/main/resources/static/swagger-ui')
 }
 
+tasks.named('build') {
+    dependsOn 'spotlessApply'
+}
+
 spotless {
     java {
         eclipse().configFile('config/spotless/naver-code-convention.xml')
