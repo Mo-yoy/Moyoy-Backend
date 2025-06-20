@@ -96,7 +96,7 @@ tasks.register('copyOasToSwagger', Copy) {
 
 spotless {
     java {
-        eclipse().configFile('config/spotless/naver-eclipse-formatter.xml')
+        eclipse().configFile('config/spotless/naver-code-convention.xml')
         importOrder('java', 'javax', 'org', 'com', '')
         removeUnusedImports()
         trimTrailingWhitespace()
