@@ -1,34 +1,35 @@
 package com.moyo.backend.security.jwt.controller;
 
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
-import com.moyo.backend.common.dto.ApiResponse;
-import com.moyo.backend.common.util.CookieUtils;
-import com.moyo.backend.security.jwt.dto.JwtReissueResponse;
-import com.moyo.backend.security.jwt.service.JwtReissueService;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import com.moyo.backend.common.dto.ApiResponse;
+import com.moyo.backend.common.util.CookieUtils;
+import com.moyo.backend.security.jwt.dto.JwtReissueResponse;
+import com.moyo.backend.security.jwt.service.JwtReissueService;
 
-import static com.moyo.backend.common.constant.MoyoConstants.*;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class JwtReissueController{
+public class JwtReissueController {
 
-    private final CookieUtils cookieUtils;
-    private final JwtReissueService jwtReissueService;
+	private final CookieUtils cookieUtils;
+	private final JwtReissueService jwtReissueService;
 
-    @PostMapping("/auth/reissue/token")
-    public ResponseEntity<ApiResponse<?>> reissueJwtTokens(@CookieValue(value = "refresh", defaultValue = "") String jwtRefreshToken){
+	@PostMapping("/auth/reissue/token")
+	public ResponseEntity<ApiResponse<?>> reissueJwtTokens(@CookieValue(value = "refresh", defaultValue = "") String jwtRefreshToken) {
 
-        Map<String, String> reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
+		Map<String, String> reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
 
-        return ResponseEntity.status(OK)
-                .header(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(reIssueTokens.get(JWT_REFRESH_TYPE)).toString())
-                .body(ApiResponse.success(new JwtReissueResponse(reIssueTokens.get(JWT_ACCESS_TYPE))));
-    }
+		return ResponseEntity.status(OK)
+			.header(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(reIssueTokens.get(JWT_REFRESH_TYPE)).toString())
+			.body(ApiResponse.success(new JwtReissueResponse(reIssueTokens.get(JWT_ACCESS_TYPE))));
+	}
 }

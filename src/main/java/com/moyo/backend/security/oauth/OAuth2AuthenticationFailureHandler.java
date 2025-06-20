@@ -1,39 +1,41 @@
 package com.moyo.backend.security.oauth;
 
+import static com.moyo.backend.common.constant.MoyoConstants.JSON;
+import static com.moyo.backend.common.constant.MoyoConstants.UNAUTHORIZED;
+
+import java.io.IOException;
+
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.dto.ApiResponse;
 import com.moyo.backend.security.jwt.exception.AuthErrorCode;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-
-import static com.moyo.backend.common.constant.MoyoConstants.JSON;
-import static com.moyo.backend.common.constant.MoyoConstants.UNAUTHORIZED;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+	@Override
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        response.setStatus(UNAUTHORIZED);
-        response.setContentType(JSON);
-        response.setCharacterEncoding("UTF-8");
+		response.setStatus(UNAUTHORIZED);
+		response.setContentType(JSON);
+		response.setCharacterEncoding("UTF-8");
 
-        log.error("OAuth 인증 필터 에서 인증 처리 중 예외 발생 : {}",exception.getMessage());
+		log.error("OAuth 인증 필터 에서 인증 처리 중 예외 발생 : {}", exception.getMessage());
 
-        String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.UNAUTHORIZED_USER.getErrorReason()));
-        response.getWriter().write(jsonResponse);
-    }
+		String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.UNAUTHORIZED_USER.getErrorReason()));
+		response.getWriter().write(jsonResponse);
+	}
 }

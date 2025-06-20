@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PrReviewUpdateRequestDto {
 
-    private String title;
-    private String position;
-    private String prUrl;
-    private String content;
+	private String title;
+	private String position;
+	private String prUrl;
+	private String content;
 
 }

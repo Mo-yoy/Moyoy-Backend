@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 public class MoyoBackendApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MoyoBackendApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(MoyoBackendApplication.class, args);
+	}
 }
-

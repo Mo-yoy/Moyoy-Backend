@@ -7,14 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class StaticRoutingConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry){
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        registry
-                .addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+		registry
+			.addResourceHandler("/static/**")
+			.addResourceLocations("classpath:/static/");
 
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/static/swagger-ui/");
-    }
+		registry.addResourceHandler("swagger-ui.html")
+			.addResourceLocations("classpath:/static/swagger-ui/");
+	}
 }

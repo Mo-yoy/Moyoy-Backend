@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JwtReissueResponse {
 
-    private String accessToken;
+	private String accessToken;
 }

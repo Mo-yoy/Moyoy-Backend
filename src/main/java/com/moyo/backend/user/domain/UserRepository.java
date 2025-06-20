@@ -1,17 +1,17 @@
 package com.moyo.backend.user.domain;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-import java.util.Optional;
+public interface UserRepository {
 
-public interface UserRepository{
+	Optional<User> findById(Long userId);
 
-    Optional<User> findById(Long userId);
+	void save(User user);
 
-    void save(User user);
+	boolean existsById(Long userId);
 
-    boolean existsById(Long userId);
-
-    Slice<User> findAll(Pageable pageable);
+	Slice<User> findAll(Pageable pageable);
 }

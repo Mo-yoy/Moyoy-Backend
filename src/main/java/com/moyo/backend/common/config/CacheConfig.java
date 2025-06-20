@@ -1,10 +1,7 @@
 package com.moyo.backend.common.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.moyo.backend.common.exception.CustomCacheErrorHandler;
-import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
+import java.time.Duration;
+
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;
@@ -16,7 +13,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
-import java.time.Duration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.moyo.backend.common.exception.CustomCacheErrorHandler;
+import com.moyo.backend.githubFollow.domain.GithubFollowRelation;
 
 /**
  *   [추후 확장시 고려 사항]
@@ -32,27 +33,27 @@ import java.time.Duration;
 @Configuration
 public class CacheConfig implements CachingConfigurer {
 
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+	@Bean
+	public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, GithubFollowRelation.class);
+		Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, GithubFollowRelation.class);
 
-        RedisCacheConfiguration redisCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
-                .disableCachingNullValues()
-                .entryTtl(Duration.ofMinutes(15));
+		RedisCacheConfiguration redisCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+			.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+			.disableCachingNullValues()
+			.entryTtl(Duration.ofMinutes(15));
 
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(redisCacheConfig)
-                .build();
-    }
+		return RedisCacheManager.builder(connectionFactory)
+			.cacheDefaults(redisCacheConfig)
+			.build();
+	}
 
-    @Override
-    public CacheErrorHandler errorHandler() {
-        return new CustomCacheErrorHandler();
-    }
+	@Override
+	public CacheErrorHandler errorHandler() {
+		return new CustomCacheErrorHandler();
+	}
 }

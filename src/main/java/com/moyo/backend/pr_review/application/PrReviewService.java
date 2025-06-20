@@ -1,5 +1,11 @@
 package com.moyo.backend.pr_review.application;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.pr_review.application.port.PrReviewHitsRepository;
@@ -14,13 +20,9 @@ import com.moyo.backend.pr_review.dto.request.PrReviewUpdateRequestDto;
 import com.moyo.backend.pr_review.dto.response.*;
 import com.moyo.backend.user.domain.User;
 import com.moyo.backend.user.domain.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -28,175 +30,169 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrReviewService {
 
-    private final PrReviewRepository prReviewRepository;
-    private final UserRepository userRepository;
-    private final PrReviewHitsRepository prReviewHitsRepository;
+	private final PrReviewRepository prReviewRepository;
+	private final UserRepository userRepository;
+	private final PrReviewHitsRepository prReviewHitsRepository;
 
-    private void validateUserExists(Long userId) {
+	private void validateUserExists(Long userId) {
 
-        if (userId == null || !userRepository.existsById(userId)) {
-            throw new MoyoException(CommonErrorCode.USER_NOT_FOUND);
-        }
-    }
+		if (userId == null || !userRepository.existsById(userId)) {
+			throw new MoyoException(CommonErrorCode.USER_NOT_FOUND);
+		}
+	}
 
-    public PrReviewListResponseDto getPrReviewList(PrReviewListRequestDto requestDto) {
+	public PrReviewListResponseDto getPrReviewList(PrReviewListRequestDto requestDto) {
 
-        Page<PrReview> prReviews = prReviewRepository.findAllByStatusAndPosition(
-                requestDto.getStatus(),
-                Position.fromString(requestDto.getPosition()),
-                requestDto.toPageable()
-        );
+		Page<PrReview> prReviews = prReviewRepository.findAllByStatusAndPosition(
+			requestDto.getStatus(),
+			Position.fromString(requestDto.getPosition()),
+			requestDto.toPageable());
 
-        List<PrReviewDto> prReviewDtoList = prReviews.getContent()
-                .stream()
-                .map(pr -> new PrReviewDto(
-                        pr.getUser().getProfileImgUrl(),
-                        pr.getUser().getUsername(),
-                        pr.getPosition().toString(),
-                        pr.getTitle(),
-                        pr.getHitCount(),
-                        pr.getCreatedAt()
-                ))
-                .toList();
+		List<PrReviewDto> prReviewDtoList = prReviews.getContent()
+			.stream()
+			.map(pr -> new PrReviewDto(
+				pr.getUser().getProfileImgUrl(),
+				pr.getUser().getUsername(),
+				pr.getPosition().toString(),
+				pr.getTitle(),
+				pr.getHitCount(),
+				pr.getCreatedAt()))
+			.toList();
 
-        return PrReviewListResponseDto.of(prReviewDtoList, prReviews.isLast());
-    }
+		return PrReviewListResponseDto.of(prReviewDtoList, prReviews.isLast());
+	}
 
-    public PrReviewDetailResponseDto getPrReviewDetail(Long reviewId, Long userId) {
+	public PrReviewDetailResponseDto getPrReviewDetail(Long reviewId, Long userId) {
 
-        PrReview prReview = prReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
+		PrReview prReview = prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
 
-        boolean isWriter = false;
+		boolean isWriter = false;
 
-        // 비로그인 유저도 있기 때문.
-        if (userId != null) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+		// 비로그인 유저도 있기 때문.
+		if (userId != null) {
+			User user = userRepository.findById(userId)
+				.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
 
-            isWriter = prReview.getUser().equals(user);
+			isWriter = prReview.getUser().equals(user);
 
-            // 작성자 본인은 조회수 증가에 포함되지 않음.
-            if (!isWriter) {
-                boolean hasViewed = prReviewHitsRepository.existsByPrReviewIdAndUserId(reviewId, user.getId());
+			// 작성자 본인은 조회수 증가에 포함되지 않음.
+			if (!isWriter) {
+				boolean hasViewed = prReviewHitsRepository.existsByPrReviewIdAndUserId(reviewId, user.getId());
 
-                if (!hasViewed) {
-                    prReview.increaseHitCount();
+				if (!hasViewed) {
+					prReview.increaseHitCount();
 
-                    prReviewHitsRepository.save(new PrReviewHits(user, prReview));
-                }
-            }
-        }
+					prReviewHitsRepository.save(new PrReviewHits(user, prReview));
+				}
+			}
+		}
 
-        return new PrReviewDetailResponseDto(
-                prReview.getStatus() ? "open" : "closed",
-                isWriter,
-                prReview.getUser().getProfileImgUrl(),
-                prReview.getUser().getUsername(),
-                prReview.getPosition().toString(),
-                prReview.getTitle(),
-                prReview.getHitCount(),
-                prReview.getCreatedAt().toString(),
-                prReview.getContent(),
-                prReview.getPrUrl()
-        );
-    }
+		return new PrReviewDetailResponseDto(
+			prReview.getStatus() ? "open" : "closed",
+			isWriter,
+			prReview.getUser().getProfileImgUrl(),
+			prReview.getUser().getUsername(),
+			prReview.getPosition().toString(),
+			prReview.getTitle(),
+			prReview.getHitCount(),
+			prReview.getCreatedAt().toString(),
+			prReview.getContent(),
+			prReview.getPrUrl());
+	}
 
-    public PrReviewCreateResponseDto createPrReview(PrReviewCreateRequestDto requestDto, Long userId) {
+	public PrReviewCreateResponseDto createPrReview(PrReviewCreateRequestDto requestDto, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
 
-        PrReview review = PrReview.builder()
-                .title(requestDto.getTitle())
-                .user(user)
-                .position(Position.fromString(requestDto.getPosition()))
-                .prUrl(requestDto.getPrUrl())
-                .content(requestDto.getContent())
-                .hitCount(0)
-                .status(true) // 현재 상태를 깃허브에서 확인하고 가져와야 함. FIXME
-                .build();
+		PrReview review = PrReview.builder()
+			.title(requestDto.getTitle())
+			.user(user)
+			.position(Position.fromString(requestDto.getPosition()))
+			.prUrl(requestDto.getPrUrl())
+			.content(requestDto.getContent())
+			.hitCount(0)
+			.status(true) // 현재 상태를 깃허브에서 확인하고 가져와야 함. FIXME
+			.build();
 
-        PrReview savedReview = prReviewRepository.save(review);
+		PrReview savedReview = prReviewRepository.save(review);
 
-        return new PrReviewCreateResponseDto(savedReview.getId());
-    }
+		return new PrReviewCreateResponseDto(savedReview.getId());
+	}
 
-    public PrReviewUpdateFormResponseDto getUpdateForm(Long reviewId, Long userId) {
+	public PrReviewUpdateFormResponseDto getUpdateForm(Long reviewId, Long userId) {
 
-        validateUserExists(userId);
+		validateUserExists(userId);
 
-        PrReview review = prReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
+		PrReview review = prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
 
-        if (!review.getUser().getId().equals(userId)) {
-            throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
-        }
+		if (!review.getUser().getId().equals(userId)) {
+			throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
+		}
 
-        return new PrReviewUpdateFormResponseDto(review.getTitle(), review.getPosition().toString(), review.getPrUrl(), review.getContent());
-    }
+		return new PrReviewUpdateFormResponseDto(review.getTitle(), review.getPosition().toString(), review.getPrUrl(), review.getContent());
+	}
 
-    public PrReviewUpdateResponseDto updatePrReview(PrReviewUpdateRequestDto requestDto, Long reviewId, Long userId) {
+	public PrReviewUpdateResponseDto updatePrReview(PrReviewUpdateRequestDto requestDto, Long reviewId, Long userId) {
 
-        validateUserExists(userId);
+		validateUserExists(userId);
 
-        PrReview review = prReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
+		PrReview review = prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
 
-        if (!review.getUser().getId().equals(userId)) {
-            throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
-        }
+		if (!review.getUser().getId().equals(userId)) {
+			throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
+		}
 
-        review.updateDetail(
-                requestDto.getTitle(),
-                requestDto.getContent(),
-                requestDto.getPrUrl(),
-                Position.fromString(requestDto.getPosition())
-        );
+		review.updateDetail(
+			requestDto.getTitle(),
+			requestDto.getContent(),
+			requestDto.getPrUrl(),
+			Position.fromString(requestDto.getPosition()));
 
-        return new PrReviewUpdateResponseDto(reviewId);
-    }
+		return new PrReviewUpdateResponseDto(reviewId);
+	}
 
-    public void deletePrReview(Long reviewId, Long userId) {
+	public void deletePrReview(Long reviewId, Long userId) {
 
-        validateUserExists(userId);
+		validateUserExists(userId);
 
-        PrReview review = prReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
+		PrReview review = prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.PR_REVIEW_NOT_FOUND));
 
-        if (!review.getUser().getId().equals(userId)) {
-            throw new MoyoException(CommonErrorCode.PR_REVIEW_DELETE_FORBIDDEN);
-        }
+		if (!review.getUser().getId().equals(userId)) {
+			throw new MoyoException(CommonErrorCode.PR_REVIEW_DELETE_FORBIDDEN);
+		}
 
-        prReviewHitsRepository.deleteByPrReview(review);
+		prReviewHitsRepository.deleteByPrReview(review);
 
-        prReviewRepository.delete(review);
-    }
+		prReviewRepository.delete(review);
+	}
 
-    public PrReviewListResponseDto getMyPrReviewList(PrReviewListRequestDto requestDto, Long userId) {
+	public PrReviewListResponseDto getMyPrReviewList(PrReviewListRequestDto requestDto, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
 
-        Page<PrReview> prReviews = prReviewRepository.findAllByUserAndStatusAndPosition(
-                user,
-                requestDto.getStatus(),
-                Position.fromString(requestDto.getPosition()),
-                requestDto.toPageable()
-        );
+		Page<PrReview> prReviews = prReviewRepository.findAllByUserAndStatusAndPosition(
+			user,
+			requestDto.getStatus(),
+			Position.fromString(requestDto.getPosition()),
+			requestDto.toPageable());
 
-        List<PrReviewDto> prReviewDtoList = prReviews.getContent()
-                .stream()
-                .map(pr -> new PrReviewDto(
-                        pr.getUser().getProfileImgUrl(),
-                        pr.getUser().getUsername(),
-                        pr.getPosition().toString(),
-                        pr.getTitle(),
-                        pr.getHitCount(),
-                        pr.getCreatedAt()
-                ))
-                .toList();
+		List<PrReviewDto> prReviewDtoList = prReviews.getContent()
+			.stream()
+			.map(pr -> new PrReviewDto(
+				pr.getUser().getProfileImgUrl(),
+				pr.getUser().getUsername(),
+				pr.getPosition().toString(),
+				pr.getTitle(),
+				pr.getHitCount(),
+				pr.getCreatedAt()))
+			.toList();
 
-        return PrReviewListResponseDto.of(prReviewDtoList, prReviews.isLast());
-    }
+		return PrReviewListResponseDto.of(prReviewDtoList, prReviews.isLast());
+	}
 }

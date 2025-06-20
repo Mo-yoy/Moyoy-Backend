@@ -5,71 +5,68 @@ import org.springframework.stereotype.Component;
 @Component
 public class RankingCalculator {
 
-    // 각 평가 항목의 중앙값과 가중치 설정
-    private static final double COMMITS_MEDIAN = 300.0, COMMITS_WEIGHT = 3.0;
-    private static final double COMMITS_LINES_MEDIAN = 30000.0, COMMITS_LINES_WEIGHT = 5.0;
-    private static final double STARS_MEDIAN = 10.0, STARS_WEIGHT = 1.0;
-    private static final double FOLLOWERS_MEDIAN = 100.0, FOLLOWERS_WEIGHT = 1.0;
+	// 각 평가 항목의 중앙값과 가중치 설정
+	private static final double COMMITS_MEDIAN = 300.0, COMMITS_WEIGHT = 3.0;
+	private static final double COMMITS_LINES_MEDIAN = 30000.0, COMMITS_LINES_WEIGHT = 5.0;
+	private static final double STARS_MEDIAN = 10.0, STARS_WEIGHT = 1.0;
+	private static final double FOLLOWERS_MEDIAN = 100.0, FOLLOWERS_WEIGHT = 1.0;
 
-    // 전체 가중치 총합 (10)
-    private static final double TOTAL_WEIGHT = COMMITS_WEIGHT + COMMITS_LINES_WEIGHT + STARS_WEIGHT + FOLLOWERS_WEIGHT;
+	// 전체 가중치 총합 (10)
+	private static final double TOTAL_WEIGHT = COMMITS_WEIGHT + COMMITS_LINES_WEIGHT + STARS_WEIGHT + FOLLOWERS_WEIGHT;
 
-    // 누적 백분위로 등급을 정하기 위한 기준
-    private static final double[] THRESHOLDS = {1, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100};
-    private static final String[] LEVELS = {"S", "A+", "A", "A-", "B+", "B", "B-", "C+", "C"};
+	// 누적 백분위로 등급을 정하기 위한 기준
+	private static final double[] THRESHOLDS = {1, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100};
+	private static final String[] LEVELS = {"S", "A+", "A", "A-", "B+", "B", "B-", "C+", "C"};
 
+	/**
+	 *  특정 사용자의 GitHub 활동을 기반으로 랭킹 점수를 계산합니다.
+	 *
+	 *  랭킹 산정 기준:
+	 *  - 공개된 레포지토리에서의 커밋 개수
+	 *  - 공개된 레포지토리 및 조직에서 커밋된 코드 줄 수 (커밋 개수보다 더 중요한 요소)
+	 *  - 공개된 레포지토리 및 조직의 스타 수 (상대적으로 낮은 가중치)
+	 *  - 사용자의 팔로워 수 (상대적으로 낮은 가중치)
+	 *
+	 *  @param commits 공개 레포 및 조직에서 사용자가 수행한 커밋 개수
+	 *  @param commitLines 공개 레포 및 조직에서 커밋된 코드 줄 수
+	 *  @param stars 공개 레포 및 조직에서 받은 스타 수
+	 *  @param followers 사용자의 팔로워 수
+	 *  @return 입력된 활동 지표를 기반으로 계산된 랭킹 점수(long 타입)
+	 */
+	public RankingCalculateResult calculateRanking(int commits, int commitLines, int stars, int followers) {
 
-    /**
-     *  특정 사용자의 GitHub 활동을 기반으로 랭킹 점수를 계산합니다.
-     *
-     *  랭킹 산정 기준:
-     *  - 공개된 레포지토리에서의 커밋 개수
-     *  - 공개된 레포지토리 및 조직에서 커밋된 코드 줄 수 (커밋 개수보다 더 중요한 요소)
-     *  - 공개된 레포지토리 및 조직의 스타 수 (상대적으로 낮은 가중치)
-     *  - 사용자의 팔로워 수 (상대적으로 낮은 가중치)
-     *
-     *  @param commits 공개 레포 및 조직에서 사용자가 수행한 커밋 개수
-     *  @param commitLines 공개 레포 및 조직에서 커밋된 코드 줄 수
-     *  @param stars 공개 레포 및 조직에서 받은 스타 수
-     *  @param followers 사용자의 팔로워 수
-     *  @return 입력된 활동 지표를 기반으로 계산된 랭킹 점수(long 타입)
-     */
-    public RankingCalculateResult calculateRanking(int commits, int commitLines, int stars, int followers){
+		// 각 항목의 점수를 계산한 후 전체 가중치로 평균 → 1에서 빼면 "상대 점수"
+		double rank = 1 - (COMMITS_WEIGHT * exponentialCdf(commits / COMMITS_MEDIAN) +
+			COMMITS_LINES_WEIGHT * logNormalCdf(commitLines / COMMITS_LINES_MEDIAN) +
+			STARS_WEIGHT * exponentialCdf(stars / STARS_MEDIAN) +
+			FOLLOWERS_WEIGHT * exponentialCdf(followers / FOLLOWERS_MEDIAN)) / TOTAL_WEIGHT;
 
-        // 각 항목의 점수를 계산한 후 전체 가중치로 평균 → 1에서 빼면 "상대 점수"
-        double rank = 1 - (
-                COMMITS_WEIGHT * exponentialCdf(commits / COMMITS_MEDIAN) +
-                COMMITS_LINES_WEIGHT * logNormalCdf(commitLines / COMMITS_LINES_MEDIAN) +
-                STARS_WEIGHT * exponentialCdf(stars / STARS_MEDIAN) +
-                FOLLOWERS_WEIGHT * exponentialCdf(followers / FOLLOWERS_MEDIAN)
-        ) / TOTAL_WEIGHT;
+		// 백분위 점수를 기준으로 해당 레벨을 찾음
+		double percentile = rank * 100;
+		String level = "C"; // 기본 값
 
-        // 백분위 점수를 기준으로 해당 레벨을 찾음
-        double percentile = rank * 100;
-        String level = "C"; // 기본 값
+		for (int i = 0; i < THRESHOLDS.length; i++) {
+			if (percentile <= THRESHOLDS[i]) {
+				level = LEVELS[i];
+				break;
+			}
+		}
 
-        for (int i = 0; i < THRESHOLDS.length; i++) {
-            if (percentile <= THRESHOLDS[i]) {
-                level = LEVELS[i];
-                break;
-            }
-        }
+		// 💡 백분위 기반 포인트 계산
+		final int MAX_POINT = 100_000;
+		long point = (long)((100 - percentile) * MAX_POINT);
 
-        // 💡 백분위 기반 포인트 계산
-        final int MAX_POINT = 100_000;
-        long point = (long) ((100 - percentile) * MAX_POINT);
+		// 등급과 백분위 수를 담은 결과 객체 반환
+		return new RankingCalculateResult(level, point);
+	}
 
-        // 등급과 백분위 수를 담은 결과 객체 반환
-        return new RankingCalculateResult(level, point);
-    }
+	// 지수 CDF → 초반에 민감 하게 점수 부여 (소수 정예를 띄우고 싶을 때)
+	private double exponentialCdf(double x) {
+		return 1 - Math.pow(2, -x);
+	}
 
-    // 지수 CDF → 초반에 민감 하게 점수 부여 (소수 정예를 띄우고 싶을 때)
-    private double exponentialCdf(double x) {
-        return 1 - Math.pow(2, -x);
-    }
-
-    // 로그 CDF → 큰 값의 영향력을 줄이고 점수를 균형 있게 제한 하고 싶을 때
-    private double logNormalCdf(double x) {
-        return x / (1 + x);
-    }
+	// 로그 CDF → 큰 값의 영향력을 줄이고 점수를 균형 있게 제한 하고 싶을 때
+	private double logNormalCdf(double x) {
+		return x / (1 + x);
+	}
 }
