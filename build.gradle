@@ -101,7 +101,7 @@ tasks.named('build') {
 spotless {
     java {
         eclipse().configFile('config/spotless/naver-code-convention.xml')
-        importOrder('java', 'javax', 'org', 'com', '')
+        importOrder('java', 'javax' , 'lombok' , 'org', 'com', '')
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()

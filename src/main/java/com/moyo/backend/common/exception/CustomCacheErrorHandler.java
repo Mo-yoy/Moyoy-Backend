@@ -1,9 +1,9 @@
 package com.moyo.backend.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *   레디스 인스턴스 장애시 에러 임시 처리, 추후 구현할 예정

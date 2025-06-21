@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import com.moyo.backend.security.oauth.GithubOAuth2User;
+import com.moyo.backend.domain.security.oauth.GithubOAuth2User;
 
 public class WithMockGithubOAuth2UserSecurityContextFactory implements WithSecurityContextFactory<WithMockGithubOAuth2User> {
 	@Override

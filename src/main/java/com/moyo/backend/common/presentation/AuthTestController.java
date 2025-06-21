@@ -4,6 +4,9 @@ import static com.moyo.backend.common.constant.MoyoConstants.ANONYMOUS_USER;
 
 import java.util.StringTokenizer;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,10 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moyo.backend.security.oauth.GithubOAuth2User;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.moyo.backend.domain.security.oauth.GithubOAuth2User;
 
 @Deprecated
 @Slf4j

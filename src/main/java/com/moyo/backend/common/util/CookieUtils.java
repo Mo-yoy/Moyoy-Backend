@@ -1,8 +1,8 @@
 package com.moyo.backend.common.util;
 
 import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
-import static com.moyo.backend.security.jwt.util.JwtProvider.JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
-import static com.moyo.backend.security.jwt.util.JwtProvider.ONE_MINUTE;
+import static com.moyo.backend.domain.security.jwt.util.JwtProvider.JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
+import static com.moyo.backend.domain.security.jwt.util.JwtProvider.ONE_MINUTE;
 
 import java.io.Serializable;
 import java.util.Base64;
