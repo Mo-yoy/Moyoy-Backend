@@ -8,6 +8,46 @@ servers:
 - url: http://localhost:8080
 tags: []
 paths:
+  /api/v1/rankings:
+    get:
+      tags:
+      - 3. 랭킹 조회 🔢
+      summary: 전체 개인 랭킹 조회 API
+      description: 우리 서비스의 전체 개인 랭킹을 조회합니다.
+      operationId: 전체 개인 랭킹 조회 성공
+      parameters:
+      - name: duration
+        in: query
+        description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "조회할 페이지 (default: 0)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: "페이징 사이즈 (default: 20)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-rankings1445726081"
+              examples:
+                전체 개인 랭킹 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"profileImageUrl\":\"img/url\",\"username\"\
+                    :\"테스터1\",\"rankPoint\":10000}],\"lastPage\":true}}"
   /api/v1/follow/{targetUserId}:
     post:
       tags:
@@ -62,48 +102,6 @@ paths:
                     data\":null}"
       security:
       - bearerAuthJWT: []
-  /api/v1/auth/reissue/token:
-    post:
-      tags:
-      - 1. JWT 재발급 🔄
-      summary: JWT 토큰 재발급 API
-      description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
-        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드\
-        를 참고 해 주세요"
-      operationId: JWT 재발급 성공LOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/api-v1-auth-reissue-token1995903112"
-              examples:
-                JWT 재발급 성공:
-                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"accessToken\":\"newAccessToken\"}}"
-        "401":
-          description: "401"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/api-v1-auth-reissue-token-1735855461"
-              examples:
-                LOGIN_401_1:
-                  value: "{\"status\":401,\"code\":\"LOGIN_401_1\",\"message\":\"인\
-                    증 헤더나 쿠키에 JWT 토큰이 존재 하지 않습니다.\",\"data\":null}"
-                LOGIN_401_2:
-                  value: "{\"status\":401,\"code\":\"LOGIN_401_2\",\"message\":\"토\
-                    큰 타입이 올바르지 않습니다.\",\"data\":null}"
-                LOGIN_401_3:
-                  value: "{\"status\":401,\"code\":\"LOGIN_401_3\",\"message\":\"유\
-                    효하지 않은 토큰입니다.\",\"data\":null}"
-                LOGIN_401_4:
-                  value: "{\"status\":401,\"code\":\"LOGIN_401_4\",\"message\":\"만\
-                    료된 토큰입니다.\",\"data\":null}"
-                LOGIN_401_5:
-                  value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
-                    랙리스트 처리된 토큰 입니다.\",\"data\":null}"
   /api/v1/users/me/followings/{detectType}:
     get:
       tags:
@@ -168,9 +166,51 @@ paths:
                     totalUserCount\":2,\"lastSyncAt\":\"5 분전\"}}"
       security:
       - bearerAuthJWT: []
+  /auth/reissue/token:
+    post:
+      tags:
+      - 1. JWT 재발급 🔄
+      summary: JWT 토큰 재발급 API
+      description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
+        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드\
+        를 참고 해 주세요"
+      operationId: JWT 재발급 성공LOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/auth-reissue-token1995903112"
+              examples:
+                JWT 재발급 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"accessToken\":\"newAccessToken\"}}"
+        "401":
+          description: "401"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/auth-reissue-token-1735855461"
+              examples:
+                LOGIN_401_1:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_1\",\"message\":\"인\
+                    증 헤더나 쿠키에 JWT 토큰이 존재 하지 않습니다.\",\"data\":null}"
+                LOGIN_401_2:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_2\",\"message\":\"토\
+                    큰 타입이 올바르지 않습니다.\",\"data\":null}"
+                LOGIN_401_3:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_3\",\"message\":\"유\
+                    효하지 않은 토큰입니다.\",\"data\":null}"
+                LOGIN_401_4:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_4\",\"message\":\"만\
+                    료된 토큰입니다.\",\"data\":null}"
+                LOGIN_401_5:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
+                    랙리스트 처리된 토큰 입니다.\",\"data\":null}"
 components:
   schemas:
-    api-v1-auth-reissue-token-1735855461:
+    auth-reissue-token-1735855461:
       required:
       - code
       - message
@@ -211,6 +251,49 @@ components:
         code:
           type: string
           description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-rankings1445726081:
+      required:
+      - code
+      - data
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - userList
+          type: object
+          properties:
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - profileImageUrl
+                - rankPoint
+                - username
+                type: object
+                properties:
+                  profileImageUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  rankPoint:
+                    type: number
+                    description: 사용자 랭킹 점수
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+          description: 응답 데이터
         status:
           type: number
           description: ✅ 응답 상태 코드
@@ -263,7 +346,7 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
-    api-v1-auth-reissue-token1995903112:
+    auth-reissue-token1995903112:
       required:
       - code
       - message

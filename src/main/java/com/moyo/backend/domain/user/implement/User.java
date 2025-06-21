@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.user.domain;
+package com.moyo.backend.domain.user.implement;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -63,5 +63,9 @@ public class User extends BaseTimeEntity {
 
 	public void changeRole(Role role) {
 		this.role = role;
+	}
+
+	public void updateRanking(Ranking ranking) {
+		this.ranking = ranking;
 	}
 }

@@ -11,9 +11,9 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.user.domain.Role;
-import com.moyo.backend.domain.user.domain.User;
-import com.moyo.backend.domain.user.domain.UserRepository;
+import com.moyo.backend.domain.user.data_access.UserRepository;
+import com.moyo.backend.domain.user.implement.Role;
+import com.moyo.backend.domain.user.implement.User;
 
 @Slf4j
 @Component

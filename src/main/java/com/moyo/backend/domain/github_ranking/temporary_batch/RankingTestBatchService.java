@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.batch;
+package com.moyo.backend.domain.github_ranking.temporary_batch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.moyo.backend.common.exception.user.UserNotFoundException;
 import com.moyo.backend.domain.security.oauth.GithubOAuthTokenReader;
-import com.moyo.backend.domain.user.domain.User;
-import com.moyo.backend.domain.user.domain.UserRepository;
-import com.moyo.backend.domain.user.exception.UserNotFoundException;
+import com.moyo.backend.domain.user.data_access.UserRepository;
+import com.moyo.backend.domain.user.implement.User;
 
 @Service
 @RequiredArgsConstructor

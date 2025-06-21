@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.user.domain.User;
+import com.moyo.backend.domain.user.implement.User;
 
 import jakarta.persistence.*;
 

@@ -10,7 +10,7 @@ import org.hibernate.type.SqlTypes;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
 import com.moyo.backend.domain.pr_review.domain.position.Position;
-import com.moyo.backend.domain.user.domain.User;
+import com.moyo.backend.domain.user.implement.User;
 
 import jakarta.persistence.*;
 

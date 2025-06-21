@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.user.infrastructure;
+package com.moyo.backend.domain.user.data_access;
 
 import java.util.Optional;
 
@@ -8,8 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import com.moyo.backend.domain.user.domain.User;
-import com.moyo.backend.domain.user.domain.UserRepository;
+import com.moyo.backend.domain.user.implement.User;
 
 @Repository
 @RequiredArgsConstructor

@@ -9,8 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.moyo.backend.domain.user.domain.Role;
-import com.moyo.backend.domain.user.domain.User;
+import com.moyo.backend.domain.user.implement.Role;
+import com.moyo.backend.domain.user.implement.User;
 
 public class GithubOAuth2UserConverter {
 

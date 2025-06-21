@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.user.exception;
+package com.moyo.backend.common.exception.user;
 
 import com.moyo.backend.common.exception.MoyoException;
 

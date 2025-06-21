@@ -16,7 +16,6 @@ import com.moyo.backend.common.response.ApiResponse;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetection;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
-import com.moyo.backend.domain.github_follow.presentation.dto.GithubFollowDetectResponse;
 
 @RestController
 @RequiredArgsConstructor

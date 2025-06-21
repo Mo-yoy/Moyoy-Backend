@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.moyo.backend.domain.pr_review.domain.PrReview;
 import com.moyo.backend.domain.pr_review.domain.position.Position;
-import com.moyo.backend.domain.user.domain.User;
+import com.moyo.backend.domain.user.implement.User;
 
 public interface PrReviewRepository {
 

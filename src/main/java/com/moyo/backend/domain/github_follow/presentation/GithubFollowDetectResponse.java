@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_follow.presentation.dto;
+package com.moyo.backend.domain.github_follow.presentation;
 
 import java.util.List;
 

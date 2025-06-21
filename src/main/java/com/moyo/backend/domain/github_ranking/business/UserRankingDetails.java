@@ -1,7 +1,7 @@
-package com.moyo.backend.domain.github_ranking.presentation.dto;
+package com.moyo.backend.domain.github_ranking.business;
 
 import com.moyo.backend.domain.github_ranking.implement.RankingDuration;
-import com.moyo.backend.domain.user.domain.User;
+import com.moyo.backend.domain.user.implement.User;
 
 public record UserRankingDetails(
 	String profileImageUrl,
