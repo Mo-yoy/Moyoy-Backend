@@ -22,8 +22,8 @@ public class RankingController {
 	@GetMapping("/rankings")
 	public ResponseEntity<ApiResponse<RankingSearchResponse>> getAllUserRanking(
 		@RequestParam("duration") String duration,
-		@RequestParam("page") int page,
-		@RequestParam("size") int size) {
+		@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+		@RequestParam(value = "size", required = false, defaultValue = "20") int size) {
 
 		RankingSearchResult rankingSearchResult = rankingService.getAllUserRanking(duration, page, size);
 		RankingSearchResponse responseData = RankingSearchResponse.from(rankingSearchResult);
