@@ -9,6 +9,6 @@ public record RankingSearch(
 		String duration,
 		int page,
 		int size) {
-		this(RankingDuration.valueOf(duration), page, size);
+		this(RankingDuration.valueOf(duration.toUpperCase()), page, size);
 	}
 }

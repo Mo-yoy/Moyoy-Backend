@@ -16,7 +16,7 @@ public class RankingReader {
 
 	public Slice<User> getAllUserRankings(RankingSearch rankingSearch) {
 
-		Sort sort = Sort.by(Sort.Direction.DESC, "ranking." + rankingSearch.duration().getValue());
+		Sort sort = Sort.by(Sort.Direction.DESC, "ranking." + rankingSearch.duration().getAttributeName());
 		Pageable pageable = PageRequest.of(rankingSearch.page(), rankingSearch.size(), sort);
 
 		return userRepository.findAll(pageable);
