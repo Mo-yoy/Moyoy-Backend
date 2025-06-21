@@ -1,6 +1,6 @@
 package com.moyo.backend.domain.security.config;
 
-import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.fromHierarchy;
+import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,6 @@ import com.moyo.backend.domain.security.oauth.HttpCookieOAuth2AuthorizationReque
 import com.moyo.backend.domain.security.oauth.OAuth2AuthenticationFailureHandler;
 import com.moyo.backend.domain.security.oauth.OAuth2AuthenticationSuccessHandler;
 import com.moyo.backend.domain.security.oauth.RdbOAuth2AuthorizedClientService;
-import com.moyo.backend.security.oauth.*;
 
 @Configuration
 @RequiredArgsConstructor

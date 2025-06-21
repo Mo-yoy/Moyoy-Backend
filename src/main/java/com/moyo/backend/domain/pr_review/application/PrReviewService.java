@@ -27,7 +27,6 @@ import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateFormResponse
 import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateResponseDto;
 import com.moyo.backend.domain.user.domain.User;
 import com.moyo.backend.domain.user.domain.UserRepository;
-import com.moyo.backend.pr_review.dto.response.*;
 
 @Slf4j
 @Service

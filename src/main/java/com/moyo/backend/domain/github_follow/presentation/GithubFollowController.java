@@ -18,7 +18,6 @@ import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResul
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
 import com.moyo.backend.domain.github_follow.presentation.dto.GithubFollowDetectResponse;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -31,10 +30,10 @@ public class GithubFollowController {
 		@CurrentUserId Long currentUserId,
 		@PathVariable("detectType") String detectType,
 		@RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
-		@RequestParam(value = "size", required = false, defaultValue = "30") int size,
+		@RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize,
 		@RequestParam(value = "forceSync", required = false) boolean forceSync) {
 
-		GithubFollowDetection followDetection = new GithubFollowDetection(detectType, lastUserId, size, forceSync);
+		GithubFollowDetection followDetection = new GithubFollowDetection(detectType, lastUserId, pageSize, forceSync);
 		GithubFollowDetectionResult followDetectionResult = githubFollowService.getFollowUserSlice(currentUserId, followDetection);
 
 		GithubFollowDetectResponse responseData = GithubFollowDetectResponse.from(followDetectionResult);

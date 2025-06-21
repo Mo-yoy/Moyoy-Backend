@@ -14,8 +14,7 @@ public record GithubFollowDetectionResult(
 
 	Slice<GithubUser> users,
 	LocalDateTime lastSyncAt,
-	int totalFollowUserCount
-) {
+	int totalFollowUserCount) {
 
 	public static GithubFollowDetectionResult from(List<GithubUser> users, GithubFollowDetection followDetection, LocalDateTime lastSyncAt) {
 
@@ -37,8 +36,7 @@ public record GithubFollowDetectionResult(
 		return new GithubFollowDetectionResult(
 			usersSlice,
 			lastSyncAt,
-			users.size()
-		);
+			users.size());
 	}
 
 }

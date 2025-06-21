@@ -4,10 +4,9 @@ import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GithubUserFollowStats (
+public record GithubUserFollowStats(
 	int maxFollowingPageSize,
-	int maxFollowerPageSize
-){
+	int maxFollowerPageSize) {
 
 	/**
 	 *   깃허브 기본 페이지는 1부터 시작 (즉, 0 == 1, 같은 페이지)
@@ -22,8 +21,7 @@ public record GithubUserFollowStats (
 
 		this(
 			followingCnt / GITHUB_FOLLOW_QUERY_PAGING_SIZE + 1,
-			followerCnt / GITHUB_FOLLOW_QUERY_PAGING_SIZE + 1
-		);
+			followerCnt / GITHUB_FOLLOW_QUERY_PAGING_SIZE + 1);
 	}
 
 	public int getTotalRequestCnt() {

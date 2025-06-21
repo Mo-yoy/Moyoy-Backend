@@ -50,7 +50,6 @@ import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResul
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
 import com.moyo.backend.domain.github_follow.implement.GithubUser;
 import com.moyo.backend.domain.github_follow.presentation.GithubFollowController;
-import com.moyo.backend.domain.github_follow.presentation.dto.GithubFollowDetectResponse;
 import com.moyo.common.annotation.WithMockGithubOAuth2User;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
@@ -81,13 +80,12 @@ class GithubFollowControllerTest {
 		Slice<GithubUser> userSlice = new SliceImpl<>(userList);
 
 		GithubFollowDetectionResult result = new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount);
-		GithubFollowDetectResponse mockResponse = GithubFollowDetectResponse.from(result);
 
 		// Mockito 빈을 사용하는데 해당 빈의 어떤 메서드에 어떤 입력을 넣었을 때 원하는 응답이 오도록 조절함.
 		given(githubFollowService.getFollowUserSlice(anyLong(), any())).willReturn(result);
 
 		// when
-		mockMvc.perform(get("/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
+		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1")
@@ -107,7 +105,7 @@ class GithubFollowControllerTest {
 						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING).defaultValue("mutual"))
 					.queryParameters(
 						parameterWithName("lastUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 userId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
-						parameterWithName("pageSize").description("조회할 사용자 수 (default: 10)").type(SimpleType.INTEGER).optional(),
+						parameterWithName("pageSize").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional(),
 						parameterWithName("forceSync").description("강제 동기화 여부 (default: false)").type(SimpleType.BOOLEAN).optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
@@ -132,7 +130,7 @@ class GithubFollowControllerTest {
 		doThrow(new MoyoException(errorCode)).when(githubFollowService).getFollowUserSlice(anyLong(), any());
 
 		// when & then
-		mockMvc.perform(get("/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
+		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1"))
@@ -163,7 +161,7 @@ class GithubFollowControllerTest {
 
 		willDoNothing().given(githubFollowService).follow(anyLong(), anyLong());
 
-		mockMvc.perform(post("/follow/{targetUserId}", 12345L)
+		mockMvc.perform(post("/api/v1/follow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.status").value(204))
@@ -190,7 +188,7 @@ class GithubFollowControllerTest {
 
 		willDoNothing().given(githubFollowService).unfollow(anyLong(), anyLong());
 
-		mockMvc.perform(delete("/unfollow/{targetUserId}", 12345L)
+		mockMvc.perform(delete("/api/v1/unfollow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.status").value(204)) // noContent 응답 코드
