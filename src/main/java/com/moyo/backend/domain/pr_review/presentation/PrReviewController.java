@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moyo.backend.common.response.ApiResponse;
+import com.moyo.backend.domain.auth.oauth.GithubOAuth2User;
 import com.moyo.backend.domain.pr_review.application.PrReviewService;
 import com.moyo.backend.domain.pr_review.dto.request.PrReviewCreateRequestDto;
 import com.moyo.backend.domain.pr_review.dto.request.PrReviewListRequestDto;
@@ -25,7 +26,6 @@ import com.moyo.backend.domain.pr_review.dto.response.PrReviewDetailResponseDto;
 import com.moyo.backend.domain.pr_review.dto.response.PrReviewListResponseDto;
 import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateFormResponseDto;
 import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateResponseDto;
-import com.moyo.backend.domain.security.oauth.GithubOAuth2User;
 
 @Slf4j
 @RestController

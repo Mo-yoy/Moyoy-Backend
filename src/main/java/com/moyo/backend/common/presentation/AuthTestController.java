@@ -24,7 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moyo.backend.domain.security.oauth.GithubOAuth2User;
+import com.moyo.backend.domain.auth.oauth.GithubOAuth2User;
 
 @Deprecated
 @Slf4j

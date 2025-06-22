@@ -1,5 +1,9 @@
 package com.moyo.backend.common.constant;
 
+/**
+ *  여러 곳에서 공통으로 사용하는 상수 모음
+ */
+
 public class MoyoConstants {
 
 	public static final String SET_COOKIE = "Set-Cookie";
@@ -20,6 +24,8 @@ public class MoyoConstants {
 
 	public static final int GITHUB_QUERY_PAGING_SIZE = 100;
 	public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;
+
+	public static final long ONE_MINUTE_MILLS = 60 * 1000;
 
 	public static final int OK = 200;
 	public static final int NO_CONTENT = 204;

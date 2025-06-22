@@ -2,7 +2,7 @@ package com.moyo.backend.security.jwt.controller;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.moyo.backend.domain.security.jwt.exception.AuthErrorCode.*;
+import static com.moyo.backend.common.exception.auth.AuthErrorCode.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -11,7 +11,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -35,10 +34,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
+import com.moyo.backend.common.exception.auth.AuthErrorCode;
 import com.moyo.backend.common.util.CookieUtils;
-import com.moyo.backend.domain.security.jwt.controller.JwtReissueController;
-import com.moyo.backend.domain.security.jwt.exception.AuthErrorCode;
-import com.moyo.backend.domain.security.jwt.service.JwtReissueService;
+import com.moyo.backend.domain.auth.jwt.business.JwtReissueService;
+import com.moyo.backend.domain.auth.jwt.business.ReissuedTokens;
+import com.moyo.backend.domain.auth.jwt.presentation.JwtReissueController;
 
 import jakarta.servlet.http.Cookie;
 
@@ -63,12 +63,10 @@ class JwtReissueControllerTest {
 
 		// given
 		String fakeRefreshToken = "fakeRefreshTokenValue";
-		Map<String, String> tokenMap = Map.of(
-			"access", "newAccessToken",
-			"refresh", "newRefreshToken");
+		ReissuedTokens reissuedTokens = new ReissuedTokens("newAccessToken", "newRefreshToken");
 
-		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(tokenMap);
-		given(cookieUtils.createJwtRefreshTokenCookie(tokenMap.get("refresh"))).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
+		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissuedTokens);
+		given(cookieUtils.createJwtRefreshTokenCookie(reissuedTokens.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
 
 		// when
 		mockMvc.perform(post("/auth/reissue/token")

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moyo.backend.common.annotation.CurrentUserId;
+import com.moyo.backend.common.annotation.LoginUserId;
 import com.moyo.backend.common.response.ApiResponse;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetection;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
@@ -26,7 +26,7 @@ public class GithubFollowController {
 
 	@GetMapping("/users/me/followings/{detectType}")
 	public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> getFollowUserList(
-		@CurrentUserId Long currentUserId,
+		@LoginUserId Long currentUserId,
 		@PathVariable("detectType") String detectType,
 		@RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
 		@RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize,
@@ -42,7 +42,7 @@ public class GithubFollowController {
 
 	@PostMapping("/follow/{targetUserId}")
 	public ResponseEntity<ApiResponse<Void>> followGithubUser(
-		@CurrentUserId Long currentUserId,
+		@LoginUserId Long currentUserId,
 		@PathVariable("targetUserId") Long targetUserId) {
 
 		githubFollowService.follow(currentUserId, targetUserId);
@@ -52,7 +52,7 @@ public class GithubFollowController {
 
 	@DeleteMapping("/unfollow/{targetUserId}")
 	public ResponseEntity<ApiResponse<Void>> unFollowGithubUser(
-		@CurrentUserId Long currentUserId,
+		@LoginUserId Long currentUserId,
 		@PathVariable("targetUserId") Long targetUserId) {
 
 		githubFollowService.unfollow(currentUserId, targetUserId);
