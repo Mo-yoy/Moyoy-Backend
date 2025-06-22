@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.auth.oauth.GithubOAuthTokenReader;
+import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_follow.data_access.GithubFollowHttpClient;
 
 @Component

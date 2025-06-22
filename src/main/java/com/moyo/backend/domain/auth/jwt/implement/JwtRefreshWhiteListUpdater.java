@@ -18,15 +18,15 @@ public class JwtRefreshWhiteListUpdater {
 	private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
 	@Transactional
-	public void updateRefreshTokenWhiteList(String jwtRefreshToken) {
+	public void updateRefreshTokenWhiteList(String oldToken, String newToken) {
 
 		JwtRefreshToken reissuedRefreshToken = null;
 		try {
-			reissuedRefreshToken = JwtRefreshToken.from(SignedJWT.parse(jwtRefreshToken).getJWTClaimsSet(), jwtRefreshToken);
+			reissuedRefreshToken = JwtRefreshToken.from(SignedJWT.parse(newToken).getJWTClaimsSet(), newToken);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
-		jwtRefreshTokenRepository.deleteByTokenValue(jwtRefreshToken);
+		jwtRefreshTokenRepository.deleteByTokenValue(oldToken);
 		jwtRefreshTokenRepository.save(reissuedRefreshToken);
 	}
 }

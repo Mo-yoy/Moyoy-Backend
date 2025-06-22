@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.auth.support.config;
+package com.moyo.backend.domain.auth.jwt.support;
 
 import java.nio.charset.StandardCharsets;
 

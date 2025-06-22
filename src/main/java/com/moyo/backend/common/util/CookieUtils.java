@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CookieUtils {
 
-	public static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE_MILLS;
+	private static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE_MILLS;
 
 	private final String domain;
 	private final String samesite;

@@ -30,7 +30,7 @@ public class JwtReissueService {
 		String reIssueRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_REFRESH_TYPE);
 		String reIssueAccessToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_ACCESS_TYPE);
 
-		jwtRefreshWhiteListUpdater.updateRefreshTokenWhiteList(jwtRefreshToken);
+		jwtRefreshWhiteListUpdater.updateRefreshTokenWhiteList(jwtRefreshToken, reIssueRefreshToken);
 
 		return new ReissuedTokens(reIssueAccessToken, reIssueRefreshToken);
 	}

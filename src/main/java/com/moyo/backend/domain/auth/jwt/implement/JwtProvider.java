@@ -19,9 +19,6 @@ import com.nimbusds.jwt.SignedJWT;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-	private static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE_MILLS * 30;
-	private static final long JWT_REFRESH_TOKEN_EXPIRATION_MINUTE = ONE_MINUTE_MILLS * 300;
-
 	private final MACSigner macSigner;
 	private final JWK jwk;
 

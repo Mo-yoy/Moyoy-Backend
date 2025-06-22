@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.auth.oauth;
+package com.moyo.backend.domain.auth.oauth.component;
 
 import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
 import static com.moyo.backend.common.constant.MoyoConstants.SET_COOKIE;
@@ -18,13 +18,19 @@ import com.moyo.backend.common.util.CookieUtils;
 import com.moyo.backend.domain.auth.jwt.data_access.JwtRefreshTokenRepository;
 import com.moyo.backend.domain.auth.jwt.implement.JwtProvider;
 import com.moyo.backend.domain.auth.jwt.implement.JwtRefreshToken;
-import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.moyo.backend.domain.auth.jwt.implement.JwtUserInfo;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ *  사용자가 OAuth를 이용해 직접 인증 성공 후에 호출
+ *
+ *  해당 클래스는 조금 고려해 볼 게 있어서 추후 다시 리팩토링 함.
+ */
 
 @Slf4j
 @Component
@@ -35,8 +41,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	private final String frontLoginSuccessURI;
 	private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
-	public OAuth2AuthenticationSuccessHandler(CookieUtils cookieUtils, OctetSequenceKey jwk, JwtProvider jwtProvider,
-		JwtRefreshTokenRepository jwtRefreshTokenRepository, @Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
+	public OAuth2AuthenticationSuccessHandler(
+		CookieUtils cookieUtils,
+		JwtProvider jwtProvider,
+		JwtRefreshTokenRepository jwtRefreshTokenRepository,
+		@Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
 
 		this.cookieUtils = cookieUtils;
 		this.jwtProvider = jwtProvider;
@@ -48,16 +57,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
 		String jwtRefreshToken;
-		GithubOAuth2User userPrincipal = (GithubOAuth2User)authentication.getPrincipal();
+		JwtUserInfo jwtUserInfo = JwtUserInfo.from(authentication);
 
 		try {
-			log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", userPrincipal.getId());
-			jwtRefreshToken = jwtProvider.createJwtToken(userPrincipal, JWT_REFRESH_TYPE);
+
+			log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", jwtUserInfo.userId());
+			jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_REFRESH_TYPE);
 			response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
 
 			SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
 			JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
 			jwtRefreshTokenRepository.save(JwtRefreshToken.from(claimsSet, jwtRefreshToken));
 
 			/**

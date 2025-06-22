@@ -1,4 +1,4 @@
-package com.moyo.backend.common.exception;
+package com.moyo.backend.common.exception.handler;
 
 import java.util.stream.Collectors;
 
@@ -21,6 +21,9 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.moyo.backend.common.exception.CommonErrorCode;
+import com.moyo.backend.common.exception.ErrorReason;
+import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.response.ApiResponse;
 
 import jakarta.validation.ConstraintViolation;

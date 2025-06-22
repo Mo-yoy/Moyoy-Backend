@@ -43,9 +43,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
-import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.exception.github_follow.FollowErrorCode;
+import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
 import com.moyo.backend.domain.github_follow.implement.GithubUser;

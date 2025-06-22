@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.moyo.backend.common.exception.CustomCacheErrorHandler;
+import com.moyo.backend.common.exception.handler.CustomCacheErrorHandler;
 import com.moyo.backend.domain.github_follow.implement.GithubFollowRelation;
 
 /**

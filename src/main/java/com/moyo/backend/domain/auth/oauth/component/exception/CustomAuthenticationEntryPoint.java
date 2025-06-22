@@ -1,7 +1,6 @@
-package com.moyo.backend.domain.auth.oauth;
+package com.moyo.backend.domain.auth.oauth.component.exception;
 
-import static com.moyo.backend.common.constant.MoyoConstants.JSON;
-import static com.moyo.backend.common.constant.MoyoConstants.UNAUTHORIZED;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 import java.io.IOException;
 
@@ -12,30 +11,29 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.auth.AuthErrorCode;
-import com.moyo.backend.common.response.ApiResponse;
+import com.moyo.backend.common.implement.ErrorResponseWriter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ *  인증되지 않은 사용자가 인증이 필요한 자원에 접근할 때 인증 실패 에러 처리
+ *
+ *  인증된 사용자지만 권한이 부족하면 AccessDeniedHandler 에서 처리
+ */
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-	private final ObjectMapper objectMapper;
+	private final ErrorResponseWriter errorResponseWriter;
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-		response.setStatus(UNAUTHORIZED);
-		response.setContentType(JSON);
-		response.setCharacterEncoding("UTF-8");
-
 		log.error("Authentication Entry Point 예외 처리 : {}", authException.getMessage());
-
-		String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.UNAUTHORIZED_USER.getErrorReason()));
-		response.getWriter().write(jsonResponse);
+		errorResponseWriter.writeErrorResponse(response, UNAUTHORIZED, AuthErrorCode.UNAUTHORIZED_USER);
 	}
 }

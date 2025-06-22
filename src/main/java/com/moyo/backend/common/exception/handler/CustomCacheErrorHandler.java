@@ -1,4 +1,4 @@
-package com.moyo.backend.common.exception;
+package com.moyo.backend.common.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 

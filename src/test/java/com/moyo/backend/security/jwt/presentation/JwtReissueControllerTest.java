@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.controller;
+package com.moyo.backend.security.jwt.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -32,9 +32,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.exception.auth.AuthErrorCode;
+import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
 import com.moyo.backend.common.util.CookieUtils;
 import com.moyo.backend.domain.auth.jwt.business.JwtReissueService;
 import com.moyo.backend.domain.auth.jwt.business.ReissuedTokens;
@@ -69,7 +69,7 @@ class JwtReissueControllerTest {
 		given(cookieUtils.createJwtRefreshTokenCookie(reissuedTokens.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
 
 		// when
-		mockMvc.perform(post("/auth/reissue/token")
+		mockMvc.perform(post("/api/v1/auth/reissue/token")
 			.cookie(new Cookie("refresh", fakeRefreshToken)))
 
 			.andExpect(status().isOk())
@@ -96,7 +96,7 @@ class JwtReissueControllerTest {
 
 		doThrow(new MoyoException(errorCode)).when(jwtReissueService).reIssueJwt(anyString());
 
-		mockMvc.perform(post("/auth/reissue/token"))
+		mockMvc.perform(post("/api/v1/auth/reissue/token"))
 			.andExpect(status().is(errorCode.getStatus()))
 			.andExpect(jsonPath("$.code").value(errorCode.getCode()))
 			.andExpect(jsonPath("$.message").value(errorCode.getMessage()))

@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.auth.support.filter;
+package com.moyo.backend.domain.auth.jwt.support;
 
 import static com.moyo.backend.common.constant.MoyoConstants.JSON;
 

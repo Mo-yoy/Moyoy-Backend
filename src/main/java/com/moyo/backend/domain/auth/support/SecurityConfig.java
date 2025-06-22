@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.auth.support.config;
+package com.moyo.backend.domain.auth.support;
 
 import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.*;
 
@@ -15,15 +15,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.moyo.backend.domain.auth.oauth.CustomAccessDeniedHandler;
-import com.moyo.backend.domain.auth.oauth.CustomAuthenticationEntryPoint;
-import com.moyo.backend.domain.auth.oauth.CustomOAuth2UserService;
-import com.moyo.backend.domain.auth.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.moyo.backend.domain.auth.oauth.OAuth2AuthenticationFailureHandler;
-import com.moyo.backend.domain.auth.oauth.OAuth2AuthenticationSuccessHandler;
-import com.moyo.backend.domain.auth.oauth.RdbOAuth2AuthorizedClientService;
-import com.moyo.backend.domain.auth.support.filter.JwtAuthenticationFilter;
-import com.moyo.backend.domain.auth.support.filter.JwtExceptionHandleFilter;
+import com.moyo.backend.domain.auth.jwt.support.JwtAuthenticationFilter;
+import com.moyo.backend.domain.auth.jwt.support.JwtExceptionHandleFilter;
+import com.moyo.backend.domain.auth.oauth.component.CustomOAuth2UserService;
+import com.moyo.backend.domain.auth.oauth.component.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.moyo.backend.domain.auth.oauth.component.OAuth2AuthenticationSuccessHandler;
+import com.moyo.backend.domain.auth.oauth.component.RdbOAuth2AuthorizedClientService;
+import com.moyo.backend.domain.auth.oauth.component.exception.CustomAccessDeniedHandler;
+import com.moyo.backend.domain.auth.oauth.component.exception.CustomAuthenticationEntryPoint;
+import com.moyo.backend.domain.auth.oauth.component.exception.OAuth2AuthenticationFailureHandler;
 
 @Configuration
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class SecurityConfig {
 				.requestMatchers("/error/**", "/favicon.ico").permitAll() // Server Default
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI
-				.requestMatchers("/api/v1/rankings").permitAll() // ranking
+				.requestMatchers("/api/v1/rankings").permitAll() // all Rankings
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
 				.authorizationEndpoint(authorization -> authorization

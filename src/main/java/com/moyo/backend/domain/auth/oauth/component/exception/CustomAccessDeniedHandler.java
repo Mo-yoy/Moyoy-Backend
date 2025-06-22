@@ -1,7 +1,6 @@
-package com.moyo.backend.domain.auth.oauth;
+package com.moyo.backend.domain.auth.oauth.component.exception;
 
-import static com.moyo.backend.common.constant.MoyoConstants.FORBIDDEN;
-import static com.moyo.backend.common.constant.MoyoConstants.JSON;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
 
 import java.io.IOException;
 
@@ -12,31 +11,28 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.auth.AuthErrorCode;
-import com.moyo.backend.common.response.ApiResponse;
+import com.moyo.backend.common.implement.ErrorResponseWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ *  JWT ACCESS TOKEN 기반 인가 에러 처리
+ */
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
-	private final ObjectMapper objectMapper;
+	private final ErrorResponseWriter errorResponseWriter;
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
-		response.setStatus(FORBIDDEN);
-		response.setContentType(JSON);
-		response.setCharacterEncoding("UTF-8");
-
-		log.error("Access Denied Handler 예외 처리 : {}", accessDeniedException.getMessage());
-
-		String jsonResponse = objectMapper.writeValueAsString(ApiResponse.fail(AuthErrorCode.ACCESS_DENIED.getErrorReason()));
-		response.getWriter().write(jsonResponse);
+		log.error("Access Denied Handler 인가 예외 처리 : {}", accessDeniedException.getMessage());
+		errorResponseWriter.writeErrorResponse(response, FORBIDDEN, AuthErrorCode.ACCESS_DENIED);
 	}
 }

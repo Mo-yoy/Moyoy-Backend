@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moyo.backend.common.exception.user.UserNotFoundException;
-import com.moyo.backend.domain.auth.oauth.GithubOAuthTokenReader;
+import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 import com.moyo.backend.domain.user.implement.User;
 

@@ -31,7 +31,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
-import com.moyo.backend.common.exception.GlobalExceptionHandler;
+import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
 import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
 import com.moyo.backend.domain.github_ranking.business.RankingService;
 import com.moyo.backend.domain.github_ranking.business.UserRankingDetails;

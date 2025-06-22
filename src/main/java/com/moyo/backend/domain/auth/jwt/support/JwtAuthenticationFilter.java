@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.auth.support.filter;
+package com.moyo.backend.domain.auth.jwt.support;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
 
@@ -20,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.moyo.backend.common.exception.auth.JwtTokenExpiredException;
 import com.moyo.backend.common.exception.auth.JwtTokenInvalidException;
 import com.moyo.backend.common.exception.auth.JwtTokenTypeMismatchException;
-import com.moyo.backend.domain.auth.oauth.GithubOAuth2User;
+import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
