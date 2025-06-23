@@ -21,7 +21,7 @@ import com.moyo.backend.domain.user.implement.UserUpdater;
 
 /**
  *  우리 서비스의 성격이 깃허브와 깃허브 사용자 간의 미들웨어 느낌의 서비스인 점,
- *  다른 OAUth로 사용자가 인증하더라도 우리가 제공하는대부분의 API에 Github API가 필요하여 Github로 재인증이 필요한 점,
+ *  다른 OAuth로 사용자가 인증하더라도 우리가 제공하는대부분의 API에 Github API가 필요하여 Github로 재인증이 필요한 점,
  *  이쪽에 많은 리소스를 쏟을 수 있는 상황이 아니고,
  *  Github 외에 OAuth를 사용할 여지가 없는 점을 고려해서
  *
