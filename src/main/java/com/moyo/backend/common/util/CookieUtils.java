@@ -1,8 +1,7 @@
 package com.moyo.backend.common.util;
 
-import static com.moyo.backend.common.constant.MoyoConstants.JWT_REFRESH_TYPE;
-import static com.moyo.backend.security.jwt.util.JwtProvider.JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
-import static com.moyo.backend.security.jwt.util.JwtProvider.ONE_MINUTE;
+import static com.moyo.backend.common.constant.MoyoConstants.*;
+import static com.moyo.backend.domain.auth.jwt.implement.JwtProvider.*;
 
 import java.io.Serializable;
 import java.util.Base64;
@@ -17,10 +16,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ *  추후 분리가 필요함.
+ */
+
 @Component
 public class CookieUtils {
 
-	public static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE;
+	private static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE_MILLS;
 
 	private final String domain;
 	private final String samesite;

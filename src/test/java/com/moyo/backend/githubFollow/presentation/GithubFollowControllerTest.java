@@ -3,7 +3,7 @@ package com.moyo.backend.githubFollow.presentation;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.moyo.backend.githubFollow.exception.FollowErrorCode.LIMIT_EXCEED;
+import static com.moyo.backend.common.exception.github_follow.FollowErrorCode.LIMIT_EXCEED;
 import static com.moyo.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -43,13 +43,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
-import com.moyo.backend.common.exception.GlobalExceptionHandler;
 import com.moyo.backend.common.exception.MoyoException;
-import com.moyo.backend.githubFollow.application.GithubFollowCommandService;
-import com.moyo.backend.githubFollow.application.GithubFollowRelationService;
-import com.moyo.backend.githubFollow.domain.GithubFollowUser;
-import com.moyo.backend.githubFollow.dto.GithubFollowDetectResponse;
-import com.moyo.backend.githubFollow.exception.FollowErrorCode;
+import com.moyo.backend.common.exception.github_follow.FollowErrorCode;
+import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
+import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
+import com.moyo.backend.domain.github_follow.business.GithubFollowService;
+import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.presentation.GithubFollowController;
 import com.moyo.common.annotation.WithMockGithubOAuth2User;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
@@ -63,32 +63,29 @@ class GithubFollowControllerTest {
 	private MockMvc mockMvc;
 
 	@MockitoBean
-	private GithubFollowCommandService githubFollowCommandService;
-
-	@MockitoBean
-	private GithubFollowRelationService githubFollowRelationService;
+	private GithubFollowService githubFollowService;
 
 	@WithMockGithubOAuth2User
 	@Test
 	void 맞팔탐지기_성공() throws Exception {
 
 		// given
-		GithubFollowUser user1 = new GithubFollowUser(12345L, "username1", "http://profile.image/1");
-		GithubFollowUser user2 = new GithubFollowUser(67890L, "username2", "http://profile.image/2");
+		GithubUser user1 = new GithubUser(12345L, "username1", "http://profile.image/1");
+		GithubUser user2 = new GithubUser(67890L, "username2", "http://profile.image/2");
 
-		List<GithubFollowUser> userList = List.of(user1, user2);
+		List<GithubUser> userList = List.of(user1, user2);
 		int totalUserCount = userList.size();
 		LocalDateTime createdAt = LocalDateTime.now().minusMinutes(5);
 
-		Slice<GithubFollowUser> userSlice = new SliceImpl<>(userList);
+		Slice<GithubUser> userSlice = new SliceImpl<>(userList);
 
-		GithubFollowDetectResponse mockResponse = GithubFollowDetectResponse.of(userSlice, createdAt, totalUserCount);
+		GithubFollowDetectionResult result = new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount);
 
 		// Mockito 빈을 사용하는데 해당 빈의 어떤 메서드에 어떤 입력을 넣었을 때 원하는 응답이 오도록 조절함.
-		given(githubFollowRelationService.detectFollowUserList(anyLong(), any())).willReturn(mockResponse);
+		given(githubFollowService.getFollowUserSlice(anyLong(), any())).willReturn(result);
 
 		// when
-		mockMvc.perform(get("/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
+		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1")
@@ -108,7 +105,7 @@ class GithubFollowControllerTest {
 						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING).defaultValue("mutual"))
 					.queryParameters(
 						parameterWithName("lastUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 userId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
-						parameterWithName("pageSize").description("조회할 사용자 수 (default: 10)").type(SimpleType.INTEGER).optional(),
+						parameterWithName("pageSize").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional(),
 						parameterWithName("forceSync").description("강제 동기화 여부 (default: false)").type(SimpleType.BOOLEAN).optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
@@ -130,10 +127,10 @@ class GithubFollowControllerTest {
 	@MethodSource("followDetectorErrorCodes")
 	void 맞팔탐지기_에러코드_문서화(FollowErrorCode errorCode) throws Exception {
 		// given
-		doThrow(new MoyoException(errorCode)).when(githubFollowRelationService).detectFollowUserList(anyLong(), any());
+		doThrow(new MoyoException(errorCode)).when(githubFollowService).getFollowUserSlice(anyLong(), any());
 
 		// when & then
-		mockMvc.perform(get("/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
+		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1"))
@@ -162,9 +159,9 @@ class GithubFollowControllerTest {
 	@Test
 	void 팔로우_성공() throws Exception {
 
-		willDoNothing().given(githubFollowCommandService).follow(anyLong(), anyLong());
+		willDoNothing().given(githubFollowService).follow(anyLong(), anyLong());
 
-		mockMvc.perform(post("/follow/{targetUserId}", 12345L)
+		mockMvc.perform(post("/api/v1/follow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.status").value(204))
@@ -189,9 +186,9 @@ class GithubFollowControllerTest {
 	@Test
 	void 언팔로우_성공() throws Exception {
 
-		willDoNothing().given(githubFollowCommandService).unfollow(anyLong(), anyLong());
+		willDoNothing().given(githubFollowService).unfollow(anyLong(), anyLong());
 
-		mockMvc.perform(delete("/unfollow/{targetUserId}", 12345L)
+		mockMvc.perform(delete("/api/v1/unfollow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.status").value(204)) // noContent 응답 코드
