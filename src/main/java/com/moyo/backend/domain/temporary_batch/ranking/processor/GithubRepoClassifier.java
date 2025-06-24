@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.temporary_batch.GithubContributorDetails;
-import com.moyo.backend.domain.temporary_batch.GithubRepoDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.reader.RankingBatchReader;
 
 import lombok.RequiredArgsConstructor;

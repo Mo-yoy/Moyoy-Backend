@@ -17,11 +17,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
-import com.moyo.backend.domain.temporary_batch.ContributorStats;
-import com.moyo.backend.domain.temporary_batch.GithubCommitStats;
-import com.moyo.backend.domain.temporary_batch.GithubContributorDetails;
-import com.moyo.backend.domain.temporary_batch.GithubRankingHttpClient;
-import com.moyo.backend.domain.temporary_batch.GithubRepoDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 
 @Slf4j

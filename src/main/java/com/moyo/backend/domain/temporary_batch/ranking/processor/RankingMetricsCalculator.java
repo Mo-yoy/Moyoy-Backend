@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.temporary_batch.GithubCommitStats;
-import com.moyo.backend.domain.temporary_batch.GithubRepoDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingCalculatorParameters;
 

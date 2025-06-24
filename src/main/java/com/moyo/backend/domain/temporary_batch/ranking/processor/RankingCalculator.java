@@ -2,8 +2,6 @@ package com.moyo.backend.domain.temporary_batch.ranking.processor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.temporary_batch.RankingCalculateResult;
-
 @Component
 public class RankingCalculator {
 
