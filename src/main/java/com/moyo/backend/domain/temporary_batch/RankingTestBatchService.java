@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.temporary_batch;
+package com.moyo.backend.domain.temporary_batch;
 
 import java.util.ArrayList;
 import java.util.List;

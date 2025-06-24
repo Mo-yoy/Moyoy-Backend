@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.temporary_batch;
+package com.moyo.backend.domain.temporary_batch;
 
 import org.springframework.stereotype.Component;
 
@@ -22,16 +22,18 @@ public class RankingCalculator {
 	 *  특정 사용자의 GitHub 활동을 기반으로 랭킹 점수를 계산합니다.
 	 *
 	 *  랭킹 산정 기준:
-	 *  - 공개된 레포지토리에서의 커밋 개수
-	 *  - 공개된 레포지토리 및 조직에서 커밋된 코드 줄 수 (커밋 개수보다 더 중요한 요소)
-	 *  - 공개된 레포지토리 및 조직의 스타 수 (상대적으로 낮은 가중치)
+	 *  - 사용자 소유의 레포지토리 및 사용자가 속한 조직에서의 실제 커밋 개수
+	 *  - 사용자 소유의 레포지토리 및 사용자가 속한 조직에서 커밋한 코드 줄 수 (커밋 개수보다 더 중요한 요소)
+	 *  - 사용자 소유의 레포지토리 및 사용자가 속한 조직에서 실제로 기여한 레포지토리의 스타 수 (상대적으로 낮은 가중치)
 	 *  - 사용자의 팔로워 수 (상대적으로 낮은 가중치)
 	 *
-	 *  @param commits 공개 레포 및 조직에서 사용자가 수행한 커밋 개수
-	 *  @param commitLines 공개 레포 및 조직에서 커밋된 코드 줄 수
-	 *  @param stars 공개 레포 및 조직에서 받은 스타 수
+	 *  @param commits 총 커밋 수
+	 *  @param commitLines 총 커밋 코드 라인 수
+	 *  @param stars 총 star 개수
 	 *  @param followers 사용자의 팔로워 수
-	 *  @return 입력된 활동 지표를 기반으로 계산된 랭킹 점수(long 타입)
+	 *  @return 입력된 활동 지표를 기반으로 계산된 랭킹 점수(long 타입, 임시)
+	 *
+	 *  해당 알고리즘을 직접 만들어야 함.
 	 */
 	public RankingCalculateResult calculateRanking(int commits, int commitLines, int stars, int followers) {
 
