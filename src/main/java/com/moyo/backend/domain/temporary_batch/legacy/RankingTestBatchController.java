@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch;
+package com.moyo.backend.domain.temporary_batch.legacy;
 
 import lombok.RequiredArgsConstructor;
 
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.moyo.backend.common.annotation.LoginUserId;
 
+@Deprecated
 @RestController
 @RequiredArgsConstructor
 public class RankingTestBatchController {

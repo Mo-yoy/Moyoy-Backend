@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.user.implement;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,10 @@ public class UserReader {
 
 	public Optional<User> findById(Long userId) {
 		return userRepository.findById(userId);
+	}
+
+	public List<Long> findAllUserIdList(){
+
+		return userRepository.findAllUserIdList();
 	}
 }

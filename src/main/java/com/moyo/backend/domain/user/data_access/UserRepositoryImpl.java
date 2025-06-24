@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.user.data_access;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,10 @@ public class UserRepositoryImpl implements UserRepository {
 	public Slice<User> findAll(Pageable pageable) {
 
 		return userJpaRepository.findAll(pageable);
+	}
+
+	@Override
+	public List<Long> findAllUserIdList() {
+		return userJpaRepository.findAllUserIds();
 	}
 }

@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.data_access;
+package com.moyo.backend.domain.temporary_batch;
 
 import java.util.List;
 

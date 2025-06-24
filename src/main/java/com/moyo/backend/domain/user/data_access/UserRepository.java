@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.user.data_access;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,6 @@ public interface UserRepository {
 	boolean existsById(Long userId);
 
 	Slice<User> findAll(Pageable pageable);
+
+	List<Long> findAllUserIdList();
 }

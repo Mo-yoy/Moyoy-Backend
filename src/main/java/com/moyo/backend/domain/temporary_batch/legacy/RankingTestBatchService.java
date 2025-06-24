@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch;
+package com.moyo.backend.domain.temporary_batch.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.moyo.backend.common.exception.user.UserNotFoundException;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
+import com.moyo.backend.domain.temporary_batch.GithubCommitStats;
+import com.moyo.backend.domain.temporary_batch.GithubContributorDetails;
+import com.moyo.backend.domain.temporary_batch.GithubRepoDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingCalculator;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.temporary_batch.ranking.reader.RankingBatchReader;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 import com.moyo.backend.domain.user.implement.User;
 
+@Deprecated
 @Service
 @RequiredArgsConstructor
 public class RankingTestBatchService {
@@ -25,7 +32,7 @@ public class RankingTestBatchService {
 	/**
 	 *   일단 트랜잭션 스크립트 패턴으로 작성
 	 *
-	 *   추후 객체 분리 + 모듈 분리s
+	 *   추후 객체 분리 + 모듈 분리
 	 */
 	@Transactional
 	public void batchExec(Long currentUserId) {
@@ -76,7 +83,7 @@ public class RankingTestBatchService {
 
 		int followerCount = rankingPreflight.followers();
 
-		// 7-1. 주간 랭킹 계산
+		// 7-1. 주간
 		int weekCommitCount = commitStats.stream()
 			.mapToInt(commitStat -> commitStat.weekStats().commits())
 			.sum();
@@ -85,9 +92,8 @@ public class RankingTestBatchService {
 			.mapToInt(commitStat -> commitStat.weekStats().commitLines())
 			.sum();
 
-		long finalWeekRankingPoint = rankingCalculator.calculateRanking(weekCommitCount, weekCommitLines, starCount, followerCount).points();
 
-		// 7-2. 월간 랭킹 계산
+		// 7-2. 월간
 		int monthCommitCount = commitStats.stream()
 			.mapToInt(commitStat -> commitStat.monthStats().commits())
 			.sum();
@@ -96,9 +102,8 @@ public class RankingTestBatchService {
 			.mapToInt(commitStat -> commitStat.monthStats().commitLines())
 			.sum();
 
-		long finalMonthRankingPoint = rankingCalculator.calculateRanking(monthCommitCount, monthCommitLines, starCount, followerCount).points();
 
-		// 7-3. 연간 랭킹 계산
+		// 7-3. 연간
 		int yearCommitCount = commitStats.stream()
 			.mapToInt(commitStat -> commitStat.yearStats().commits())
 			.sum();
@@ -107,10 +112,14 @@ public class RankingTestBatchService {
 			.mapToInt(commitStat -> commitStat.yearStats().commitLines())
 			.sum();
 
-		RankingCalculateResult yearRankingResult = rankingCalculator.calculateRanking(yearCommitCount, yearCommitLines, starCount, followerCount);
+
+		long finalWeekRankingPoint = rankingCalculator.calculateRanking(weekCommitCount, weekCommitLines, starCount, followerCount).points();
+		long finalMonthRankingPoint = rankingCalculator.calculateRanking(monthCommitCount, monthCommitLines, starCount, followerCount).points();
+		long finalYearRankingPoint = rankingCalculator.calculateRanking(yearCommitCount, yearCommitLines, starCount, followerCount).points();
+		String grade = rankingCalculator.calculateRanking(yearCommitCount, yearCommitLines, starCount, followerCount).level();
 
 		// 8. 랭킹 업데이트
 		User currentUser = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
-		currentUser.getRanking().updateRankingByBatch(yearRankingResult.level(), finalWeekRankingPoint * 7, finalMonthRankingPoint * 31, yearRankingResult.points() * 365);
+		currentUser.getRanking().updateRankingByBatch(grade, finalWeekRankingPoint * 7, finalMonthRankingPoint * 31, finalYearRankingPoint * 365);
 	}
 }
