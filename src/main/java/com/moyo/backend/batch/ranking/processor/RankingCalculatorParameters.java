@@ -1,4 +1,4 @@
-package com.moyo.backend.batch.ranking.dto;
+package com.moyo.backend.batch.ranking.processor;
 
 public record RankingCalculatorParameters(
 	int stars,
@@ -6,6 +6,10 @@ public record RankingCalculatorParameters(
 	CommitStatsSummary weekStats,
 	CommitStatsSummary monthStats,
 	CommitStatsSummary yearStats) {
-	public record CommitStatsSummary(int commits, int commitLines) {
+
+
+	public record CommitStatsSummary(
+		int commits,
+		int commitLines) {
 	}
 }

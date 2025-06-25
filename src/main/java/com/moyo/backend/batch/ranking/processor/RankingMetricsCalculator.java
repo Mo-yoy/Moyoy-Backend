@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.batch.ranking.dto.RankingCalculatorParameters;
 import com.moyo.backend.batch.ranking.dto.RankingPreflight;
 
 @Component

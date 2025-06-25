@@ -1,5 +1,7 @@
 package com.moyo.backend.domain.github_ranking.data_access;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -15,5 +17,10 @@ public class RankingRepositoryImpl implements RankingRepository {
 	@Override
 	public void update(Ranking ranking) {
 		rankingJpaRepository.save(ranking);
+	}
+
+	@Override
+	public Optional<Ranking> findById(Long userId) {
+		return rankingJpaRepository.findById(userId);
 	}
 }
