@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.ranking.processor;
+package com.moyo.backend.batch.ranking.processor;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingCalculatorParameters;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.batch.ranking.dto.RankingCalculatorParameters;
+import com.moyo.backend.batch.ranking.dto.RankingPreflight;
 
 @Component
 @RequiredArgsConstructor

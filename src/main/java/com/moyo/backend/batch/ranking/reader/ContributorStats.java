@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.ranking.reader;
+package com.moyo.backend.batch.ranking.reader;
 
 import java.util.List;
 

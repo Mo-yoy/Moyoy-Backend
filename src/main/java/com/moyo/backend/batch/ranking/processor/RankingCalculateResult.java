@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.ranking.processor;
+package com.moyo.backend.batch.ranking.processor;
 
 public record RankingCalculateResult(String level, long points) {
 }

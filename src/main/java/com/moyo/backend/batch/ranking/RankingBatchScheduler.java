@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.ranking;
+package com.moyo.backend.batch.ranking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingCalculatorParameters;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
-import com.moyo.backend.domain.temporary_batch.ranking.processor.GithubRepoClassifier;
-import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingCalculator;
-import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingMetricsCalculator;
-import com.moyo.backend.domain.temporary_batch.ranking.reader.RankingBatchReader;
+import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.batch.ranking.dto.RankingCalculatorParameters;
+import com.moyo.backend.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.batch.ranking.processor.GithubRepoClassifier;
+import com.moyo.backend.batch.ranking.processor.RankingCalculator;
+import com.moyo.backend.batch.ranking.processor.RankingMetricsCalculator;
+import com.moyo.backend.batch.ranking.reader.RankingBatchReader;
 import com.moyo.backend.domain.user.implement.UserReader;
 
 @Component
@@ -35,13 +35,17 @@ public class RankingBatchScheduler {
 
 	private final RankingUpdater rankingUpdater;
 
-	@Scheduled(cron = "0 15 17 * * *")
+	@Scheduled(cron = "0 25 15 * * *")
 	public void rankingBatchScheduler() {
+
+		long start = System.currentTimeMillis();
 
 		System.out.println("Ranking 배치 시작");
 
 		// 모든 유저의 Id를 읽어온다.
 		List<Long> userIds = userReader.findAllUserIdList();
+
+		userIds.forEach(System.out::println);
 
 		for (Long userId : userIds) {
 
@@ -89,6 +93,8 @@ public class RankingBatchScheduler {
 			// 7. 랭킹 업데이트
 			Ranking ranking = new Ranking(userId, null, grade, weekPoint, monthPoint, yearPoint);
 			rankingUpdater.update(ranking);
+
+			System.out.println(System.currentTimeMillis() - start);
 		}
 	}
 

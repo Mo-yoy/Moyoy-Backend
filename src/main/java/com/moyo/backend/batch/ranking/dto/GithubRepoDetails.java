@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.temporary_batch.ranking.dto;
+package com.moyo.backend.batch.ranking.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
