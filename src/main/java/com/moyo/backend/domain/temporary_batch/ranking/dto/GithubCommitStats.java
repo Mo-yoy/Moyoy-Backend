@@ -20,6 +20,6 @@ public record GithubCommitStats(
 	public record YearStats(
 		int commits,
 		int commitLines) {
-
+		
 	}
 }
