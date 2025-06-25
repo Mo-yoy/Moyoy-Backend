@@ -2,14 +2,14 @@ package com.moyo.backend.domain.temporary_batch.ranking.processor;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingCalculatorParameters;
-
-import lombok.RequiredArgsConstructor;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 
 @Component
 @RequiredArgsConstructor
@@ -23,23 +23,17 @@ public class RankingMetricsCalculator {
 		int stars = getStarCount(repos);
 		int followers = getFollowerCount(rankingPreflight);
 
-		RankingCalculatorParameters.CommitStatsSummary weekStats =
-			new RankingCalculatorParameters.CommitStatsSummary(
-				getWeekCommitCount(commitStats),
-				getWeekCommitLines(commitStats)
-			);
+		RankingCalculatorParameters.CommitStatsSummary weekStats = new RankingCalculatorParameters.CommitStatsSummary(
+			getWeekCommitCount(commitStats),
+			getWeekCommitLines(commitStats));
 
-		RankingCalculatorParameters.CommitStatsSummary monthStats =
-			new RankingCalculatorParameters.CommitStatsSummary(
-				getMonthCommitCount(commitStats),
-				getMonthCommitLines(commitStats)
-			);
+		RankingCalculatorParameters.CommitStatsSummary monthStats = new RankingCalculatorParameters.CommitStatsSummary(
+			getMonthCommitCount(commitStats),
+			getMonthCommitLines(commitStats));
 
-		RankingCalculatorParameters.CommitStatsSummary yearStats =
-			new RankingCalculatorParameters.CommitStatsSummary(
-				getYearCommitCount(commitStats),
-				getYearCommitLines(commitStats)
-			);
+		RankingCalculatorParameters.CommitStatsSummary yearStats = new RankingCalculatorParameters.CommitStatsSummary(
+			getYearCommitCount(commitStats),
+			getYearCommitLines(commitStats));
 
 		return new RankingCalculatorParameters(stars, followers, weekStats, monthStats, yearStats);
 	}
@@ -50,7 +44,7 @@ public class RankingMetricsCalculator {
 			.sum();
 	}
 
-	private int getFollowerCount(RankingPreflight rankingPreflight){
+	private int getFollowerCount(RankingPreflight rankingPreflight) {
 		return rankingPreflight.followers();
 	}
 

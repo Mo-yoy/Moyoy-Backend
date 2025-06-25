@@ -3,6 +3,8 @@ package com.moyo.backend.domain.temporary_batch.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +13,13 @@ import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingCalculator;
-import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingCalculatorParameters;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.domain.temporary_batch.ranking.processor.GithubRepoClassifier;
+import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingCalculator;
 import com.moyo.backend.domain.temporary_batch.ranking.processor.RankingMetricsCalculator;
 import com.moyo.backend.domain.temporary_batch.ranking.reader.RankingBatchReader;
 import com.moyo.backend.domain.user.implement.UserReader;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class RankingBatchScheduler {
 	public void rankingBatchScheduler() {
 
 		System.out.println("Ranking 배치 시작");
-		
+
 		// 모든 유저의 Id를 읽어온다.
 		List<Long> userIds = userReader.findAllUserIdList();
 

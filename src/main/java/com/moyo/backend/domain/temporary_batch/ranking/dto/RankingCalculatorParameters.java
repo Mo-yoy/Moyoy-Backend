@@ -5,7 +5,7 @@ public record RankingCalculatorParameters(
 	int followers,
 	CommitStatsSummary weekStats,
 	CommitStatsSummary monthStats,
-	CommitStatsSummary yearStats
-) {
-	public record CommitStatsSummary(int commits, int commitLines) {}
+	CommitStatsSummary yearStats) {
+	public record CommitStatsSummary(int commits, int commitLines) {
+	}
 }

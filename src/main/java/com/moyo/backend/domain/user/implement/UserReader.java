@@ -19,7 +19,7 @@ public class UserReader {
 		return userRepository.findById(userId);
 	}
 
-	public List<Long> findAllUserIdList(){
+	public List<Long> findAllUserIdList() {
 
 		return userRepository.findAllUserIdList();
 	}

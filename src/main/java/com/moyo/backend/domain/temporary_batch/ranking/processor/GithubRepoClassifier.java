@@ -3,13 +3,13 @@ package com.moyo.backend.domain.temporary_batch.ranking.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubContributorDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.reader.RankingBatchReader;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -20,8 +20,7 @@ public class GithubRepoClassifier {
 	public List<GithubRepoDetails> classify(
 		List<GithubRepoDetails> allRepos,
 		String currentUsername,
-		String accessToken
-	) {
+		String accessToken) {
 
 		List<GithubRepoDetails> userRepos = allRepos.stream()
 			.filter(repo -> repo.owner().name().equals(currentUsername))

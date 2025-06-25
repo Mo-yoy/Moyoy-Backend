@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.domain.temporary_batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.temporary_batch.ranking.dto.RankingPreflight;
 
 @Slf4j
