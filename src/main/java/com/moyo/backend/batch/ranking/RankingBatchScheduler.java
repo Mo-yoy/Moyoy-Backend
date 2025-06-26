@@ -38,7 +38,7 @@ public class RankingBatchScheduler {
 
 	private final RankingUpdater rankingUpdater;
 
-	@Scheduled(cron = "0 10 21 * * *")
+	// @Scheduled(cron = "0 10 21 * * *")
 	public void rankingBatchScheduler() {
 
 		System.out.println("Ranking 배치 시작");
