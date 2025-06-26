@@ -1,8 +1,12 @@
-package com.moyo.backend.domain.github_ranking.temporary_batch;
+package com.moyo.backend.batch.ranking.reader;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+
+import com.moyo.backend.batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.batch.ranking.dto.RankingPreflight;
 
 public interface GithubRankingHttpClient {
 

@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.temporary_batch;
+package com.moyo.backend.batch.ranking.reader;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ContributorStats {
 
 	@Getter
 	@Setter
-	static class Author {
+	public static class Author {
 
 		@JsonProperty("login")
 		private String username;
@@ -27,7 +27,7 @@ public class ContributorStats {
 
 	@Getter
 	@Setter
-	static class Week {
+	public static class Week {
 
 		@JsonProperty("w")
 		private long weekTimeStamp;

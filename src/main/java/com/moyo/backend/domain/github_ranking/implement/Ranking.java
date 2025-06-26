@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
 import com.moyo.backend.common.entity.BaseTimeEntity;
 import com.moyo.backend.domain.user.implement.User;
 
@@ -32,10 +33,11 @@ public class Ranking extends BaseTimeEntity {
 	private long monthlyPoint;
 	private long yearlyPoint;
 
-	public void updateRankingByBatch(String grade, long weeklyPoint, long monthlyPoint, long yearlyPoint) {
-		this.grade = grade;
-		this.weeklyPoint = weeklyPoint;
-		this.monthlyPoint = monthlyPoint;
-		this.yearlyPoint = yearlyPoint;
+	public void updateRankingByBatch(RankingCalculatorResult rankingCalculatorResult) {
+
+		this.grade = rankingCalculatorResult.rankingGrade();
+		this.weeklyPoint = rankingCalculatorResult.weekRankingPoint();
+		this.monthlyPoint = rankingCalculatorResult.monthRankingPoint();
+		this.yearlyPoint = rankingCalculatorResult.yearRankingPoint();
 	}
 }

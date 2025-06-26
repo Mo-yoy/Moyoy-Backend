@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.temporary_batch;
+package com.moyo.backend.batch.ranking.reader;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_MIN_REQUEST_THRESHOLD;
 
@@ -17,6 +17,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
+import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.batch.ranking.dto.RankingPreflight;
 
 @Slf4j
 @Component
