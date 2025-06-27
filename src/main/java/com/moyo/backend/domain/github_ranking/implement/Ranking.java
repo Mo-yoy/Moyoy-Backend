@@ -1,15 +1,18 @@
 package com.moyo.backend.domain.github_ranking.implement;
 
+import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
+import com.moyo.backend.common.entity.BaseTimeEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
-import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.user.implement.User;
-
-import jakarta.persistence.*;
 
 @Table(name = "rankings")
 @Entity
@@ -18,16 +21,12 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 public class Ranking extends BaseTimeEntity {
 
-	// 1대1 매핑에 대해서는 더 고민중임
 	@Id
-	@Column(name = "user_id")
+	@Column(name = "ranking_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	private Long userId;
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@MapsId
-	@JoinColumn(name = "user_id")
-	private User user;
-
 	private String grade;
 	private long weeklyPoint;
 	private long monthlyPoint;
