@@ -1,7 +1,7 @@
 package com.moyo.backend.domain.github_ranking.implement;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,6 @@ import jakarta.persistence.Table;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Ranking extends BaseTimeEntity {
 
 	@Id
@@ -33,11 +32,31 @@ public class Ranking extends BaseTimeEntity {
 	private long monthlyPoint;
 	private long yearlyPoint;
 
+	@Builder
+	public Ranking(Long id, Long userId, String grade, long weeklyPoint, long monthlyPoint, long yearlyPoint) {
+		this.id = id;
+		this.userId = userId;
+		this.grade = grade;
+		this.weeklyPoint = weeklyPoint;
+		this.monthlyPoint = monthlyPoint;
+		this.yearlyPoint = yearlyPoint;
+	}
+
 	public void updateRankingByBatch(RankingCalculatorResult rankingCalculatorResult) {
 
 		this.grade = rankingCalculatorResult.rankingGrade();
 		this.weeklyPoint = rankingCalculatorResult.weekRankingPoint();
 		this.monthlyPoint = rankingCalculatorResult.monthRankingPoint();
 		this.yearlyPoint = rankingCalculatorResult.yearRankingPoint();
+	}
+
+	public static Ranking initRanking(Long userId) {
+		return Ranking.builder()
+			.userId(userId)
+			.grade("C")
+			.weeklyPoint(0L)
+			.monthlyPoint(0L)
+			.yearlyPoint(0L)
+			.build();
 	}
 }
