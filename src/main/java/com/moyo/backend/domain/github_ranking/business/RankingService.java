@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
-import com.moyo.backend.domain.github_ranking.implement.RankingPeriod;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.github_ranking.implement.RankingSlice;
 import com.moyo.backend.domain.github_ranking.implement.RankingUserCombiner;

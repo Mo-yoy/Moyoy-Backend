@@ -4,11 +4,9 @@ import java.util.List;
 
 import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
 
-///  API 스펙
 public record RankingSearchResponse(
 	List<UserAndRanking> userList,
-	boolean lastPage
-) {
+	boolean lastPage) {
 
 	public static RankingSearchResponse from(RankingSearchResult rankingSearchResult, String period) {
 
@@ -17,8 +15,7 @@ public record RankingSearchResponse(
 				rankingWithUser.user().getId(),
 				rankingWithUser.user().getProfileImgUrl(),
 				rankingWithUser.user().getUsername(),
-				rankingSearchResult.getPointByDuration(rankingWithUser.ranking(), period)
-			))
+				rankingSearchResult.getPointByDuration(rankingWithUser.ranking(), period)))
 			.toList();
 
 		return new RankingSearchResponse(userList, rankingSearchResult.isLast());
@@ -28,8 +25,7 @@ public record RankingSearchResponse(
 		Long userId,
 		String profileImageUrl,
 		String username,
-		long rankingPoint
-	){
+		long rankPoint) {
 
 	}
 }

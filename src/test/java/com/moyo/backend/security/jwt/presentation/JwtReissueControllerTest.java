@@ -80,7 +80,7 @@ class JwtReissueControllerTest {
 			// Docs
 			.andDo(document("JWT 재발급 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("1. JWT 재발급 🔄")
+					.tag("🔄 JWT 재발급")
 					.summary("JWT 토큰 재발급 API")
 					.description("사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운 Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드를 참고 해 주세요")
 					.responseFields(
@@ -103,7 +103,7 @@ class JwtReissueControllerTest {
 			.andExpect(jsonPath("$.message").value(errorCode.getMessage()))
 			.andDo(document(errorCode.getCode(),
 				resource(ResourceSnippetParameters.builder()
-					.tag("1. JWT 재발급 🔄")
+					.tag("🔄 JWT 재발급")
 					.responseFields(
 						fieldWithPath("status").description("❌ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 에러 코드"),

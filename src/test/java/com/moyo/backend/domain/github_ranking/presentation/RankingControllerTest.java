@@ -21,8 +21,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,8 +31,12 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
-import com.moyo.backend.domain.github_ranking.business.RankingSearchResultttt;
+import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
 import com.moyo.backend.domain.github_ranking.business.RankingService;
+import com.moyo.backend.domain.github_ranking.implement.Ranking;
+import com.moyo.backend.domain.github_ranking.implement.RankingWithUser;
+import com.moyo.backend.domain.user.implement.Role;
+import com.moyo.backend.domain.user.implement.User;
 
 @WebMvcTest(value = RankingController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs
@@ -53,16 +55,19 @@ class RankingControllerTest {
 	void 모든_개인유저_랭킹조회() throws Exception {
 
 		// given
-		RankingSearchResponse.UserRankingDetails mockRankingDetails = new RankingSearchResponse.UserRankingDetails("img/url", "테스터1", 10000);
-		Slice<RankingSearchResponse.UserRankingDetails> mockSlice = new SliceImpl<>(List.of(mockRankingDetails));
+		User mockUser = new User(1L, "테스터1", "img/url", Role.USER);
+		Ranking mockRanking = new Ranking(1L, 1L, "A", 100, 1000, 10000);
+		RankingWithUser mockRankingWithUser = new RankingWithUser(mockRanking, mockUser);
 
-		RankingSearchResultttt mockResult = new RankingSearchResultttt(mockSlice);
+		List<RankingWithUser> rankingWithUsers = List.of(mockRankingWithUser);
+		RankingSearchResult rankingSearchResult = new RankingSearchResult(rankingWithUsers, true);
 
-		Mockito.when(rankingService.searchAllUserRanking(anyString(), anyInt(), anyInt())).thenReturn(mockResult);
+		Mockito.when(rankingService.searchAllUserRanking(any()))
+			.thenReturn(rankingSearchResult);
 
 		mockMvc.perform(get("/api/v1/rankings")
-			.param("duration", "monthly")
-			.param("page", "1")
+			.param("period", "month")
+			.param("page", "0")
 			.param("size", "10"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.userList").isArray())
@@ -71,11 +76,11 @@ class RankingControllerTest {
 			// REST Docs
 			.andDo(document("전체 개인 랭킹 조회 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("3. 랭킹 조회 🔢")
+					.tag("🏆 랭킹 조회")
 					.summary("전체 개인 랭킹 조회 API")
 					.description("우리 서비스의 전체 개인 랭킹을 조회합니다.")
 					.queryParameters(
-						parameterWithName("duration").description("조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year").type(SimpleType.STRING),
+						parameterWithName("period").description("조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year").type(SimpleType.STRING),
 						parameterWithName("page").description("조회할 페이지 (default: 0)").type(SimpleType.INTEGER).optional(),
 						parameterWithName("size").description("페이징 사이즈 (default: 20)").type(SimpleType.INTEGER).optional())
 					.responseFields(
