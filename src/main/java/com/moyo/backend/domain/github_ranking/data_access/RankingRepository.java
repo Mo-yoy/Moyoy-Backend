@@ -15,4 +15,8 @@ public interface RankingRepository {
 	Optional<Ranking> findById(Long userId);
 
 	Slice<Ranking> findAll(RankingPeriod duration, Pageable pageable);
+
+	void save(Ranking ranking);
+
+	Ranking findByUserId(Long userId);
 }

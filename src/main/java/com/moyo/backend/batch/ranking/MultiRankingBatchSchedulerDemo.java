@@ -46,7 +46,7 @@ public class MultiRankingBatchSchedulerDemo {
 
 	private final RankingUpdater rankingUpdater;
 
-	@Scheduled(cron = "0 30 21 * * *")
+	@Scheduled(cron = "50 09 15 * * *")
 	public void rankingBatchScheduler() {
 		System.out.println("Ranking 배치 시작");
 

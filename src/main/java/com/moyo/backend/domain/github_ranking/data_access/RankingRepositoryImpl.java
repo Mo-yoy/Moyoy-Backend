@@ -33,4 +33,14 @@ public class RankingRepositoryImpl implements RankingRepository {
 
 		return rankingQueryDslRepository.findAll(duration, pageable);
 	}
+
+	@Override
+	public void save(Ranking ranking) {
+		rankingJpaRepository.save(ranking);
+	}
+
+	@Override
+	public Ranking findByUserId(Long userId) {
+		return rankingJpaRepository.findByUserId(userId);
+	}
 }
