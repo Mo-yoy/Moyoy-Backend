@@ -6,5 +6,4 @@ import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.user.implement.User;
 
 public interface RankingJpaRepository extends JpaRepository<Ranking, Long> {
-	Long user(User user);
 }
