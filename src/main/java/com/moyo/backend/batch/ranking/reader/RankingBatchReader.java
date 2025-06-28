@@ -16,11 +16,12 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
+
 import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.batch.ranking.dto.GithubContributorDetails;
 import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
 
 @Slf4j
 @Component

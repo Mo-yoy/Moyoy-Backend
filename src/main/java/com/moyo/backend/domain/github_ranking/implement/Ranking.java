@@ -1,5 +1,10 @@
 package com.moyo.backend.domain.github_ranking.implement;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
 import com.moyo.backend.common.entity.BaseTimeEntity;
 
@@ -9,10 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Table(name = "rankings")
 @Entity

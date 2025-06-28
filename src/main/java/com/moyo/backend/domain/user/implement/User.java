@@ -10,16 +10,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.github_ranking.implement.Ranking;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Table(name = "users")

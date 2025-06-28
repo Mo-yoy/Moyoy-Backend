@@ -14,13 +14,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+
 import com.moyo.backend.common.util.CookieUtils;
 import com.moyo.backend.domain.auth.jwt.data_access.JwtRefreshTokenRepository;
 import com.moyo.backend.domain.auth.jwt.implement.JwtProvider;
 import com.moyo.backend.domain.auth.jwt.implement.JwtRefreshToken;
 import com.moyo.backend.domain.auth.jwt.implement.JwtUserInfo;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -31,10 +31,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
+
 import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
-import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
+import com.moyo.backend.domain.github_ranking.business.RankingSearchResultttt;
 import com.moyo.backend.domain.github_ranking.business.RankingService;
-import com.moyo.backend.domain.github_ranking.business.UserRankingDetails;
 
 @WebMvcTest(value = RankingController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs
@@ -53,12 +53,12 @@ class RankingControllerTest {
 	void 모든_개인유저_랭킹조회() throws Exception {
 
 		// given
-		UserRankingDetails mockRankingDetails = new UserRankingDetails("img/url", "테스터1", 10000);
-		Slice<UserRankingDetails> mockSlice = new SliceImpl<>(List.of(mockRankingDetails));
+		RankingSearchResponse.UserRankingDetails mockRankingDetails = new RankingSearchResponse.UserRankingDetails("img/url", "테스터1", 10000);
+		Slice<RankingSearchResponse.UserRankingDetails> mockSlice = new SliceImpl<>(List.of(mockRankingDetails));
 
-		RankingSearchResult mockResult = new RankingSearchResult(mockSlice);
+		RankingSearchResultttt mockResult = new RankingSearchResultttt(mockSlice);
 
-		Mockito.when(rankingService.getAllUserRanking(anyString(), anyInt(), anyInt())).thenReturn(mockResult);
+		Mockito.when(rankingService.searchAllUserRanking(anyString(), anyInt(), anyInt())).thenReturn(mockResult);
 
 		mockMvc.perform(get("/api/v1/rankings")
 			.param("duration", "monthly")

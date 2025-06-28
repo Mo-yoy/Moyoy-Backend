@@ -7,7 +7,6 @@ public record RankingCalculatorParameters(
 	CommitStatsSummary monthStats,
 	CommitStatsSummary yearStats) {
 
-
 	public record CommitStatsSummary(
 		int commits,
 		int commitLines) {

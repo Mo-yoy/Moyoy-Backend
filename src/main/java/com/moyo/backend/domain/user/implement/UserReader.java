@@ -23,4 +23,8 @@ public class UserReader {
 
 		return userRepository.findAllUserIdList();
 	}
+
+	public List<User> findAllById(List<Long> userIds) {
+		return userRepository.findByIdIn(userIds);
+	}
 }

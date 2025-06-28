@@ -48,6 +48,12 @@ dependencies {
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -101,7 +107,7 @@ tasks.named('build') {
 spotless {
     java {
         eclipse().configFile('config/spotless/naver-code-convention.xml')
-        importOrder('java', 'javax' , 'lombok' , 'org', 'com', '')
+        importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyo', '')
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()

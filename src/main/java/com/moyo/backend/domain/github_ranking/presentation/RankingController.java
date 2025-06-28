@@ -1,7 +1,5 @@
 package com.moyo.backend.domain.github_ranking.presentation;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.moyo.backend.common.response.ApiResponse;
 import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
 import com.moyo.backend.domain.github_ranking.business.RankingService;
+import com.moyo.backend.domain.github_ranking.business.RankingSearch;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,13 +22,15 @@ public class RankingController {
 
 	@GetMapping("/rankings")
 	public ResponseEntity<ApiResponse<RankingSearchResponse>> getAllUserRanking(
-		@RequestParam("duration") String duration,
+		@RequestParam("period") String period,
 		@RequestParam(value = "page", required = false, defaultValue = "0") int page,
 		@RequestParam(value = "size", required = false, defaultValue = "20") int size) {
 
-		RankingSearchResult rankingSearchResult = rankingService.getAllUserRanking(duration, page, size);
-		RankingSearchResponse responseData = RankingSearchResponse.from(rankingSearchResult);
+		RankingSearch rankingSearch = new RankingSearch(period, page, size);
+		RankingSearchResult rankingSearchResult = rankingService.searchAllUserRanking(rankingSearch);
 
-		return ResponseEntity.ok(ApiResponse.success(responseData));
+		RankingSearchResponse rankingSearchResponse = RankingSearchResponse.from(rankingSearchResult, period);
+
+		return ResponseEntity.ok(ApiResponse.success(rankingSearchResponse));
 	}
 }
