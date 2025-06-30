@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
+import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
 import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
 import com.moyo.backend.domain.user.implement.UserUpdater;
@@ -38,6 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private final UserReader userReader;
 	private final UserUpdater userUpdater;
+	private final RankingUpdater rankingUpdater;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -60,6 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 			log.info("신규 회원 회원 가입 진행, UserId : {}", githubUser.getAttribute(GITHUB_OAUTH2_USER_ID).toString());
 			userUpdater.signUp(githubUser);
+
 			return GithubOAuth2User.from((DefaultOAuth2User)githubUser);
 		}
 	}

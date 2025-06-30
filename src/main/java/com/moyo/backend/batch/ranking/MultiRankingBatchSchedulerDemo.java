@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +25,6 @@ import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
 import com.moyo.backend.domain.user.implement.UserReader;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * @Deprecated 임시 솔루션임, 곧 삭제하고 새로운 버전 만들 예정
@@ -46,8 +46,7 @@ public class MultiRankingBatchSchedulerDemo {
 
 	private final RankingUpdater rankingUpdater;
 
-
-	@Scheduled(cron = "0 30 21 * * *")
+	@Scheduled(cron = "50 09 15 * * *")
 	public void rankingBatchScheduler() {
 		System.out.println("Ranking 배치 시작");
 

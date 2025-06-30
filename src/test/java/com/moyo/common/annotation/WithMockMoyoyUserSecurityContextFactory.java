@@ -11,9 +11,9 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 
-public class WithMockGithubOAuth2UserSecurityContextFactory implements WithSecurityContextFactory<WithMockGithubOAuth2User> {
+public class WithMockMoyoyUserSecurityContextFactory implements WithSecurityContextFactory<WithMockMoyoyUser> {
 	@Override
-	public SecurityContext createSecurityContext(WithMockGithubOAuth2User annotation) {
+	public SecurityContext createSecurityContext(WithMockMoyoyUser annotation) {
 		Map<String, Object> attributes = Map.of("id", annotation.id());
 		GithubOAuth2User principal = new GithubOAuth2User(Collections.emptySet(), attributes);
 		Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());

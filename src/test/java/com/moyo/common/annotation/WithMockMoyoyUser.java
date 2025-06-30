@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 @Retention(RetentionPolicy.RUNTIME)
-@WithSecurityContext(factory = WithMockGithubOAuth2UserSecurityContextFactory.class)
-public @interface WithMockGithubOAuth2User{
+@WithSecurityContext(factory = WithMockMoyoyUserSecurityContextFactory.class)
+public @interface WithMockMoyoyUser{
 	String id() default "1";
 }

@@ -3,7 +3,8 @@ package com.moyo.backend.batch.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
@@ -20,8 +21,6 @@ import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
 import com.moyo.backend.domain.user.implement.UserReader;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

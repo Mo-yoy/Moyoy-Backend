@@ -19,4 +19,6 @@ public interface UserRepository {
 	Slice<User> findAll(Pageable pageable);
 
 	List<Long> findAllUserIdList();
+
+	List<User> findByIdIn(List<Long> userIds);
 }

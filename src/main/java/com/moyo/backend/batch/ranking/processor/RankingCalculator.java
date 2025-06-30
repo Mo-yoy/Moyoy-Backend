@@ -2,7 +2,7 @@ package com.moyo.backend.batch.ranking.processor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.github_ranking.implement.RankingDuration;
+import com.moyo.backend.domain.github_ranking.implement.RankingPeriod;
 
 @Component
 public class RankingCalculator {
@@ -20,21 +20,18 @@ public class RankingCalculator {
 	private static final double[] THRESHOLDS = {1, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100};
 	private static final String[] LEVELS = {"S", "A+", "A", "A-", "B+", "B", "B-", "C+", "C"};
 
-
-
 	public RankingCalculatorResult calculate(RankingCalculatorParameters rankingParameters) {
 
 		int starCount = rankingParameters.stars();
 		int followerCount = rankingParameters.followers();
 
-		long weekPoint = calculateRankingPoint(rankingParameters.weekStats().commits(), rankingParameters.weekStats().commitLines(), starCount, followerCount, RankingDuration.WEEK);
-		long monthPoint = calculateRankingPoint(rankingParameters.monthStats().commits(), rankingParameters.monthStats().commitLines(), starCount, followerCount, RankingDuration.MONTH);
-		long yearPoint = calculateRankingPoint(rankingParameters.yearStats().commits(), rankingParameters.yearStats().commitLines(), starCount, followerCount, RankingDuration.YEAR);
+		long weekPoint = calculateRankingPoint(rankingParameters.weekStats().commits(), rankingParameters.weekStats().commitLines(), starCount, followerCount, RankingPeriod.WEEK);
+		long monthPoint = calculateRankingPoint(rankingParameters.monthStats().commits(), rankingParameters.monthStats().commitLines(), starCount, followerCount, RankingPeriod.MONTH);
+		long yearPoint = calculateRankingPoint(rankingParameters.yearStats().commits(), rankingParameters.yearStats().commitLines(), starCount, followerCount, RankingPeriod.YEAR);
 		String grade = calculateRankingGrade(rankingParameters.yearStats().commits(), rankingParameters.yearStats().commitLines(), starCount, followerCount);
 
 		return new RankingCalculatorResult(weekPoint, monthPoint, yearPoint, grade);
 	}
-
 
 	/**
 	 *  특정 사용자의 GitHub 활동을 기반으로 랭킹 점수를 계산합니다.
@@ -61,23 +58,21 @@ public class RankingCalculator {
 		return "C";
 	}
 
-	private long calculateRankingPoint(int commits, int commitLines, int stars, int followers, RankingDuration duration) {
+	private long calculateRankingPoint(int commits, int commitLines, int stars, int followers, RankingPeriod duration) {
 
 		double percentile = calculatePercentile(commits, commitLines, stars, followers);
 
-		return (long) ((100 - percentile) * 100_000 * duration.getWeight());
+		return (long)((100 - percentile) * 100_000 * duration.getWeight());
 	}
 
 	/// 공통 산식: 백분위(0~100) 계산
 	private double calculatePercentile(int commits, int commitLines, int stars, int followers) {
 
 		// 각 항목의 점수를 계산한 후 전체 가중치로 평균 → 1에서 빼면 "상대 점수 Percentile"
-		double rank = 1 - (
-			COMMITS_WEIGHT * exponentialCdf(commits / COMMITS_MEDIAN) +
-				COMMITS_LINES_WEIGHT * logNormalCdf(commitLines / COMMITS_LINES_MEDIAN) +
-				STARS_WEIGHT * exponentialCdf(stars / STARS_MEDIAN) +
-				FOLLOWERS_WEIGHT * exponentialCdf(followers / FOLLOWERS_MEDIAN)
-		) / TOTAL_WEIGHT;
+		double rank = 1 - (COMMITS_WEIGHT * exponentialCdf(commits / COMMITS_MEDIAN) +
+			COMMITS_LINES_WEIGHT * logNormalCdf(commitLines / COMMITS_LINES_MEDIAN) +
+			STARS_WEIGHT * exponentialCdf(stars / STARS_MEDIAN) +
+			FOLLOWERS_WEIGHT * exponentialCdf(followers / FOLLOWERS_MEDIAN)) / TOTAL_WEIGHT;
 
 		return rank * 100;
 	}

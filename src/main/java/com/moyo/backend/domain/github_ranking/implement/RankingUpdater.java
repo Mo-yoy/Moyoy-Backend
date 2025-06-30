@@ -9,12 +9,12 @@ import com.moyo.backend.domain.github_ranking.data_access.RankingRepository;
 import jakarta.transaction.Transactional;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class RankingUpdater {
 
 	private final RankingRepository rankingRepository;
 
-	@Transactional
 	public void update(Ranking ranking) {
 		rankingRepository.update(ranking);
 	}

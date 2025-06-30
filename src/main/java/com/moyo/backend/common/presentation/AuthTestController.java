@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.moyo.backend.common.annotation.LoginUserId;
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 
 @Deprecated
@@ -53,6 +54,7 @@ public class AuthTestController {
 	public String permitAll(
 		Authentication authentication,
 		@AuthenticationPrincipal GithubOAuth2User githubOAuth2User,
+		@LoginUserId Long userId,
 		@PageableDefault(page = 0, size = 15, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		log.info("모두가 접근 가능한 Security Test 진행");

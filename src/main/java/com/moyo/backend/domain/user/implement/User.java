@@ -10,16 +10,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.github_ranking.implement.Ranking;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Table(name = "users")
@@ -43,16 +39,12 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	private Ranking ranking;
-
 	@Builder(access = AccessLevel.PRIVATE)
-	public User(Long id, String username, String profileImgUrl, Role role, Ranking ranking) {
+	public User(Long id, String username, String profileImgUrl, Role role) {
 		this.id = id;
 		this.username = username;
 		this.profileImgUrl = profileImgUrl;
 		this.role = role;
-		this.ranking = ranking;
 	}
 
 	public static User from(OAuth2User oAuth2User) {
@@ -73,13 +65,5 @@ public class User extends BaseTimeEntity {
 
 	public void initRole() {
 		this.role = Role.USER;
-	}
-
-	public void changeRole(Role role) {
-		this.role = role;
-	}
-
-	public void updateRanking(Ranking ranking) {
-		this.ranking = ranking;
 	}
 }

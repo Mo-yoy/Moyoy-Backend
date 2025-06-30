@@ -11,12 +11,12 @@ paths:
   /api/v1/rankings:
     get:
       tags:
-      - 3. 랭킹 조회 🔢
+      - 🏆 랭킹 조회
       summary: 전체 개인 랭킹 조회 API
       description: 우리 서비스의 전체 개인 랭킹을 조회합니다.
       operationId: 전체 개인 랭킹 조회 성공
       parameters:
-      - name: duration
+      - name: period
         in: query
         description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
         required: true
@@ -46,12 +46,12 @@ paths:
               examples:
                 전체 개인 랭킹 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userList\":[{\"profileImageUrl\":\"img/url\",\"username\"\
-                    :\"테스터1\",\"rankPoint\":10000}],\"lastPage\":true}}"
+                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
+                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
   /api/v1/follow/{targetUserId}:
     post:
       tags:
-      - 2. 깃허브 팔로우 관계 탐지 👥
+      - 👥 깃허브 팔로우 관계 탐지
       summary: 깃허브 사용자 팔로우 API
       description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.
       operationId: 팔로우 성공
@@ -78,7 +78,7 @@ paths:
   /api/v1/unfollow/{targetUserId}:
     delete:
       tags:
-      - 2. 깃허브 팔로우 관계 탐지 👥
+      - 👥 깃허브 팔로우 관계 탐지
       summary: 깃허브 사용자 언팔로우 API
       description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.
       operationId: 언팔로우 성공
@@ -105,7 +105,7 @@ paths:
   /api/v1/auth/reissue/token:
     post:
       tags:
-      - 1. JWT 재발급 🔄
+      - 🔄 JWT 재발급
       summary: JWT 토큰 재발급 API
       description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
         \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드\
@@ -144,10 +144,52 @@ paths:
                 LOGIN_401_5:
                   value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
                     랙리스트 처리된 토큰 입니다.\",\"data\":null}"
+  /api/v1/users/me/followings/rankings:
+    get:
+      tags:
+      - 🏆 랭킹 조회
+      summary: 사용자의 팔로잉 유저들 중에서 우리 서비스 회원들 랭킹 조회 API
+      description: "사용자가 깃허브 상에서 팔로우 중인 유저들 중, 우리 서비스의 회원인 사용자의 랭킹 리스트를 반환합니다."
+      operationId: 팔로잉 랭킹 조회 성공
+      parameters:
+      - name: period
+        in: query
+        description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "조회할 페이지 (default: 0)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: "페이징 사이즈 (default: 20)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-rankings1445726081"
+              examples:
+                팔로잉 랭킹 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
+                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
+      security:
+      - bearerAuthJWT: []
   /api/v1/users/me/followings/{detectType}:
     get:
       tags:
-      - 2. 깃허브 팔로우 관계 탐지 👥
+      - 👥 깃허브 팔로우 관계 탐지
       summary: 깃허브 팔로우 관계 탐지 API
       description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
         우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\

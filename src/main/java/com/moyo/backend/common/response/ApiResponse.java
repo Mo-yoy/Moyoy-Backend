@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import com.moyo.backend.common.exception.ErrorReason;
 
 @Getter

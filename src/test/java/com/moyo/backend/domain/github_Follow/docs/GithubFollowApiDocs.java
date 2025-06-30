@@ -1,4 +1,4 @@
-package com.moyo.backend.githubFollow.presentation;
+package com.moyo.backend.domain.github_Follow.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -43,6 +43,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
+
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.exception.github_follow.FollowErrorCode;
 import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
@@ -50,14 +51,14 @@ import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResul
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
 import com.moyo.backend.domain.github_follow.implement.GithubUser;
 import com.moyo.backend.domain.github_follow.presentation.GithubFollowController;
-import com.moyo.common.annotation.WithMockGithubOAuth2User;
+import com.moyo.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(GlobalExceptionHandler.class)
-class GithubFollowControllerTest {
+class GithubFollowApiDocs {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -65,7 +66,7 @@ class GithubFollowControllerTest {
 	@MockitoBean
 	private GithubFollowService githubFollowService;
 
-	@WithMockGithubOAuth2User
+	@WithMockMoyoyUser
 	@Test
 	void 맞팔탐지기_성공() throws Exception {
 
@@ -98,7 +99,7 @@ class GithubFollowControllerTest {
 			// REST Docs
 			.andDo(document("맞팔탐지기 조회 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("2. 깃허브 팔로우 관계 탐지 👥")
+					.tag("👥 깃허브 팔로우 관계 탐지")
 					.summary("깃허브 팔로우 관계 탐지 API")
 					.description("현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을 한 번이라도 진행한 적이 있어야 사용 가능합니다.")
 					.pathParameters(
@@ -122,7 +123,7 @@ class GithubFollowControllerTest {
 
 	}
 
-	@WithMockGithubOAuth2User
+	@WithMockMoyoyUser
 	@ParameterizedTest(name = "{index} => errorCode={0}")
 	@MethodSource("followDetectorErrorCodes")
 	void 맞팔탐지기_에러코드_문서화(FollowErrorCode errorCode) throws Exception {
@@ -140,7 +141,7 @@ class GithubFollowControllerTest {
 
 			.andDo(document(errorCode.getCode(),
 				resource(ResourceSnippetParameters.builder()
-					.tag("2. 깃허브 팔로우 관계 탐지 👥")
+					.tag("👥 깃허브 팔로우 관계 탐지")
 					.pathParameters(
 						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)"))
 					.responseFields(
@@ -170,7 +171,7 @@ class GithubFollowControllerTest {
 			.andExpect(jsonPath("$.data").isEmpty())
 			.andDo(document("팔로우 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("2. 깃허브 팔로우 관계 탐지 👥")
+					.tag("👥 깃허브 팔로우 관계 탐지")
 					.summary("깃허브 사용자 팔로우 API")
 					.description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.")
 					.pathParameters(
@@ -197,7 +198,7 @@ class GithubFollowControllerTest {
 			.andExpect(jsonPath("$.data").isEmpty())
 			.andDo(document("언팔로우 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("2. 깃허브 팔로우 관계 탐지 👥")
+					.tag("👥 깃허브 팔로우 관계 탐지")
 					.summary("깃허브 사용자 언팔로우 API")
 					.description("현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.")
 					.pathParameters(
