@@ -79,4 +79,11 @@ public class GithubFollowRelation {
 
 		githubFollowers.remove(user);
 	}
+
+	public List<Long> getGithubFollowingUserIds() {
+
+		return githubFollowings.stream()
+			.map(GithubUser::id)
+			.toList();
+	}
 }

@@ -1,13 +1,15 @@
 package com.moyo.backend.domain.github_ranking.implement;
 
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.github_ranking.data_access.RankingRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +27,19 @@ public class RankingReader {
 		Pageable pageable = PageRequest.of(page, size);
 
 		Slice<Ranking> rankingSlice = rankingRepository.findAll(rankingPeriod, pageable);
+
+		return new RankingSlice(rankingSlice.getContent(), rankingSlice.hasNext());
+	}
+
+	public RankingSlice getFollowingsRanking(
+		List<Long> followingUserIds,
+		RankingPeriod rankingPeriod,
+		int page,
+		int size) {
+
+		Pageable pageable = PageRequest.of(page, size);
+
+		Slice<Ranking> rankingSlice = rankingRepository.findFollowingUserRankings(followingUserIds, rankingPeriod, pageable);
 
 		return new RankingSlice(rankingSlice.getContent(), rankingSlice.hasNext());
 	}

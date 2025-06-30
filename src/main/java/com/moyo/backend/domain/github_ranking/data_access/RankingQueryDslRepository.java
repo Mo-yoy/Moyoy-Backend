@@ -44,4 +44,27 @@ public class RankingQueryDslRepository {
 
 		return new SliceImpl<>(rankings, pageable, hasNext);
 	}
+
+	public Slice<Ranking> findByUserIds(List<Long> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+
+		OrderSpecifier<?> orderCondition = switch (rankingPeriod) {
+			case WEEK -> ranking.weeklyPoint.desc();
+			case MONTH -> ranking.monthlyPoint.desc();
+			case YEAR -> ranking.yearlyPoint.desc();
+		};
+
+		List<Ranking> rankings = jpaQueryFactory
+			.selectFrom(ranking)
+			.where(ranking.userId.in(followingUserIds))
+			.orderBy(orderCondition)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.fetch();
+
+		boolean hasNext = rankings.size() > pageable.getPageSize();
+		if (hasNext)
+			rankings.removeLast();
+
+		return new SliceImpl<>(rankings, pageable, hasNext);
+	}
 }

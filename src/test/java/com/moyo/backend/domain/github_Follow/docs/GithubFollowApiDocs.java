@@ -1,4 +1,4 @@
-package com.moyo.backend.githubFollow.presentation;
+package com.moyo.backend.domain.github_Follow.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
@@ -51,14 +51,14 @@ import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResul
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
 import com.moyo.backend.domain.github_follow.implement.GithubUser;
 import com.moyo.backend.domain.github_follow.presentation.GithubFollowController;
-import com.moyo.common.annotation.WithMockGithubOAuth2User;
+import com.moyo.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(GlobalExceptionHandler.class)
-class GithubFollowControllerTest {
+class GithubFollowApiDocs {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -66,7 +66,7 @@ class GithubFollowControllerTest {
 	@MockitoBean
 	private GithubFollowService githubFollowService;
 
-	@WithMockGithubOAuth2User
+	@WithMockMoyoyUser
 	@Test
 	void 맞팔탐지기_성공() throws Exception {
 
@@ -123,7 +123,7 @@ class GithubFollowControllerTest {
 
 	}
 
-	@WithMockGithubOAuth2User
+	@WithMockMoyoyUser
 	@ParameterizedTest(name = "{index} => errorCode={0}")
 	@MethodSource("followDetectorErrorCodes")
 	void 맞팔탐지기_에러코드_문서화(FollowErrorCode errorCode) throws Exception {

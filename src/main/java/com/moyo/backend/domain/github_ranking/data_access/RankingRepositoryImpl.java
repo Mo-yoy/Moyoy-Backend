@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.github_ranking.data_access;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -42,5 +43,10 @@ public class RankingRepositoryImpl implements RankingRepository {
 	@Override
 	public Ranking findByUserId(Long userId) {
 		return rankingJpaRepository.findByUserId(userId);
+	}
+
+	@Override
+	public Slice<Ranking> findFollowingUserRankings(List<Long> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+		return rankingQueryDslRepository.findByUserIds(followingUserIds, rankingPeriod, pageable);
 	}
 }

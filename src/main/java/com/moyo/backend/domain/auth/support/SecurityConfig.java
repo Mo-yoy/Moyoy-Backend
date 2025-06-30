@@ -58,7 +58,7 @@ public class SecurityConfig {
 				.requestMatchers("/error/**", "/favicon.ico").permitAll() // Server Default
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI
-				.requestMatchers("/api/v1/rankings").permitAll() // all Rankings
+				.requestMatchers("/api/v1/rankings").permitAll() // [Domain] Ranking
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
 				.authorizationEndpoint(authorization -> authorization

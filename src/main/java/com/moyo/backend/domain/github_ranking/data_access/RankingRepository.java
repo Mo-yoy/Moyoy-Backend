@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.github_ranking.data_access;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface RankingRepository {
 	void save(Ranking ranking);
 
 	Ranking findByUserId(Long userId);
+
+	Slice<Ranking> findFollowingUserRankings(List<Long> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
 }

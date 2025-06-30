@@ -2,11 +2,11 @@ package com.moyo.backend.common.exception.ranking;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
 
-import com.moyo.backend.common.exception.BaseErrorCode;
-import com.moyo.backend.common.exception.ErrorReason;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import com.moyo.backend.common.exception.BaseErrorCode;
+import com.moyo.backend.common.exception.ErrorReason;
 
 @Getter
 @AllArgsConstructor
