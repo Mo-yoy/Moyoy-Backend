@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.pr_review.domain;
+package com.moyo.backend.domain.pr_review.implement;
 
 import lombok.AccessLevel;
 import lombok.Getter;

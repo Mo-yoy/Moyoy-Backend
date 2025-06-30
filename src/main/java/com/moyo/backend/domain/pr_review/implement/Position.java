@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.pr_review.domain.position;
+package com.moyo.backend.domain.pr_review.implement;
 
 import java.util.Arrays;
 

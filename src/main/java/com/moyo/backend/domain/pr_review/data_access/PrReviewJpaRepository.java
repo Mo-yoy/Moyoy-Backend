@@ -1,12 +1,12 @@
-package com.moyo.backend.domain.pr_review.infrastructure;
+package com.moyo.backend.domain.pr_review.data_access;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.position.Position;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.Position;
 import com.moyo.backend.domain.user.implement.User;
 
 public interface PrReviewJpaRepository extends JpaRepository<PrReview, Long> {

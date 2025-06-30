@@ -1,10 +1,10 @@
-package com.moyo.backend.domain.pr_review.infrastructure;
+package com.moyo.backend.domain.pr_review.data_access;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.PrReviewHits;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.PrReviewHits;
 
 @Repository
 public interface PrReviewHitsJpaRepository extends JpaRepository<PrReviewHits, Long> {

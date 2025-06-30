@@ -1,12 +1,12 @@
-package com.moyo.backend.domain.pr_review.application.port;
+package com.moyo.backend.domain.pr_review.data_access;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.position.Position;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.Position;
 import com.moyo.backend.domain.user.implement.User;
 
 public interface PrReviewRepository {

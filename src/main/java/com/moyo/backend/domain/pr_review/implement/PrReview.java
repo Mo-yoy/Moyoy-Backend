@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.pr_review.domain;
+package com.moyo.backend.domain.pr_review.implement;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.pr_review.domain.position.Position;
 import com.moyo.backend.domain.user.implement.User;
 
 import jakarta.persistence.*;

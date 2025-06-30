@@ -1,7 +1,7 @@
-package com.moyo.backend.domain.pr_review.application.port;
+package com.moyo.backend.domain.pr_review.data_access;
 
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.PrReviewHits;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.PrReviewHits;
 
 public interface PrReviewHitsRepository {
 

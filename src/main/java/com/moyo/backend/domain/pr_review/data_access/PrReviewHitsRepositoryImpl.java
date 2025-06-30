@@ -1,12 +1,11 @@
-package com.moyo.backend.domain.pr_review.infrastructure;
+package com.moyo.backend.domain.pr_review.data_access;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
-import com.moyo.backend.domain.pr_review.application.port.PrReviewHitsRepository;
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.PrReviewHits;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.PrReviewHits;
 
 @Repository
 @RequiredArgsConstructor

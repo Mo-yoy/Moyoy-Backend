@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.pr_review.application;
+package com.moyo.backend.domain.pr_review.business;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
-import com.moyo.backend.domain.pr_review.application.port.PrReviewHitsRepository;
-import com.moyo.backend.domain.pr_review.application.port.PrReviewRepository;
-import com.moyo.backend.domain.pr_review.domain.PrReview;
-import com.moyo.backend.domain.pr_review.domain.PrReviewHits;
-import com.moyo.backend.domain.pr_review.domain.position.Position;
+import com.moyo.backend.domain.pr_review.data_access.PrReviewHitsRepository;
+import com.moyo.backend.domain.pr_review.data_access.PrReviewRepository;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
+import com.moyo.backend.domain.pr_review.implement.PrReviewHits;
+import com.moyo.backend.domain.pr_review.implement.Position;
 import com.moyo.backend.domain.pr_review.dto.PrReviewDto;
 import com.moyo.backend.domain.pr_review.dto.request.PrReviewCreateRequestDto;
 import com.moyo.backend.domain.pr_review.dto.request.PrReviewListRequestDto;
