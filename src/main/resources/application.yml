@@ -46,8 +46,7 @@ spring:
 
 # LogBack
 logging:
-  config: classpath:logging/logback-${spring.profiles.active}.xml
-
+  config: classpath:logging/logback-${spring.profiles.active:local}.xml
 # AWS
 cloud:
   aws:
