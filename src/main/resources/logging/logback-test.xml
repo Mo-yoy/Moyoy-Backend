@@ -1,4 +1,12 @@
-<configuration>
+<!--로그 이벤트에 클래스명, 메서드명, 라인번호 추가-->
+<configuration packagingData="true">
+
+<!--    애플리케이션 종료 시 로그백이 안전하게 종료되도록 하는 후크 등록-->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+<!--    로그 스트림 이름 등에 사용할 타임 스탬프 변수 선언-->
+    <timestamp key="timestamp" datePattern="yyyy-MM-dd"/>
+
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
@@ -20,8 +28,6 @@
         <layout>
             <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
         </layout>
-
-
     </appender>
 
     <appender name="AWS_CLOUD_WATCH_LOGS" class="ca.pjer.logback.AwsLogsAppender">
@@ -29,10 +35,13 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
+        <layout>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:-N/A} --- [API][TEST][%thread] %-40.40logger{39} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+        </layout>
 
         <logRegion>${AWS_REGION}</logRegion>
-        <logGroupName>my-app-logs</logGroupName>
-        <logStreamName>app-log-%d{yyyy-MM-dd}</logStreamName>
+        <logGroupName>Moyoy-Test</logGroupName>
+        <logStreamName>test-log-${timestamp}</logStreamName>
         <maxBatchLogEvents>50</maxBatchLogEvents>
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
@@ -40,11 +49,6 @@
 
         <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
         <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
-        <encoder>
-            <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] [%5level] %logger{35}[%method:%line] %m%n</pattern>
-        </encoder>
-
     </appender>
 
 
