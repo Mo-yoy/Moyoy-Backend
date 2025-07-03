@@ -7,16 +7,11 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  # Spring Data
+  # Cache
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
-
-    web:
-      pageable:
-        default-page-size: 20
-        max-page-size: 100
 
   # Spring Security
   security:
@@ -30,8 +25,7 @@ spring:
             scope:
               - read:user
               - user:follow
-              - read:org
-
+              - read:org # 삭제 될 수 있음
 
   # JWT
   jwt:
@@ -48,3 +42,8 @@ spring:
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
+
+
+# LogBack
+logging:
+  config: classpath:logging/logback-${spring.profiles.active}.xml

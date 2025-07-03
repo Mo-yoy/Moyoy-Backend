@@ -8,10 +8,3 @@ spring:
       hibernate:
         jdbc:
           time_zone: Asia/Seoul
-
-# Log
-logging:
-  level:
-    root: info
-    org.springframework.security: debug
-    org.springframework.cache: trace
