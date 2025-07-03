@@ -47,3 +47,12 @@ spring:
 # LogBack
 logging:
   config: classpath:logging/logback-${spring.profiles.active}.xml
+
+# AWS
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ${AWS_REGION}

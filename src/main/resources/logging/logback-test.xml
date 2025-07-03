@@ -1,27 +1,55 @@
 <configuration>
-    <!-- 콘솔 로그: DEBUG 이상 -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
-        </filter>
-    </appender>
 
-    <!-- 파일 로그: INFO 이상 -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>build/test-log.log</file>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
+    <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
+    <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
+    <springProperty name="AWS_REGION" source="cloud.aws.region.static"/>
+
+    <appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
+
+        <prudent>true</prudent>
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>1</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+
     </appender>
 
-    <root level="DEBUG">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
+    <appender name="AWS_CLOUD_WATCH_LOGS" class="ca.pjer.logback.AwsLogsAppender">
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <logRegion>${AWS_REGION}</logRegion>
+        <logGroupName>my-app-logs</logGroupName>
+        <logStreamName>app-log-%d{yyyy-MM-dd}</logStreamName>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>30</retentionTimeDays>
+
+        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] [%5level] %logger{35}[%method:%line] %m%n</pattern>
+        </encoder>
+
+    </appender>
+
+
+    <!-- 전체 로그 레벨 -->
+    <root level="INFO">
+        <appender-ref ref="DAILY_LOG" />
+        <appender-ref ref="AWS_CLOUD_WATCH_LOGS" />
     </root>
 </configuration>
