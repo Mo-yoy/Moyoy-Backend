@@ -1,3 +1,4 @@
+<!--로컬 환경은 콘솔 출력만-->
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
