@@ -1,40 +1,53 @@
 <!--로그 이벤트에 클래스명, 메서드명, 라인번호 추가-->
-<configuration packagingData="true">
+<configuration>
 
-<!--    애플리케이션 종료 시 로그백이 안전하게 종료되도록 하는 후크 등록-->
+    <!--애플리케이션 종료 시 로그백이 안전하게 종료되도록 하는 후크 등록-->
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-<!--    로그 스트림 이름 등에 사용할 타임 스탬프 변수 선언-->
+    <!--로그 스트림 이름 등에 사용할 타임 스탬프 변수 선언-->
     <timestamp key="timestamp" datePattern="yyyy-MM-dd"/>
 
+    <!--스프링 부트 로그 색상 기호 등등 사용-->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <!--스프링 환경변수 기반 변수 선언-->
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
     <springProperty name="AWS_REGION" source="cloud.aws.region.static"/>
 
+    <!--하루 용 임시 로그 SSH 용, 백업용-->
     <appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
+        <!--Level 이상의 로그만 남기도록 필터링-->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
 
+        <!--Test Server는 같은 파일에 여러 프로세스가 write 하는 환경이라 해당 설정 필요-->
         <prudent>true</prudent>
-        <file>logs/app.log</file>
+
+
+        <file>logs/moyoy-test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--일 단위로 파일 분리-->
             <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--당일만 보관-->
             <maxHistory>1</maxHistory>
         </rollingPolicy>
-        <layout>
+
+        <encoder>
             <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
-        </layout>
+            <charset>utf8</charset>
+        </encoder>
     </appender>
 
+    <!--AWS CLOUD WATCH LOGS 전송용-->
     <appender name="AWS_CLOUD_WATCH_LOGS" class="ca.pjer.logback.AwsLogsAppender">
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
+
         <layout>
             <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX, Asia/Seoul} %-5level ${PID:-N/A} --- [API][TEST][%thread] %-40.40logger{39} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
         </layout>
@@ -52,7 +65,7 @@
     </appender>
 
 
-    <!-- 전체 로그 레벨 -->
+    <!-- 전체 로그 레벨 조정, ex) 전체 : INFO, 파일 필터링 : WARN, CLOUD WATCH LOGS 필터링 : ERROR와 같이 세부적 설정이 가능함-->
     <root level="INFO">
         <appender-ref ref="DAILY_LOG" />
         <appender-ref ref="AWS_CLOUD_WATCH_LOGS" />
