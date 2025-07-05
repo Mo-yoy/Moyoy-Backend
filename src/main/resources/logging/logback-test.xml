@@ -48,9 +48,10 @@
             <level>INFO</level>
         </filter>
 
-        <layout>
-            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:-N/A} --- [API][TEST][%thread] %-40.40logger{39} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
-        </layout>
+<!--        <layout>-->
+<!--            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:-N/A} -&#45;&#45; [API][TEST][%thread] %-40.40logger{39} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>-->
+<!--        </layout>-->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
 
         <logRegion>${AWS_REGION}</logRegion>
         <logGroupName>Moyoy-Test</logGroupName>
