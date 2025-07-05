@@ -6,35 +6,37 @@ import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class LoggingMDCFilter extends GenericFilterBean {
+public class LoggingMDCFilter extends OncePerRequestFilter {
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		try {
-			HttpServletRequest req = (HttpServletRequest) request;
-			String ip = getClientIp(req);
-			MDC.put("ip", ip);
+			String ip = getClientIp(request);
+			if (ip != null) {
+				MDC.put("ip", ip);
+			}
 
 			String userId = getUserIdFromSecurityContext();
-			MDC.put("userId", userId);
+			if (userId != null) {
+				MDC.put("userId", userId);
+			}
 
-			chain.doFilter(request, response);
+			filterChain.doFilter(request, response);
 		} finally {
 			MDC.clear();
 		}
 	}
+
 
 	private String getClientIp(HttpServletRequest request) {
 
@@ -59,4 +61,6 @@ public class LoggingMDCFilter extends GenericFilterBean {
 		}
 		return principal.toString();
 	}
+
+
 }
