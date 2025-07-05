@@ -67,7 +67,7 @@ public class JwtRefreshTokenValidator {
 
 			return SignedJWT.parse(token);
 		} catch (ParseException e) {
-			log.error("JWT Parsing 에러", e);
+			log.warn("JWT Parsing 에러");
 			throw new JwtTokenInvalidException();
 		}
 
