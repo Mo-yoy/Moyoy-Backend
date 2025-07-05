@@ -92,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				throw new JwtTokenInvalidException();
 
 		} catch (ParseException | JOSEException e) {
-			log.error("JWT 인증 필터 에서 에러 발생 : {}", e.getMessage());
+			log.error("JWT 인증 필터에서 알 수 없는 에러 발생", e);
 			throw new JwtTokenInvalidException();
 		}
 
