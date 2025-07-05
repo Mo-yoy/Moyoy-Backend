@@ -65,7 +65,7 @@ dependencies {
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // AWS Cloud Watch Logs Logback Appender
+    // Logback
     implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 

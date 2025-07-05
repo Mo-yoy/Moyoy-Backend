@@ -48,11 +48,6 @@
             <level>INFO</level>
         </filter>
 
-<!--        <layout>-->
-<!--            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level ${PID:-N/A} -&#45;&#45; [API][TEST][%thread] %-40.40logger{39} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>-->
-<!--        </layout>-->
-<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
-
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
@@ -74,9 +69,6 @@
                 <stackTrace>
                     <fieldName>stackTrace</fieldName>
                 </stackTrace>
-                <processId>
-                    <fieldName>processId</fieldName>
-                </processId>
             </providers>
         </encoder>
 
