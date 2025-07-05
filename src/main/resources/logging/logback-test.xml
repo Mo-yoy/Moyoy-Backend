@@ -64,12 +64,8 @@
                     <fieldName>threadName</fieldName>
                 </threadName>
                 <mdc>
-                    <fieldName>userId</fieldName>
-                    <key>userId</key>
-                </mdc>
-                <mdc>
-                    <fieldName>ip</fieldName>
-                    <key>ip</key>
+                    <includeMdcKeyName>userId</includeMdcKeyName>
+                    <includeMdcKeyName>ip</includeMdcKeyName>
                 </mdc>
                 <message>
                     <fieldName>message</fieldName>
