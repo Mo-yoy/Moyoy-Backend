@@ -4,9 +4,6 @@
     <!--애플리케이션 종료 시 로그백이 안전하게 종료되도록 하는 후크 등록-->
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
-    <!--로그 스트림 이름 등에 사용할 타임 스탬프 변수 선언-->
-    <timestamp key="timestamp" datePattern="yyyy-MM-dd"/>
-
     <!--스프링 부트 로그 색상 기호 등등 사용-->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
@@ -48,6 +45,7 @@
             <level>INFO</level>
         </filter>
 
+        <!--LOG STRING to JSON-->
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
@@ -76,15 +74,21 @@
             </providers>
         </encoder>
 
-
-
         <logRegion>${AWS_REGION}</logRegion>
-        <logGroupName>Moyoy-Test</logGroupName>
-        <logStreamName>test-log-${timestamp}</logStreamName>
-        <maxBatchLogEvents>50</maxBatchLogEvents>
-        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
-        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
-        <retentionTimeDays>30</retentionTimeDays>
+        <logGroupName>Moyoy-Test-Server-Logs</logGroupName>
+        <logStreamName>test-server-log-stream</logStreamName>
+
+        <!--클라우드 워치로 한번에 보낼 로그 단위-->
+        <maxBatchLogEvents>100</maxBatchLogEvents>
+
+        <!--버퍼 강제 플러시 시간 ms-->
+        <maxFlushTimeMillis>3600000</maxFlushTimeMillis>
+
+        <!--로그 버퍼가 가득 차있는 상황에서 추가 로그를 찍을 때 대기할 시간-->
+        <maxBlockTimeMillis>3000</maxBlockTimeMillis>
+
+        <!--로그 보관 기간-->
+        <retentionTimeDays>14</retentionTimeDays>
 
         <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
         <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
