@@ -63,6 +63,14 @@
                 <threadName>
                     <fieldName>threadName</fieldName>
                 </threadName>
+                <mdc>
+                    <fieldName>userId</fieldName>
+                    <key>userId</key>
+                </mdc>
+                <mdc>
+                    <fieldName>ip</fieldName>
+                    <key>ip</key>
+                </mdc>
                 <message>
                     <fieldName>message</fieldName>
                 </message>
@@ -71,6 +79,7 @@
                 </stackTrace>
             </providers>
         </encoder>
+
 
 
         <logRegion>${AWS_REGION}</logRegion>
