@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 import com.moyo.backend.domain.auth.jwt.support.JwtAuthenticationFilter;
 import com.moyo.backend.domain.auth.jwt.support.JwtExceptionHandleFilter;
@@ -39,6 +40,7 @@ public class SecurityConfig {
 	private final JwtExceptionHandleFilter jwtExceptionHandleFilter;
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
+	private final LoggingMDCFilter loggingMDCFilter;
 
 	@Bean
 	public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
@@ -51,6 +53,7 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
 			.addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
+			.addFilterAfter(loggingMDCFilter, AnonymousAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/health", "/").permitAll() // Health Check
 				.requestMatchers("/permit/all/test", "/test/**").permitAll() // Test
