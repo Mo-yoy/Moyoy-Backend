@@ -4,99 +4,104 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.moyo.backend.common.annotation.LoginUserId;
 import com.moyo.backend.common.response.ApiResponse;
-import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 import com.moyo.backend.domain.pr_review.business.PrReviewService;
-import com.moyo.backend.domain.pr_review.dto.request.PrReviewCreateRequestDto;
-import com.moyo.backend.domain.pr_review.dto.request.PrReviewListRequestDto;
-import com.moyo.backend.domain.pr_review.dto.request.PrReviewUpdateRequestDto;
-import com.moyo.backend.domain.pr_review.dto.response.PrReviewCreateResponseDto;
-import com.moyo.backend.domain.pr_review.dto.response.PrReviewDetailResponseDto;
-import com.moyo.backend.domain.pr_review.dto.response.PrReviewListResponseDto;
-import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateFormResponseDto;
-import com.moyo.backend.domain.pr_review.dto.response.PrReviewUpdateResponseDto;
+import com.moyo.backend.domain.pr_review.business.dto.PrReviewListResult;
+import com.moyo.backend.domain.pr_review.business.dto.PrReviewSearchCriteria;
+import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListRequest;
+import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListResponse;
+
+import jakarta.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/pr-review")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class PrReviewController {
 
 	private final PrReviewService prReviewService;
 
-	@GetMapping
-	public ResponseEntity<ApiResponse<PrReviewListResponseDto>> prReviewList(
-		@RequestParam(value = "status", defaultValue = "open") String status,
-		@RequestParam(value = "order", defaultValue = "createdAt,desc") String order,
-		@RequestParam(value = "position", required = false) String position,
-		@RequestParam(value = "page") int page,
-		@RequestParam(value = "size") int size) {
+	@GetMapping("/pr-review")
+	public ResponseEntity<ApiResponse<PrReviewListResponse>> prReviewList(
+		@Valid @ModelAttribute PrReviewListRequest prReviewListRequest) {
 
-		// Dto에서 입력값 검증 추가 필요.
-		PrReviewListRequestDto requestDto = new PrReviewListRequestDto(status, order, position, page, size);
+		// 1. Business 계층에 넘길 dto로 변환.
+		PrReviewSearchCriteria criteria = prReviewListRequest.toCriteria();
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewList(requestDto)));
+		// 2. Business 계층 service에 dto 넘기며 결과 List 반환받음.
+		PrReviewListResult result = prReviewService.getPrReviewList(criteria);
+
+		// 3. Presentation 계층 응답 dto로 변환.
+		PrReviewListResponse response = PrReviewListResponse.from(result);
+
+		// 4. 최종 응답 반환.
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/{pr-reviewId}")
-	public ResponseEntity<ApiResponse<PrReviewDetailResponseDto>> prReviewDetail(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@PathVariable("pr-reviewId") Long reviewId) {
+	@GetMapping("/pr-review/me")
+	public ResponseEntity<ApiResponse<PrReviewListResponse>> myPrReviewList(
+		@LoginUserId Long userId,
+		@Valid @ModelAttribute PrReviewListRequest prReviewListRequest) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.getPrReviewDetail(reviewId, userPrincipal.getId())));
+		// 1. Business 계층에 넘길 dto로 변환.
+		PrReviewSearchCriteria criteria = prReviewListRequest.toCriteria();
+
+		// 2. Business 계층 service에 dto 넘기며 결과 List 반환받음.
+		PrReviewListResult result = prReviewService.getMyPrReviewList(userId, criteria);
+
+		// 3. Presentation 계층 응답 dto로 변환.
+		PrReviewListResponse response = PrReviewListResponse.from(result);
+
+		// 4. 최종 응답 반환.
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@PostMapping
-	public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@RequestBody PrReviewCreateRequestDto requestDto) {
+	/*	@GetMapping("/pr-review/{pr-reviewId}")
+		public ResponseEntity<ApiResponse<PrReviewDetailResponse>> prReviewDetail(
+				@LoginUserId Long userId,
+				@PathVariable("pr-reviewId") Long reviewId) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
-	}
+			PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId);
 
-	@GetMapping("/{pr-reviewId}/form")
-	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@PathVariable("pr-reviewId") Long reviewId) {
+			PrReviewDetailResponse response = PrReviewDetailResponse.from(result);
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
-	}
+			return ResponseEntity.ok(ApiResponse.success(response));
+		}
 
-	@PatchMapping("/{pr-reviewId}")
-	public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@PathVariable("pr-reviewId") Long reviewId,
-		@RequestBody PrReviewUpdateRequestDto requestDto) {
+		@PostMapping("/pr-review")
+		public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(
+				@LoginUserId Long userId,
+				@RequestBody PrReviewCreateRequestDto requestDto) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
-	}
+			return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
+		}
 
-	@DeleteMapping("/{pr-reviewId}")
-	public ResponseEntity<ApiResponse<Void>> delete(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@PathVariable("pr-reviewId") Long reviewId) {
+		@GetMapping("/pr-review/{pr-reviewId}/form")
+		public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(
+				@LoginUserId Long userId,
+				@PathVariable("pr-reviewId") Long reviewId) {
 
-		prReviewService.deletePrReview(reviewId, userPrincipal.getId());
-		return ResponseEntity.ok(ApiResponse.noContent());
-	}
+			return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
+		}
 
-	@GetMapping("/me")
-	public ResponseEntity<ApiResponse<PrReviewListResponseDto>> myPrReviewList(@AuthenticationPrincipal GithubOAuth2User userPrincipal,
-		@RequestParam(value = "status", defaultValue = "open") String status,
-		@RequestParam(value = "order", defaultValue = "createdAt,desc") String order,
-		@RequestParam(value = "position", required = false) String position,
-		@RequestParam(value = "page") int page,
-		@RequestParam(value = "size") int size) {
+		@PatchMapping("/pr-review/{pr-reviewId}")
+		public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(
+				@LoginUserId Long userId,
+				@PathVariable("pr-reviewId") Long reviewId,
+				@RequestBody PrReviewUpdateRequestDto requestDto) {
 
-		// Dto에서 입력값 검증 추가 필요.
-		PrReviewListRequestDto requestDto = new PrReviewListRequestDto(status, order, position, page, size);
+			return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
+		}
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.getMyPrReviewList(requestDto, userPrincipal.getId())));
-	}
+		@DeleteMapping("/pr-review/{pr-reviewId}")
+		public ResponseEntity<ApiResponse<Void>> delete(
+				@LoginUserId Long userId,
+				@PathVariable("pr-reviewId") Long reviewId) {
+
+			prReviewService.deletePrReview(reviewId, userPrincipal.getId());
+			return ResponseEntity.ok(ApiResponse.noContent());
+		}*/
 }

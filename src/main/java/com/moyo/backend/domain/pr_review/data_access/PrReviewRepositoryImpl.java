@@ -4,13 +4,12 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import com.moyo.backend.domain.pr_review.implement.PrReview;
 import com.moyo.backend.domain.pr_review.implement.Position;
-import com.moyo.backend.domain.user.implement.User;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,13 +18,13 @@ public class PrReviewRepositoryImpl implements PrReviewRepository {
 	private final PrReviewJpaRepository prReviewJpaRepository;
 
 	@Override
-	public Page<PrReview> findAllByStatusAndPosition(Boolean status, Position position, Pageable pageable) {
+	public Slice<PrReview> findAllByStatusAndPosition(Boolean status, Position position, Pageable pageable) {
 		return prReviewJpaRepository.findAllByStatusAndPosition(status, position, pageable);
 	}
 
 	@Override
-	public Page<PrReview> findAllByUserAndStatusAndPosition(User user, Boolean status, Position position, Pageable pageable) {
-		return prReviewJpaRepository.findAllByUserAndStatusAndPosition(user, status, position, pageable);
+	public Slice<PrReview> findAllByUserIdAndStatusAndPosition(Long userId, Boolean status, Position position, Pageable pageable) {
+		return prReviewJpaRepository.findAllByUserIdAndStatusAndPosition(userId, status, position, pageable);
 	}
 
 	@Override

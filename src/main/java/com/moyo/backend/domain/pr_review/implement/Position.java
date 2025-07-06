@@ -19,7 +19,7 @@ public enum Position {
 		this.value = value;
 	}
 
-	public static Position fromString(String value) {
+	public static Position from(String value) {
 
 		if (value == null)
 			return null; // 직군 태그 null 허용할 건지, 다음 회의 안건 등록. FIXME

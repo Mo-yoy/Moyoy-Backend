@@ -1,6 +1,6 @@
-package com.moyo.backend.domain.pr_review.dto.response;
+package com.moyo.backend.domain.pr_review.presentation.dto;
 
-public record PrReviewDetailResponseDto(
+public record PrReviewDetailResponse(
 	String status,
 	Boolean isWriter,
 	//        Boolean isAdopted, // 채택은 스프린트2에서 추가.
@@ -12,5 +12,4 @@ public record PrReviewDetailResponseDto(
 	String createdAt,
 	String content,
 	String prUrl) {
-
 }
