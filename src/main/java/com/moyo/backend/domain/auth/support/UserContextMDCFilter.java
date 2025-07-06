@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class LoggingMDCFilter extends OncePerRequestFilter {
+public class UserContextMDCFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -29,6 +29,11 @@ public class LoggingMDCFilter extends OncePerRequestFilter {
 			String userId = getUserIdFromSecurityContext();
 			if (userId != null) {
 				MDC.put("userId", userId);
+			}
+
+			String userAgent = request.getHeader("User-Agent");
+			if (userAgent != null) {
+				MDC.put("userAgent", userAgent);
 			}
 
 			filterChain.doFilter(request, response);
