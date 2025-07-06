@@ -33,7 +33,7 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
-		log.warn("OAuth 인증 필터 에서 인증 처리 중 예외 발생, OAuth 인증과정에서 인증에 실패했습니다. : {}", exception.getMessage());
+		log.error("OAuth 인증 필터 에서 인증 처리 중 예외 발생, OAuth 인증과정에서 인증에 실패했습니다.", exception);
 		errorResponseWriter.writeErrorResponse(response, UNAUTHORIZED, AuthErrorCode.UNAUTHORIZED_USER);
 	}
 }
