@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -84,6 +85,6 @@ public class GithubFollowRelation {
 
 		return githubFollowings.stream()
 			.map(GithubUser::id)
-			.toList();
+			.collect(Collectors.toList());
 	}
 }

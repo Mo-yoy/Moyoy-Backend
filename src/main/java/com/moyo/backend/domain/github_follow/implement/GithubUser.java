@@ -13,3 +13,4 @@ public record GithubUser(
 		return this.id.compareTo(otherUser.id);
 	}
 }
+	
