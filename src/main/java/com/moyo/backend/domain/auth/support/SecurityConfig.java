@@ -27,7 +27,7 @@ import com.moyo.backend.domain.auth.oauth.component.exception.CustomAccessDenied
 import com.moyo.backend.domain.auth.oauth.component.exception.CustomAuthenticationEntryPoint;
 import com.moyo.backend.domain.auth.oauth.component.exception.OAuth2AuthenticationFailureHandler;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
