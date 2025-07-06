@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-		log.error("Authentication Entry Point 예외 처리 : {}", authException.getMessage());
+		log.warn("Authentication Entry Point 예외 처리, 인증되지 않은 사용자가 인증이 필요한 자원에 접근을 시도했습니다. : {}", authException.getMessage());
 		errorResponseWriter.writeErrorResponse(response, UNAUTHORIZED, AuthErrorCode.UNAUTHORIZED_USER);
 	}
 }

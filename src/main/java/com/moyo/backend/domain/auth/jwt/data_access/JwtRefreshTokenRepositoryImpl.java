@@ -28,4 +28,9 @@ public class JwtRefreshTokenRepositoryImpl implements JwtRefreshTokenRepository 
 
 		jwtRefreshTokenJpaRepository.deleteByValue(tokenValue);
 	}
+
+	@Override
+	public void flush() {
+		jwtRefreshTokenJpaRepository.flush();
+	}
 }

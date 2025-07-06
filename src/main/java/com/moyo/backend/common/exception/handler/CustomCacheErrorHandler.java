@@ -14,25 +14,25 @@ public class CustomCacheErrorHandler implements CacheErrorHandler {
 
 	@Override
 	public void handleCacheGetError(RuntimeException exception, Cache cache, Object key) {
-		handleExceptionInternal();
+		handleExceptionInternal(exception);
 	}
 
 	@Override
 	public void handleCachePutError(RuntimeException exception, Cache cache, Object key, Object value) {
-		handleExceptionInternal();
+		handleExceptionInternal(exception);
 	}
 
 	@Override
 	public void handleCacheEvictError(RuntimeException exception, Cache cache, Object key) {
-		handleExceptionInternal();
+		handleExceptionInternal(exception);
 	}
 
 	@Override
 	public void handleCacheClearError(RuntimeException exception, Cache cache) {
-		handleExceptionInternal();
+		handleExceptionInternal(exception);
 	}
 
-	private void handleExceptionInternal() {
-		log.error("Redis 서버 에러");
+	private void handleExceptionInternal(RuntimeException exception) {
+		log.error("Redis 서버 에러", exception);
 	}
 }

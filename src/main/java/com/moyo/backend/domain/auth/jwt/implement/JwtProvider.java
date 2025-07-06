@@ -67,7 +67,7 @@ public class JwtProvider {
 		try {
 			signedJWT.sign(macSigner);
 		} catch (JOSEException e) {
-			log.error("JWT Refresh Token 사인중 에러 발생 : {}", e.getMessage());
+			log.error("JWT Refresh Token 사인 중, 알 수 없는 이유로 사인에 실패했습니다.", e);
 			throw new RuntimeException("Jwt 발급 중 에러 발생");
 		}
 	}

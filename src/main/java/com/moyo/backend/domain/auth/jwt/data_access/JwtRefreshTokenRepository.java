@@ -10,4 +10,6 @@ public interface JwtRefreshTokenRepository {
 	boolean existByTokenValue(String tokenValue);
 
 	void deleteByTokenValue(String tokenValue);
+
+	void flush();
 }

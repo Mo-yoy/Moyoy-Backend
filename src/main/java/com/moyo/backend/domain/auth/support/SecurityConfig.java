@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import com.moyo.backend.domain.auth.jwt.support.JwtAuthenticationFilter;
 import com.moyo.backend.domain.auth.jwt.support.JwtExceptionHandleFilter;
@@ -25,9 +27,9 @@ import com.moyo.backend.domain.auth.oauth.component.exception.CustomAccessDenied
 import com.moyo.backend.domain.auth.oauth.component.exception.CustomAuthenticationEntryPoint;
 import com.moyo.backend.domain.auth.oauth.component.exception.OAuth2AuthenticationFailureHandler;
 
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
 	private final CustomOAuth2UserService oAuth2UserService;
@@ -39,6 +41,8 @@ public class SecurityConfig {
 	private final JwtExceptionHandleFilter jwtExceptionHandleFilter;
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
+	private final UserContextMDCFilter userContextMDCFilter;
+	private final RequestInfoMDCFilter requestInfoMDCFilter;
 
 	@Bean
 	public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
@@ -49,8 +53,10 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.addFilterAfter(requestInfoMDCFilter, DisableEncodeUrlFilter.class)
 			.addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
 			.addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
+			.addFilterAfter(userContextMDCFilter, AnonymousAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/health", "/").permitAll() // Health Check
 				.requestMatchers("/permit/all/test", "/test/**").permitAll() // Test

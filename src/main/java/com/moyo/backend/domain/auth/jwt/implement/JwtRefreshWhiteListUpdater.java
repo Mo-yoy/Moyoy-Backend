@@ -28,6 +28,7 @@ public class JwtRefreshWhiteListUpdater {
 			throw new RuntimeException(e);
 		}
 		jwtRefreshTokenRepository.deleteByTokenValue(oldToken);
+		jwtRefreshTokenRepository.flush();
 		jwtRefreshTokenRepository.save(reissuedRefreshToken);
 	}
 }

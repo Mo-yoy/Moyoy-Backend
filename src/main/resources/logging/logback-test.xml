@@ -1,0 +1,109 @@
+<!--로그 이벤트에 클래스명, 메서드명, 라인번호 추가-->
+<configuration>
+
+    <!--애플리케이션 종료 시 로그백이 안전하게 종료되도록 하는 후크 등록-->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+    <!--스프링 부트 로그 색상 기호 등등 사용-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!--스프링 환경변수 기반 변수 선언-->
+    <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
+    <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
+    <springProperty name="AWS_REGION" source="cloud.aws.region.static"/>
+
+    <!--하루 용 임시 로그 SSH 용, 백업용-->
+    <appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--Level 이상의 로그만 남기도록 필터링-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <!--Test Server는 같은 파일에 여러 프로세스가 write 하는 환경이라 해당 설정 필요-->
+        <prudent>true</prudent>
+
+
+        <file>logs/moyoy-test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--일 단위로 파일 분리-->
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--당일만 보관-->
+            <maxHistory>1</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!--AWS CLOUD WATCH LOGS 전송용-->
+    <appender name="AWS_CLOUD_WATCH_LOGS" class="ca.pjer.logback.AwsLogsAppender">
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <!--LOG STRING to JSON-->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>timestamp</fieldName>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</pattern>
+                </timestamp>
+                <logLevel>
+                    <fieldName>logLevel</fieldName>
+                </logLevel>
+                <loggerName>
+                    <fieldName>loggerName</fieldName>
+                </loggerName>
+                <threadName>
+                    <fieldName>threadName</fieldName>
+                </threadName>
+                <mdc>
+                    <includeMdcKeyName>userId</includeMdcKeyName>
+                    <includeMdcKeyName>ip</includeMdcKeyName>
+                    <includeMdcKeyName>userAgent</includeMdcKeyName>
+                    <includeMdcKeyName>requestUri</includeMdcKeyName>
+                    <includeMdcKeyName>httpMethod</includeMdcKeyName>
+                    <includeMdcKeyName>queryString</includeMdcKeyName>
+                    <includeMdcKeyName>referer</includeMdcKeyName>
+                    <includeMdcKeyName>host</includeMdcKeyName>
+                </mdc>
+                <message>
+                    <fieldName>message</fieldName>
+                </message>
+                <stackTrace>
+                    <fieldName>stackTrace</fieldName>
+                </stackTrace>
+            </providers>
+        </encoder>
+
+        <logRegion>${AWS_REGION}</logRegion>
+        <logGroupName>Moyoy-Test-Server</logGroupName>
+        <logStreamName>test-server</logStreamName>
+
+        <!--클라우드 워치로 한번에 보낼 로그 단위-->
+        <maxBatchLogEvents>100</maxBatchLogEvents>
+
+        <!--버퍼 강제 플러시 시간 ms-->
+        <maxFlushTimeMillis>60000</maxFlushTimeMillis>
+
+        <!--로그 버퍼가 가득 차있는 상황에서 추가 로그를 찍을 때 대기할 시간-->
+        <maxBlockTimeMillis>3000</maxBlockTimeMillis>
+
+        <!--로그 보관 기간-->
+        <retentionTimeDays>14</retentionTimeDays>
+
+        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+    </appender>
+
+
+    <!-- 전체 로그 레벨 조정, ex) 전체 : INFO, 파일 필터링 : WARN, CLOUD WATCH LOGS 필터링 : ERROR와 같이 세부적 설정이 가능함-->
+    <root level="INFO">
+        <appender-ref ref="DAILY_LOG" />
+        <appender-ref ref="AWS_CLOUD_WATCH_LOGS" />
+    </root>
+</configuration>

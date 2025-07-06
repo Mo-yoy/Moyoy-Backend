@@ -65,7 +65,7 @@ jobs:
             sudo fuser -k -n tcp 8080 || true
             sudo fuser -k -n tcp 8081 || true
   
-            nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 > output_8080.log 2>&1 &
-            nohup java -jar project.jar --spring.profiles.active=test --server.port=8081 > output_8081.log 2>&1 &
+            nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 &
+            nohup java -jar project.jar --spring.profiles.active=test --server.port=8081 &
            
             rm -rf /home/ubuntu/moyo-test/tobe

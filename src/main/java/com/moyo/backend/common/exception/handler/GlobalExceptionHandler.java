@@ -39,6 +39,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorReason errorReason = ex.getErrorReason();
 
+		log.warn("Custom Exception 발생 : {}|{}", errorReason.getCode(), errorReason.getErrorMessage());
+
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
@@ -51,6 +53,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String detailMessage = " Github Error Message : " + ex.getResponseBodyAsString();
 
 		errorReason.addDetailErrorMessage(detailMessage);
+
+		log.error("HTTP Client 에러 발생", ex);
 
 		return ResponseEntity.status(500).body(ApiResponse.fail(errorReason));
 	}
@@ -67,6 +71,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorReason errorReason = CommonErrorCode.INVALID_PARAM.getErrorReason();
 		errorReason.addDetailErrorMessage(detailErrorMessage);
 
+		log.warn("API 파라미터 유효성 검증 실패: {}", detailErrorMessage);
+
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
@@ -82,6 +88,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorReason errorReason = CommonErrorCode.INVALID_PARAM.getErrorReason();
 		errorReason.addDetailErrorMessage(detailErrorMessage);
 
+		log.warn("API 파라미터 유효성 검증 실패: {}", detailErrorMessage);
+
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
@@ -93,6 +101,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		String detailErrorMessage = "입력 값: " + ex.getValue();
 		errorReason.addDetailErrorMessage(detailErrorMessage);
+
+		log.warn("API 파라미터 유효성 검증 실패: {}", detailErrorMessage);
 
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
@@ -116,6 +126,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		errorReason.addDetailErrorMessage(detailErrorMessage);
 
+		log.warn("API 파라미터 유효성 검증 실패: {}", detailErrorMessage);
+
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
@@ -124,6 +136,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
 		ErrorReason errorReason = CommonErrorCode.RESOURCE_NOT_FOUND.getErrorReason();
+
+		log.warn("{}|{}", errorReason.getCode(), errorReason.getErrorMessage());
 
 		return ResponseEntity.status(status).body(ApiResponse.fail(errorReason));
 	}
@@ -134,6 +148,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorReason errorReason = CommonErrorCode.NOT_ALLOWED_METHOD.getErrorReason();
 
+		log.warn("{}|{}", errorReason.getCode(), errorReason.getErrorMessage());
+
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
@@ -142,6 +158,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
 
 		ErrorReason errorReason = new ErrorReason(statusCode.value(), "COMMON_" + statusCode.value(), ex.getMessage());
+
+		log.warn("Spring ResponseEntityExceptionHandler 에서 알 수 없는 에러를 처리했습니다.", ex);
 
 		return ResponseEntity.status(statusCode).body(ApiResponse.fail(errorReason));
 	}
@@ -152,7 +170,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorReason errorReason = CommonErrorCode.UNKNOWN_INTERNAL_SERVER_ERROR.getErrorReason();
 
-		log.error("Unknown Internal Server Error  : ", e);
+		log.error("서버 내부에서 알 수 없는 에러가 발생했습니다.  : ", e);
 
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}

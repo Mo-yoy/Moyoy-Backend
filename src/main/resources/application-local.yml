@@ -3,18 +3,10 @@ spring:
   # JPA
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         jdbc:
           time_zone: Asia/Seoul
         show_sql: true
         format_sql: true
-
-# Log
-logging:
-  level:
-    root: info
-    org.springframework.security: debug
-    org.springframework.cache: trace
-    org.hibernate.orm.jdbc.bind: trace
