@@ -16,16 +16,16 @@ public record PrReviewDetailResponse(
 	String prUrl) {
 	public static PrReviewDetailResponse from(PrReviewDetailResult result) {
 		return new PrReviewDetailResponse(
-				result.status(),
-				result.isWriter(),
-				result.isAdopted(),
-				result.profileImageUrl(),
-				result.username(),
-				result.position(),
-				result.title(),
-				result.hitCount(),
-				result.createdAt(),
-				result.content(),
-				result.prUrl());
+			result.status(),
+			result.isWriter(),
+			result.isAdopted(),
+			result.profileImageUrl(),
+			result.username(),
+			result.position(),
+			result.title(),
+			result.hitCount(),
+			result.createdAt(),
+			result.content(),
+			result.prUrl());
 	}
 }

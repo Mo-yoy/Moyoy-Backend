@@ -9,12 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import com.moyo.backend.common.annotation.LoginUserId;
 import com.moyo.backend.common.response.ApiResponse;
 import com.moyo.backend.domain.pr_review.business.PrReviewService;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewDetailResult;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewListResult;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewSearchCriteria;
-import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewDetailResponse;
-import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListRequest;
-import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListResponse;
+import com.moyo.backend.domain.pr_review.business.dto.*;
+import com.moyo.backend.domain.pr_review.business.dto.PrReviewContent;
+import com.moyo.backend.domain.pr_review.presentation.dto.*;
 
 import jakarta.validation.Valid;
 
@@ -73,15 +70,24 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	/*@PostMapping("/pr-review")
-	public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(
-			@LoginUserId Long userId,
-			@RequestBody PrReviewCreateRequestDto requestDto) {
+	@PostMapping("/pr-review")
+	public ResponseEntity<ApiResponse<PrReviewCreateResponse>> create(
+		@LoginUserId Long userId,
+		@RequestBody PrReviewCreateRequest prReviewCreateRequest) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
+		// 1. Business 계층에 넘길 dto로 변환.
+		PrReviewContent content = prReviewCreateRequest.toContent();
+
+		// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
+		PrReviewCreateResult result = prReviewService.createPrReview(content, userId);
+
+		// 3. Presentation 계층 응답 dto로 변환.
+		PrReviewCreateResponse response = PrReviewCreateResponse.from(result);
+
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/pr-review/{pr-reviewId}/form")
+	/*@GetMapping("/pr-review/{pr-reviewId}/form")
 	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(
 			@LoginUserId Long userId,
 			@PathVariable("pr-reviewId") Long reviewId) {

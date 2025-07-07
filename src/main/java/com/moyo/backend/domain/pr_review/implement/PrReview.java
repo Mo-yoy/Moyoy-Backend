@@ -64,6 +64,24 @@ public class PrReview extends BaseTimeEntity {
 		this.adopted = adopted;
 	}
 
+	public static PrReview from(
+		String title,
+		String position,
+		String prUrl,
+		String content,
+		User user) {
+		return PrReview.builder()
+			.title(title)
+			.content(content)
+			.user(user)
+			.prUrl(prUrl)
+			.position(Position.from(position))
+			.hitCount(0)
+			.opened(true)
+			.adopted(false)
+			.build();
+	}
+
 	public void increaseHitCount() {
 		this.hitCount++;
 	}

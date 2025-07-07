@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewDetailResult;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewListResult;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewSearchCriteria;
+import com.moyo.backend.common.exception.CommonErrorCode;
+import com.moyo.backend.common.exception.MoyoException;
+import com.moyo.backend.domain.pr_review.business.dto.*;
+import com.moyo.backend.domain.pr_review.business.dto.PrReviewContent;
+import com.moyo.backend.domain.pr_review.implement.PrReview;
 import com.moyo.backend.domain.pr_review.implement.PrReviewHitsReader;
 import com.moyo.backend.domain.pr_review.implement.PrReviewReader;
+import com.moyo.backend.domain.pr_review.implement.PrReviewUpdater;
+import com.moyo.backend.domain.pr_review.implement.dto.PrReviewCreateData;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewDetail;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewListData;
+import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
 
 @Service
@@ -20,6 +25,7 @@ public class PrReviewService {
 	private final PrReviewReader prReviewReader;
 	private final UserReader userReader;
 	private final PrReviewHitsReader prReviewHitsReader;
+	private final PrReviewUpdater prReviewUpdater;
 
 	public PrReviewListResult getPrReviewList(PrReviewSearchCriteria criteria) {
 
@@ -49,5 +55,22 @@ public class PrReviewService {
 
 		// 3. implement 계층 응답 dto -> business 계층 dto 변환 후, 반환.
 		return PrReviewDetailResult.from(data);
+	}
+
+	public PrReviewCreateResult createPrReview(PrReviewContent content, Long userId) {
+
+		// 1. 작성자 정보 불러오기.
+		User writer = userReader.findById(userId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+		;
+
+		// 2. 제목, 직군 태그, PR URL, 내용 + 작성자로 요청글 생성.
+		PrReview prReview = PrReview.from(content.title(), content.position(), content.prUrl(), content.content(), writer);
+
+		// 2. 요청글 저장 후, 요청글 ID 반환.
+		PrReviewCreateData data = prReviewUpdater.savePrReview(prReview);
+
+		// 2. implement 계층 응답 dto -> business 계층 dto 변환 후, 반환.
+		return new PrReviewCreateResult(data.prReviewId());
 	}
 }
