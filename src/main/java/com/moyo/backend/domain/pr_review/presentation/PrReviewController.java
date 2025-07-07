@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.moyo.backend.common.annotation.LoginUserId;
 import com.moyo.backend.common.response.ApiResponse;
 import com.moyo.backend.domain.pr_review.business.PrReviewService;
+import com.moyo.backend.domain.pr_review.business.dto.PrReviewDetailResult;
 import com.moyo.backend.domain.pr_review.business.dto.PrReviewListResult;
 import com.moyo.backend.domain.pr_review.business.dto.PrReviewSearchCriteria;
+import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewDetailResponse;
 import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListRequest;
 import com.moyo.backend.domain.pr_review.presentation.dto.PrReviewListResponse;
 
@@ -59,49 +61,49 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	/*	@GetMapping("/pr-review/{pr-reviewId}")
-		public ResponseEntity<ApiResponse<PrReviewDetailResponse>> prReviewDetail(
-				@LoginUserId Long userId,
-				@PathVariable("pr-reviewId") Long reviewId) {
+	@GetMapping("/pr-review/{pr-reviewId}")
+	public ResponseEntity<ApiResponse<PrReviewDetailResponse>> prReviewDetail(
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId) {
 
-			PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId);
+		PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId);
 
-			PrReviewDetailResponse response = PrReviewDetailResponse.from(result);
+		PrReviewDetailResponse response = PrReviewDetailResponse.from(result);
 
-			return ResponseEntity.ok(ApiResponse.success(response));
-		}
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
 
-		@PostMapping("/pr-review")
-		public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(
-				@LoginUserId Long userId,
-				@RequestBody PrReviewCreateRequestDto requestDto) {
+	/*@PostMapping("/pr-review")
+	public ResponseEntity<ApiResponse<PrReviewCreateResponseDto>> create(
+			@LoginUserId Long userId,
+			@RequestBody PrReviewCreateRequestDto requestDto) {
 
-			return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
-		}
+		return ResponseEntity.ok(ApiResponse.success(prReviewService.createPrReview(requestDto, userPrincipal.getId())));
+	}
 
-		@GetMapping("/pr-review/{pr-reviewId}/form")
-		public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(
-				@LoginUserId Long userId,
-				@PathVariable("pr-reviewId") Long reviewId) {
+	@GetMapping("/pr-review/{pr-reviewId}/form")
+	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(
+			@LoginUserId Long userId,
+			@PathVariable("pr-reviewId") Long reviewId) {
 
-			return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
-		}
+		return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
+	}
 
-		@PatchMapping("/pr-review/{pr-reviewId}")
-		public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(
-				@LoginUserId Long userId,
-				@PathVariable("pr-reviewId") Long reviewId,
-				@RequestBody PrReviewUpdateRequestDto requestDto) {
+	@PatchMapping("/pr-review/{pr-reviewId}")
+	public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(
+			@LoginUserId Long userId,
+			@PathVariable("pr-reviewId") Long reviewId,
+			@RequestBody PrReviewUpdateRequestDto requestDto) {
 
-			return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
-		}
+		return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
+	}
 
-		@DeleteMapping("/pr-review/{pr-reviewId}")
-		public ResponseEntity<ApiResponse<Void>> delete(
-				@LoginUserId Long userId,
-				@PathVariable("pr-reviewId") Long reviewId) {
+	@DeleteMapping("/pr-review/{pr-reviewId}")
+	public ResponseEntity<ApiResponse<Void>> delete(
+			@LoginUserId Long userId,
+			@PathVariable("pr-reviewId") Long reviewId) {
 
-			prReviewService.deletePrReview(reviewId, userPrincipal.getId());
-			return ResponseEntity.ok(ApiResponse.noContent());
-		}*/
+		prReviewService.deletePrReview(reviewId, userPrincipal.getId());
+		return ResponseEntity.ok(ApiResponse.noContent());
+	}*/
 }

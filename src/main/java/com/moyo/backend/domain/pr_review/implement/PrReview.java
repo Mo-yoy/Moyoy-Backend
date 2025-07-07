@@ -47,17 +47,21 @@ public class PrReview extends BaseTimeEntity {
 	private int hitCount;
 
 	@Column(nullable = false)
-	private Boolean status; // open, closed 여부.
+	private boolean opened; // open, closed 여부.
+
+	@Column(nullable = false)
+	private boolean adopted;
 
 	@Builder
-	public PrReview(String title, String content, User user, String prUrl, Position position, int hitCount, boolean status) {
+	public PrReview(String title, String content, User user, String prUrl, Position position, int hitCount, boolean opened, boolean adopted) {
 		this.title = title;
 		this.content = content;
 		this.user = user;
 		this.prUrl = prUrl;
 		this.position = position;
 		this.hitCount = hitCount;
-		this.status = status;
+		this.opened = opened;
+		this.adopted = adopted;
 	}
 
 	public void increaseHitCount() {

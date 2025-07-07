@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.domain.pr_review.data_access.PrReviewRepository;
+import com.moyo.backend.domain.pr_review.implement.dto.PrReviewDetail;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewListData;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewSummary;
 
@@ -57,6 +58,15 @@ public class PrReviewReader {
 			.toList();
 
 		return new PrReviewListData(prReviews, slice.hasNext());
+	}
+
+	public PrReviewDetail readPrReviewDetail(Long reviewId, Long userId) {
+
+		// 유효하지 않은 reviewId 검증.
+		PrReview prReview = prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.INVALID_PARAM));
+
+		return PrReviewDetail.from(prReview, userId);
 	}
 
 	public Sort sortByOrder(String order) {
