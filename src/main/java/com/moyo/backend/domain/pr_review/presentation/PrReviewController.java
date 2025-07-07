@@ -87,15 +87,21 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	/*@GetMapping("/pr-review/{pr-reviewId}/form")
-	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponseDto>> updateForm(
-			@LoginUserId Long userId,
-			@PathVariable("pr-reviewId") Long reviewId) {
+	@GetMapping("/pr-review/{pr-reviewId}/form")
+	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponse>> updateForm(
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.getUpdateForm(reviewId, userPrincipal.getId())));
+		// 1. Business 계층 service에 요청 값 넘기며 dto 반환받음.
+		PrReviewContent result = prReviewService.getPrReviewUpdateForm(reviewId, userId);
+
+		// 2. Presentation 계층 응답 dto로 변환.
+		PrReviewUpdateFormResponse response = PrReviewUpdateFormResponse.from(result);
+
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@PatchMapping("/pr-review/{pr-reviewId}")
+	/*@PatchMapping("/pr-review/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(
 			@LoginUserId Long userId,
 			@PathVariable("pr-reviewId") Long reviewId,

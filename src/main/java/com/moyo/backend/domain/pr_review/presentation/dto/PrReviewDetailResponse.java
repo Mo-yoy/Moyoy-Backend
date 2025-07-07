@@ -14,6 +14,7 @@ public record PrReviewDetailResponse(
 	String createdAt,
 	String content,
 	String prUrl) {
+
 	public static PrReviewDetailResponse from(PrReviewDetailResult result) {
 		return new PrReviewDetailResponse(
 			result.status(),

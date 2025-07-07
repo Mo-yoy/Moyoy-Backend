@@ -12,6 +12,7 @@ import com.moyo.backend.domain.pr_review.implement.PrReview;
 import com.moyo.backend.domain.pr_review.implement.PrReviewHitsReader;
 import com.moyo.backend.domain.pr_review.implement.PrReviewReader;
 import com.moyo.backend.domain.pr_review.implement.PrReviewUpdater;
+import com.moyo.backend.domain.pr_review.implement.dto.PrReviewContentData;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewCreateData;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewDetail;
 import com.moyo.backend.domain.pr_review.implement.dto.PrReviewListData;
@@ -62,7 +63,6 @@ public class PrReviewService {
 		// 1. 작성자 정보 불러오기.
 		User writer = userReader.findById(userId)
 			.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
-		;
 
 		// 2. 제목, 직군 태그, PR URL, 내용 + 작성자로 요청글 생성.
 		PrReview prReview = PrReview.from(content.title(), content.position(), content.prUrl(), content.content(), writer);
@@ -72,5 +72,19 @@ public class PrReviewService {
 
 		// 2. implement 계층 응답 dto -> business 계층 dto 변환 후, 반환.
 		return new PrReviewCreateResult(data.prReviewId());
+	}
+
+	public PrReviewContent getPrReviewUpdateForm(Long reviewId, Long userId) {
+
+		// 1. 기존에 작성한 요청글 내용 불러오기.
+		PrReviewContentData data = prReviewReader.readPrReviewContent(reviewId, userId);
+
+		// 2. 요청한 사용자가 작성자가 아니라면 예외 처리.
+		if (!data.isWriter()) {
+			throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
+		}
+
+		// 3. implement 계층 dto -> business 계층 dto로 변환 후, 반환.
+		return PrReviewContent.from(data);
 	}
 }
