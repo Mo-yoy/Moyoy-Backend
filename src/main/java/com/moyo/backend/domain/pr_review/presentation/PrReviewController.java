@@ -71,18 +71,18 @@ public class PrReviewController {
 	}
 
 	@PostMapping("/pr-review")
-	public ResponseEntity<ApiResponse<PrReviewCreateResponse>> create(
+	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> create(
 		@LoginUserId Long userId,
-		@RequestBody PrReviewCreateRequest prReviewCreateRequest) {
+		@RequestBody PrReviewFormRequest prReviewFormRequest) {
 
 		// 1. Business 계층에 넘길 dto로 변환.
-		PrReviewContent content = prReviewCreateRequest.toContent();
+		PrReviewContent content = prReviewFormRequest.toContent();
 
 		// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
 		PrReviewCreateResult result = prReviewService.createPrReview(content, userId);
 
 		// 3. Presentation 계층 응답 dto로 변환.
-		PrReviewCreateResponse response = PrReviewCreateResponse.from(result);
+		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
 
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
@@ -101,16 +101,25 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	/*@PatchMapping("/pr-review/{pr-reviewId}")
-	public ResponseEntity<ApiResponse<PrReviewUpdateResponseDto>> update(
-			@LoginUserId Long userId,
-			@PathVariable("pr-reviewId") Long reviewId,
-			@RequestBody PrReviewUpdateRequestDto requestDto) {
+		@PatchMapping("/pr-review/{pr-reviewId}")
+		public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> update(
+				@LoginUserId Long userId,
+				@PathVariable("pr-reviewId") Long reviewId,
+				@RequestBody PrReviewFormRequest prReviewFormRequest) {
 
-		return ResponseEntity.ok(ApiResponse.success(prReviewService.updatePrReview(requestDto, reviewId, userPrincipal.getId())));
-	}
+			// 1. Business 계층에 넘길 dto로 변환.
+			PrReviewContent content = prReviewFormRequest.toContent();
 
-	@DeleteMapping("/pr-review/{pr-reviewId}")
+			// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
+			PrReviewUpdateResult result = prReviewService.updatePrReview(reviewId, content, userId);
+
+			// 3. Presentation 계층 응답 dto로 변환.
+			PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
+
+			return ResponseEntity.ok(ApiResponse.success(response));
+		}
+
+	/*@DeleteMapping("/pr-review/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
 			@LoginUserId Long userId,
 			@PathVariable("pr-reviewId") Long reviewId) {

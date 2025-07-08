@@ -99,7 +99,7 @@ class GithubFollowApiDocs {
 			// REST Docs
 			.andDo(document("맞팔탐지기 조회 성공",
 				resource(ResourceSnippetParameters.builder()
-					.tag("👥 깃허브 팔로우 관계 탐지")
+						.tag("👥 깃허브 팔로우 관계 탐지")
 					.summary("깃허브 팔로우 관계 탐지 API")
 					.description("현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을 한 번이라도 진행한 적이 있어야 사용 가능합니다.")
 					.pathParameters(

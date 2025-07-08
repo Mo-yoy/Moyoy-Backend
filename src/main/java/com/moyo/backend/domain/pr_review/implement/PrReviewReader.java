@@ -78,6 +78,11 @@ public class PrReviewReader {
 		return PrReviewContentData.from(prReview, userId);
 	}
 
+	public PrReview readPrReview(Long reviewId) {
+		return prReviewRepository.findById(reviewId)
+			.orElseThrow(() -> new MoyoException(CommonErrorCode.INVALID_PARAM));
+	}
+
 	public Sort sortByOrder(String order) {
 		String[] tokens = order.split(",");
 		if (tokens.length != 2) {
