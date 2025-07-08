@@ -101,30 +101,31 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-		@PatchMapping("/pr-review/{pr-reviewId}")
-		public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> update(
-				@LoginUserId Long userId,
-				@PathVariable("pr-reviewId") Long reviewId,
-				@RequestBody PrReviewFormRequest prReviewFormRequest) {
+	@PatchMapping("/pr-review/{pr-reviewId}")
+	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> update(
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId,
+		@RequestBody PrReviewFormRequest prReviewFormRequest) {
 
-			// 1. Business 계층에 넘길 dto로 변환.
-			PrReviewContent content = prReviewFormRequest.toContent();
+		// 1. Business 계층에 넘길 dto로 변환.
+		PrReviewContent content = prReviewFormRequest.toContent();
 
-			// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
-			PrReviewUpdateResult result = prReviewService.updatePrReview(reviewId, content, userId);
+		// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
+		PrReviewUpdateResult result = prReviewService.updatePrReview(reviewId, content, userId);
 
-			// 3. Presentation 계층 응답 dto로 변환.
-			PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
+		// 3. Presentation 계층 응답 dto로 변환.
+		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
 
-			return ResponseEntity.ok(ApiResponse.success(response));
-		}
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
 
-	/*@DeleteMapping("/pr-review/{pr-reviewId}")
+	@DeleteMapping("/pr-review/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
-			@LoginUserId Long userId,
-			@PathVariable("pr-reviewId") Long reviewId) {
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId) {
 
-		prReviewService.deletePrReview(reviewId, userPrincipal.getId());
+		prReviewService.deletePrReview(reviewId, userId);
+
 		return ResponseEntity.ok(ApiResponse.noContent());
-	}*/
+	}
 }

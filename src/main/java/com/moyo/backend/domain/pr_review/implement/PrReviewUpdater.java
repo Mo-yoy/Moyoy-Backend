@@ -1,8 +1,5 @@
 package com.moyo.backend.domain.pr_review.implement;
 
-import com.moyo.backend.common.exception.CommonErrorCode;
-import com.moyo.backend.common.exception.MoyoException;
-import com.moyo.backend.domain.pr_review.business.dto.PrReviewUpdateResult;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -19,9 +16,13 @@ public class PrReviewUpdater {
 
 	private final PrReviewRepository prReviewRepository;
 
-	public PrReviewCreateData savePrReview(PrReview prReview) {
+	public PrReviewCreateData create(PrReview prReview) {
 		PrReview savedPr = prReviewRepository.save(prReview);
 
 		return new PrReviewCreateData(savedPr.getId());
+	}
+
+	public void delete(PrReview prReview) {
+		prReviewRepository.delete(prReview);
 	}
 }
