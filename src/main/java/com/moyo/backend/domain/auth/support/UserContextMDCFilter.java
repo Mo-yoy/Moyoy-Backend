@@ -42,7 +42,6 @@ public class UserContextMDCFilter extends OncePerRequestFilter {
 		}
 	}
 
-
 	private String getClientIp(HttpServletRequest request) {
 
 		String xff = request.getHeader("X-Forwarded-For");
@@ -66,6 +65,5 @@ public class UserContextMDCFilter extends OncePerRequestFilter {
 		}
 		return principal.toString();
 	}
-
 
 }

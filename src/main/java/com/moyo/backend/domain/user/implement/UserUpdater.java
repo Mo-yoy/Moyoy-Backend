@@ -1,5 +1,7 @@
 package com.moyo.backend.domain.user.implement;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
@@ -8,7 +10,6 @@ import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Component
 @Transactional
@@ -28,7 +29,6 @@ public class UserUpdater {
 		rankingRepository.save(ranking);
 	}
 
-
 	/**
 	 * 해당 메서드를 호출하는 User Read가 포함된 트랜잭션과 별도의 트랜잭션임
 	 *
@@ -39,7 +39,6 @@ public class UserUpdater {
 
 		moyoUser.changeUsername(githubUserDto.username());
 		moyoUser.changeProfileImgUrl(githubUserDto.profileImgUrl());
-		moyoUser.changeName(githubUserDto.userTag());
 		userRepository.save(moyoUser);
 	}
 }

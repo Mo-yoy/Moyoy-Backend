@@ -1,8 +1,5 @@
 package com.moyo.backend.domain.user.implement;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +12,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -42,16 +41,13 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	private String name;
-
 	@Builder
-	public User(Long id, Integer githubUserId, String username, String profileImgUrl, Role role, String name) {
+	public User(Long id, Integer githubUserId, String username, String profileImgUrl, Role role) {
 		this.id = id;
 		this.githubUserId = githubUserId;
 		this.username = username;
 		this.profileImgUrl = profileImgUrl;
 		this.role = role;
-		this.name = name;
 	}
 
 	public static User from(GithubUserDto githubUserDto) {
@@ -59,7 +55,6 @@ public class User extends BaseTimeEntity {
 			.githubUserId(githubUserDto.githubUserId())
 			.username(githubUserDto.username())
 			.profileImgUrl(githubUserDto.profileImgUrl())
-			.name(githubUserDto.userTag())
 			.build();
 	}
 
@@ -70,10 +65,6 @@ public class User extends BaseTimeEntity {
 
 	public void changeProfileImgUrl(String profileImgUrl) {
 		this.profileImgUrl = profileImgUrl;
-	}
-
-	public void changeName(String name) {
-		this.name = name;
 	}
 
 	public void initRole() {

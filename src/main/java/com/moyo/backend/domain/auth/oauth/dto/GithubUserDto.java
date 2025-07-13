@@ -8,16 +8,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public record GithubUserDto(
 	Integer githubUserId,
 	String username,
-	String profileImgUrl,
-	String userTag
-) {
+	String profileImgUrl) {
 
 	public static GithubUserDto from(OAuth2User oAuth2User) {
 		return new GithubUserDto(
 			(Integer)oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_ID),
 			oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_NAME).toString(),
-			oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_AVATAR_URL).toString(),
-			oAuth2User.getAttributes().get("name").toString() // 임시 테스트 용
-		);
+			oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_AVATAR_URL).toString());
 	}
 }

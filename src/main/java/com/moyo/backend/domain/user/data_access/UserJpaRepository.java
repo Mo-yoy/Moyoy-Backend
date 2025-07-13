@@ -14,7 +14,7 @@ import com.moyo.backend.domain.user.implement.User;
 public interface UserJpaRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByGithubUserId(Integer githubUserId);
-	
+
 	@EntityGraph(attributePaths = "ranking")
 	Page<User> findAll(Pageable pageable);
 
