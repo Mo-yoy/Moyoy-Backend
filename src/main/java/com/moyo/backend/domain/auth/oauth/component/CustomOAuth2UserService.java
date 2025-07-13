@@ -8,13 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
 import com.moyo.backend.domain.user.implement.User;
+import com.moyo.backend.domain.user.implement.UserCreator;
 import com.moyo.backend.domain.user.implement.UserReader;
 import com.moyo.backend.domain.user.implement.UserUpdater;
 
@@ -35,6 +35,7 @@ import com.moyo.backend.domain.user.implement.UserUpdater;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+	private final UserCreator userCreator;
 	private final UserReader userReader;
 	private final UserUpdater userUpdater;
 
@@ -50,14 +51,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		if (isMoyoyUser) {
 
-			log.info("기존 회원 Github 프로필 업데이트, UserId : {}, Github User Id : {}", moyoyUser.get().getId(), githubUserDto.githubUserId());
 			userUpdater.updateProfile(moyoyUser.get(), githubUserDto);
+			log.info("기존 회원 Github 프로필 업데이트, UserId : {}, Github User Id : {}", moyoyUser.get().getId(), githubUserDto.githubUserId());
+
 			return GithubOAuth2User.from(moyoyUser.get());
 		} else {
 
-			log.info("신규 회원 회원 가입 진행, Github User Id : {}", githubUserDto.githubUserId());
-			userUpdater.signUp(githubUserDto);
-			return GithubOAuth2User.from((DefaultOAuth2User)oAuth2User);
+			User newUser = userCreator.signUp(githubUserDto);
+			log.info("신규 회원 회원 가입 진행, UserId : {}, Github User Id : {}", newUser.getId(), githubUserDto.githubUserId());
+
+			return GithubOAuth2User.from(newUser);
 		}
 	}
 }
