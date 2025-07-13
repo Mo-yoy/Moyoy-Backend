@@ -1,7 +1,6 @@
 package com.moyo.backend.domain.user.implement;
 
-import static com.moyo.backend.common.constant.MoyoConstants.*;
-
+import jakarta.persistence.Embedded;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.AccessLevel;
@@ -9,9 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import com.moyo.backend.common.entity.BaseTimeEntity;
+import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,30 +42,38 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
+	private String name;
+
 	@Builder
-	public User(Long id, Integer githubUserId, String username, String profileImgUrl, Role role) {
+	public User(Long id, Integer githubUserId, String username, String profileImgUrl, Role role, String name) {
 		this.id = id;
 		this.githubUserId = githubUserId;
 		this.username = username;
 		this.profileImgUrl = profileImgUrl;
 		this.role = role;
+		this.name = name;
 	}
 
-	@Deprecated
-	public static User from(OAuth2User oAuth2User) {
+	public static User from(GithubUserDto githubUserDto) {
 		return User.builder()
-			.githubUserId(Long.parseLong(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_ID).toString()))
-			.username(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_NAME))
-			.profileImgUrl(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_AVATAR_URL))
+			.githubUserId(githubUserDto.githubUserId())
+			.username(githubUserDto.username())
+			.profileImgUrl(githubUserDto.profileImgUrl())
+			.name(githubUserDto.userTag())
 			.build();
 	}
 
+	// TODO 리팩토링 고민중
 	public void changeUsername(String username) {
 		this.username = username;
 	}
 
 	public void changeProfileImgUrl(String profileImgUrl) {
 		this.profileImgUrl = profileImgUrl;
+	}
+
+	public void changeName(String name) {
+		this.name = name;
 	}
 
 	public void initRole() {

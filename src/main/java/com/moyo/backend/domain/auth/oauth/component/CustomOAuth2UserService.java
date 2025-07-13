@@ -1,11 +1,6 @@
 package com.moyo.backend.domain.auth.oauth.component;
 
-import static com.moyo.backend.common.constant.MoyoConstants.*;
-
 import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -15,14 +10,17 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
-import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
+import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
 import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
 import com.moyo.backend.domain.user.implement.UserUpdater;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  *  우리 서비스의 성격이 깃허브와 깃허브 사용자 간의 미들웨어 느낌의 서비스인 점,
- *  다른 OAuth로 사용자가 인증하더라도 우리가 제공하는대부분의 API에 Github API가 필요하여 Github로 재인증이 필요한 점,
+ *  다른 OAuth로 사용자가 인증하더라도 우리가 제공하는대부분의 API에 Github API가 필요하여 Github OAuth를 위한 별도의 재인증이 필요한 점,
  *  이쪽에 많은 리소스를 쏟을 수 있는 상황이 아니고,
  *  Github 외에 OAuth를 사용할 여지가 없는 점을 고려해서
  *
@@ -39,31 +37,27 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 	private final UserReader userReader;
 	private final UserUpdater userUpdater;
-	private final RankingUpdater rankingUpdater;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-		// DefaultOAuth2UserService의 loadUser 반환 값인 DefaultOAuth2User 구현체 반환
-		OAuth2User githubUser = super.loadUser(userRequest);
+		/// @return DefaultOAuth2UserService의 loadUser 반환 값인 DefaultOAuth2User
+		OAuth2User oAuth2User = super.loadUser(userRequest);
+		GithubUserDto githubUserDto = GithubUserDto.from(oAuth2User);
 
-		// Github id는 Integer -> 우리는 Long 으로 사용
-		Long githubUserId = Long.parseLong(githubUser.getAttribute(GITHUB_OAUTH2_USER_ID).toString());
-		Optional<User> moyoUser = userReader.findById(githubUserId);
+		Optional<User> moyoyUser = userReader.findByGithubUserId(githubUserDto.githubUserId());
+		boolean isMoyoyUser = moyoyUser.isPresent();
 
-		boolean isMoyoUser = moyoUser.isPresent();
+		if (isMoyoyUser) {
 
-		if (isMoyoUser) {
-
-			log.info("이미 가입된 회원 Username, ProfileImgUrl 갱신, UserId : {}", githubUser.getAttribute(GITHUB_OAUTH2_USER_ID).toString());
-			userUpdater.updateProfile(moyoUser.get(), githubUser);
-			return GithubOAuth2User.from(moyoUser.get());
+			log.info("기존 회원 Github 프로필 업데이트, UserId : {}, Github User Id : {}", moyoyUser.get().getId(), githubUserDto.githubUserId());
+			userUpdater.updateProfile(moyoyUser.get(), githubUserDto);
+			return GithubOAuth2User.from(moyoyUser.get());
 		} else {
 
-			log.info("신규 회원 회원 가입 진행, UserId : {}", githubUser.getAttribute(GITHUB_OAUTH2_USER_ID).toString());
-			userUpdater.signUp(githubUser);
-
-			return GithubOAuth2User.from((DefaultOAuth2User)githubUser);
+			log.info("신규 회원 회원 가입 진행, Github User Id : {}", githubUserDto.githubUserId());
+			userUpdater.signUp(githubUserDto);
+			return GithubOAuth2User.from((DefaultOAuth2User)oAuth2User);
 		}
 	}
 }

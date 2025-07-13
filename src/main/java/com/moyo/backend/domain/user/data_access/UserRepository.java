@@ -12,6 +12,8 @@ public interface UserRepository {
 
 	Optional<User> findById(Long userId);
 
+	Optional<User> findByGithubUserId(Integer githubUserId);
+
 	void save(User user);
 
 	boolean existsById(Long userId);

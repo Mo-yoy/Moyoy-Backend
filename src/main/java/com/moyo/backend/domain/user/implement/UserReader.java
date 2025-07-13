@@ -19,6 +19,10 @@ public class UserReader {
 		return userRepository.findById(userId);
 	}
 
+	public Optional<User> findByGithubUserId(Integer githubUserId) {
+		return userRepository.findByGithubUserId(githubUserId);
+	}
+
 	public List<Long> findAllUserIdList() {
 
 		return userRepository.findAllUserIdList();

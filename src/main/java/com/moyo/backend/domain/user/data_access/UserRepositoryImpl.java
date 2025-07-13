@@ -23,6 +23,11 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	public Optional<User> findByGithubUserId(Integer githubUserId) {
+		return userJpaRepository.findByGithubUserId(githubUserId);
+	}
+
+	@Override
 	public void save(User user) {
 		userJpaRepository.save(user);
 	}
