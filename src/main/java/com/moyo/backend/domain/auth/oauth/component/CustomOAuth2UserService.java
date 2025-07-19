@@ -1,7 +1,5 @@
 package com.moyo.backend.domain.auth.oauth.component;
 
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,9 +12,6 @@ import org.springframework.stereotype.Component;
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
 import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
 import com.moyo.backend.domain.user.implement.User;
-import com.moyo.backend.domain.user.implement.UserCreator;
-import com.moyo.backend.domain.user.implement.UserReader;
-import com.moyo.backend.domain.user.implement.UserUpdater;
 
 /**
  *  우리 서비스의 성격이 깃허브와 깃허브 사용자 간의 미들웨어 느낌의 서비스인 점,
@@ -35,9 +30,7 @@ import com.moyo.backend.domain.user.implement.UserUpdater;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-	private final UserCreator userCreator;
-	private final UserReader userReader;
-	private final UserUpdater userUpdater;
+	private final GithubUserSynchronizer githubUserSynchronizer;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -46,21 +39,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 		GithubUserDto githubUserDto = GithubUserDto.from(oAuth2User);
 
-		Optional<User> moyoyUser = userReader.findByGithubUserId(githubUserDto.githubUserId());
-		boolean isMoyoyUser = moyoyUser.isPresent();
+		User moyoyUser = githubUserSynchronizer.syncOrSignUp(githubUserDto);
 
-		if (isMoyoyUser) {
-
-			userUpdater.updateProfile(moyoyUser.get(), githubUserDto);
-			log.info("기존 회원 Github 프로필 업데이트, UserId : {}, Github User Id : {}", moyoyUser.get().getId(), githubUserDto.githubUserId());
-
-			return GithubOAuth2User.from(moyoyUser.get());
-		} else {
-
-			User newUser = userCreator.signUp(githubUserDto);
-			log.info("신규 회원 회원 가입 진행, UserId : {}, Github User Id : {}", newUser.getId(), githubUserDto.githubUserId());
-
-			return GithubOAuth2User.from(newUser);
-		}
+		return GithubOAuth2User.from(moyoyUser);
 	}
 }

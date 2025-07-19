@@ -58,7 +58,6 @@ public class User extends BaseTimeEntity {
 			.build();
 	}
 
-	// TODO 리팩토링 고민중
 	public void changeUsername(String username) {
 		this.username = username;
 	}
@@ -70,4 +69,5 @@ public class User extends BaseTimeEntity {
 	public void initRole() {
 		this.role = Role.USER;
 	}
+
 }

@@ -9,10 +9,7 @@ import com.moyo.backend.domain.github_ranking.data_access.RankingRepository;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 
-import jakarta.transaction.Transactional;
-
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class UserCreator {
 

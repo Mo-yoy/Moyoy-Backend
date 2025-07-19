@@ -45,7 +45,7 @@ public class JwtRefreshTokenValidator {
 
 	private void validateTokenNotExist(String jwtRefreshToken) {
 
-		if (jwtRefreshToken.isBlank() || jwtRefreshToken.isEmpty())
+		if (jwtRefreshToken.isBlank())
 			throw new JwtTokenNotExistException();
 	}
 
@@ -64,7 +64,6 @@ public class JwtRefreshTokenValidator {
 	private SignedJWT parseToken(String token) {
 
 		try {
-
 			return SignedJWT.parse(token);
 		} catch (ParseException e) {
 			log.warn("JWT Parsing 에러");
