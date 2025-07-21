@@ -18,8 +18,6 @@ public interface UserRepository {
 
 	boolean existsById(Long userId);
 
-	Slice<User> findAll(Pageable pageable);
-
 	List<Long> findAllUserIdList();
 
 	List<User> findByIdIn(List<Long> userIds);

@@ -21,7 +21,6 @@ public class GithubUserSynchronizer {
 	private final UserCreator userCreator;
 	private final UserReader userReader;
 
-
 	@Transactional
 	public User syncOrSignUp(GithubUserDto githubUserDto) {
 
