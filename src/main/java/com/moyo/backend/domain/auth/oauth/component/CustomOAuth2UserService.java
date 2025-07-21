@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.auth.oauth.dto.GithubOAuth2User;
-import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
+import com.moyo.backend.domain.auth.oauth.dto.GithubUserProfileDto;
 import com.moyo.backend.domain.user.implement.User;
 
 /**
@@ -36,9 +36,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		/// @return DefaultOAuth2UserService의 loadUser 반환 값인 DefaultOAuth2User
 		OAuth2User oAuth2User = super.loadUser(userRequest);
-		GithubUserDto githubUserDto = GithubUserDto.from(oAuth2User);
+		GithubUserProfileDto githubUserProfileDto = GithubUserProfileDto.from(oAuth2User);
 
-		User moyoyUser = githubUserSynchronizer.syncOrSignUp(githubUserDto);
+		User moyoyUser = githubUserSynchronizer.syncOrSignUp(githubUserProfileDto);
 
 		return GithubOAuth2User.from(moyoyUser);
 	}

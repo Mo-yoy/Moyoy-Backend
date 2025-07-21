@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.moyo.backend.common.entity.BaseTimeEntity;
-import com.moyo.backend.domain.auth.oauth.dto.GithubUserDto;
+import com.moyo.backend.domain.auth.oauth.dto.GithubUserProfileDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,11 +50,11 @@ public class User extends BaseTimeEntity {
 		this.role = role;
 	}
 
-	public static User from(GithubUserDto githubUserDto) {
+	public static User from(GithubUserProfileDto githubUserProfileDto) {
 		return User.builder()
-			.githubUserId(githubUserDto.githubUserId())
-			.username(githubUserDto.username())
-			.profileImgUrl(githubUserDto.profileImgUrl())
+			.githubUserId(githubUserProfileDto.githubUserId())
+			.username(githubUserProfileDto.username())
+			.profileImgUrl(githubUserProfileDto.profileImgUrl())
 			.build();
 	}
 
