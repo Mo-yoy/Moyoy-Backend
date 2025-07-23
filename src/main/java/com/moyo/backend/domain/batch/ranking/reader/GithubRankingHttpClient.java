@@ -10,7 +10,7 @@ import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
 
 public interface GithubRankingHttpClient {
 
-	ResponseEntity<RankingPreflight> fetchRankingPreflight(Long userId, String accessToken);
+	ResponseEntity<RankingPreflight> fetchRankingPreflight(Integer githubUserId, String accessToken);
 
 	List<GithubRepoDetails> fetchPagedRepos(int currentPage, String accessToken);
 

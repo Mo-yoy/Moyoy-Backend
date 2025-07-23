@@ -24,10 +24,10 @@ public class GithubRankingRestClientImpl implements GithubRankingHttpClient {
 	private final RestClient restClient;
 
 	@Override
-	public ResponseEntity<RankingPreflight> fetchRankingPreflight(Long userId, String accessToken) {
+	public ResponseEntity<RankingPreflight> fetchRankingPreflight(Integer githubUserId, String accessToken) {
 
 		return restClient.get()
-			.uri("/user/{userId}", userId)
+			.uri("/user/{userId}", githubUserId)
 			.headers(header -> header.setBearerAuth(accessToken))
 			.retrieve()
 			.toEntity(RankingPreflight.class);

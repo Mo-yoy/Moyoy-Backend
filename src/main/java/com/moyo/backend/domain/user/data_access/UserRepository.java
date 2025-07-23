@@ -18,7 +18,7 @@ public interface UserRepository {
 
 	boolean existsById(Long userId);
 
-	List<Long> findAllUserIdList();
-
 	List<User> findByIdIn(List<Long> userIds);
+
+	List<User> findAll();
 }

@@ -36,12 +36,13 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public List<Long> findAllUserIdList() {
-		return userJpaRepository.findAllUserIds();
-	}
-
-	@Override
 	public List<User> findByIdIn(List<Long> userIds) {
 		return userJpaRepository.findAllById(userIds);
 	}
+
+	@Override
+	public List<User> findAll() {
+		return userJpaRepository.findAll();
+	}
+
 }

@@ -17,7 +17,4 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
 
 	@EntityGraph(attributePaths = "ranking")
 	Page<User> findAll(Pageable pageable);
-
-	@Query("SELECT u.id FROM User u ORDER BY u.id asc ")
-	List<Long> findAllUserIds();
 }

@@ -25,8 +25,8 @@ public class Ranking extends BaseTimeEntity {
 	@Column(name = "ranking_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private Long userId;
+
 	private String grade;
 	private long weeklyPoint;
 	private long monthlyPoint;

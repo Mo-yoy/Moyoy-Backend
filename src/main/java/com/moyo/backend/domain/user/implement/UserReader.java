@@ -23,12 +23,11 @@ public class UserReader {
 		return userRepository.findByGithubUserId(githubUserId);
 	}
 
-	public List<Long> findAllUserIdList() {
-
-		return userRepository.findAllUserIdList();
-	}
-
 	public List<User> findAllById(List<Long> userIds) {
 		return userRepository.findByIdIn(userIds);
+	}
+
+	public List<User> findAll() {
+		return userRepository.findAll();
 	}
 }
