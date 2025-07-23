@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorResult;
 import com.moyo.backend.common.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;

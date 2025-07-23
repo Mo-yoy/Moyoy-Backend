@@ -36,13 +36,13 @@ public class JwtProvider {
 	}
 
 	private Date getTokenExpiration(String tokenType) {
+		long expirationMillis = switch (tokenType) {
+			case JWT_REFRESH_TYPE -> JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
+			case JWT_ACCESS_TYPE -> JWT_ACCESS_TOKEN_EXPIRATION_MINUTE;
+			default -> throw new IllegalArgumentException("JWT Provider | 유효하지 않은 토큰 타입 : " + tokenType);
+		};
 
-		if (tokenType.equals(JWT_REFRESH_TYPE))
-			return new Date(new Date().getTime() + JWT_REFRESH_TOKEN_EXPIRATION_MINUTE);
-		else if (tokenType.equals(JWT_ACCESS_TYPE))
-			return new Date(new Date().getTime() + JWT_ACCESS_TOKEN_EXPIRATION_MINUTE);
-		else
-			throw new RuntimeException();
+		return new Date(System.currentTimeMillis() + expirationMillis);
 	}
 
 	private JWSHeader createJWSHeader() {

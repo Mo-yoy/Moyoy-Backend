@@ -31,7 +31,7 @@ public class JwtRefreshToken {
 
 	private LocalDateTime expiresAt;
 
-	@Builder(access = AccessLevel.PRIVATE)
+	@Builder
 	private JwtRefreshToken(String value, LocalDateTime expiresAt) {
 		this.value = value;
 		this.expiresAt = expiresAt;
@@ -39,9 +39,12 @@ public class JwtRefreshToken {
 
 	public static JwtRefreshToken from(JWTClaimsSet claimsSet, String jwtRefreshToken) {
 
+		Date jwtExp = (Date)claimsSet.getClaim(JWT_CLAIM_EXPIRATION);
+		LocalDateTime expiresAt = LocalDateTime.ofInstant(jwtExp.toInstant(), ZoneId.systemDefault());
+
 		return JwtRefreshToken.builder()
 			.value(jwtRefreshToken)
-			.expiresAt(LocalDateTime.ofInstant(((Date)claimsSet.getClaim(JWT_CLAIM_EXPIRATION)).toInstant(), ZoneId.systemDefault()))
+			.expiresAt(expiresAt)
 			.build();
 	}
 

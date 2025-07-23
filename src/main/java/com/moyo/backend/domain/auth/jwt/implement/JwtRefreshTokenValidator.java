@@ -45,8 +45,7 @@ public class JwtRefreshTokenValidator {
 
 	private void validateTokenNotExist(String jwtRefreshToken) {
 
-		if (jwtRefreshToken.isBlank())
-			throw new JwtTokenNotExistException();
+		if (jwtRefreshToken.isBlank()) throw new JwtTokenNotExistException();
 	}
 
 	private JWTClaimsSet getJwtClaimsSet(SignedJWT signedJWT) {

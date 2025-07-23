@@ -26,6 +26,8 @@ public class JwtRefreshWhiteListUpdater {
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
+
+		/// TODO : 해당 부분에서 알수 없는 오류 발생, 원인을 못 밝혔음
 		jwtRefreshTokenRepository.deleteByTokenValue(oldToken);
 		jwtRefreshTokenRepository.flush();
 		jwtRefreshTokenRepository.save(reissuedRefreshToken);
