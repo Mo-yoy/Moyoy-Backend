@@ -1,4 +1,4 @@
-package com.moyo.backend.batch.ranking;
+package com.moyo.backend.domain.batch.ranking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,15 +7,15 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.batch.ranking.dto.RankingPreflight;
-import com.moyo.backend.batch.ranking.processor.GithubRepoClassifier;
-import com.moyo.backend.batch.ranking.processor.RankingCalculator;
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorParameters;
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
-import com.moyo.backend.batch.ranking.processor.RankingMetricsCalculator;
-import com.moyo.backend.batch.ranking.reader.RankingBatchReader;
+import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.processor.GithubRepoClassifier;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculator;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorParameters;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorResult;
+import com.moyo.backend.domain.batch.ranking.processor.RankingMetricsCalculator;
+import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
