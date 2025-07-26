@@ -15,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
+import com.moyo.backend.common.exception.user.UserNotFoundException;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_follow.data_access.GithubFollowHttpClient;
 import com.moyo.backend.domain.github_follow.data_access.GithubUserFollowStats;
+import com.moyo.backend.domain.user.implement.UserReader;
 
 @Slf4j
 @Component
@@ -26,12 +28,15 @@ public class GithubFollowRelationReader {
 
 	private final GithubFollowHttpClient githubFollowHttpClient;
 	private final GithubOAuthTokenReader githubOAuthTokenReader;
+	private final UserReader userReader;
 
 	@Caching(cacheable = @Cacheable(value = "followRelation", key = "#userId", condition = "!#forceSync"), put = @CachePut(value = "followRelation", key = "#userId", condition = "#forceSync"))
 	public GithubFollowRelation findByUserId(Long userId, boolean forceSync) {
 
+		Integer githubUserId = userReader.findById(userId).orElseThrow(UserNotFoundException::new).getGithubUserId();
 		String githubAccessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
-		ResponseEntity<GithubUserFollowStats> response = githubFollowHttpClient.fetchFollowStatsByUserId(userId, githubAccessToken);
+
+		ResponseEntity<GithubUserFollowStats> response = githubFollowHttpClient.fetchFollowStats(githubUserId, githubAccessToken);
 
 		GithubUserFollowStats followStats = response.getBody();
 		int remainingRequestCnt = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
@@ -42,8 +47,8 @@ public class GithubFollowRelationReader {
 		log.info("{}의 팔로워, 팔로잉 페이지 정보 로그 (page size = {}) | followerMaxPage : {} , followingMaxPage : {}, 남은 요청 가능 횟수 : {}",
 			userId, GITHUB_FOLLOW_QUERY_PAGING_SIZE, followStats.maxFollowerPageSize(), followStats.maxFollowingPageSize(), remainingRequestCnt);
 
-		List<GithubUser> githubFollowers = new ArrayList<>();
-		List<GithubUser> githubFollowings = new ArrayList<>();
+		List<GithubFollowUser> githubFollowers = new ArrayList<>();
+		List<GithubFollowUser> githubFollowings = new ArrayList<>();
 
 		int maxFollowerPageSize = followStats.maxFollowerPageSize();
 		int maxFollowingPageSize = followStats.maxFollowingPageSize();

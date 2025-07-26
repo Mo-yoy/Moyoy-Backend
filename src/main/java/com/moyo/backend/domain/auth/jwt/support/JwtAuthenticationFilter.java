@@ -60,9 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		if (!header.startsWith("Bearer ")) throw new JwtTokenInvalidException();
+		if (!header.startsWith("Bearer "))
+			throw new JwtTokenInvalidException();
 		String accessToken = header.replace("Bearer ", "");
-		if (accessToken.isBlank()) throw new JwtTokenInvalidException();
+		if (accessToken.isBlank())
+			throw new JwtTokenInvalidException();
 
 		try {
 			SignedJWT signedJWT = SignedJWT.parse(accessToken);
@@ -72,7 +74,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if (verifyResult) {
 				String type = jwtClaimsSet.getClaim(JWT_CLAIM_TOKEN_TYPE).toString();
 
-				if (type != null && !type.equals(JWT_ACCESS_TYPE)) throw new JwtTokenTypeMismatchException();
+				if (type != null && !type.equals(JWT_ACCESS_TYPE))
+					throw new JwtTokenTypeMismatchException();
 				if (jwtClaimsSet.getExpirationTime() != null && jwtClaimsSet.getExpirationTime().before(new Date()))
 					throw new JwtTokenExpiredException();
 
@@ -87,7 +90,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				GithubOAuth2User userPrincipal = new GithubOAuth2User(authorities, attributes);
 				Authentication authentication = new OAuth2AuthenticationToken(userPrincipal, userPrincipal.getAuthorities(), GITHUB_REGISTRATION_ID);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-			} else throw new JwtTokenInvalidException();
+			} else
+				throw new JwtTokenInvalidException();
 
 		} catch (ParseException | JOSEException e) {
 			log.warn("JWT 인증 필터에서 JWT 파싱 에러 발생");

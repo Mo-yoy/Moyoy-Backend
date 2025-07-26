@@ -41,9 +41,9 @@ public class RankingService {
 	public RankingSearchResult searchUserFollowingsRanking(Long userId, RankingSearch rankingSearch) {
 
 		GithubFollowRelation githubFollowRelation = githubFollowRelationReader.findByUserId(userId, false);
-		List<Long> followingUserIdList = githubFollowRelation.getGithubFollowingUserIds();
+		List<Integer> followingUserGithubIdList = githubFollowRelation.getGithubFollowingUserIds();
 
-		RankingSlice rankingSlice = rankingReader.getFollowingsRanking(followingUserIdList, rankingSearch.period(), rankingSearch.page(), rankingSearch.size());
+		RankingSlice rankingSlice = rankingReader.getFollowingsRanking(followingUserGithubIdList, rankingSearch.period(), rankingSearch.page(), rankingSearch.size());
 		List<Ranking> rankings = rankingSlice.rankingList();
 
 		List<User> users = userReader.findAllById(extractUserIds(rankings));

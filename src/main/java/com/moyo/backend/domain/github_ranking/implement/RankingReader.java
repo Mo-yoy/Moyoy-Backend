@@ -28,17 +28,16 @@ public class RankingReader {
 
 		Slice<Ranking> rankingSlice = rankingRepository.findAll(rankingPeriod, pageable);
 
-		return new RankingSlice(rankingSlice.getContent(), rankingSlice.hasNext());
+		return new RankingSlice(rankingSlice.getContent(), rankingSlice.isLast());
 	}
 
 	public RankingSlice getFollowingsRanking(
-		List<Long> followingUserIds,
+		List<Integer> followingUserIds,
 		RankingPeriod rankingPeriod,
 		int page,
 		int size) {
 
 		Pageable pageable = PageRequest.of(page, size);
-
 		Slice<Ranking> rankingSlice = rankingRepository.findFollowingUserRankings(followingUserIds, rankingPeriod, pageable);
 
 		return new RankingSlice(rankingSlice.getContent(), rankingSlice.hasNext());

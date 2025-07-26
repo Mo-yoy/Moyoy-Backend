@@ -1,9 +1,9 @@
 package com.moyo.backend.domain.batch.ranking;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
@@ -20,7 +21,6 @@ import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorParamete
 import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorResult;
 import com.moyo.backend.domain.batch.ranking.processor.RankingMetricsCalculator;
 import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
-import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
@@ -43,7 +43,6 @@ public class RankingBatchScheduler {
 
 	private final RankingUpdater rankingUpdater;
 
-
 	///  임시 랭킹 산출
 	@Deprecated
 	@Scheduled(cron = "0 52 21 * * *")
@@ -56,7 +55,7 @@ public class RankingBatchScheduler {
 		List<Long> userIdList = userList.stream().map(User::getId).toList();
 		List<Integer> githubUserIdList = userList.stream().map(User::getGithubUserId).toList();
 
-		for (int idx = 0; idx <userList.size(); idx++) {
+		for (int idx = 0; idx < userList.size(); idx++) {
 
 			Long userId = userIdList.get(idx);
 			Integer githubUserId = githubUserIdList.get(idx);

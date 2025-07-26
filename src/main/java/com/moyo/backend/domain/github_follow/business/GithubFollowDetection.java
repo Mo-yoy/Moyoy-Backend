@@ -4,19 +4,19 @@ import com.moyo.backend.domain.github_follow.implement.DetectType;
 
 public record GithubFollowDetection(
 	DetectType detectType,
-	Long lastUserId,
+	Integer lastGithubUserId,
 	int size,
 	boolean forceSync) {
 
 	public GithubFollowDetection(
 		String detectType,
-		Long lastUserId,
+		Integer lastGithubUserId,
 		int pageSize,
 		boolean forceSync) {
 
 		this(
 			DetectType.fromValue(detectType),
-			lastUserId,
+			lastGithubUserId,
 			pageSize,
 			forceSync);
 	}

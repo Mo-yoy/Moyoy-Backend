@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 
 public interface GithubFollowHttpClient {
-	ResponseEntity<GithubUserFollowStats> fetchFollowStatsByUserId(Long userId, String accessToken);
+	ResponseEntity<GithubUserFollowStats> fetchFollowStats(Integer githubUserId, String accessToken);
 
-	List<GithubUser> fetchPagedFollowers(int currentPage, String accessToken);
+	List<GithubFollowUser> fetchPagedFollowers(int currentPage, String accessToken);
 
-	List<GithubUser> fetchPagedFollowings(int currentPage, String accessToken);
+	List<GithubFollowUser> fetchPagedFollowings(int currentPage, String accessToken);
 
-	GithubUser fetchGithubFollowUserById(Long userId, String accessToken);
+	GithubFollowUser fetchGithubFollowUserById(Integer githubUserId, String accessToken);
 
 	int follow(String targetUsername, String accessToken);
 

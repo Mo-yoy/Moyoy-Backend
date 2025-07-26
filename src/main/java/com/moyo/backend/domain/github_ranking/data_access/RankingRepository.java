@@ -21,5 +21,5 @@ public interface RankingRepository {
 
 	Ranking findByUserId(Long userId);
 
-	Slice<Ranking> findFollowingUserRankings(List<Long> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
+	Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
 }

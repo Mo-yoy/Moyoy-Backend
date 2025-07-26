@@ -8,5 +8,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockMoyoyUserSecurityContextFactory.class)
 public @interface WithMockMoyoyUser{
-	String id() default "1";
+	long id() default 1;
 }

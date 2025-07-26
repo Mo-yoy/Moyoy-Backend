@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moyo.backend.domain.github_follow.implement.GithubFollowRelation;
 import com.moyo.backend.domain.github_follow.implement.GithubFollowRelationReader;
 import com.moyo.backend.domain.github_follow.implement.GithubFollowUpdater;
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +22,18 @@ public class GithubFollowService {
 
 		// TODO: forceSync 검증 로직 추가
 		GithubFollowRelation githubFollowRelation = githubFollowRelationReader.findByUserId(userId, followDetection.forceSync());
-		List<GithubUser> filteredFollowUsers = githubFollowRelation.filterUsersByDetectType(followDetection.detectType());
+		List<GithubFollowUser> filteredFollowUsers = githubFollowRelation.filterUsersByDetectType(followDetection.detectType());
 
 		return GithubFollowDetectionResult.from(filteredFollowUsers, followDetection, githubFollowRelation.getCreatedAt());
 	}
 
-	public void follow(Long currentUserId, Long targetUserId) {
+	public void follow(Long currentUserId, Integer targetGithubUserId) {
 
-		githubFollowUpdater.follow(currentUserId, targetUserId);
+		githubFollowUpdater.follow(currentUserId, targetGithubUserId);
 	}
 
-	public void unfollow(Long currentUserId, Long targetUserId) {
+	public void unfollow(Long currentUserId, Integer targetGithubUserId) {
 
-		githubFollowUpdater.unfollow(currentUserId, targetUserId);
+		githubFollowUpdater.unfollow(currentUserId, targetGithubUserId);
 	}
 }

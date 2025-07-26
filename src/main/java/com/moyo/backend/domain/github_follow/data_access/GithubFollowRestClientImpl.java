@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 
 @Slf4j
 @Component
@@ -22,16 +22,16 @@ public class GithubFollowRestClientImpl implements GithubFollowHttpClient {
 	private final RestClient restClient;
 
 	@Override
-	public ResponseEntity<GithubUserFollowStats> fetchFollowStatsByUserId(Long userId, String accessToken) {
+	public ResponseEntity<GithubUserFollowStats> fetchFollowStats(Integer githubUserId, String accessToken) {
 		return restClient.get()
-			.uri("/user/{userId}", userId)
+			.uri("/user/{userId}", githubUserId)
 			.headers(header -> header.setBearerAuth(accessToken))
 			.retrieve()
 			.toEntity(GithubUserFollowStats.class);
 	}
 
 	@Override
-	public List<GithubUser> fetchPagedFollowers(int currentPage, String accessToken) {
+	public List<GithubFollowUser> fetchPagedFollowers(int currentPage, String accessToken) {
 
 		return restClient.get()
 			.uri("/user/followers?per_page=" + GITHUB_FOLLOW_QUERY_PAGING_SIZE + "&page=" + currentPage)
@@ -41,7 +41,7 @@ public class GithubFollowRestClientImpl implements GithubFollowHttpClient {
 	}
 
 	@Override
-	public List<GithubUser> fetchPagedFollowings(int currentPage, String accessToken) {
+	public List<GithubFollowUser> fetchPagedFollowings(int currentPage, String accessToken) {
 		return restClient.get()
 			.uri("/user/following?per_page=" + GITHUB_FOLLOW_QUERY_PAGING_SIZE + "&page=" + currentPage)
 			.headers(header -> header.setBearerAuth(accessToken))
@@ -50,12 +50,12 @@ public class GithubFollowRestClientImpl implements GithubFollowHttpClient {
 	}
 
 	@Override
-	public GithubUser fetchGithubFollowUserById(Long userId, String accessToken) {
+	public GithubFollowUser fetchGithubFollowUserById(Integer githubUserId, String accessToken) {
 		return restClient.get()
-			.uri("/user/{userId}", userId)
+			.uri("/user/{userId}", githubUserId)
 			.headers(header -> header.setBearerAuth(accessToken))
 			.retrieve()
-			.toEntity(GithubUser.class).getBody();
+			.toEntity(GithubFollowUser.class).getBody();
 	}
 
 	@Override

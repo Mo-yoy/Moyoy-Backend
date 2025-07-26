@@ -19,19 +19,19 @@ public class GithubFollowRelation {
 	private Long userId;
 
 	// Id ASC
-	private TreeSet<GithubUser> githubFollowers;
-	private TreeSet<GithubUser> githubFollowings;
+	private TreeSet<GithubFollowUser> githubFollowers;
+	private TreeSet<GithubFollowUser> githubFollowings;
 	private LocalDateTime createdAt;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private GithubFollowRelation(Long userId, TreeSet<GithubUser> githubFollowers, TreeSet<GithubUser> githubFollowings, LocalDateTime createdAt) {
+	private GithubFollowRelation(Long userId, TreeSet<GithubFollowUser> githubFollowers, TreeSet<GithubFollowUser> githubFollowings, LocalDateTime createdAt) {
 		this.userId = userId;
 		this.githubFollowers = githubFollowers;
 		this.githubFollowings = githubFollowings;
 		this.createdAt = createdAt;
 	}
 
-	public static GithubFollowRelation create(Long userId, List<GithubUser> githubFollowers, List<GithubUser> githubFollowings) {
+	public static GithubFollowRelation create(Long userId, List<GithubFollowUser> githubFollowers, List<GithubFollowUser> githubFollowings) {
 		return GithubFollowRelation.builder()
 			.userId(userId)
 			.githubFollowers(new TreeSet<>(githubFollowers))
@@ -40,8 +40,8 @@ public class GithubFollowRelation {
 			.build();
 	}
 
-	public List<GithubUser> filterUsersByDetectType(DetectType detectType) {
-		Set<GithubUser> tempSet = new TreeSet<>();
+	public List<GithubFollowUser> filterUsersByDetectType(DetectType detectType) {
+		Set<GithubFollowUser> tempSet = new TreeSet<>();
 
 		switch (detectType) {
 			case MUTUAL -> {
@@ -61,30 +61,30 @@ public class GithubFollowRelation {
 		return new ArrayList<>(tempSet);
 	}
 
-	public void addFollowing(GithubUser user) {
+	public void addFollowing(GithubFollowUser user) {
 
 		githubFollowings.add(user);
 	}
 
-	public void addFollower(GithubUser user) {
+	public void addFollower(GithubFollowUser user) {
 
 		githubFollowers.add(user);
 	}
 
-	public void removeFollowing(GithubUser user) {
+	public void removeFollowing(GithubFollowUser user) {
 
 		githubFollowings.remove(user);
 	}
 
-	public void removeFollower(GithubUser user) {
+	public void removeFollower(GithubFollowUser user) {
 
 		githubFollowers.remove(user);
 	}
 
-	public List<Long> getGithubFollowingUserIds() {
+	public List<Integer> getGithubFollowingUserIds() {
 
 		return githubFollowings.stream()
-			.map(GithubUser::id)
+			.map(GithubFollowUser::id)
 			.collect(Collectors.toList());
 	}
 }

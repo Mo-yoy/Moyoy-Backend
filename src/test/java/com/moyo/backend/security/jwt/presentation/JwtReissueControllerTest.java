@@ -1,4 +1,4 @@
-package com.moyo.backend.security.jwt.docs;
+package com.moyo.backend.security.jwt.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -48,7 +48,7 @@ import jakarta.servlet.http.Cookie;
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(GlobalExceptionHandler.class)
-class JwtReissueApiDocs {
+class JwtReissueControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
