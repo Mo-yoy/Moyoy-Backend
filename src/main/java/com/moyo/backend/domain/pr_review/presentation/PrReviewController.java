@@ -27,16 +27,12 @@ public class PrReviewController {
 	public ResponseEntity<ApiResponse<PrReviewListResponse>> prReviewList(
 		@Valid @ModelAttribute PrReviewListRequest prReviewListRequest) {
 
-		// 1. Business 계층에 넘길 dto로 변환.
 		PrReviewSearchCriteria criteria = prReviewListRequest.toCriteria();
 
-		// 2. Business 계층 service에 dto 넘기며 결과 List 반환받음.
 		PrReviewListResult result = prReviewService.getPrReviewList(criteria);
 
-		// 3. Presentation 계층 응답 dto로 변환.
 		PrReviewListResponse response = PrReviewListResponse.from(result);
 
-		// 4. 최종 응답 반환.
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
@@ -45,16 +41,12 @@ public class PrReviewController {
 		@LoginUserId Long userId,
 		@Valid @ModelAttribute PrReviewListRequest prReviewListRequest) {
 
-		// 1. Business 계층에 넘길 dto로 변환.
 		PrReviewSearchCriteria criteria = prReviewListRequest.toCriteria();
 
-		// 2. Business 계층 service에 dto 넘기며 결과 List 반환받음.
 		PrReviewListResult result = prReviewService.getMyPrReviewList(userId, criteria);
 
-		// 3. Presentation 계층 응답 dto로 변환.
 		PrReviewListResponse response = PrReviewListResponse.from(result);
 
-		// 4. 최종 응답 반환.
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
@@ -75,13 +67,10 @@ public class PrReviewController {
 		@LoginUserId Long userId,
 		@RequestBody PrReviewFormRequest prReviewFormRequest) {
 
-		// 1. Business 계층에 넘길 dto로 변환.
 		PrReviewContent content = prReviewFormRequest.toContent();
 
-		// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
 		PrReviewCreateResult result = prReviewService.createPrReview(content, userId);
 
-		// 3. Presentation 계층 응답 dto로 변환.
 		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
 
 		return ResponseEntity.ok(ApiResponse.success(response));
@@ -92,10 +81,8 @@ public class PrReviewController {
 		@LoginUserId Long userId,
 		@PathVariable("pr-reviewId") Long reviewId) {
 
-		// 1. Business 계층 service에 요청 값 넘기며 dto 반환받음.
 		PrReviewContent result = prReviewService.getPrReviewUpdateForm(reviewId, userId);
 
-		// 2. Presentation 계층 응답 dto로 변환.
 		PrReviewUpdateFormResponse response = PrReviewUpdateFormResponse.from(result);
 
 		return ResponseEntity.ok(ApiResponse.success(response));
@@ -107,13 +94,10 @@ public class PrReviewController {
 		@PathVariable("pr-reviewId") Long reviewId,
 		@RequestBody PrReviewFormRequest prReviewFormRequest) {
 
-		// 1. Business 계층에 넘길 dto로 변환.
 		PrReviewContent content = prReviewFormRequest.toContent();
 
-		// 2. Business 계층 service에 dto 넘기며 결과 dto 반환.
 		PrReviewUpdateResult result = prReviewService.updatePrReview(reviewId, content, userId);
 
-		// 3. Presentation 계층 응답 dto로 변환.
 		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
 
 		return ResponseEntity.ok(ApiResponse.success(response));
