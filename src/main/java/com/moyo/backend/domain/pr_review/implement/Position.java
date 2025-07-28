@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
+import com.moyo.backend.common.exception.pr_review.PrReviewErrorCode;
 
 public enum Position {
 	BACKEND("백엔드"),
@@ -27,6 +28,6 @@ public enum Position {
 		return Arrays.stream(Position.values())
 			.filter(position -> position.name().equalsIgnoreCase(value) || position.value.equals(value))
 			.findFirst()
-			.orElseThrow(() -> new MoyoException(CommonErrorCode.POSITION_TAG_NOT_FOUND));
+			.orElseThrow(() -> new MoyoException(PrReviewErrorCode.POSITION_TAG_NOT_FOUND));
 	}
 }

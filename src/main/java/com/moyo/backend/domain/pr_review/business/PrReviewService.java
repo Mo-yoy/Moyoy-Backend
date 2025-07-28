@@ -1,11 +1,12 @@
 package com.moyo.backend.domain.pr_review.business;
 
+import com.moyo.backend.common.exception.pr_review.PrReviewErrorCode;
+import com.moyo.backend.common.exception.user.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.domain.pr_review.business.dto.*;
 import com.moyo.backend.domain.pr_review.business.dto.PrReviewContent;
@@ -52,7 +53,7 @@ public class PrReviewService {
 	public PrReviewCreateResult createPrReview(PrReviewContent content, Long userId) {
 
 		User writer = userReader.findById(userId)
-			.orElseThrow(() -> new MoyoException(CommonErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new MoyoException(UserErrorCode.USER_NOT_FOUND));
 
 		PrReview prReview = PrReview.from(content.title(), content.position(), content.prUrl(), content.content(), writer);
 
@@ -66,7 +67,7 @@ public class PrReviewService {
 		PrReviewContentData data = prReviewReader.readPrReviewContent(reviewId, userId);
 
 		if (!data.isWriter()) {
-			throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
+			throw new MoyoException(PrReviewErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
 		}
 
 		return PrReviewContent.from(data);
@@ -78,7 +79,7 @@ public class PrReviewService {
 		PrReview prReview = prReviewReader.readPrReview(reviewId);
 
 		if (!prReview.getUser().getId().equals(userId)) {
-			throw new MoyoException(CommonErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
+			throw new MoyoException(PrReviewErrorCode.PR_REVIEW_EDIT_FORBIDDEN);
 		}
 
 		prReview.updateDetail(content.title(), content.position(), content.prUrl(), content.content());
@@ -92,7 +93,7 @@ public class PrReviewService {
 		PrReview prReview = prReviewReader.readPrReview(reviewId);
 
 		if (!prReview.getUser().getId().equals(userId)) {
-			throw new MoyoException(CommonErrorCode.PR_REVIEW_DELETE_FORBIDDEN);
+			throw new MoyoException(PrReviewErrorCode.PR_REVIEW_DELETE_FORBIDDEN);
 		}
 
 		// 3. 조회수 테이블 따로 둘 경우, 해당 요청글의 조회수 데이터 삭제 (아직 방식 고민 중)
