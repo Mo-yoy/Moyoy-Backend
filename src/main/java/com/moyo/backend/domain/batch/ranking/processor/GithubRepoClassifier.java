@@ -7,37 +7,32 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
 
 @Component
 @RequiredArgsConstructor
 public class GithubRepoClassifier {
 
-	private final RankingBatchReader rankingBatchReader;
+	private final GithubContributorChecker githubContributorChecker;
 
 	public List<GithubRepoDetails> classify(
 		List<GithubRepoDetails> allRepos,
 		String currentUsername,
 		String accessToken) {
 
-		List<GithubRepoDetails> userRepos = allRepos.stream()
-			.filter(repo -> repo.owner().name().equals(currentUsername))
+		List<GithubRepoDetails> userOwnedRepos = allRepos.stream()
+			.filter(repo -> repo.ownerName().equals(currentUsername))
 			.toList();
 
-		List<GithubRepoDetails> organizationRepos = allRepos.stream()
-			.filter(repo -> !repo.owner().name().equals(currentUsername))
-			.filter(repo -> {
-				List<GithubContributorDetails> contributors = rankingBatchReader.getRepoContributors(repo.repoFullName(), accessToken);
-				return contributors.stream().anyMatch(c -> c.username().equals(currentUsername));
-			})
+		List<GithubRepoDetails> userContributedRepos = allRepos.stream()
+			.filter(repo -> !repo.ownerName().equals(currentUsername))
+			.filter(repo -> githubContributorChecker.isContributor(repo.repoName(), currentUsername, accessToken))
 			.toList();
 
-		List<GithubRepoDetails> finalRepos = new ArrayList<>(userRepos);
-		finalRepos.addAll(organizationRepos);
+		List<GithubRepoDetails> finalRankingCandidateRepos = new ArrayList<>();
+		finalRankingCandidateRepos.addAll(userOwnedRepos);
+		finalRankingCandidateRepos.addAll(userContributedRepos);
 
-		return finalRepos;
+		return finalRankingCandidateRepos;
 	}
-
 }

@@ -39,7 +39,7 @@ public class MoyoConstants {
 	public static final String GITHUB_OAUTH2_USER_AVATAR_URL = "avatar_url";
 	public static final int GITHUB_FOLLOW_QUERY_PAGING_SIZE = 100;
 	public static final int GITHUB_QUERY_PAGING_SIZE = 100;
-	public static final int GITHUB_MIN_REQUEST_THRESHOLD = 1000;
+	public static final int GITHUB_MIN_REQUEST_THRESHOLD = 2000;
 	public static final long ONE_MINUTE_MILLS = 60000L; // 60 * 1000
 
 	// Security

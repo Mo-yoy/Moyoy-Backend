@@ -25,7 +25,7 @@ spring:
             scope:
               - read:user
               - user:follow
-              - read:org # 삭제 될 수 있음
+              - read:org
 
   # JWT
   jwt:

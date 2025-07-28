@@ -1,12 +1,12 @@
 package com.moyo.backend.domain.batch.ranking.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public record GithubRepoDetails(
-	@JsonProperty("full_name") String repoFullName,
-	@JsonProperty("stargazers_count") int startCount,
-	@JsonProperty("owner") Owner owner) {
+	String repoName,
+	String ownerName,
+	int starCount
+) {
 
-	public record Owner(@JsonProperty("login") String name) {
+	public static GithubRepoDetails from(GithubRepoDetailsResponse response) {
+		return new GithubRepoDetails(response.repoFullName(), response.owner().name(), response.startCount());
 	}
 }

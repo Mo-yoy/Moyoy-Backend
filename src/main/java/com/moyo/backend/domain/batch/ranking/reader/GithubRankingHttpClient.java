@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
+import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
 
 public interface GithubRankingHttpClient {
 
-	ResponseEntity<RankingPreflight> fetchRankingPreflight(Integer githubUserId, String accessToken);
+	ResponseEntity<GithubProfileForRanking> fetchRankingPreflight(Integer githubUserId, String accessToken);
 
-	List<GithubRepoDetails> fetchPagedRepos(int currentPage, String accessToken);
+	List<GithubRepoDetailsResponse> fetchPagedRepos(int currentPage, String accessToken);
 
-	List<GithubContributorDetails> fetchPagedContributors(int currentPage, String repoFullName, String accessToken);
+	List<GithubContributorDetailsResponse> fetchPagedContributors(int currentPage, String repoFullName, String accessToken);
 
 	ResponseEntity<?> fetchContributorCommitActivity(String repoFullName, String accessToken);
 }

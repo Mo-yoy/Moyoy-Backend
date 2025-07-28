@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
+import com.moyo.backend.domain.batch.ranking.dto.UserCountAndLastId;
 import com.moyo.backend.domain.user.implement.User;
 
 @Repository
@@ -14,6 +15,7 @@ import com.moyo.backend.domain.user.implement.User;
 public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
+	private final UserQueryDslRepository userQueryDslRepository;
 
 	@Override
 	public Optional<User> findById(Long userId) {
@@ -41,8 +43,13 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public List<User> findAll() {
-		return userJpaRepository.findAll();
+	public List<User> findAll(Long lastUserId, int size) {
+		return userQueryDslRepository.findAll(lastUserId, size);
+	}
+
+	@Override
+	public UserCountAndLastId fetchUserCountAndLastId() {
+		return userQueryDslRepository.fetchUserCountAndLastId();
 	}
 
 }

@@ -8,18 +8,15 @@ public record GithubCommitStats(
 	public record WeekStats(
 		int commits,
 		int commitLines) {
-
 	}
 
 	public record MonthStats(
 		int commits,
 		int commitLines) {
-
 	}
 
 	public record YearStats(
 		int commits,
 		int commitLines) {
-
 	}
 }
