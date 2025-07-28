@@ -8,20 +8,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 
 public record GithubFollowDetectionResult(
 
-	Slice<GithubUser> users,
+	Slice<GithubFollowUser> users,
 	LocalDateTime lastSyncAt,
 	int totalFollowUserCount) {
 
-	public static GithubFollowDetectionResult from(List<GithubUser> users, GithubFollowDetection followDetection, LocalDateTime lastSyncAt) {
+	public static GithubFollowDetectionResult from(List<GithubFollowUser> users, GithubFollowDetection followDetection, LocalDateTime lastSyncAt) {
 
-		long lastFetchedUserId = followDetection.lastUserId();
+		int lastFetchedUserId = followDetection.lastGithubUserId();
 		int pageSize = followDetection.size();
 
-		List<GithubUser> filteredList = users.stream()
+		List<GithubFollowUser> filteredList = users.stream()
 			.filter(user -> lastFetchedUserId == 0 || user.id() > lastFetchedUserId)
 			.limit(pageSize + 1)
 			.collect(Collectors.toList());
@@ -31,7 +31,7 @@ public record GithubFollowDetectionResult(
 		if (hasNext)
 			filteredList.removeLast();
 
-		SliceImpl<GithubUser> usersSlice = new SliceImpl<>(filteredList, Pageable.unpaged(), hasNext);
+		SliceImpl<GithubFollowUser> usersSlice = new SliceImpl<>(filteredList, Pageable.unpaged(), hasNext);
 
 		return new GithubFollowDetectionResult(
 			usersSlice,

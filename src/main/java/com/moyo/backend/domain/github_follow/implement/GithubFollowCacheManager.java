@@ -16,7 +16,7 @@ public class GithubFollowCacheManager {
 	private final CacheManager cacheManager;
 
 	@CachePut(key = "#currentUserId", unless = "#result == null")
-	public GithubFollowRelation addFollowingToCurrentUser(Long currentUserId, GithubUser targetUser) {
+	public GithubFollowRelation addFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
 		GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
 
@@ -27,7 +27,7 @@ public class GithubFollowCacheManager {
 	}
 
 	@CachePut(key = "#currentUserId", unless = "#result == null")
-	public GithubFollowRelation deleteFollowingToCurrentUser(Long currentUserId, GithubUser targetUser) {
+	public GithubFollowRelation deleteFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
 
 		GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelation.class);
 
@@ -38,7 +38,7 @@ public class GithubFollowCacheManager {
 	}
 
 	@CachePut(key = "#targetUserId", unless = "#result == null")
-	public GithubFollowRelation addFollowerToTargetUser(Long targetUserId, GithubUser currentUser) {
+	public GithubFollowRelation addFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
 		GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
 
@@ -49,7 +49,7 @@ public class GithubFollowCacheManager {
 	}
 
 	@CachePut(key = "#targetUserId", unless = "#result == null")
-	public GithubFollowRelation deleteFollowerToTargetUser(Long targetUserId, GithubUser currentUser) {
+	public GithubFollowRelation deleteFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
 
 		GithubFollowRelation githubFollowRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelation.class);
 

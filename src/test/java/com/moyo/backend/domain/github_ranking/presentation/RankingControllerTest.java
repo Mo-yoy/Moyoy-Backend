@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.github_ranking.docs;
+package com.moyo.backend.domain.github_ranking.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
@@ -36,7 +36,6 @@ import com.moyo.backend.domain.github_ranking.business.RankingSearchResult;
 import com.moyo.backend.domain.github_ranking.business.RankingService;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingWithUser;
-import com.moyo.backend.domain.github_ranking.presentation.RankingController;
 import com.moyo.backend.domain.user.implement.Role;
 import com.moyo.backend.domain.user.implement.User;
 import com.moyo.common.annotation.WithMockMoyoyUser;
@@ -46,7 +45,7 @@ import com.moyo.common.annotation.WithMockMoyoyUser;
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(GlobalExceptionHandler.class)
-class RankingApiDocs {
+class RankingControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;

@@ -63,6 +63,7 @@ public class JwtRefreshTokenValidator {
 	private SignedJWT parseToken(String token) {
 
 		try {
+
 			return SignedJWT.parse(token);
 		} catch (ParseException e) {
 			log.warn("JWT Parsing 에러");

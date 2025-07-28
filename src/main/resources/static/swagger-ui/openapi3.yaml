@@ -203,10 +203,10 @@ paths:
         required: true
         schema:
           type: string
-      - name: lastUserId
+      - name: lastGithubUserId
         in: query
-        description: "이전 페이지에서 조회한 회원중 마지막 회원의 userId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주\
-          \ 합니다. "
+        description: "이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지\
+          \ 조회로 간주 합니다. "
         required: false
         schema:
           type: integer
@@ -240,14 +240,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-detectType1480676095"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType1462305756"
               examples:
                 맞팔탐지기 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userList\":[{\"id\":12345,\"username\":\"username1\",\"profileImgUrl\"\
-                    :\"http://profile.image/1\"},{\"id\":67890,\"username\":\"username2\"\
-                    ,\"profileImgUrl\":\"http://profile.image/2\"}],\"lastPage\":true,\"\
-                    totalUserCount\":2,\"lastSyncAt\":\"5 분전\"}}"
+                    :{\"userList\":[{\"githubUserId\":12345,\"username\":\"username1\"\
+                    ,\"profileImgUrl\":\"http://profile.image/1\"},{\"githubUserId\"\
+                    :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
+                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5 분\
+                    전\"}}"
       security:
       - bearerAuthJWT: []
 components:
@@ -268,6 +269,55 @@ components:
         status:
           type: number
           description: ❌ 응답 상태 코드
+    api-v1-users-me-followings-detectType1462305756:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - lastSyncAt
+          - totalUserCount
+          - userList
+          type: object
+          properties:
+            totalUserCount:
+              type: number
+              description: 📊 총 사용자 수
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - githubUserId
+                - profileImgUrl
+                - username
+                type: object
+                properties:
+                  profileImgUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  githubUserId:
+                    type: number
+                    description: 사용자 Github ID
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            lastSyncAt:
+              type: string
+              description: ⏱ 마지막 싱크 시간 (x 분전)
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     api-v1-users-me-followings-detectType492296449:
       required:
       - code
@@ -336,55 +386,6 @@ components:
               type: boolean
               description: 📌 마지막 페이지 여부
           description: 응답 데이터
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-users-me-followings-detectType1480676095:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        data:
-          required:
-          - lastPage
-          - lastSyncAt
-          - totalUserCount
-          - userList
-          type: object
-          properties:
-            totalUserCount:
-              type: number
-              description: 📊 총 사용자 수
-            userList:
-              type: array
-              description: 👤 탐지된 사용자 목록
-              items:
-                required:
-                - id
-                - profileImgUrl
-                - username
-                type: object
-                properties:
-                  profileImgUrl:
-                    type: string
-                    description: 사용자 프로필 이미지 URL
-                  id:
-                    type: number
-                    description: 사용자 ID
-                  username:
-                    type: string
-                    description: 사용자 이름
-            lastPage:
-              type: boolean
-              description: 📌 마지막 페이지 여부
-            lastSyncAt:
-              type: string
-              description: ⏱ 마지막 싱크 시간 (x 분전)
         status:
           type: number
           description: ✅ 응답 상태 코드

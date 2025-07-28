@@ -12,8 +12,8 @@ public class GithubUserReader {
 
 	private final GithubFollowHttpClient githubFollowHttpClient;
 
-	public GithubUser getGithubUser(Long userId, String oauthAccessToken) {
+	public GithubFollowUser getGithubUser(Integer githubUserId, String oauthAccessToken) {
 
-		return githubFollowHttpClient.fetchGithubFollowUserById(userId, oauthAccessToken);
+		return githubFollowHttpClient.fetchGithubFollowUserById(githubUserId, oauthAccessToken);
 	}
 }

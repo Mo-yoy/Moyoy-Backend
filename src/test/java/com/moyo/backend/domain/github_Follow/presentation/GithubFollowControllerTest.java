@@ -1,12 +1,11 @@
-package com.moyo.backend.domain.github_Follow.docs;
+package com.moyo.backend.domain.github_Follow.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.moyo.backend.common.exception.github_follow.FollowErrorCode.LIMIT_EXCEED;
 import static com.moyo.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doThrow;
@@ -49,7 +48,7 @@ import com.moyo.backend.common.exception.github_follow.FollowErrorCode;
 import com.moyo.backend.common.exception.handler.GlobalExceptionHandler;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
 import com.moyo.backend.domain.github_follow.business.GithubFollowService;
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 import com.moyo.backend.domain.github_follow.presentation.GithubFollowController;
 import com.moyo.common.annotation.WithMockMoyoyUser;
 
@@ -58,7 +57,7 @@ import com.moyo.common.annotation.WithMockMoyoyUser;
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @Import(GlobalExceptionHandler.class)
-class GithubFollowApiDocs {
+class GithubFollowControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -71,14 +70,14 @@ class GithubFollowApiDocs {
 	void 맞팔탐지기_성공() throws Exception {
 
 		// given
-		GithubUser user1 = new GithubUser(12345L, "username1", "http://profile.image/1");
-		GithubUser user2 = new GithubUser(67890L, "username2", "http://profile.image/2");
+		GithubFollowUser user1 = new GithubFollowUser(12345, "username1", "http://profile.image/1");
+		GithubFollowUser user2 = new GithubFollowUser(67890, "username2", "http://profile.image/2");
 
-		List<GithubUser> userList = List.of(user1, user2);
+		List<GithubFollowUser> userList = List.of(user1, user2);
 		int totalUserCount = userList.size();
 		LocalDateTime createdAt = LocalDateTime.now().minusMinutes(5);
 
-		Slice<GithubUser> userSlice = new SliceImpl<>(userList);
+		Slice<GithubFollowUser> userSlice = new SliceImpl<>(userList);
 
 		GithubFollowDetectionResult result = new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount);
 
@@ -88,7 +87,7 @@ class GithubFollowApiDocs {
 		// when
 		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
-			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
+			.param("lastGithubUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1")
 			.param("forceSync", "false"))
 			.andExpect(status().isOk())
@@ -105,7 +104,7 @@ class GithubFollowApiDocs {
 					.pathParameters(
 						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING).defaultValue("mutual"))
 					.queryParameters(
-						parameterWithName("lastUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 userId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
+						parameterWithName("lastGithubUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
 						parameterWithName("pageSize").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional(),
 						parameterWithName("forceSync").description("강제 동기화 여부 (default: false)").type(SimpleType.BOOLEAN).optional())
 					.responseFields(
@@ -113,7 +112,7 @@ class GithubFollowApiDocs {
 						fieldWithPath("code").description("🔢 응답 코드"),
 						fieldWithPath("message").description("📝 응답 메시지"),
 						fieldWithPath("data.userList").description("👤 탐지된 사용자 목록"),
-						fieldWithPath("data.userList[].id").description("사용자 ID"),
+						fieldWithPath("data.userList[].githubUserId").description("사용자 Github ID"),
 						fieldWithPath("data.userList[].username").description("사용자 이름"),
 						fieldWithPath("data.userList[].profileImgUrl").description("사용자 프로필 이미지 URL"),
 						fieldWithPath("data.totalUserCount").description("📊 총 사용자 수"),
@@ -133,7 +132,7 @@ class GithubFollowApiDocs {
 		// when & then
 		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
-			.param("lastUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
+			.param("targetGithubUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
 			.param("pageSize", "1"))
 			.andExpect(status().is(errorCode.getStatus()))
 			.andExpect(jsonPath("$.code").value(errorCode.getCode()))
@@ -160,7 +159,7 @@ class GithubFollowApiDocs {
 	@Test
 	void 팔로우_성공() throws Exception {
 
-		willDoNothing().given(githubFollowService).follow(anyLong(), anyLong());
+		willDoNothing().given(githubFollowService).follow(anyLong(), anyInt());
 
 		mockMvc.perform(post("/api/v1/follow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
@@ -187,7 +186,7 @@ class GithubFollowApiDocs {
 	@Test
 	void 언팔로우_성공() throws Exception {
 
-		willDoNothing().given(githubFollowService).unfollow(anyLong(), anyLong());
+		willDoNothing().given(githubFollowService).unfollow(anyLong(), anyInt());
 
 		mockMvc.perform(delete("/api/v1/unfollow/{targetUserId}", 12345L)
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))

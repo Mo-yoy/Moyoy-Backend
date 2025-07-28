@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import com.moyo.backend.common.util.TimeSinceFormatter;
 import com.moyo.backend.domain.github_follow.business.GithubFollowDetectionResult;
-import com.moyo.backend.domain.github_follow.implement.GithubUser;
+import com.moyo.backend.domain.github_follow.implement.GithubFollowUser;
 
 @Getter
 @Builder
@@ -22,13 +22,13 @@ public class GithubFollowDetectResponse {
 	@Getter
 	@Builder(access = AccessLevel.PRIVATE)
 	static class GithubFollowUserDto {
-		private Long id;
+		private Integer githubUserId;
 		private String username;
 		private String profileImgUrl;
 
-		public static GithubFollowUserDto from(GithubUser user) {
+		public static GithubFollowUserDto from(GithubFollowUser user) {
 			return GithubFollowUserDto.builder()
-				.id(user.id())
+				.githubUserId(user.id())
 				.username(user.username())
 				.profileImgUrl(user.profileImgUrl())
 				.build();

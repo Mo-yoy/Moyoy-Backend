@@ -28,11 +28,11 @@ public class GithubFollowController {
 	public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> getFollowUserList(
 		@LoginUserId Long currentUserId,
 		@PathVariable("detectType") String detectType,
-		@RequestParam(value = "lastUserId", required = false, defaultValue = "0") Long lastUserId,
+		@RequestParam(value = "lastGithubUserId", required = false, defaultValue = "0") Integer lastGithubUserId,
 		@RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize,
 		@RequestParam(value = "forceSync", required = false) boolean forceSync) {
 
-		GithubFollowDetection followDetection = new GithubFollowDetection(detectType, lastUserId, pageSize, forceSync);
+		GithubFollowDetection followDetection = new GithubFollowDetection(detectType, lastGithubUserId, pageSize, forceSync);
 		GithubFollowDetectionResult followDetectionResult = githubFollowService.getFollowUserSlice(currentUserId, followDetection);
 
 		GithubFollowDetectResponse responseData = GithubFollowDetectResponse.from(followDetectionResult);
@@ -40,22 +40,22 @@ public class GithubFollowController {
 		return ResponseEntity.ok(ApiResponse.success(responseData));
 	}
 
-	@PostMapping("/follow/{targetUserId}")
+	@PostMapping("/follow/{targetGithubUserId}")
 	public ResponseEntity<ApiResponse<Void>> followGithubUser(
 		@LoginUserId Long currentUserId,
-		@PathVariable("targetUserId") Long targetUserId) {
+		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
 
-		githubFollowService.follow(currentUserId, targetUserId);
+		githubFollowService.follow(currentUserId, targetGithubUserId);
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}
 
-	@DeleteMapping("/unfollow/{targetUserId}")
+	@DeleteMapping("/unfollow/{targetGithubUserId}")
 	public ResponseEntity<ApiResponse<Void>> unFollowGithubUser(
 		@LoginUserId Long currentUserId,
-		@PathVariable("targetUserId") Long targetUserId) {
+		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
 
-		githubFollowService.unfollow(currentUserId, targetUserId);
+		githubFollowService.unfollow(currentUserId, targetGithubUserId);
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}

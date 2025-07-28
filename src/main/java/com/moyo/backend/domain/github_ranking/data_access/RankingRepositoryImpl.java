@@ -46,7 +46,7 @@ public class RankingRepositoryImpl implements RankingRepository {
 	}
 
 	@Override
-	public Slice<Ranking> findFollowingUserRankings(List<Long> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+	public Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
 		return rankingQueryDslRepository.findByUserIds(followingUserIds, rankingPeriod, pageable);
 	}
 }
