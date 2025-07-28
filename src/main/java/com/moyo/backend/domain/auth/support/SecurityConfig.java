@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.auth.support;
 
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl.*;
 
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,8 @@ public class SecurityConfig {
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI
 				.requestMatchers("/api/v1/rankings").permitAll() // [Domain] Ranking
+				.requestMatchers(GET, "/api/v1/pr-review").permitAll()
+				.requestMatchers("/api/v1/pr-review/{pr-reviewId}").permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
 				.authorizationEndpoint(authorization -> authorization
