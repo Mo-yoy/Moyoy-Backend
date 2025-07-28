@@ -31,7 +31,8 @@ public class JwtReissueController {
 		String refreshTokenCookie = cookieUtils.createJwtRefreshTokenCookie(reIssueTokens.refreshToken()).toString();
 		JwtReissueResponse responseData = new JwtReissueResponse(reIssueTokens.accessToken());
 
-		return ResponseEntity.status(OK)
+		return ResponseEntity
+			.status(OK)
 			.header(SET_COOKIE, refreshTokenCookie)
 			.body(ApiResponse.success(responseData));
 	}

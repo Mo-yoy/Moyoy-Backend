@@ -3,13 +3,11 @@ package com.moyo.backend.domain.user.data_access;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import com.moyo.backend.domain.user.implement.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,6 +21,11 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	public Optional<User> findByGithubUserId(Integer githubUserId) {
+		return userJpaRepository.findByGithubUserId(githubUserId);
+	}
+
+	@Override
 	public void save(User user) {
 		userJpaRepository.save(user);
 	}
@@ -33,18 +36,13 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public Slice<User> findAll(Pageable pageable) {
-
-		return userJpaRepository.findAll(pageable);
-	}
-
-	@Override
-	public List<Long> findAllUserIdList() {
-		return userJpaRepository.findAllUserIds();
-	}
-
-	@Override
 	public List<User> findByIdIn(List<Long> userIds) {
 		return userJpaRepository.findAllById(userIds);
 	}
+
+	@Override
+	public List<User> findAll() {
+		return userJpaRepository.findAll();
+	}
+
 }

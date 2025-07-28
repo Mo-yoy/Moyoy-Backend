@@ -1,20 +1,19 @@
 package com.moyo.backend.domain.user.implement;
 
-import static com.moyo.backend.common.constant.MoyoConstants.*;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import com.moyo.backend.common.entity.BaseTimeEntity;
+import com.moyo.backend.domain.auth.oauth.dto.GithubUserProfileDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -24,12 +23,15 @@ import jakarta.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
-	// ID는 직접 관리
 	@Id
 	@Column(name = "user_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false, unique = true)
+	private Integer githubUserId;
+
+	@Column(nullable = false)
 	private String username;
 
 	@Column(nullable = false)
@@ -39,19 +41,20 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@Builder(access = AccessLevel.PRIVATE)
-	public User(Long id, String username, String profileImgUrl, Role role) {
+	@Builder
+	public User(Long id, Integer githubUserId, String username, String profileImgUrl, Role role) {
 		this.id = id;
+		this.githubUserId = githubUserId;
 		this.username = username;
 		this.profileImgUrl = profileImgUrl;
 		this.role = role;
 	}
 
-	public static User from(OAuth2User oAuth2User) {
+	public static User from(GithubUserProfileDto githubUserProfileDto) {
 		return User.builder()
-			.id(Long.parseLong(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_ID).toString()))
-			.username(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_NAME))
-			.profileImgUrl(oAuth2User.getAttribute(GITHUB_OAUTH2_USER_AVATAR_URL))
+			.githubUserId(githubUserProfileDto.githubUserId())
+			.username(githubUserProfileDto.username())
+			.profileImgUrl(githubUserProfileDto.profileImgUrl())
 			.build();
 	}
 
@@ -66,4 +69,5 @@ public class User extends BaseTimeEntity {
 	public void initRole() {
 		this.role = Role.USER;
 	}
+
 }

@@ -1,4 +1,4 @@
-package com.moyo.backend.batch.ranking.reader;
+package com.moyo.backend.domain.batch.ranking.reader;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_QUERY_PAGING_SIZE;
 
@@ -12,9 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.moyo.backend.batch.ranking.dto.GithubContributorDetails;
-import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
 
 @Slf4j
 @Component
@@ -24,10 +24,10 @@ public class GithubRankingRestClientImpl implements GithubRankingHttpClient {
 	private final RestClient restClient;
 
 	@Override
-	public ResponseEntity<RankingPreflight> fetchRankingPreflight(Long userId, String accessToken) {
+	public ResponseEntity<RankingPreflight> fetchRankingPreflight(Integer githubUserId, String accessToken) {
 
 		return restClient.get()
-			.uri("/user/{userId}", userId)
+			.uri("/user/{userId}", githubUserId)
 			.headers(header -> header.setBearerAuth(accessToken))
 			.retrieve()
 			.toEntity(RankingPreflight.class);

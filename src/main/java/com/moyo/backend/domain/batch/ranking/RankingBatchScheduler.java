@@ -1,27 +1,33 @@
-package com.moyo.backend.batch.ranking;
+package com.moyo.backend.domain.batch.ranking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.batch.ranking.dto.RankingPreflight;
-import com.moyo.backend.batch.ranking.processor.GithubRepoClassifier;
-import com.moyo.backend.batch.ranking.processor.RankingCalculator;
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorParameters;
-import com.moyo.backend.batch.ranking.processor.RankingCalculatorResult;
-import com.moyo.backend.batch.ranking.processor.RankingMetricsCalculator;
-import com.moyo.backend.batch.ranking.reader.RankingBatchReader;
+import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.processor.GithubRepoClassifier;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculator;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorParameters;
+import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorResult;
+import com.moyo.backend.domain.batch.ranking.processor.RankingMetricsCalculator;
+import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
+import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RankingBatchScheduler {
@@ -37,23 +43,29 @@ public class RankingBatchScheduler {
 
 	private final RankingUpdater rankingUpdater;
 
-	// @Scheduled(cron = "0 10 21 * * *")
+
+	///  임시 랭킹 산출
+	@Deprecated
+	@Scheduled(cron = "0 52 21 * * *")
 	public void rankingBatchScheduler() {
 
-		System.out.println("Ranking 배치 시작");
+		log.info("{} 랭킹 배치 작업 시작!", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
 
-		// 모든 유저의 Id를 읽어온다.
-		List<Long> userIds = userReader.findAllUserIdList();
-		userIds.forEach(System.out::println);
+		///  TODO : User 전체 불러오기 개선 필요
+		List<User> userList = userReader.findAll();
+		List<Long> userIdList = userList.stream().map(User::getId).toList();
+		List<Integer> githubUserIdList = userList.stream().map(User::getGithubUserId).toList();
 
-		for (Long userId : userIds) {
+		for (int idx = 0; idx <userList.size(); idx++) {
 
-			System.out.println("현재 유저의 깃허브 사용자 토큰을 받아 온다.");
-			// 현재 유저의 깃허브 사용자 토큰을 받아 온다.
+			Long userId = userIdList.get(idx);
+			Integer githubUserId = githubUserIdList.get(idx);
+
+			// 현재 UserId로 DB에 저장된 사용자의 깃허브 토큰을 받아 온다.
 			String githubAccessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
 
 			// 1. 사용자 id로 username, follower 수, 소유 중인 개인 Repo 수, RateLimitRemaining 체크
-			RankingPreflight rankingPreflight = rankingBatchReader.getRankingPreflight(userId, githubAccessToken);
+			RankingPreflight rankingPreflight = rankingBatchReader.getRankingPreflight(githubUserId, githubAccessToken);
 			String username = rankingPreflight.username();
 
 			// 2. 해당 사용자의 2025년 Repo를 모두 가져옴

@@ -12,13 +12,13 @@ public interface UserRepository {
 
 	Optional<User> findById(Long userId);
 
+	Optional<User> findByGithubUserId(Integer githubUserId);
+
 	void save(User user);
 
 	boolean existsById(Long userId);
 
-	Slice<User> findAll(Pageable pageable);
-
-	List<Long> findAllUserIdList();
-
 	List<User> findByIdIn(List<Long> userIds);
+
+	List<User> findAll();
 }

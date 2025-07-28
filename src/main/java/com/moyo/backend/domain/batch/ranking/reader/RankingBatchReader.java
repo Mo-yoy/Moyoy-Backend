@@ -1,4 +1,4 @@
-package com.moyo.backend.batch.ranking.reader;
+package com.moyo.backend.domain.batch.ranking.reader;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_MIN_REQUEST_THRESHOLD;
 
@@ -17,10 +17,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.moyo.backend.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.batch.ranking.dto.GithubContributorDetails;
-import com.moyo.backend.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
+import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
+import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.common.exception.github_follow.GithubRateLimitExceedException;
 
 @Slf4j
@@ -31,9 +31,9 @@ public class RankingBatchReader {
 	private final ObjectMapper objectMapper;
 	private final GithubRankingHttpClient githubRankingHttpClient;
 
-	public RankingPreflight getRankingPreflight(Long currentUserId, String accessToken) {
+	public RankingPreflight getRankingPreflight(Integer githubUserId, String accessToken) {
 
-		ResponseEntity<RankingPreflight> response = githubRankingHttpClient.fetchRankingPreflight(currentUserId, accessToken);
+		ResponseEntity<RankingPreflight> response = githubRankingHttpClient.fetchRankingPreflight(githubUserId, accessToken);
 		int remainingRequestCnt = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
 
 		// 배치 작업에 정확히 몇번 요청이 필요할지 모르겠음, 사람마다 천차 만별이라 500 정도로 임시로 둠, 추후 조정

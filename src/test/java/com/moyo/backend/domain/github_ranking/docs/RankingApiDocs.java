@@ -58,7 +58,7 @@ class RankingApiDocs {
 	void 모든_개인유저_랭킹조회() throws Exception {
 
 		// given
-		User mockUser = new User(1L, "테스터1", "img/url", Role.USER);
+		User mockUser = new User(1L, 1, "테스터1", "img/url", Role.USER);
 		Ranking mockRanking = new Ranking(1L, 1L, "A", 100, 1000, 10000);
 		RankingWithUser mockRankingWithUser = new RankingWithUser(mockRanking, mockUser);
 
@@ -105,7 +105,7 @@ class RankingApiDocs {
 	void 사용자의_팔로잉_유저중_우리_서비스회원_랭킹조회() throws Exception {
 
 		// given
-		User mockUser = new User(1L, "테스터1", "img/url", Role.USER);
+		User mockUser = new User(1L, 1, "테스터1", "img/url", Role.USER);
 		Ranking mockRanking = new Ranking(1L, 1L, "A", 100, 1000, 10000);
 		RankingWithUser mockRankingWithUser = new RankingWithUser(mockRanking, mockUser);
 

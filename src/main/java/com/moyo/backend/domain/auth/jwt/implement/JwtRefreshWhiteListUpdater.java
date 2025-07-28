@@ -5,12 +5,11 @@ import java.text.ParseException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nimbusds.jwt.SignedJWT;
 
 import com.moyo.backend.domain.auth.jwt.data_access.JwtRefreshTokenRepository;
-
-import jakarta.transaction.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +26,8 @@ public class JwtRefreshWhiteListUpdater {
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
+
+		/// TODO : 해당 부분에서 알수 없는 오류 발생, 원인을 못 밝혔음
 		jwtRefreshTokenRepository.deleteByTokenValue(oldToken);
 		jwtRefreshTokenRepository.flush();
 		jwtRefreshTokenRepository.save(reissuedRefreshToken);
