@@ -86,7 +86,7 @@ public class PrReview extends BaseTimeEntity {
 		this.hitCount++;
 	}
 
-	public void updateDetail(String title, String content, String prUrl, String position) {
+	public void updateDetail(String title, String position, String prUrl, String content) {
 		this.title = title;
 		this.content = content;
 		this.prUrl = prUrl;

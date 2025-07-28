@@ -29,7 +29,7 @@ public class PrReviewService {
 	public PrReviewListResult getPrReviewList(PrReviewSearchCriteria criteria) {
 
 		// 1. 글 상태, 직무 태그 순으로 정렬된 리스트 얻기.
-		PrReviewListData data = prReviewReader.readListByCriteria(criteria.status(), criteria.position(), criteria.order(), criteria.page(), criteria.size());
+		PrReviewListData data = prReviewReader.readListByCriteria(criteria.status(), criteria.order(), criteria.position(), criteria.page(), criteria.size());
 
 		// 2. implement 계층 응답 dto -> business 계층 dto로 변환 후, 반환.
 		return new PrReviewListResult(data.prReviews(), data.isLast());
@@ -38,7 +38,7 @@ public class PrReviewService {
 	public PrReviewListResult getMyPrReviewList(Long userId, PrReviewSearchCriteria criteria) {
 
 		// 1. userId가 작성한 요청글들을 글 상태, 직무 태그 순으로 정렬된 리스트 얻기.
-		PrReviewListData data = prReviewReader.readMyListByCriteria(userId, criteria.status(), criteria.position(), criteria.order(), criteria.page(), criteria.size());
+		PrReviewListData data = prReviewReader.readMyListByCriteria(userId, criteria.status(), criteria.order(), criteria.position(), criteria.page(), criteria.size());
 
 		// 2. implement 계층 응답 dto -> business 계층 dto 변환 후, 반환.
 		return new PrReviewListResult(data.prReviews(), data.isLast());

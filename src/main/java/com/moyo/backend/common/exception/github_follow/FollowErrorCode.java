@@ -10,7 +10,7 @@ import com.moyo.backend.common.exception.ErrorReason;
 
 @Getter
 @AllArgsConstructor
-public enum FollowErrorCode implements BaseErrorCode {
+public enum  FollowErrorCode implements BaseErrorCode {
 
 	LIMIT_EXCEED(BAD_REQUEST, "FOLLOW_400_1", "Github API 호출이 제한 되었습니다. 1시간 뒤 다시 시도해 주세요");
 
