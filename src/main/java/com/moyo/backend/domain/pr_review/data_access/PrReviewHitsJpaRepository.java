@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.moyo.backend.domain.pr_review.implement.PrReview;
 import com.moyo.backend.domain.pr_review.implement.PrReviewHits;
 
-@Repository
 public interface PrReviewHitsJpaRepository extends JpaRepository<PrReviewHits, Long> {
 
 	boolean existsByPrReviewIdAndUserId(Long prReviewRequestId, Long userId);
