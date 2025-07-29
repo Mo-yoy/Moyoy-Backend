@@ -14,8 +14,6 @@ public interface UserRepository {
 
 	void save(User user);
 
-	boolean existsById(Long userId);
-
 	List<User> findByIdIn(List<Long> userIds);
 
 	List<User> findAll(Long lastUserId, int size);

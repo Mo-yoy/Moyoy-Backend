@@ -22,4 +22,6 @@ public interface RankingRepository {
 	Ranking findByUserId(Long userId);
 
 	Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
+
+	void updateAll(List<Ranking> updatedRankings);
 }

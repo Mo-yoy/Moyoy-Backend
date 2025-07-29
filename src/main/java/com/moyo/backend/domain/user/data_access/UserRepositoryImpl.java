@@ -33,11 +33,6 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public boolean existsById(Long userId) {
-		return userJpaRepository.existsById(userId);
-	}
-
-	@Override
 	public List<User> findByIdIn(List<Long> userIds) {
 		return userJpaRepository.findAllById(userIds);
 	}

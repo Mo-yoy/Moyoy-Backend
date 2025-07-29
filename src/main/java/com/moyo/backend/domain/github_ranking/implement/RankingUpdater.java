@@ -1,5 +1,7 @@
 package com.moyo.backend.domain.github_ranking.implement;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -16,5 +18,9 @@ public class RankingUpdater {
 
 	public void update(Ranking ranking) {
 		rankingRepository.update(ranking);
+	}
+
+	public void updateAll(List<Ranking> updatedRankings){
+		rankingRepository.updateAll(updatedRankings);
 	}
 }

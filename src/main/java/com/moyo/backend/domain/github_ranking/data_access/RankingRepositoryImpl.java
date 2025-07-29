@@ -49,4 +49,9 @@ public class RankingRepositoryImpl implements RankingRepository {
 	public Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
 		return rankingQueryDslRepository.findByUserIds(followingUserIds, rankingPeriod, pageable);
 	}
+
+	@Override
+	public void updateAll(List<Ranking> updatedRankings) {
+		rankingJpaRepository.saveAll(updatedRankings);
+	}
 }

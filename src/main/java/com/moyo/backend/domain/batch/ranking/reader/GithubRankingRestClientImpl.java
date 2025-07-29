@@ -65,7 +65,7 @@ public class GithubRankingRestClientImpl implements GithubRankingHttpClient {
 	}
 
 	@Override
-	public ResponseEntity<?> fetchContributorCommitActivity(String repoFullName, String accessToken) {
+	public ResponseEntity<String> fetchContributorCommitActivity(String repoFullName, String accessToken) {
 
 		return restClient.get()
 			.uri("/repos/" + repoFullName + "/stats/contributors")

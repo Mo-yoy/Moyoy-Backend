@@ -16,5 +16,5 @@ public interface GithubRankingHttpClient {
 
 	List<GithubContributorDetailsResponse> fetchPagedContributors(int currentPage, String repoFullName, String accessToken);
 
-	ResponseEntity<?> fetchContributorCommitActivity(String repoFullName, String accessToken);
+	ResponseEntity<String> fetchContributorCommitActivity(String repoFullName, String accessToken);
 }
