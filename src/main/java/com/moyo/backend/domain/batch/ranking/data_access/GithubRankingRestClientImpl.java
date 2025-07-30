@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.reader;
+package com.moyo.backend.domain.batch.ranking.data_access;
 
 import static com.moyo.backend.common.constant.MoyoConstants.GITHUB_QUERY_PAGING_SIZE;
 
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
 import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
+import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
 
 @Slf4j
 @Component

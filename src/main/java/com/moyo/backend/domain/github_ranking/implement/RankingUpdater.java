@@ -20,7 +20,7 @@ public class RankingUpdater {
 		rankingRepository.update(ranking);
 	}
 
-	public void updateAll(List<Ranking> updatedRankings){
+	public void updateAll(List<Ranking> updatedRankings) {
 		rankingRepository.updateAll(updatedRankings);
 	}
 }

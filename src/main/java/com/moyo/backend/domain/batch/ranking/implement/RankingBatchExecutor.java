@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.service;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -10,26 +10,28 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 
 import jakarta.annotation.PreDestroy;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class RankingBatchExecutorService {
+public class RankingBatchExecutor {
 
-	private static final int RANKING_BATCH_SIZE = 2;
+	private static final int RANKING_BATCH_THREAD_POOL_SIZE = 2;
+
 	private final ExecutorService executorService;
 
-	public RankingBatchExecutorService() {
+	public RankingBatchExecutor() {
 		this.executorService = new ThreadPoolExecutor(
-			RANKING_BATCH_SIZE,
-			RANKING_BATCH_SIZE,
+			RANKING_BATCH_THREAD_POOL_SIZE,
+			RANKING_BATCH_THREAD_POOL_SIZE,
 			0L, TimeUnit.SECONDS,
-			new ArrayBlockingQueue<>(RANKING_BATCH_SIZE),
+			new ArrayBlockingQueue<>(RANKING_BATCH_THREAD_POOL_SIZE),
 			new ThreadFactory() {
 
 				private final AtomicInteger threadNum = new AtomicInteger(1);
@@ -38,21 +40,11 @@ public class RankingBatchExecutorService {
 				public Thread newThread(Runnable r) {
 					return new Thread(r, "ranking-batch-executor-service-thread-" + threadNum.getAndIncrement());
 				}
-			}
-		);
-		log.info("ExecutorService has been created with a pool size of " + RANKING_BATCH_SIZE);
+			});
+		log.info("ExecutorService has been created with a pool size of " + RANKING_BATCH_THREAD_POOL_SIZE);
 	}
 
-	public Future<Ranking> submit(Callable<Ranking> task) {
-		try {
-			return executorService.submit(task);
-		} catch (Exception e) {
-			log.error("Task submission failed", e);
-			throw e;
-		}
-	}
-
-	public List<Future<Ranking>> submitAll(List<Callable<Ranking>> tasks) {
+	public List<Future<Ranking>> invokeAll(List<Callable<Ranking>> tasks) {
 		try {
 			return executorService.invokeAll(tasks);
 		} catch (InterruptedException e) {

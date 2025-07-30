@@ -4,14 +4,15 @@ import static com.moyo.backend.domain.user.implement.QUser.*;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Repository;
 
-import com.moyo.backend.domain.batch.ranking.dto.UserCountAndLastId;
-import com.moyo.backend.domain.user.implement.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import lombok.RequiredArgsConstructor;
+import com.moyo.backend.domain.batch.ranking.dto.UserCountAndLastId;
+import com.moyo.backend.domain.user.implement.User;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,8 +25,7 @@ public class UserQueryDslRepository {
 		return jpaQueryFactory
 			.select(Projections.constructor(UserCountAndLastId.class,
 				user.count().intValue(),
-				user.id.max())
-			)
+				user.id.max()))
 			.from(user)
 			.fetchOne();
 	}
@@ -39,5 +39,3 @@ public class UserQueryDslRepository {
 			.fetch();
 	}
 }
-
-

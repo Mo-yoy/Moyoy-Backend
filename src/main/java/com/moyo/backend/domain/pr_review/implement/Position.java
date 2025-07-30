@@ -2,7 +2,6 @@ package com.moyo.backend.domain.pr_review.implement;
 
 import java.util.Arrays;
 
-import com.moyo.backend.common.exception.CommonErrorCode;
 import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.exception.pr_review.PrReviewErrorCode;
 

@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.processor;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import org.springframework.stereotype.Component;
 

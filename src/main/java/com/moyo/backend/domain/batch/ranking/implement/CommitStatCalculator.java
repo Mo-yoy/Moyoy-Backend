@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.processor;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.domain.batch.ranking.reader.RepoContributorStats;
+import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
 
 @Component
 public class CommitStatCalculator {

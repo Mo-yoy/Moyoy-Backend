@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.processor;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public record RankingCalculatorParameters(
 	public static RankingCalculatorParameters of(
 		List<GithubRepoDetails> repos,
 		RankingPreflight rankingPreflight,
-		GithubCommitStats commitStats){
+		GithubCommitStats commitStats) {
 
 		int stars = repos.stream()
 			.mapToInt(GithubRepoDetails::starCount)
@@ -29,14 +29,11 @@ public record RankingCalculatorParameters(
 
 		int followers = rankingPreflight.followerCount();
 
-		RankingCalculatorParameters.CommitStatsSummary weekStats =
-			new RankingCalculatorParameters.CommitStatsSummary(commitStats.weekStats().commits(), commitStats.weekStats().commitLines());
+		RankingCalculatorParameters.CommitStatsSummary weekStats = new RankingCalculatorParameters.CommitStatsSummary(commitStats.weekStats().commits(), commitStats.weekStats().commitLines());
 
-		RankingCalculatorParameters.CommitStatsSummary monthStats =
-			new RankingCalculatorParameters.CommitStatsSummary(commitStats.monthStats().commits(), commitStats.monthStats().commitLines());
+		RankingCalculatorParameters.CommitStatsSummary monthStats = new RankingCalculatorParameters.CommitStatsSummary(commitStats.monthStats().commits(), commitStats.monthStats().commitLines());
 
-		RankingCalculatorParameters.CommitStatsSummary yearStats =
-			new RankingCalculatorParameters.CommitStatsSummary(commitStats.yearStats().commits(), commitStats.yearStats().commitLines());
+		RankingCalculatorParameters.CommitStatsSummary yearStats = new RankingCalculatorParameters.CommitStatsSummary(commitStats.yearStats().commits(), commitStats.yearStats().commitLines());
 
 		return new RankingCalculatorParameters(stars, followers, weekStats, monthStats, yearStats);
 	}

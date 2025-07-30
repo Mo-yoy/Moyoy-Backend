@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.reader;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import static com.moyo.backend.common.constant.MoyoConstants.*;
 import static com.moyo.backend.common.util.ThreadUtils.*;
@@ -12,13 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.common.util.ThreadUtils;
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
+import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
-import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
 import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.data_access.GithubRankingHttpClient;
+import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
 
 @Slf4j
 @Component
@@ -91,11 +92,10 @@ public class RankingBatchReader {
 
 				log.info("{}번째 시도에 성공", tryCount);
 				break;
-			}
-			else if (response.getStatusCode().value() == 202) {
+			} else if (response.getStatusCode().value() == 202) {
 				sleep(10000);
-			}
-			else throw new RuntimeException("repo 통계 데이터 수집중 에러 발생");
+			} else
+				throw new RuntimeException("repo 통계 데이터 수집중 에러 발생");
 		}
 
 		return githubContributeStatsParser.parseGithubContributeStats(response);

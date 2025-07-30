@@ -1,26 +1,22 @@
-package com.moyo.backend.domain.batch.ranking.service;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
-import com.moyo.backend.domain.batch.ranking.processor.CommitStatCalculator;
-import com.moyo.backend.domain.batch.ranking.processor.GithubRepoClassifier;
-import com.moyo.backend.domain.batch.ranking.processor.RankingCalculator;
-import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorParameters;
-import com.moyo.backend.domain.batch.ranking.processor.RankingCalculatorResult;
-import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
-import com.moyo.backend.domain.batch.ranking.reader.RepoContributorStats;
+import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.user.implement.User;
 
-import lombok.RequiredArgsConstructor;
-
+@Builder
 @RequiredArgsConstructor
 public class RankingBatchTask implements Callable<Ranking> {
 
@@ -66,7 +62,7 @@ public class RankingBatchTask implements Callable<Ranking> {
 		GithubCommitStats commitStats = commitStatCalculator.calculateCommitStats(userRepoContributorStatsList);
 
 		// 5. 파라미터 생성
-		RankingCalculatorParameters rankingCalculatorParameters = RankingCalculatorParameters.of(rankingCandidateRepos, rankingPreflight,commitStats);
+		RankingCalculatorParameters rankingCalculatorParameters = RankingCalculatorParameters.of(rankingCandidateRepos, rankingPreflight, commitStats);
 
 		// 6. 랭킹 계산
 		RankingCalculatorResult rankingCalculatorResult = rankingCalculator.calculate(rankingCalculatorParameters);

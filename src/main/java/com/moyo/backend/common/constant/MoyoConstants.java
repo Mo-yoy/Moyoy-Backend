@@ -45,4 +45,8 @@ public class MoyoConstants {
 	// Security
 	public static final String ANONYMOUS_USER = "anonymousUser";
 
+
+	// Batch
+	public static final int RANKING_BATCH_PAGE_SIZE = 100;
+
 }

@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.support;
+package com.moyo.backend.domain.batch.ranking.support;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

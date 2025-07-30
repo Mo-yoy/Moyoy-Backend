@@ -17,4 +17,8 @@ public class ThreadUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public static String currentThreadName() {
+		return Thread.currentThread().getName();
+	}
 }

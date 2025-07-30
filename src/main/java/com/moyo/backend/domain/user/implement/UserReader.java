@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.UserBatchSnapshot;
+import com.moyo.backend.domain.batch.ranking.dto.UserRankingBatchSnapshot;
 import com.moyo.backend.domain.batch.ranking.dto.UserCountAndLastId;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 
@@ -33,8 +33,8 @@ public class UserReader {
 		return userRepository.findAll(lastUserId, size);
 	}
 
-	public UserBatchSnapshot getUserBatchSnapshot() {
+	public UserRankingBatchSnapshot getUserBatchSnapshot() {
 		UserCountAndLastId userCountAndLastId = userRepository.fetchUserCountAndLastId();
-		return UserBatchSnapshot.from(userCountAndLastId);
+		return UserRankingBatchSnapshot.from(userCountAndLastId);
 	}
 }

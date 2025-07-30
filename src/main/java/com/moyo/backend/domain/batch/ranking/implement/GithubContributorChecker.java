@@ -1,13 +1,12 @@
-package com.moyo.backend.domain.batch.ranking.processor;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
-import com.moyo.backend.domain.batch.ranking.reader.RankingBatchReader;
-
-import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
