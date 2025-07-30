@@ -38,10 +38,9 @@ public class RankingBatchHistory {
 	private int totalCount;
 	private int successCount;
 	private int failCount;
-	private String detailMessage;
 
 	@Builder
-	public RankingBatchHistory(String batchName, String executedBy, LocalDateTime startedAt, LocalDateTime finishedAt, RankingBatchStatus status, int totalCount, int successCount, int failCount, String detailMessage) {
+	public RankingBatchHistory(String batchName, String executedBy, LocalDateTime startedAt, LocalDateTime finishedAt, RankingBatchStatus status, int totalCount, int successCount, int failCount) {
 		this.batchName = batchName;
 		this.executedBy = executedBy;
 		this.startedAt = startedAt;
@@ -51,7 +50,7 @@ public class RankingBatchHistory {
 		this.successCount = successCount;
 	}
 
-	public static RankingBatchHistory init(LocalDateTime startedAt, String currentThreadName, int totalCount){
+	public static RankingBatchHistory init(LocalDateTime startedAt, String currentThreadName, int totalCount) {
 
 		String batchName = "Daily Ranking Batch : ";
 		batchName += DateTimeFormatter.ofPattern("yyyy--MM--dd").format(startedAt);
@@ -64,7 +63,21 @@ public class RankingBatchHistory {
 			.totalCount(totalCount)
 			.successCount(0)
 			.failCount(0)
-			.detailMessage("")
 			.build();
+	}
+
+	public void finalizeBatch(int successCount, int failCount){
+
+		this.successCount = successCount;
+		this.failCount = failCount;
+		this.finishedAt = LocalDateTime.now();
+
+		if (successCount == totalCount) {
+			this.status = RankingBatchStatus.SUCCESS;
+		} else if (successCount == 0) {
+			this.status = RankingBatchStatus.FAIL;
+		} else {
+			this.status = RankingBatchStatus.PARTIAL_SUCCESS;
+		}
 	}
 }

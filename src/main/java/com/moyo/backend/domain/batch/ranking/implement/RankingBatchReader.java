@@ -12,14 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.moyo.backend.domain.batch.ranking.data_access.GithubRankingHttpClient;
+import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
 import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
 import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
 import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
 import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
-import com.moyo.backend.domain.batch.ranking.data_access.GithubRankingHttpClient;
-import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
 
 @Slf4j
 @Component

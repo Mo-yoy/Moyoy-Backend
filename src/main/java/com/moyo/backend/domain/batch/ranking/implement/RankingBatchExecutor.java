@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.github_ranking.implement.Ranking;
-
 import jakarta.annotation.PreDestroy;
 
 @Slf4j
@@ -44,7 +42,7 @@ public class RankingBatchExecutor {
 		log.info("ExecutorService has been created with a pool size of " + RANKING_BATCH_THREAD_POOL_SIZE);
 	}
 
-	public List<Future<Ranking>> invokeAll(List<Callable<Ranking>> tasks) {
+	public List<Future<RankingBatchTaskResult>> invokeAll(List<Callable<RankingBatchTaskResult>> tasks) {
 		try {
 			return executorService.invokeAll(tasks);
 		} catch (InterruptedException e) {

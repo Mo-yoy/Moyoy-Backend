@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingUpdater;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -21,34 +21,36 @@ public class RankingBatchManager {
 	private final RankingUpdater rankingUpdater;
 	private final RankingBatchDetailUpdater rankingBatchDetailUpdater;
 
-	public void updateRankings(Long batchId, List<Future<Ranking>> rankingFutures) {
+	public RankingBatchResult collectResultsAndUpdate(Long batchId, List<Future<RankingBatchTaskResult>> rankingFutures) {
 
+		int successCount = 0, failCount = 0;
 		List<Ranking> rankings = new ArrayList<>();
 		List<RankingBatchDetail> rankingBatchDetails = new ArrayList<>();
 
-		rankingFutures.forEach(rankingFuture -> {
-
+		for (Future<RankingBatchTaskResult> rankingFuture : rankingFutures) {
 			try {
-				Ranking ranking = rankingFuture.get();
-				rankings.add(ranking);
+				RankingBatchTaskResult result = rankingFuture.get();
 
-				RankingBatchDetail rankingBatchDetail = RankingBatchDetail.success(batchId, ranking.getId());
-				rankingBatchDetails.add(rankingBatchDetail);
+				if (result.success()) {
+
+					rankings.add(result.ranking());
+					rankingBatchDetails.add(RankingBatchDetail.success(batchId, result.ranking().getId()));
+					successCount++;
+				} else {
+					rankingBatchDetails.add(RankingBatchDetail.fail(batchId, result.ranking().getId(), result.errorMessage()));
+					failCount++;
+				}
+			} catch (InterruptedException e) {
+				log.error("랭킹 배치 작업 중 인터럽트 발생", e);
+			} catch (ExecutionException e) {
+				log.error("랭킹 배치 작업 Future 에서 처리하지 못한 예외 발생", e);
 			}
-			catch (InterruptedException e) {
-				throw new RuntimeException("인터럽트 발생");
-			}
-			catch (ExecutionException e) {
-				throw new RuntimeException("에러 발생");
-				// 랭킹 배치 예외 따로 만들어서 관리
-				// 예외로 부터 랭킹 아이디랑 에러 이유를 뽑아 내야 함.
-				RankingBatchDetail rankingBatchDetail = RankingBatchDetail.fail(batchId, rankingId, errorMessage);
-				rankingBatchDetails.add(rankingBatchDetail);
-			}
-		});
+		}
 
 		///  TODO 작동 방식이 벌크성 연산이 아님
 		rankingUpdater.updateAll(rankings);
 		rankingBatchDetailUpdater.updateAll(rankingBatchDetails);
+
+		return RankingBatchResult.of(successCount, failCount);
 	}
 }

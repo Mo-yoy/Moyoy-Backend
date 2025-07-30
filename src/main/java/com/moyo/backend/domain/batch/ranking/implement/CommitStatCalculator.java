@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
 import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
+import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
 
 @Component
 public class CommitStatCalculator {
