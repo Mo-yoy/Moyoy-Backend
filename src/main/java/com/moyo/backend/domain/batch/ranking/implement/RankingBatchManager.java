@@ -37,7 +37,7 @@ public class RankingBatchManager {
 					rankingBatchDetails.add(RankingBatchDetail.success(batchId, result.ranking().getId()));
 					successCount++;
 				} else {
-					rankingBatchDetails.add(RankingBatchDetail.fail(batchId, result.ranking().getId(), result.errorMessage()));
+					rankingBatchDetails.add(RankingBatchDetail.fail(batchId, result.userId(), result.errorMessage()));
 					failCount++;
 				}
 			} catch (InterruptedException e) {

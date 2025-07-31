@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.UserCountAndLastId;
-import com.moyo.backend.domain.batch.ranking.dto.UserRankingBatchSnapshot;
+import com.moyo.backend.domain.batch.ranking.data_access.UserCountAndLastId;
+import com.moyo.backend.domain.batch.ranking.implement.UserRankingBatchSnapshot;
 import com.moyo.backend.domain.user.data_access.UserRepository;
 
 @Component

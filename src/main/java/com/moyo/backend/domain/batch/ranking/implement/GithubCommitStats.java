@@ -1,4 +1,4 @@
-package com.moyo.backend.domain.batch.ranking.dto;
+package com.moyo.backend.domain.batch.ranking.implement;
 
 public record GithubCommitStats(
 	WeekStats weekStats,

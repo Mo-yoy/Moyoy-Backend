@@ -16,4 +16,9 @@ public class RankingBatchHistoryRepositoryImpl implements RankingBatchHistoryRep
 	public void save(RankingBatchHistory rankingBatchHistory) {
 		rankingBatchHistoryJpaRepository.save(rankingBatchHistory);
 	}
+
+	@Override
+	public RankingBatchHistory findById(Long rankingBatchHistoryId) {
+		return rankingBatchHistoryJpaRepository.findById(rankingBatchHistoryId).orElse(null);
+	}
 }

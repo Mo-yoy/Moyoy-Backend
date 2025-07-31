@@ -2,10 +2,6 @@ package com.moyo.backend.domain.batch.ranking.implement;
 
 import java.util.List;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
-
 public record RankingCalculatorParameters(
 	int stars,
 	int followers,
@@ -20,7 +16,7 @@ public record RankingCalculatorParameters(
 
 	public static RankingCalculatorParameters of(
 		List<GithubRepoDetails> repos,
-		RankingPreflight rankingPreflight,
+		UserRankingBatchSnapshot.RankingPreflight rankingPreflight,
 		GithubCommitStats commitStats) {
 
 		int stars = repos.stream()

@@ -1,5 +1,6 @@
 package com.moyo.backend.domain.batch.ranking.implement;
 
+import java.time.Duration;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;

@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-
 @Component
 @RequiredArgsConstructor
 public class GithubRepoClassifier {

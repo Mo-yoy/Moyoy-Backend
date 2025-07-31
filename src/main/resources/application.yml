@@ -43,10 +43,10 @@ spring:
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
 
-
 # LogBack
 logging:
   config: classpath:logging/logback-${spring.profiles.active:local}.xml
+
 # AWS
 cloud:
   aws:
@@ -55,3 +55,9 @@ cloud:
       secretKey: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: ${AWS_REGION}
+
+# Discord
+
+discord:
+  webhook-uri:
+    ranking : ${RANKING_DISCORD_URL}

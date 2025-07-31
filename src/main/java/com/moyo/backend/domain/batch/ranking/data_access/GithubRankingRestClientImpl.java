@@ -14,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
-import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor

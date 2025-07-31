@@ -53,7 +53,7 @@ public class RankingBatchHistory {
 	public static RankingBatchHistory init(LocalDateTime startedAt, String currentThreadName, int totalCount) {
 
 		String batchName = "Daily Ranking Batch : ";
-		batchName += DateTimeFormatter.ofPattern("yyyy--MM--dd").format(startedAt);
+		batchName += DateTimeFormatter.ofPattern("yyyy-MM-dd").format(startedAt);
 
 		return RankingBatchHistory.builder()
 			.batchName(batchName)

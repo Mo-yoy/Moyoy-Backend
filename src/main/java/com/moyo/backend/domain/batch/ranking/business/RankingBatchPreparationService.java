@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.dto.UserRankingBatchSnapshot;
+import com.moyo.backend.domain.batch.ranking.implement.UserRankingBatchSnapshot;
 import com.moyo.backend.domain.batch.ranking.implement.RankingBatchHistory;
 import com.moyo.backend.domain.batch.ranking.implement.RankingBatchHistoryUpdater;
 import com.moyo.backend.domain.user.implement.UserReader;

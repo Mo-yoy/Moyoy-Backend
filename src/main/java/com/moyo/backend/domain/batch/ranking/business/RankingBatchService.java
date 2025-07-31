@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batch.ranking.implement.RankingBatchHistory;
+import com.moyo.backend.domain.batch.ranking.implement.DiscordNotifier;
 import com.moyo.backend.domain.batch.ranking.implement.RankingBatchHistoryUpdater;
 import com.moyo.backend.domain.batch.ranking.implement.RankingBatchManager;
 import com.moyo.backend.domain.batch.ranking.implement.RankingBatchResult;
@@ -19,6 +16,9 @@ import com.moyo.backend.domain.batch.ranking.implement.RankingBatchTaskResult;
 import com.moyo.backend.domain.batch.ranking.implement.RankingCalculationProcessor;
 import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component

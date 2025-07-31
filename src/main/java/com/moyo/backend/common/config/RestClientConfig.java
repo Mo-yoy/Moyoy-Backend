@@ -19,4 +19,9 @@ public class RestClientConfig {
 			.defaultHeader("X-GitHub-Api-Version", "2022-11-28")
 			.build();
 	}
+
+	@Bean
+	public RestClient discordRestClient(){
+		return RestClient.builder().build();
+	}
 }

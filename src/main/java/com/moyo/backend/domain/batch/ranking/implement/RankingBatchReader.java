@@ -14,12 +14,9 @@ import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batch.ranking.data_access.GithubRankingHttpClient;
 import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
-import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetails;
-import com.moyo.backend.domain.batch.ranking.dto.GithubContributorDetailsResponse;
-import com.moyo.backend.domain.batch.ranking.dto.GithubProfileForRanking;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetailsResponse;
-import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
+import com.moyo.backend.domain.batch.ranking.data_access.GithubContributorDetailsResponse;
+import com.moyo.backend.domain.batch.ranking.data_access.GithubProfileForRanking;
+import com.moyo.backend.domain.batch.ranking.data_access.GithubRepoDetailsResponse;
 
 @Slf4j
 @Component
@@ -29,13 +26,13 @@ public class RankingBatchReader {
 	private final GithubContributeStatsParser githubContributeStatsParser;
 	private final GithubRankingHttpClient githubRankingHttpClient;
 
-	public RankingPreflight fetchRankingPreflight(Integer githubUserId, String accessToken) {
+	public UserRankingBatchSnapshot.RankingPreflight fetchRankingPreflight(Integer githubUserId, String accessToken) {
 
 		ResponseEntity<GithubProfileForRanking> response = githubRankingHttpClient.fetchRankingPreflight(githubUserId, accessToken);
 		int remainingRequestCount = Integer.parseInt(response.getHeaders().get("X-RateLimit-Remaining").getFirst());
 		GithubProfileForRanking githubProfile = response.getBody();
 
-		return new RankingPreflight(githubProfile.username(), githubProfile.followers(), remainingRequestCount);
+		return new UserRankingBatchSnapshot.RankingPreflight(githubProfile.username(), githubProfile.followers(), remainingRequestCount);
 	}
 
 	// 성능 장애가 발생할 수 있지만 대부분의 사용자가 소속된 Repo의 개수가 100개를 넘지 않을 것으로 추정되어 넘어가도 될 듯함.

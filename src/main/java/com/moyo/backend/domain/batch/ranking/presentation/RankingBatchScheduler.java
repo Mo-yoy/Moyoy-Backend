@@ -1,14 +1,19 @@
 package com.moyo.backend.domain.batch.ranking.presentation;
 
-import lombok.RequiredArgsConstructor;
+import static com.moyo.backend.domain.batch.ranking.implement.RankingBatchNotificationType.*;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.moyo.backend.domain.batch.ranking.business.DiscordNotificationService;
+import com.moyo.backend.domain.batch.ranking.business.NotificationRequest;
 import com.moyo.backend.domain.batch.ranking.business.RankingBatchPreparationResult;
 import com.moyo.backend.domain.batch.ranking.business.RankingBatchPreparationService;
 import com.moyo.backend.domain.batch.ranking.business.RankingBatchRequest;
 import com.moyo.backend.domain.batch.ranking.business.RankingBatchService;
+import com.moyo.backend.domain.batch.ranking.implement.RankingBatchNotificationType;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  *  기존 Layer 컨벤션에 혼동을 주지 않기 위해서
@@ -24,12 +29,14 @@ import com.moyo.backend.domain.batch.ranking.business.RankingBatchService;
 public class RankingBatchScheduler {
 
 	private final RankingBatchPreparationService rankingBatchPreparationService;
+	private final DiscordNotificationService discordNotificationService;
 	private final RankingBatchService rankingBatchService;
 
-	@Scheduled(cron = "0 0/5 * * * *")
+	@Scheduled(cron = "30 20 * * * *")
 	public void dailyRankingBatch() {
 
 		RankingBatchPreparationResult preparationResult = rankingBatchPreparationService.prepareRankingBatch();
+		sendNotification(RANKING_BATCH_START, preparationResult.rankingBatchHistory().getId());
 
 		RankingBatchRequest rankingBatchRequest = new RankingBatchRequest(
 			preparationResult.userRankingBatchSnapshot().lastUserId(),
@@ -37,6 +44,12 @@ public class RankingBatchScheduler {
 		);
 
 		rankingBatchService.rankingBatch(rankingBatchRequest);
+
+		sendNotification(RANKING_BATCH_END, preparationResult.rankingBatchHistory().getId());
 	}
 
+	private void sendNotification(RankingBatchNotificationType notificationType, Long RankingBatchHistoryId){
+
+		discordNotificationService.sendNotification(NotificationRequest.of(notificationType, RankingBatchHistoryId));
+	}
 }

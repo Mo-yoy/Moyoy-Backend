@@ -1,21 +1,23 @@
 package com.moyo.backend.domain.batch.ranking.implement;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import com.moyo.backend.common.exception.MoyoException;
 import com.moyo.backend.common.implement.GithubOAuthTokenReader;
 import com.moyo.backend.domain.batch.ranking.data_access.RepoContributorStats;
-import com.moyo.backend.domain.batch.ranking.dto.GithubCommitStats;
-import com.moyo.backend.domain.batch.ranking.dto.GithubRepoDetails;
-import com.moyo.backend.domain.batch.ranking.dto.RankingPreflight;
 import com.moyo.backend.domain.github_ranking.implement.Ranking;
 import com.moyo.backend.domain.github_ranking.implement.RankingReader;
 import com.moyo.backend.domain.user.implement.User;
 
+@Slf4j
 @Builder
 @RequiredArgsConstructor
 public class RankingBatchTask implements Callable<RankingBatchTaskResult> {
@@ -37,7 +39,7 @@ public class RankingBatchTask implements Callable<RankingBatchTaskResult> {
 			String githubAccessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
 
 			// 1. 사용자 id로 username, follower 수, 소유 중인 개인 Repo 수, RateLimitRemaining 체크
-			RankingPreflight rankingPreflight = rankingBatchReader.fetchRankingPreflight(currentGithubUserId, githubAccessToken);
+			UserRankingBatchSnapshot.RankingPreflight rankingPreflight = rankingBatchReader.fetchRankingPreflight(currentGithubUserId, githubAccessToken);
 			rankingPreflight.assertCanGithubRequest();
 
 			// 2. 해당 사용자가 read, write, owner 권한을 가지고 있는 올해 Repo 모두 가져옴
@@ -72,8 +74,16 @@ public class RankingBatchTask implements Callable<RankingBatchTaskResult> {
 			ranking.updateRankingByBatch(rankingCalculatorResult);
 
 			return RankingBatchTaskResult.success(currentUserId, ranking);
-		} catch (Exception e) {
-			return RankingBatchTaskResult.fail(user.getId(), e.getMessage());
+		}
+		catch (MoyoException e){
+
+			return RankingBatchTaskResult.fail(user.getId(), e.getErrorReason().getErrorMessage());
+		}
+		catch (Exception e) {
+
+			String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+			log.error("{}의 랭킹 배치 중 알 수 없는 에러 발생", user.getId(), e);
+			return RankingBatchTaskResult.fail(user.getId(), "Unknown Error || Error Log Time : " + timestamp);
 		}
 	}
 }

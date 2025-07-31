@@ -12,4 +12,8 @@ public class RankingBatchHistoryReader {
 
 	private final RankingBatchHistoryRepository rankingBatchHistoryRepository;
 
+	public RankingBatchHistory findById(Long rankingBatchHistoryId) {
+
+		return rankingBatchHistoryRepository.findById(rankingBatchHistoryId);
+	}
 }
