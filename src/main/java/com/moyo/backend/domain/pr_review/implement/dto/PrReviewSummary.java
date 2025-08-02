@@ -1,8 +1,8 @@
 package com.moyo.backend.domain.pr_review.implement.dto;
 
-import com.moyo.backend.domain.pr_review.implement.PrReview;
-
 import static com.moyo.backend.common.util.TimeSinceFormatter.*;
+
+import com.moyo.backend.domain.pr_review.implement.PrReview;
 
 public record PrReviewSummary(
 	String profileImageUrl,
