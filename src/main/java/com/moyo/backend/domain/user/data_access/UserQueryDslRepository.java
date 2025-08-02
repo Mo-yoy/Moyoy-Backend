@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.moyo.backend.domain.batch.ranking.data_access.UserCountAndLastId;
+import com.moyo.backend.domain.batchLegacy.ranking.data_access.UserCountAndLastId;
 import com.moyo.backend.domain.user.implement.User;
 
 @Repository

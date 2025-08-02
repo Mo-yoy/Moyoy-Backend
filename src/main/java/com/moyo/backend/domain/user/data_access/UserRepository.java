@@ -3,7 +3,7 @@ package com.moyo.backend.domain.user.data_access;
 import java.util.List;
 import java.util.Optional;
 
-import com.moyo.backend.domain.batch.ranking.data_access.UserCountAndLastId;
+import com.moyo.backend.domain.batchLegacy.ranking.data_access.UserCountAndLastId;
 import com.moyo.backend.domain.user.implement.User;
 
 public interface UserRepository {
