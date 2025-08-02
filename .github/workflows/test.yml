@@ -1,10 +1,11 @@
 name: Moyo API Test Server Deploy
 
-on:
-  push:
-    branches:
-      - develop
-    path: backend/**
+# AWS 프리티어 만료로 인한 배포 임시 비활성화
+#on:
+#  push:
+#    branches:
+#      - develop
+#    path: backend/**
 
 jobs:
   Deploy:
