@@ -74,12 +74,10 @@ public class RankingBatchTask implements Callable<RankingBatchTaskResult> {
 			ranking.updateRankingByBatch(rankingCalculatorResult);
 
 			return RankingBatchTaskResult.success(currentUserId, ranking);
-		}
-		catch (MoyoException e){
+		} catch (MoyoException e) {
 
 			return RankingBatchTaskResult.fail(user.getId(), e.getErrorReason().getErrorMessage());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 
 			String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
 			log.error("{}의 랭킹 배치 중 알 수 없는 에러 발생", user.getId(), e);

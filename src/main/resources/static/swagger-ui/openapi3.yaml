@@ -4,7 +4,7 @@ info:
   description: Moyoy API Server description
   version: v1.0.0
 servers:
-- url: https://api.cafehub.site
+- url: https://moyoy-test.shop
 - url: http://localhost:8080
 tags: []
 paths:
@@ -247,8 +247,8 @@ paths:
                     :{\"userList\":[{\"githubUserId\":12345,\"username\":\"username1\"\
                     ,\"profileImgUrl\":\"http://profile.image/1\"},{\"githubUserId\"\
                     :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
-                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5 분\
-                    전\"}}"
+                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5분\
+                    \ 전\"}}"
       security:
       - bearerAuthJWT: []
 components:

@@ -2,14 +2,13 @@ package com.moyo.backend.domain.batchLegacy.discord.implement;
 
 import java.time.Duration;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batchLegacy.ranking.data_access.DiscordRestClientImpl;
 import com.moyo.backend.domain.batchLegacy.ranking.implement.RankingBatchHistory;
 import com.moyo.backend.domain.batchLegacy.ranking.implement.RankingBatchHistoryReader;
-
-import lombok.RequiredArgsConstructor;
-
 
 @Component
 @RequiredArgsConstructor
@@ -21,8 +20,7 @@ public class DiscordNotifier {
 	public void sendNotification(NotificationRequest notificationRequest) {
 		String message = formatMessage(
 			notificationRequest.type(),
-			notificationRequest.rankingBatchHistoryId()
-		);
+			notificationRequest.rankingBatchHistoryId());
 		discordRestClientImpl.sendAlarm(message);
 	}
 
@@ -53,8 +51,7 @@ public class DiscordNotifier {
 					totalCount,
 					successCount,
 					failCount,
-					successRate
-				);
+					successRate);
 			}
 		};
 	}

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batchLegacy.discord.implement.DiscordNotifier;
@@ -18,9 +21,6 @@ import com.moyo.backend.domain.batchLegacy.discord.implement.NotificationType;
 import com.moyo.backend.domain.batchLegacy.ranking.business.RankingBatchPreparationResult;
 import com.moyo.backend.domain.user.implement.User;
 import com.moyo.backend.domain.user.implement.UserReader;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -67,8 +67,7 @@ public class RankingBatchManager {
 			List<Future<RankingBatchTaskResult>> rankingFutures = rankingCalculationProcessor.calculateRanking(userList);
 
 			rankingBatchResults.add(
-				rankingBatchResultWriter.collectResultsAndUpdate(rankingBatchRequest.rankingBatchHistory().getId(), rankingFutures)
-			);
+				rankingBatchResultWriter.collectResultsAndUpdate(rankingBatchRequest.rankingBatchHistory().getId(), rankingFutures));
 
 			userIdCursor = userList.getLast().getId();
 		}
@@ -84,10 +83,9 @@ public class RankingBatchManager {
 		log.info("총 페이지 수: {}", userRankingBatchSnapshot.userCount() / RANKING_BATCH_PAGE_SIZE + 1);
 	}
 
-	private void sendNotification(NotificationType notificationType, Long RankingBatchHistoryId){
+	private void sendNotification(NotificationType notificationType, Long RankingBatchHistoryId) {
 
 		discordNotifier.sendNotification(NotificationRequest.of(notificationType, RankingBatchHistoryId));
 	}
-
 
 }

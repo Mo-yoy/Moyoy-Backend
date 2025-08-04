@@ -66,7 +66,7 @@ public class RankingBatchHistory {
 			.build();
 	}
 
-	public void finalizeBatch(int successCount, int failCount){
+	public void finalizeBatch(int successCount, int failCount) {
 
 		this.successCount = successCount;
 		this.failCount = failCount;

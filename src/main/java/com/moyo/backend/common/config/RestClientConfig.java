@@ -21,7 +21,7 @@ public class RestClientConfig {
 	}
 
 	@Bean
-	public RestClient discordRestClient(){
+	public RestClient discordRestClient() {
 		return RestClient.builder().build();
 	}
 }

@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.moyo.backend.domain.batchLegacy.ranking.data_access.GithubRankingHttpClient;
-import com.moyo.backend.domain.batchLegacy.ranking.data_access.RepoContributorStats;
 import com.moyo.backend.domain.batchLegacy.ranking.data_access.GithubContributorDetailsResponse;
 import com.moyo.backend.domain.batchLegacy.ranking.data_access.GithubProfileForRanking;
+import com.moyo.backend.domain.batchLegacy.ranking.data_access.GithubRankingHttpClient;
 import com.moyo.backend.domain.batchLegacy.ranking.data_access.GithubRepoDetailsResponse;
+import com.moyo.backend.domain.batchLegacy.ranking.data_access.RepoContributorStats;
 
 @Slf4j
 @Component

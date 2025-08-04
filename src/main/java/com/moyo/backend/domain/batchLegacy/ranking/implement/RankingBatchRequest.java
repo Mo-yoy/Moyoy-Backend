@@ -6,7 +6,6 @@ public record RankingBatchRequest(
 	Long lastUserId,
 	RankingBatchHistory rankingBatchHistory) {
 
-
 	public static RankingBatchRequest from(RankingBatchPreparationResult preparationResult) {
 		return new RankingBatchRequest(preparationResult.userRankingBatchSnapshot().lastUserId(), preparationResult.rankingBatchHistory());
 	}

@@ -1,11 +1,11 @@
 package com.moyo.backend.domain.batchLegacy.ranking.presentation;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.moyo.backend.domain.batchLegacy.ranking.business.RankingBatchService;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  *  기존 Layer 컨벤션에 혼동을 주지 않기 위해서
