@@ -57,6 +57,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy from GitHub Actions" \
             --parameters commands="
+              source ${{ secrets.TEST_ENV }} &&
               aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /home/ubuntu/moyo-test/tobe/project.jar &&
               rm -rf /home/ubuntu/moyo-test/current &&
               mkdir /home/ubuntu/moyo-test/current &&
