@@ -68,7 +68,6 @@ dependencies {
     // Logback
     implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
 }
 
 
