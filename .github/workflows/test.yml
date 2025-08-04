@@ -56,15 +56,18 @@ jobs:
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy from GitHub Actions" \
-            --parameters commands="
-              source ${{ secrets.TEST_ENV }} &&
-              aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /home/ubuntu/moyo-test/tobe/project.jar &&
-              rm -rf /home/ubuntu/moyo-test/current &&
-              mkdir /home/ubuntu/moyo-test/current &&
-              mv /home/ubuntu/moyo-test/tobe/project.jar /home/ubuntu/moyo-test/current/project.jar &&
-              cd /home/ubuntu/moyo-test/current &&
-              sudo fuser -k -n tcp 8080 || true &&
-              nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 & 
-              rm -rf /home/ubuntu/moyo-test/tobe
-            " \
+            --parameters "commands=[
+              \"bash -c '
+                cd /root &&
+                source ${{ secrets.TEST_ENV }} &&
+                aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /home/ubuntu/moyo-test/tobe/project.jar &&
+                rm -rf /home/ubuntu/moyo-test/current &&
+                mkdir /home/ubuntu/moyo-test/current &&
+                mv /home/ubuntu/moyo-test/tobe/project.jar /home/ubuntu/moyo-test/current/project.jar &&
+                cd /home/ubuntu/moyo-test/current &&
+                sudo fuser -k -n tcp 8080 || true &&
+                nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 &
+                rm -rf /home/ubuntu/moyo-test/tobe
+              '\"
+            ]" \
             --output text
