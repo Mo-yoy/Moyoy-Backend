@@ -23,7 +23,7 @@ public class RankingBatchScheduler {
 
 	private final RankingBatchService rankingBatchService;
 
-	@Scheduled(cron = "00 02 * * * *")
+	@Scheduled(cron = "00 00 19 * * *")
 	public void dailyRankingBatch() {
 
 		rankingBatchService.launchRankingBatch();
