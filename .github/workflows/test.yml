@@ -60,14 +60,14 @@ jobs:
               \"bash -c '
                 cd /root &&
                 source ${{ secrets.TEST_ENV }} &&
-                aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /root/moyo-test/tobe/project.jar &&
-                rm -rf /root/moyo-test/current &&
-                mkdir /root/moyo-test/current &&
-                mv /root/moyo-test/tobe/project.jar /root/moyo-test/current/project.jar &&
-                cd /root/moyo-test/current &&
+                aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /root/moyoy-test/tobe/project.jar &&
+                rm -rf /root/moyoy-test/current &&
+                mkdir /root/moyoy-test/current &&
+                mv /root/moyoy-test/tobe/project.jar /root/moyoy-test/current/project.jar &&
+                cd /root/moyoy-test/current &&
                 sudo fuser -k -n tcp 8080 || true &&
                 nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 &
-                rm -rf /root/moyo-test/tobe
+                rm -rf /root/moyoy-test/tobe
               '\"
             ]" \
             --output text
