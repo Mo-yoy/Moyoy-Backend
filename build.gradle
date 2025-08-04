@@ -68,7 +68,6 @@ dependencies {
     // Logback
     implementation 'ca.pjer:logback-awslogs-appender:1.6.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
 }
 
 
@@ -82,7 +81,7 @@ bootJar {
 
 openapi3 {
     servers = [
-            { url = "https://api.cafehub.site"},
+            { url = "https://moyoy-test.shop"},
             { url = "http://localhost:8080" }
     ]
     title = "Moyoy API Server"

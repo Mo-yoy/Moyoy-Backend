@@ -1,11 +1,11 @@
 name: Moyo API Test Server Deploy
 
-# AWS 프리티어 만료로 인한 배포 임시 비활성화
-#on:
-#  push:
-#    branches:
-#      - develop
-#    path: backend/**
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - backend/**
 
 jobs:
   Deploy:
@@ -40,33 +40,34 @@ jobs:
       - name: 빌드된 JAR 파일 이름 변경
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
 
-      - name: EC2 서버로 JAR 파일 전송
-        uses: appleboy/scp-action@v0.1.7
+      - name: AWS 인증 설정
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: project.jar
-          target: /home/ubuntu/moyo-test/tobe
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-      - name: SSH로 EC2에 접속 후 애플리케이션 실행
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            source ${{ secrets.ENV_FILE_PATH }}
-            rm -rf /home/ubuntu/moyo-test/current
-            mkdir /home/ubuntu/moyo-test/current
-            mv /home/ubuntu/moyo-test/tobe/project.jar /home/ubuntu/moyo-test/current/project.jar
-            cd /home/ubuntu/moyo-test/current
-            
-            sudo fuser -k -n tcp 8080 || true
-            sudo fuser -k -n tcp 8081 || true
-  
-            nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 &
-            nohup java -jar project.jar --spring.profiles.active=test --server.port=8081 &
-           
-            rm -rf /home/ubuntu/moyo-test/tobe
+      - name: S3로 JAR 업로드
+        run: aws s3 cp ./project.jar s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar
+
+      - name: SSM RunCommand로 EC2에 배포 명령 실행
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy from GitHub Actions" \
+            --parameters "commands=[
+              \"bash -c '
+                cd /root &&
+                source ${{ secrets.TEST_ENV }} &&
+                aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/project.jar /home/ubuntu/moyo-test/tobe/project.jar &&
+                rm -rf /home/ubuntu/moyo-test/current &&
+                mkdir /home/ubuntu/moyo-test/current &&
+                mv /home/ubuntu/moyo-test/tobe/project.jar /home/ubuntu/moyo-test/current/project.jar &&
+                cd /home/ubuntu/moyo-test/current &&
+                sudo fuser -k -n tcp 8080 || true &&
+                nohup java -jar project.jar --spring.profiles.active=test --server.port=8080 &
+                rm -rf /home/ubuntu/moyo-test/tobe
+              '\"
+            ]" \
+            --output text
