@@ -1,0 +1,73 @@
+name: Moyo Batch Test Server Deploy # 8082
+
+on:
+  push:
+    branches:
+      - develop
+    path:
+      - Moyoy-Batch/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Github Repository 에서 파일 불러 오기
+        uses: actions/checkout@v4
+
+      - name: JDK 21버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle','**/*.gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: 빌드
+        run: ./gradlew :Moyoy-Batch:clean :Moyoy-Batch:build
+
+      - name: JAR 이름 변경
+        run: mv ./Moyoy-Batch/build/libs/*SNAPSHOT.jar ./moyoy-batch.jar
+
+      - name: AWS 인증 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.TEST_SERVER_EC2_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_SERVER_EC2_AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: S3로 JAR 업로드
+        run: aws s3 cp ./moyoy-batch.jar s3://${{ secrets.TEST_SERVER_DEPLOY_S3_BUCKET }}/moyoy-batch.jar
+
+      - name: SSM RunCommand로 EC2에 배포 명령 실행
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ secrets.TEST_SERVER_EC2_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy from GitHub Actions" \
+            --parameters "commands=[
+              \"bash -c '
+                cd /root &&
+                source ${{ secrets.TEST_ENV }} &&
+                aws s3 cp s3://${{ secrets.TEST_SERVER_DEPLOY_S3_BUCKET }}/moyoy-batch.jar /root/moyoy-test/batch/tobe/moyoy-batch.jar &&
+                rm -rf /root/moyoy-test/batch/current &&
+                mkdir /root/moyoy-test/batch/current &&
+                mv /root/moyoy-test/batch/tobe/moyoy-batch.jar /root/moyoy-test/batch/current/moyoy-batch.jar &&
+                rm -rf /root/moyoy-test/batch/tobe &&
+                cd /root/moyoy-test/batch/current &&
+                sudo fuser -k -n tcp 8082 || true &&
+                nohup java -jar moyoy-batch.jar --spring.profiles.active=test --server.port=8082 &
+              '\"
+            ]" \
+            --output text

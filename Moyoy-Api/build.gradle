@@ -1,0 +1,67 @@
+plugins {
+    id 'com.epages.restdocs-api-spec'
+}
+
+dependencies {
+
+    implementation project(':Moyoy-Domain')
+    implementation project(':Moyoy-Common')
+
+    // Cookie Setting
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // Docs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
+
+    // Logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+    
+    // 임시
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+}
+
+
+bootJar {
+    dependsOn 'copyOasToSwagger'
+}
+
+openapi3 {
+    servers = [
+            { url = "https://moyoy-test.shop"},
+            { url = "http://localhost:8080" }
+    ]
+    title = "Moyoy API Server"
+    description = "Moyoy API Server description"
+    version = "v1.0.0"
+    format = "yaml"
+}
+
+tasks.register('copyOasToSwagger', Copy) {
+
+    dependsOn 'openapi3'
+
+    doFirst {
+        delete file('src/main/resources/static/swagger-ui/openapi3.yaml')
+    }
+
+    from("$buildDir/api-spec/openapi3.yaml")
+
+    into('src/main/resources/static/swagger-ui')
+}
+
+bootJar.enabled = true

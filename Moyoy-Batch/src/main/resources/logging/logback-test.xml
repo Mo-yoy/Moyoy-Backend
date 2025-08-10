@@ -1,0 +1,70 @@
+<configuration>
+<shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+<!-- 텍스트 로그 (로컬/실시간/백업) -->
+<appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <prudent>true</prudent>
+    <file>/root/moyoy-test/moyoy-test-daily.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>/root/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <maxHistory>1</maxHistory>
+    </rollingPolicy>
+    <encoder>
+        <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+        <charset>utf8</charset>
+    </encoder>
+</appender>
+
+<!-- JSON 로그 (CloudWatch 업로드용) -->
+<appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>/root/moyoy-test/moyoy-test-json.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>/root/moyoy-test/moyoy-test.json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <maxHistory>3</maxHistory>
+    </rollingPolicy>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+    </filter>
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+        <providers>
+            <timestamp>
+                <fieldName>timestamp</fieldName>
+                <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</pattern>
+            </timestamp>
+            <logLevel>
+                <fieldName>logLevel</fieldName>
+            </logLevel>
+            <loggerName>
+                <fieldName>loggerName</fieldName>
+            </loggerName>
+            <threadName>
+                <fieldName>threadName</fieldName>
+            </threadName>
+            <mdc>
+                <includeMdcKeyName>userId</includeMdcKeyName>
+                <includeMdcKeyName>ip</includeMdcKeyName>
+                <includeMdcKeyName>userAgent</includeMdcKeyName>
+                <includeMdcKeyName>requestUri</includeMdcKeyName>
+                <includeMdcKeyName>httpMethod</includeMdcKeyName>
+                <includeMdcKeyName>queryString</includeMdcKeyName>
+                <includeMdcKeyName>referer</includeMdcKeyName>
+                <includeMdcKeyName>host</includeMdcKeyName>
+            </mdc>
+            <message>
+                <fieldName>message</fieldName>
+            </message>
+            <stackTrace>
+                <fieldName>stackTrace</fieldName>
+            </stackTrace>
+        </providers>
+        <charset>utf8</charset>
+    </encoder>
+</appender>
+
+<root level="INFO">
+    <appender-ref ref="DAILY_LOG"/>
+    <appender-ref ref="JSON_CLOUD_WATCH_LOG"/>
+</root>
+</configuration>
+
