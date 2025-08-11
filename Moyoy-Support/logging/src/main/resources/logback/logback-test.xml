@@ -1,5 +1,5 @@
 <configuration>
-<shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+<shutdownHook class="ch.qos.logback.core.hook.DefaultShutdownHook"/>
 <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
@@ -7,7 +7,7 @@
     <prudent>true</prudent>
     <file>/home/ubuntu/moyoy-test-daily.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/root/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>1</maxHistory>
     </rollingPolicy>
     <encoder>
@@ -20,7 +20,7 @@
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>/home/ubuntu/moyoy-test-json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/root/moyoy-test/moyoy-test.json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-test/moyoy-test.json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>3</maxHistory>
     </rollingPolicy>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
