@@ -57,6 +57,7 @@ jobs:
           key: ${{ secrets.TEST_SERVER_EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            source ${{ secrets.TEST_SERVER_ENV_FILE_PATH }}
             rm -rf /home/ubuntu/moyoy-test/api/current
             mkdir /home/ubuntu/moyoy-test/api/current
             mv /home/ubuntu/moyoy-test/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-test/api/current/moyoy-api.jar
