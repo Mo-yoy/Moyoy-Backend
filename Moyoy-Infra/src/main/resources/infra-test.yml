@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "aws-parameterstore:"
+    import: "aws-parameterstore:/config/moyoy-test"
 
 
 aws:
