@@ -5,7 +5,7 @@
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
 <appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <prudent>true</prudent>
-    <file>/home/ubuntu/moyoy-test-daily.log</file>
+    <file>/home/ubuntu/moyoy-test/moyoy-test-daily.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         <fileNamePattern>/home/ubuntu/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>1</maxHistory>
@@ -18,7 +18,7 @@
 
 <!-- JSON 로그 (CloudWatch 업로드용) -->
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-test-json.log</file>
+    <file>/home/ubuntu/moyoy-test/moyoy-test-json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         <fileNamePattern>/home/ubuntu/moyoy-test/moyoy-test.json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>3</maxHistory>
