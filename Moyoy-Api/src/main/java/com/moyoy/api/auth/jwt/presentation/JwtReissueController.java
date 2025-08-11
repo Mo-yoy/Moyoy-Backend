@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moyoy.api.auth.jwt.business.JwtReissueService;
-import com.moyoy.api.auth.jwt.business.ReissuedTokens;
-import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.api.common.util.CookieUtils;
+import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
+import com.moyoy.api.support.response.ApiResponse;
+import com.moyoy.api.support.util.CookieUtils;
 
 @RestController
 @RequiredArgsConstructor

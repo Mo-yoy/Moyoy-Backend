@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.api.common.util.ErrorResponseWriter;
+import com.moyoy.api.support.util.ErrorResponseWriter;
 import com.moyoy.common.exception.auth.AuthErrorCode;
 
 import jakarta.servlet.http.HttpServletRequest;

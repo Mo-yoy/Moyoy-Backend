@@ -194,7 +194,7 @@ paths:
       description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
         우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\
         \ 한 번이라도 진행한 적이 있어야 사용 가능합니다."
-      operationId: FOLLOW_400_1맞팔탐지기 조회 성공
+      operationId: GITHUB_400_1맞팔탐지기 조회 성공
       parameters:
       - name: detectType
         in: path
@@ -232,8 +232,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/api-v1-users-me-followings-detectType492296449"
               examples:
-                FOLLOW_400_1:
-                  value: "{\"status\":400,\"code\":\"FOLLOW_400_1\",\"message\":\"\
+                GITHUB_400_1:
+                  value: "{\"status\":400,\"code\":\"GITHUB_400_1\",\"message\":\"\
                     Github API 호출이 제한 되었습니다. 1시간 뒤 다시 시도해 주세요\",\"data\":null}"
         "200":
           description: "200"

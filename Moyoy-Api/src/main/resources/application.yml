@@ -1,19 +1,9 @@
 spring:
+  config:
+    import:
+      - data.yml
+      - logging.yml
 
-  # RDB
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-  # Cache
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-
-  # Spring Security
   security:
     oauth2:
       client:
@@ -22,27 +12,17 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
             redirect-uri: ${REDIRECT_URI}
-            scope:
-              - read:user
-              - user:follow
-              - read:org
+            scope: ${SCOPE}
 
-  # JWT
   jwt:
     secret: ${JWT_SECRET_KEY}
 
-  # CORS Allow Origin
   cors:
     allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
 
-  # Refresh Token
   cookie:
-    domain: ${COOKIE_DOMAIN}
     samesite: ${COOKIE_SAME_SITE:Strict}
+    domain: ${COOKIE_DOMAIN:localhost}
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
-
-# LogBack
-logging:
-  config: classpath:logging/logback-${spring.profiles.active:local}.xml

@@ -34,9 +34,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.auth.jwt.business.JwtReissueService;
-import com.moyoy.api.auth.jwt.business.ReissuedTokens;
-import com.moyoy.api.common.handler.GlobalExceptionHandler;
-import com.moyoy.api.common.util.CookieUtils;
+import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
+import com.moyoy.api.presentation.ApiControllerAdvice;
+import com.moyoy.api.support.util.CookieUtils;
 import com.moyoy.common.exception.MoyoException;
 import com.moyoy.common.exception.auth.AuthErrorCode;
 
@@ -46,7 +46,7 @@ import jakarta.servlet.http.Cookie;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@Import(GlobalExceptionHandler.class)
+@Import(ApiControllerAdvice.class)
 class JwtReissueControllerTest {
 
 	@Autowired

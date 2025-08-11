@@ -1,12 +1,6 @@
-spring:
-
-  # JPA
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: Asia/Seoul
-        show_sql: true
-        format_sql: true
+#server:
+#  tomcat:
+#    max-connections: 20000
+#    threads:
+#      max: 600
+#      min-spare: 100

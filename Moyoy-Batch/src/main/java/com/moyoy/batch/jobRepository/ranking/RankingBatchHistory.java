@@ -19,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-
 /**
  *   추후 Spring Batch로 넘어갈 예정이라 임시로 DB Access에 JPA를 사용중임.
  *

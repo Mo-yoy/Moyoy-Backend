@@ -15,12 +15,12 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
 import com.moyoy.common.exception.auth.JwtTokenBlockedException;
 import com.moyoy.common.exception.auth.JwtTokenExpiredException;
 import com.moyoy.common.exception.auth.JwtTokenInvalidException;
 import com.moyoy.common.exception.auth.JwtTokenNotExistException;
 import com.moyoy.common.exception.auth.JwtTokenTypeMismatchException;
-import com.moyoy.domain.auth.data_access.JwtRefreshTokenRepository;
 
 @Slf4j
 @Component

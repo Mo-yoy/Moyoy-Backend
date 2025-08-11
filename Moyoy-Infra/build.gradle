@@ -1,13 +1,10 @@
 dependencies {
     implementation project(':Moyoy-Common')
 
-    // Open Feign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
-
-    // JDBC
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-    // Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
+    /// TODO :  Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
 

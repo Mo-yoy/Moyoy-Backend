@@ -4,35 +4,27 @@ plugins {
 
 dependencies {
 
-    implementation project(':Moyoy-Domain')
+    implementation project(':Moyoy-Core')
     implementation project(':Moyoy-Common')
+    implementation project(':Moyoy-Support:logging')
+    implementation project(':Moyoy-Support:monitoring')
 
-    // Cookie Setting
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
-
-    // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
 
-    // Docs
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
 
-    // Logback
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
-    
-    // 임시
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    /// TODO : 제거 예정, Cookie 관련 직렬화, 역직렬화 용
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    /// TODO : JWT 리프레시 토큰 저장소가 현재는 RDB라 임시로 넣어둠
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
 }
 
 
