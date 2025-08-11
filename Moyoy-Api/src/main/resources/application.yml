@@ -3,6 +3,7 @@ spring:
     import:
       - data.yml
       - logging.yml
+      - infra.yml
 
   security:
     oauth2:

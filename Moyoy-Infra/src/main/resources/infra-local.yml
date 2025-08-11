@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    aws:
+      parameterstore:
+        enabled: false

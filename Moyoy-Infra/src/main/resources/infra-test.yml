@@ -1,0 +1,10 @@
+spring:
+  config:
+    import: "aws-parameterstore:"
+
+
+aws:
+  parameterstore:
+    region: ap-northeast-2
+    prefix: /config
+    name: moyoy-test

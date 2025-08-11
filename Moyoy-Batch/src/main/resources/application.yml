@@ -3,6 +3,7 @@ spring:
     import:
       - data.yml
       - logging.yml
+      - infra.yml
 
 discord:
   webhook-uri:
