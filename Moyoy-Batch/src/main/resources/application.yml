@@ -2,7 +2,6 @@ spring:
   config:
     import:
       - data.yml
-      - logging.yml
       - infra.yml
 
 logging:
