@@ -18,7 +18,7 @@
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>/home/ubuntu/moyoy-test/logs/batch-json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-test/batch-json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-test/logs/batch-json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>3</maxHistory>
     </rollingPolicy>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
