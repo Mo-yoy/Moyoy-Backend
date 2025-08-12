@@ -4,9 +4,9 @@
 
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
 <appender name="DAILY_BATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-batch-test/logs/batch.log</file>
+    <file>/home/ubuntu/moyoy-test/logs/batch.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-batch-test/batch.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-test/logs/batch.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>1</maxHistory>
     </rollingPolicy>
     <encoder>
@@ -16,9 +16,9 @@
 
 <!-- JSON 로그 (CloudWatch 업로드용) -->
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-batch-test/logs/json.log</file>
+    <file>/home/ubuntu/moyoy-test/logs/batch-json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-batch-test/json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-test/batch-json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>3</maxHistory>
     </rollingPolicy>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
