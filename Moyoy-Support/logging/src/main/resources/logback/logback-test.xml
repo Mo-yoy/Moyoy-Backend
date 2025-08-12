@@ -4,7 +4,6 @@
 
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
 <appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <prudent>true</prudent>
     <file>/home/ubuntu/moyoy-test/moyoy-test-daily.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
         <fileNamePattern>/home/ubuntu/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -12,7 +11,6 @@
     </rollingPolicy>
     <encoder>
         <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
-        <charset>utf8</charset>
     </encoder>
 </appender>
 
@@ -58,7 +56,6 @@
                 <fieldName>stackTrace</fieldName>
             </stackTrace>
         </providers>
-        <charset>utf8</charset>
     </encoder>
 </appender>
 
