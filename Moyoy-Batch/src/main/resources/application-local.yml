@@ -1,0 +1,4 @@
+discord:
+  webhook-uri:
+    id: ${RANKING_DISCORD_WEBHOOK_ID}
+    token: ${RANKING_DISCORD_WEBHOOK_TOKEN}
