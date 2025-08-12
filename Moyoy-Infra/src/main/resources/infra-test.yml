@@ -1,4 +1,9 @@
 spring:
   config:
     import:
-      - "aws-parameterstore:/config/moyoy-api"
+      - "aws-parameterstore:/config/moyoy-test/"
+aws:
+  parameterstore:
+    enabled: true
+    prefix: /config
+    name: moyoy-test

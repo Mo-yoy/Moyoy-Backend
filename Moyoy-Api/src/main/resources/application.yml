@@ -1,6 +1,6 @@
 spring:
   application:
-    name: moyoy-api
+    name: moyoy-test
 
   config:
     import:
