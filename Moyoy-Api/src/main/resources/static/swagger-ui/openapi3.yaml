@@ -1,0 +1,417 @@
+openapi: 3.0.1
+info:
+  title: Moyoy API Server
+  description: Moyoy API Server description
+  version: v1.0.0
+servers:
+- url: https://api.moyoy-test.shop
+- url: http://localhost:8080
+tags: []
+paths:
+  /api/v1/rankings:
+    get:
+      tags:
+      - 🏆 랭킹 조회
+      summary: 전체 개인 랭킹 조회 API
+      description: 우리 서비스의 전체 개인 랭킹을 조회합니다.
+      operationId: 전체 개인 랭킹 조회 성공
+      parameters:
+      - name: period
+        in: query
+        description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "조회할 페이지 (default: 0)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: "페이징 사이즈 (default: 20)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-rankings1445726081"
+              examples:
+                전체 개인 랭킹 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
+                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
+  /api/v1/follow/{targetUserId}:
+    post:
+      tags:
+      - 👥 깃허브 팔로우 관계 탐지
+      summary: 깃허브 사용자 팔로우 API
+      description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 상 사용자를 팔로우합니다.
+      operationId: 팔로우 성공
+      parameters:
+      - name: targetUserId
+        in: path
+        description: 팔로우 대상 사용자 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-unfollow-targetUserId-767089392"
+              examples:
+                팔로우 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
+  /api/v1/unfollow/{targetUserId}:
+    delete:
+      tags:
+      - 👥 깃허브 팔로우 관계 탐지
+      summary: 깃허브 사용자 언팔로우 API
+      description: 현재 로그인한 사용자가 targetUserId에 해당하는 깃허브 사용자를 언 팔로우합니다.
+      operationId: 언팔로우 성공
+      parameters:
+      - name: targetUserId
+        in: path
+        description: 언 팔로우 대상 사용자 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-unfollow-targetUserId-767089392"
+              examples:
+                언팔로우 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
+  /api/v1/auth/reissue/token:
+    post:
+      tags:
+      - 🔄 JWT 재발급
+      summary: JWT 토큰 재발급 API
+      description: "사용자의 요청에 포함된 Cookie 중 refresh={리프레시 토큰}을 이용해 토큰 재발급을 수행하며, 새로운\
+        \ Access 토큰은 응답 본문에, Refresh 토큰은 Set-Cookie 헤더를 통해 발급합니다. \n 자세한 사용법은 디스코드\
+        를 참고 해 주세요"
+      operationId: JWT 재발급 성공LOGIN_401_1LOGIN_401_2LOGIN_401_3LOGIN_401_4LOGIN_401_5
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-auth-reissue-token1995903112"
+              examples:
+                JWT 재발급 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"accessToken\":\"newAccessToken\"}}"
+        "401":
+          description: "401"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-auth-reissue-token-1735855461"
+              examples:
+                LOGIN_401_1:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_1\",\"message\":\"인\
+                    증 헤더나 쿠키에 JWT 토큰이 존재 하지 않습니다.\",\"data\":null}"
+                LOGIN_401_2:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_2\",\"message\":\"토\
+                    큰 타입이 올바르지 않습니다.\",\"data\":null}"
+                LOGIN_401_3:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_3\",\"message\":\"유\
+                    효하지 않은 토큰입니다.\",\"data\":null}"
+                LOGIN_401_4:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_4\",\"message\":\"만\
+                    료된 토큰입니다.\",\"data\":null}"
+                LOGIN_401_5:
+                  value: "{\"status\":401,\"code\":\"LOGIN_401_5\",\"message\":\"블\
+                    랙리스트 처리된 토큰 입니다.\",\"data\":null}"
+  /api/v1/users/me/followings/rankings:
+    get:
+      tags:
+      - 🏆 랭킹 조회
+      summary: 사용자의 팔로잉 유저들 중에서 우리 서비스 회원들 랭킹 조회 API
+      description: "사용자가 깃허브 상에서 팔로우 중인 유저들 중, 우리 서비스의 회원인 사용자의 랭킹 리스트를 반환합니다."
+      operationId: 팔로잉 랭킹 조회 성공
+      parameters:
+      - name: period
+        in: query
+        description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "조회할 페이지 (default: 0)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: "페이징 사이즈 (default: 20)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-rankings1445726081"
+              examples:
+                팔로잉 랭킹 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
+                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
+      security:
+      - bearerAuthJWT: []
+  /api/v1/users/me/followings/{detectType}:
+    get:
+      tags:
+      - 👥 깃허브 팔로우 관계 탐지
+      summary: 깃허브 팔로우 관계 탐지 API
+      description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
+        우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\
+        \ 한 번이라도 진행한 적이 있어야 사용 가능합니다."
+      operationId: GITHUB_400_1맞팔탐지기 조회 성공
+      parameters:
+      - name: detectType
+        in: path
+        description: mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only
+          (상대만 나를 팔로우)
+        required: true
+        schema:
+          type: string
+      - name: lastGithubUserId
+        in: query
+        description: "이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지\
+          \ 조회로 간주 합니다. "
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        description: "조회할 사용자 수 (default: 30)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: forceSync
+        in: query
+        description: "강제 동기화 여부 (default: false)"
+        required: false
+        schema:
+          type: boolean
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType492296449"
+              examples:
+                GITHUB_400_1:
+                  value: "{\"status\":400,\"code\":\"GITHUB_400_1\",\"message\":\"\
+                    Github API 호출이 제한 되었습니다. 1시간 뒤 다시 시도해 주세요\",\"data\":null}"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType1462305756"
+              examples:
+                맞팔탐지기 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"userList\":[{\"githubUserId\":12345,\"username\":\"username1\"\
+                    ,\"profileImgUrl\":\"http://profile.image/1\"},{\"githubUserId\"\
+                    :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
+                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5분\
+                    \ 전\"}}"
+      security:
+      - bearerAuthJWT: []
+components:
+  schemas:
+    api-v1-auth-reissue-token-1735855461:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 에러 코드
+        message:
+          type: string
+          description: 📝 에러 메시지
+        status:
+          type: number
+          description: ❌ 응답 상태 코드
+    api-v1-users-me-followings-detectType1462305756:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - lastSyncAt
+          - totalUserCount
+          - userList
+          type: object
+          properties:
+            totalUserCount:
+              type: number
+              description: 📊 총 사용자 수
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - githubUserId
+                - profileImgUrl
+                - username
+                type: object
+                properties:
+                  profileImgUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  githubUserId:
+                    type: number
+                    description: 사용자 Github ID
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            lastSyncAt:
+              type: string
+              description: ⏱ 마지막 싱크 시간 (x 분전)
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-users-me-followings-detectType492296449:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 도메인 에러 코드
+        message:
+          type: string
+          description: 📝 상세 에러 메시지
+        status:
+          type: number
+          description: ❌ 응답 상태 코드 (HTTP status)
+    api-v1-unfollow-targetUserId-767089392:
+      required:
+      - code
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-rankings1445726081:
+      required:
+      - code
+      - data
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - userList
+          type: object
+          properties:
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - profileImageUrl
+                - rankPoint
+                - username
+                type: object
+                properties:
+                  profileImageUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  rankPoint:
+                    type: number
+                    description: 사용자 랭킹 점수
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+          description: 응답 데이터
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-auth-reissue-token1995903112:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - accessToken
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: 🔑 새로 발급된 Access Token
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+  securitySchemes:
+    bearerAuthJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

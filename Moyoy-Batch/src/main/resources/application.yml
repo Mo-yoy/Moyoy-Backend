@@ -1,0 +1,16 @@
+spring:
+  config:
+    import:
+      - data.yml
+      - infra.yml
+
+logging:
+  config: classpath:logback/logback-${spring.profiles.active:local}.xml
+
+discord:
+  webhook-uri:
+    id: ${RANKING_DISCORD_WEBHOOK_ID}
+    token : ${RANKING_DISCORD_WEBHOOK_TOKEN}
+
+server:
+  port: 9000
