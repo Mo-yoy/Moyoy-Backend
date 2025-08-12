@@ -3,10 +3,10 @@
 <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
-<appender name="DAILY_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-test/moyoy-test-daily.log</file>
+<appender name="DAILY_BATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>/home/ubuntu/moyoy-batch-test/logs/batch.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-test/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-batch-test/batch.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>1</maxHistory>
     </rollingPolicy>
     <encoder>
@@ -16,9 +16,9 @@
 
 <!-- JSON 로그 (CloudWatch 업로드용) -->
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-test/moyoy-test-json.log</file>
+    <file>/home/ubuntu/moyoy-batch-test/logs/json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-test/moyoy-test.json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-batch-test/json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>3</maxHistory>
     </rollingPolicy>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -39,16 +39,6 @@
             <threadName>
                 <fieldName>threadName</fieldName>
             </threadName>
-            <mdc>
-                <includeMdcKeyName>userId</includeMdcKeyName>
-                <includeMdcKeyName>ip</includeMdcKeyName>
-                <includeMdcKeyName>userAgent</includeMdcKeyName>
-                <includeMdcKeyName>requestUri</includeMdcKeyName>
-                <includeMdcKeyName>httpMethod</includeMdcKeyName>
-                <includeMdcKeyName>queryString</includeMdcKeyName>
-                <includeMdcKeyName>referer</includeMdcKeyName>
-                <includeMdcKeyName>host</includeMdcKeyName>
-            </mdc>
             <message>
                 <fieldName>message</fieldName>
             </message>
@@ -60,7 +50,7 @@
 </appender>
 
 <root level="INFO">
-    <appender-ref ref="DAILY_LOG"/>
+    <appender-ref ref="DAILY_BATCH_LOG"/>
     <appender-ref ref="JSON_CLOUD_WATCH_LOG"/>
 </root>
 </configuration>

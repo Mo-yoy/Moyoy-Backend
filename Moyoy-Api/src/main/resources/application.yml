@@ -2,7 +2,6 @@ spring:
   config:
     import:
       - data.yml
-      - logging.yml
       - infra.yml
 
   security:
@@ -27,3 +26,6 @@ spring:
 
   login:
     default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
+
+logging:
+  config: classpath:logback/logback-${spring.profiles.active:local}.xml

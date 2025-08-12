@@ -5,6 +5,8 @@ spring:
       - logging.yml
       - infra.yml
 
+logging:
+  config: classpath:logback/logback-${spring.profiles.active:local}.xml
 
 discord:
   webhook-uri:

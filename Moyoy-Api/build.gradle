@@ -6,8 +6,6 @@ dependencies {
 
     implementation project(':Moyoy-Core')
     implementation project(':Moyoy-Common')
-    implementation project(':Moyoy-Support:logging')
-    implementation project(':Moyoy-Support:monitoring')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
