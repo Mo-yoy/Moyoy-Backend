@@ -62,5 +62,5 @@ jobs:
             mv /home/ubuntu/moyoy-test/batch/tobe/moyoy-batch.jar /home/ubuntu/moyoy-test/batch/current/moyoy-batch.jar
             cd /home/ubuntu/moyoy-test/batch/current
             sudo fuser -k -n tcp 9000 || true    
-            nohup java -jar moyoy-batch.jar --spring.profiles.active=test --server.port=9000 &
+            nohup java -jar moyoy-batch.jar --spring.profiles.active=test > ./output.log 2>&1 &
             rm -rf /home/ubuntu/moyoy-test/batch/tobe
