@@ -27,7 +27,7 @@ public class RankingBatchScheduler {
 	private final RankingBatchHistoryRepository jobHistoryRepository;
 	private final RankingBatchNotifier rankingBatchNotifier;
 
-	@Scheduled(cron = "30 28 14 * * *")
+	@Scheduled(cron = "00 45 20 * * *")
 	public void dailyRankingBatch() {
 
 		LocalDateTime now = LocalDateTime.now();
