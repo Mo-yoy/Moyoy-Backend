@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: moyoy-test
-
   config:
     import:
       - data.yml
