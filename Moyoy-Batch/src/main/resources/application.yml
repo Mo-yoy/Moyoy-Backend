@@ -3,11 +3,7 @@ spring:
     import:
       - data.yml
       - logging.yml
-
-discord:
-  webhook-uri:
-    id: ${RANKING_DISCORD_WEBHOOK_ID}
-    token: ${RANKING_DISCORD_WEBHOOK_TOKEN}
+      - infra.yml
 
 server:
   port: 9000

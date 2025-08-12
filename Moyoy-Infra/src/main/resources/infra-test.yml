@@ -1,0 +1,9 @@
+spring:
+  config:
+    import:
+      - "aws-parameterstore:/config/moyoy-test"
+
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2

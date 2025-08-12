@@ -3,26 +3,4 @@ spring:
     import:
       - data.yml
       - logging.yml
-
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            redirect-uri: ${REDIRECT_URI}
-            scope: ${SCOPE}
-
-  jwt:
-    secret: ${JWT_SECRET_KEY}
-
-  cors:
-    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
-
-  cookie:
-    samesite: ${COOKIE_SAME_SITE:Strict}
-    domain: ${COOKIE_DOMAIN:localhost}
-
-  login:
-    default-uri: ${DEFAULT_URI:http://localhost:5173/menu}
+      - infra.yml
