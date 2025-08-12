@@ -3,6 +3,7 @@ dependencies {
 
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-parameter-store:3.4.0"
 
     /// TODO :  Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
     implementation 'org.springframework.boot:spring-boot-starter-web'

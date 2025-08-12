@@ -1,6 +1,1 @@
-#server:
-#  tomcat:
-#    max-connections: 20000
-#    threads:
-#      max: 600
-#      min-spare: 100
+# 배포전
