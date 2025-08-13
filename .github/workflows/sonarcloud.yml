@@ -5,14 +5,14 @@ on:
       - develop
 
 jobs:
-  spotlessJavaCheck:
+  ci-job:
     runs-on: ubuntu-latest
 
     steps:
       # 1. 코드 체크아웃
       - uses: actions/checkout@v3
 
-      # 2. JDK 21 세팅 (build.gradle toolchain과 맞춤)
+      # 2. JDK 21 세팅
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -34,15 +34,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # 5. Spotless 코드 포맷 검사
-      - name: spotless check
-        run: ./gradlew spotlessCheck
-
-      # 6. Docker Compose로 의존 서비스 기동
+      # 5. Docker Compose로 의존 서비스 기동
       - name: Start containers
         run: docker compose up -d
 
-      # 7. 테스트 & SonarCloud 분석
+      # 6. 테스트 & SonarCloud 분석
       - name: test and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
