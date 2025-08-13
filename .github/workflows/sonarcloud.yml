@@ -34,11 +34,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # 5. Docker Compose로 의존 서비스 기동
-      - name: Start containers
-        run: docker compose up -d
-
-      # 6. 테스트 & SonarCloud 분석
+      # 5. 테스트 & SonarCloud 분석
       - name: test and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
