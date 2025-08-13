@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.core.db_access.domain.ranking.UserCountAndLastId;
 import com.moyoy.core.db_access.domain.user.UserRepository;
-
+import com.moyoy.core.domain.follow.implement.GithubUserReader;
 
 import lombok.RequiredArgsConstructor;
 
