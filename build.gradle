@@ -44,27 +44,50 @@ subprojects {
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
+    sonarqube {
+        properties {
+            property 'sonar.java.binaries', "${buildDir}/classes"
+            property 'sonar.coverage.jacoco.xmlReportPaths', "${buildDir}/reports/jacoco.xml"
+        }
+    }
+
     tasks.named('test') {
         useJUnitPlatform()
-        finalizedBy(tasks.named('jacocoTestReport'))
+        finalizedBy jacocoTestReport
     }
 
     jacoco {
         toolVersion = "0.8.12"
     }
 
-    tasks.named('jacocoTestReport', JacocoReport) {
-        dependsOn(tasks.named('test'))
+    jacocoTestReport {
+        dependsOn test
         reports {
-            xml.required = true
-            html.required = true
+            html.required.set(true)
+            csv.required.set(true)
+            xml.required.set(true)
+            xml.outputLocation.set(file("${buildDir}/reports/jacoco.xml"))
         }
-
-        onlyIf {
-            file("$buildDir/jacoco/test.exec").exists() ||
-                    file("$buildDir/jacoco/test.exec.gz").exists()
+        def Qdomains = []
+        for (qPattern in '**/QA'..'**/QZ') {
+            Qdomains.add(qPattern + '*')
+        }
+        afterEvaluate {
+            classDirectories.setFrom(
+                    files(classDirectories.files.collect {
+                        fileTree(dir: it, excludes: [
+                                "**/*Application*",
+                                "**/*Config*",
+                                "**/*Dto*",
+                                "**/*Request*",
+                                "**/*Response*",
+                                "**/*Exception*"
+                        ] + Qdomains)
+                    })
+            )
         }
     }
+
 
     tasks.named('build') {
         dependsOn 'spotlessApply'
@@ -89,9 +112,13 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectKey", "Mo-yoy_Moyo-Backend"
         property "sonar.organization", "mo-yoy"
-        property "sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.sources", "."
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.coverage.exclusions", "**/*Application*.java, **/*Config.java, **/Q*.java"
+
+        property 'sonar.sources', 'src'
+        property 'sonar.language', 'java'
+        property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.test.inclusions', '**/*Test.java'
+        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
+                '**/*Dto*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
+
     }
 }
