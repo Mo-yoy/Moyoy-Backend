@@ -2,6 +2,7 @@ package com.moyoy.core.domain.follow.implement;
 
 import org.springframework.stereotype.Component;
 
+import com.moyoy.core.domain.user.implement.GithubUserProfileMeta;
 import com.moyoy.infra.github.feign.GithubProfileClient;
 import com.moyoy.infra.github.dto.GithubProfileResponse;
 
@@ -19,4 +20,12 @@ public class GithubUserReader {
 
 		return GithubFollowUser.from(githubProfileResponse);
 	}
+
+	public GithubUserProfileMeta fetchGithubUserProfile(Integer githubUserId, String accessToken) {
+
+		GithubProfileResponse githubProfileResponse = githubProfileClient.fetchUserProfile(accessToken, githubUserId);
+
+		return GithubUserProfileMeta.from(githubProfileResponse);
+	}
+
 }
