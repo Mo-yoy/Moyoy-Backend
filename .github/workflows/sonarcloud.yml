@@ -41,7 +41,8 @@ jobs:
         with:
           arguments: >
             clean build jacocoTestReport sonarqube
-            ${{ github.event_name == 'push' && '-Dsonar.qualitygate.wait=true' || '' }}
+            -Dsonar.qualitygate.wait=true
+            --info --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
