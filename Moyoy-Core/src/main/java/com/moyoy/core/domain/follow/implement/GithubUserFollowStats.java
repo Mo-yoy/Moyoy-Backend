@@ -2,7 +2,7 @@ package com.moyoy.core.domain.follow.implement;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import com.moyoy.infra.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 
 public record GithubUserFollowStats(
 	int maxFollowingPageSize,

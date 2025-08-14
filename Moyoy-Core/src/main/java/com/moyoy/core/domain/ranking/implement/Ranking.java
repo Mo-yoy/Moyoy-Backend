@@ -1,6 +1,6 @@
 package com.moyoy.core.domain.ranking.implement;
 
-import com.moyoy.core.common.entity.BaseTimeEntity;
+import com.moyoy.infra.database.support.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

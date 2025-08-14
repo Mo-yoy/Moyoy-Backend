@@ -1,7 +1,7 @@
 package com.moyoy.core.domain.follow.implement;
 
-import com.moyoy.infra.github.dto.GithubFollowUserResponse;
-import com.moyoy.infra.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.dto.GithubFollowUserResponse;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 
 public record GithubFollowUser(
 	Integer id,

@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.core.db_access.domain.ranking.UserCountAndLastId;
-import com.moyoy.core.db_access.domain.user.UserRepository;
-import com.moyoy.core.domain.follow.implement.GithubUserReader;
+import com.moyoy.common.exception.user.UserNotFoundException;
+import com.moyoy.infra.database.domain.ranking.UserCountAndLastId;
+import com.moyoy.infra.database.domain.user.UserEntity;
+import com.moyoy.infra.database.domain.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,19 +19,27 @@ public class UserReader {
 	private final UserRepository userRepository;
 
 	public Optional<User> findById(Long userId) {
-		return userRepository.findById(userId);
+
+		UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		return Optional.ofNullable(UserMapper.toModel(userEntity));
 	}
 
 	public Optional<User> findByGithubUserId(Integer githubUserId) {
-		return userRepository.findByGithubUserId(githubUserId);
+
+		UserEntity userEntity = userRepository.findByGithubUserId(githubUserId).orElseThrow(UserNotFoundException::new);
+		return Optional.ofNullable(UserMapper.toModel(userEntity));
 	}
 
-	public List<User> findAllById(List<Long> userIds) {
-		return userRepository.findByIdIn(userIds);
+	public List<User> findAllById(List<Long> ids) {
+		return userRepository.findByIdIn(ids).stream()
+			.map(UserMapper::toModel)
+			.toList();
 	}
 
 	public List<User> findAll(Long lastUserId, int size) {
-		return userRepository.findAll(lastUserId, size);
+		return userRepository.findAll(lastUserId, size).stream()
+			.map(UserMapper::toModel)
+			.toList();
 	}
 
 	public UserStats getUserStats() {
@@ -38,5 +47,4 @@ public class UserReader {
 		UserCountAndLastId userCountAndLastId = userRepository.fetchUserCountAndLastId();
 		return new UserStats(userCountAndLastId.userCount(), userCountAndLastId.lastUserId());
 	}
-
 }

@@ -1,6 +1,6 @@
 package com.moyoy.batch.domain.ranking.component.dto;
 
-import com.moyoy.infra.github.dto.GithubRepoContributorsResponse;
+import com.moyoy.infra.client.github.dto.GithubRepoContributorsResponse;
 
 public record GithubContributorDetails(
 	String username) {

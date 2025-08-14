@@ -3,8 +3,8 @@ package com.moyoy.core.domain.follow.implement;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.core.domain.user.implement.GithubUserProfileMeta;
-import com.moyoy.infra.github.feign.GithubProfileClient;
-import com.moyoy.infra.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.feign.GithubProfileClient;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 
 import lombok.RequiredArgsConstructor;
 

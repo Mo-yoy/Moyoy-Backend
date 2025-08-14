@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.moyoy.core.db_access.domain.ranking.RankingRepository;
+import com.moyoy.infra.database.domain.ranking.RankingRepository;
 
 import lombok.RequiredArgsConstructor;
 

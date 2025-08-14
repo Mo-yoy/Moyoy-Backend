@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.core.db_access.domain.ranking.RankingRepository;
+import com.moyoy.infra.database.domain.ranking.RankingRepository;
 
 import lombok.RequiredArgsConstructor;
 

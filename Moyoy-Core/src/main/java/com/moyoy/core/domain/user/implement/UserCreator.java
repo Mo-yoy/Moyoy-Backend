@@ -2,9 +2,10 @@ package com.moyoy.core.domain.user.implement;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.core.db_access.domain.ranking.RankingRepository;
+import com.moyoy.infra.database.domain.ranking.RankingRepository;
 import com.moyoy.core.domain.ranking.implement.Ranking;
-import com.moyoy.core.db_access.domain.user.UserRepository;
+import com.moyoy.infra.database.domain.user.UserEntity;
+import com.moyoy.infra.database.domain.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,9 @@ public class UserCreator {
 
 		User user = User.from(githubUserProfileDto);
 		user.initRole();
-		userRepository.save(user);
+
+		UserEntity userEntity = UserMapper.toEntity(user);
+		userRepository.save(userEntity);
 
 		Ranking ranking = Ranking.initRanking(user.getId());
 		rankingRepository.save(ranking);

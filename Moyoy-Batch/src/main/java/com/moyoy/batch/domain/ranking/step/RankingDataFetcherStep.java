@@ -15,8 +15,8 @@ import com.moyoy.batch.domain.ranking.component.processor.CommitStatCalculator;
 import com.moyoy.batch.domain.ranking.component.processor.GithubRepoClassifier;
 import com.moyoy.batch.domain.ranking.component.reader.RankingBatchReader;
 import com.moyoy.batch.domain.ranking.step.dto.RankingDataResult;
-import com.moyoy.core.common.helper.GithubApiLimitChecker;
-import com.moyoy.core.common.helper.GithubOAuthTokenReader;
+import com.moyoy.core.domain.github.GithubApiLimitChecker;
+import com.moyoy.core.domain.github.GithubOAuthTokenReader;
 import com.moyoy.core.domain.user.implement.User;
 
 @Component

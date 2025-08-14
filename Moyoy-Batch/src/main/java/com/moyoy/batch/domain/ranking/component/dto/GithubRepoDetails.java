@@ -1,6 +1,6 @@
 package com.moyoy.batch.domain.ranking.component.dto;
 
-import com.moyoy.infra.github.dto.GithubRepoResponse;
+import com.moyoy.infra.client.github.dto.GithubRepoResponse;
 
 public record GithubRepoDetails(
 	String repoName,
