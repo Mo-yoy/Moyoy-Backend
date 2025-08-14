@@ -1,4 +1,4 @@
-package com.moyoy.core.domain.ranking.implement;
+package com.moyoy.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

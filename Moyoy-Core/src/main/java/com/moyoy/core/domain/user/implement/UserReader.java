@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.common.exception.user.UserNotFoundException;
-import com.moyoy.infra.database.domain.ranking.UserCountAndLastId;
+import com.moyoy.infra.database.domain.user.UserCountAndLastId;
 import com.moyoy.infra.database.domain.user.UserEntity;
 import com.moyoy.infra.database.domain.user.UserRepository;
 

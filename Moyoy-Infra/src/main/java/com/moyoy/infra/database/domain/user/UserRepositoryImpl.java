@@ -5,9 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-
-import com.moyoy.infra.database.domain.ranking.UserCountAndLastId;
-
 import lombok.RequiredArgsConstructor;
 
 @Repository

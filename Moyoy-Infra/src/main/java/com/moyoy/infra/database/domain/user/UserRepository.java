@@ -3,8 +3,6 @@ package com.moyoy.infra.database.domain.user;
 import java.util.List;
 import java.util.Optional;
 
-import com.moyoy.infra.database.domain.ranking.UserCountAndLastId;
-
 public interface UserRepository {
 
 	Optional<UserEntity> findById(Long userId);

@@ -1,5 +1,6 @@
 package com.moyoy.infra.database.domain.user;
 
+import com.moyoy.common.enums.Role;
 import com.moyoy.infra.database.support.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;

@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.domain.user;
+package com.moyoy.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

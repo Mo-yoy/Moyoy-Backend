@@ -1,6 +1,0 @@
-# 배포전
-spring:
-
-  jpa:
-    hibernate:
-      ddl-auto: none

@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.domain.ranking;
+package com.moyoy.infra.database.domain.user;
 
 import com.querydsl.core.annotations.QueryProjection;
 

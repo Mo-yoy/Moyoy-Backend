@@ -6,20 +6,15 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-import com.moyoy.core.domain.ranking.implement.Ranking;
-import com.moyoy.core.domain.ranking.implement.RankingPeriod;
+import com.moyoy.common.enums.RankingPeriod;
 
 public interface RankingRepository {
 
-	void save(Ranking ranking);
+	void save(RankingEntity ranking);
+	void saveAll(List<RankingEntity> rankings);
+	Optional<RankingEntity> findById(Long userId);
 
-	Optional<Ranking> findById(Long userId);
+	Slice<RankingEntity> findAll(RankingPeriod duration, Pageable pageable);
 
-	void update(Ranking ranking);
-
-	Slice<Ranking> findAll(RankingPeriod duration, Pageable pageable);
-
-	Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
-
-	void updateAll(List<Ranking> updatedRankings);
+	Slice<RankingEntity> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable);
 }

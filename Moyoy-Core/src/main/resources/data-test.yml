@@ -1,5 +1,0 @@
-# AWS parameter store 사용
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: create

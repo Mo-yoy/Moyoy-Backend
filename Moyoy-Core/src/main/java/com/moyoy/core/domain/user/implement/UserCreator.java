@@ -2,6 +2,8 @@ package com.moyoy.core.domain.user.implement;
 
 import org.springframework.stereotype.Component;
 
+import com.moyoy.core.domain.ranking.implement.RankingMapper;
+import com.moyoy.infra.database.domain.ranking.RankingEntity;
 import com.moyoy.infra.database.domain.ranking.RankingRepository;
 import com.moyoy.core.domain.ranking.implement.Ranking;
 import com.moyoy.infra.database.domain.user.UserEntity;
@@ -25,7 +27,8 @@ public class UserCreator {
 		userRepository.save(userEntity);
 
 		Ranking ranking = Ranking.initRanking(user.getId());
-		rankingRepository.save(ranking);
+		RankingEntity rankingEntity = RankingMapper.toEntity(ranking);
+		rankingRepository.save(rankingEntity);
 
 		return user;
 	}

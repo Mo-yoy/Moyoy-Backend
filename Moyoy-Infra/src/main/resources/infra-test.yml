@@ -2,6 +2,12 @@ spring:
   config:
     import:
       - "aws-parameterstore:/config/moyoy-test/"
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+
 aws:
   parameterstore:
     enabled: true

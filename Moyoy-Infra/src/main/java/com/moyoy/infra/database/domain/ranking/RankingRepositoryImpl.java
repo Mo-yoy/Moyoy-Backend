@@ -7,8 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.core.domain.ranking.implement.Ranking;
-import com.moyoy.core.domain.ranking.implement.RankingPeriod;
+import com.moyoy.common.enums.RankingPeriod;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,33 +19,28 @@ public class RankingRepositoryImpl implements RankingRepository {
 	private final RankingQueryDslRepository rankingQueryDslRepository;
 
 	@Override
-	public void update(Ranking ranking) {
+	public void save(RankingEntity ranking) {
 		rankingJpaRepository.save(ranking);
 	}
 
 	@Override
-	public Optional<Ranking> findById(Long userId) {
+	public void saveAll(List<RankingEntity> updatedRankings) {
+		rankingJpaRepository.saveAll(updatedRankings);
+	}
+
+	@Override
+	public Optional<RankingEntity> findById(Long userId) {
 		return rankingJpaRepository.findById(userId);
 	}
 
 	@Override
-	public Slice<Ranking> findAll(RankingPeriod duration, Pageable pageable) {
+	public Slice<RankingEntity> findAll(RankingPeriod duration, Pageable pageable) {
 
 		return rankingQueryDslRepository.findAll(duration, pageable);
 	}
 
 	@Override
-	public void save(Ranking ranking) {
-		rankingJpaRepository.save(ranking);
-	}
-
-	@Override
-	public Slice<Ranking> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+	public Slice<RankingEntity> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
 		return rankingQueryDslRepository.findByUserIds(followingUserIds, rankingPeriod, pageable);
-	}
-
-	@Override
-	public void updateAll(List<Ranking> updatedRankings) {
-		rankingJpaRepository.saveAll(updatedRankings);
 	}
 }

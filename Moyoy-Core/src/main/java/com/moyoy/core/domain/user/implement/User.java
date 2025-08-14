@@ -1,14 +1,13 @@
 package com.moyoy.core.domain.user.implement;
 
-import com.moyoy.infra.database.domain.user.Role;
-import com.moyoy.infra.database.support.entity.BaseTimeEntity;
+import com.moyoy.common.enums.Role;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class User extends BaseTimeEntity {
+public class User{
 
 	private Long id;
 	private Integer githubUserId;
