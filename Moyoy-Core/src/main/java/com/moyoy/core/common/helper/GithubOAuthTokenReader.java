@@ -4,7 +4,8 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.database.OAuthTokenJDBCRepository;
+import com.moyoy.infra.database.jdbc.OAuthTokenJDBCRepository;
+import com.moyoy.infra.database.jdbc.OAuthTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,10 +25,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GithubOAuthTokenReader {
 
-	private final OAuthTokenJDBCRepository oAuthTokenJDBCRepository;
+	private final OAuthTokenRepository oAuthTokenRepository;
 
 	public String getGithubAccessToken(Long userId) {
 
-		return oAuthTokenJDBCRepository.findToken(GITHUB_REGISTRATION_ID, userId.toString()).orElseThrow();
+		return oAuthTokenRepository.findToken(GITHUB_REGISTRATION_ID, userId.toString()).orElseThrow();
 	}
 }

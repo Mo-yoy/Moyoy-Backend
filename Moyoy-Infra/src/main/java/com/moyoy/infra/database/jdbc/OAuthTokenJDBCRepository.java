@@ -1,4 +1,4 @@
-package com.moyoy.infra.database;
+package com.moyoy.infra.database.jdbc;
 
 import static java.nio.charset.StandardCharsets.*;
 
@@ -11,10 +11,11 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class OAuthTokenJDBCRepository {
+public class OAuthTokenJDBCRepository implements OAuthTokenRepository{
 
 	private final JdbcTemplate jdbc;
 
+	@Override
 	public Optional<String> findToken(String registrationId, String principalName) {
 		return jdbc.query(
 			"""
