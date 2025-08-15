@@ -18,8 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
-import com.moyoy.api.auth.jwt.filter.JwtAuthenticationFilter;
-import com.moyoy.api.auth.jwt.filter.JwtExceptionHandleFilter;
+import com.moyoy.api.auth.jwt.support.filter.JwtAuthenticationFilter;
+import com.moyoy.api.auth.jwt.support.filter.JwtExceptionHandleFilter;
 import com.moyoy.api.auth.security.component.CustomAccessDeniedHandler;
 import com.moyoy.api.auth.security.component.CustomAuthenticationEntryPoint;
 import com.moyoy.api.auth.security.component.CustomOAuth2UserService;

@@ -33,7 +33,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
-import com.moyoy.api.auth.jwt.business.JwtReissueService;
+import com.moyoy.api.auth.jwt.application.JwtReissueService;
 import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.common.util.CookieUtils;

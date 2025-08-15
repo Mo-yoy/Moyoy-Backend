@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.config;
+package com.moyoy.api.auth.jwt.support.config;
 
 import java.nio.charset.StandardCharsets;
 
@@ -16,7 +16,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.util.Base64URL;
 
-import com.moyoy.api.auth.jwt.implement.JwtProvider;
+import com.moyoy.api.auth.jwt.support.JwtProvider;
 
 @Configuration
 public class JwtConfig {

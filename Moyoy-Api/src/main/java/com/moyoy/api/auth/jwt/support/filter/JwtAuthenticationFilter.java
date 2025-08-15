@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.filter;
+package com.moyoy.api.auth.jwt.support.filter;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
@@ -26,7 +26,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.moyoy.api.auth.security.dto.GithubOAuth2User;
+import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 import com.moyoy.domain.support.error.auth.JwtTokenExpiredException;
 import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.moyoy.domain.support.error.auth.JwtTokenTypeMismatchException;

@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.moyoy.api.auth.security.dto.GithubOAuth2User;
+import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

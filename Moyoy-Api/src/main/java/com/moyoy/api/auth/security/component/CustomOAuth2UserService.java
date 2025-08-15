@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.api.auth.github.GithubUserSynchronizer;
-import com.moyoy.api.auth.security.dto.GithubOAuth2User;
+import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 import com.moyoy.api.user.application.request.GithubUserProfileDto;
 import com.moyoy.domain.user.User;
 

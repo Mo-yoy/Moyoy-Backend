@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.filter;
+package com.moyoy.api.auth.jwt.support.filter;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

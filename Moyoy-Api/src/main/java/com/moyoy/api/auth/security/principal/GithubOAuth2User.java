@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.security.dto;
+package com.moyoy.api.auth.security.principal;
 
 import java.util.Collection;
 import java.util.HashMap;
