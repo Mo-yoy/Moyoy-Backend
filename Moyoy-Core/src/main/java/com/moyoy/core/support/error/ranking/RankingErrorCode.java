@@ -1,4 +1,4 @@
-package com.moyoy.common.exception.ranking;
+package com.moyoy.core.support.error.ranking;
 
 
 import static com.moyoy.common.constant.MoyoConstants.*;
@@ -6,8 +6,8 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import com.moyoy.common.exception.BaseErrorCode;
-import com.moyoy.common.exception.ErrorReason;
+import com.moyoy.core.support.error.BaseErrorCode;
+import com.moyoy.core.support.error.ErrorReason;
 
 @Getter
 @AllArgsConstructor

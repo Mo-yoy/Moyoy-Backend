@@ -1,4 +1,4 @@
-package com.moyoy.common.exception;
+package com.moyoy.core.support.error;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

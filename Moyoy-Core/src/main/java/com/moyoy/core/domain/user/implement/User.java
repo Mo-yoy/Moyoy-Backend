@@ -1,7 +1,5 @@
 package com.moyoy.core.domain.user.implement;
 
-import com.moyoy.common.enums.Role;
-
 import lombok.Builder;
 import lombok.Getter;
 

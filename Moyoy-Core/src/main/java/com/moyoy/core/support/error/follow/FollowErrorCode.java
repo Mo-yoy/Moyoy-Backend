@@ -1,12 +1,10 @@
-package com.moyoy.common.exception.follow;
-
-import static com.moyoy.common.constant.MoyoConstants.*;
+package com.moyoy.core.support.error.follow;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import com.moyoy.common.exception.BaseErrorCode;
-import com.moyoy.common.exception.ErrorReason;
+import com.moyoy.core.support.error.BaseErrorCode;
+import com.moyoy.core.support.error.ErrorReason;
 
 @Getter
 @AllArgsConstructor

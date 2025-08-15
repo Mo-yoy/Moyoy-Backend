@@ -2,7 +2,7 @@ package com.moyoy.core.domain.user.business;
 
 import org.springframework.stereotype.Service;
 
-import com.moyoy.common.exception.user.UserNotFoundException;
+import com.moyoy.core.support.error.user.UserNotFoundException;
 import com.moyoy.core.domain.github.GithubOAuthTokenReader;
 import com.moyoy.core.domain.follow.implement.GithubUserReader;
 import com.moyoy.core.domain.ranking.implement.Ranking;

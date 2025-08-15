@@ -1,6 +1,6 @@
 package com.moyoy.core.domain.ranking.business;
 
-import com.moyoy.common.enums.RankingPeriod;
+import com.moyoy.core.domain.ranking.implement.RankingPeriod;
 
 public record RankingSearch(
 	RankingPeriod period,

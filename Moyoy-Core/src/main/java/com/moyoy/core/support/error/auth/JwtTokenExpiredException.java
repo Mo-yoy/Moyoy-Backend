@@ -1,6 +1,6 @@
-package com.moyoy.common.exception.auth;
+package com.moyoy.core.support.error.auth;
 
-import com.moyoy.common.exception.MoyoException;
+import com.moyoy.core.support.error.MoyoException;
 
 public class JwtTokenExpiredException extends MoyoException {
 	public JwtTokenExpiredException() {

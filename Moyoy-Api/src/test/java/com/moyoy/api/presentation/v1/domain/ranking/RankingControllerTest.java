@@ -33,7 +33,7 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyoy.api.presentation.ApiControllerAdvice;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
-import com.moyoy.common.enums.Role;
+import com.moyoy.core.domain.user.implement.Role;
 import com.moyoy.core.domain.ranking.business.RankingSearchResult;
 import com.moyoy.core.domain.ranking.business.RankingService;
 import com.moyoy.core.domain.ranking.implement.Ranking;

@@ -7,9 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.common.exception.ranking.RankingNotFoundException;
+import com.moyoy.core.support.error.ranking.RankingNotFoundException;
 import com.moyoy.infra.database.domain.ranking.RankingEntity;
-import com.moyoy.common.enums.RankingPeriod;
 import com.moyoy.infra.database.domain.ranking.RankingRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class RankingReader {
 	public RankingSlice getAllRanking(RankingPeriod rankingPeriod, int page, int size) {
 
 		Pageable pageable = PageRequest.of(page, size);
-		Slice<RankingEntity> rankingSlice = rankingRepository.findAll(rankingPeriod, pageable);
+		Slice<RankingEntity> rankingSlice = rankingRepository.findAll(rankingPeriod.getValue(), pageable);
 
 		List<Ranking> rankingList = rankingSlice.getContent()
 			.stream()
@@ -43,7 +42,7 @@ public class RankingReader {
 	public RankingSlice getFollowingsRanking(List<Integer> followingUserIds, RankingPeriod rankingPeriod, int page, int size) {
 
 		Pageable pageable = PageRequest.of(page, size);
-		Slice<RankingEntity> rankingSlice = rankingRepository.findFollowingUserRankings(followingUserIds, rankingPeriod, pageable);
+		Slice<RankingEntity> rankingSlice = rankingRepository.findFollowingUserRankings(followingUserIds, rankingPeriod.getValue(), pageable);
 
 		List<Ranking> rankingList = rankingSlice.getContent()
 			.stream()

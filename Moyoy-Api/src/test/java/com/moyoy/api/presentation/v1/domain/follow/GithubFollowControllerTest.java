@@ -4,7 +4,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.moyoy.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
-import static com.moyoy.common.exception.github.GithubErrorCode.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -45,8 +44,8 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyoy.api.presentation.ApiControllerAdvice;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
-import com.moyoy.common.exception.MoyoException;
-import com.moyoy.common.exception.github.GithubErrorCode;
+import com.moyoy.core.support.error.MoyoException;
+import com.moyoy.core.support.error.github.GithubErrorCode;
 import com.moyoy.core.domain.follow.business.GithubFollowDetectionResult;
 import com.moyoy.core.domain.follow.business.GithubFollowService;
 import com.moyoy.core.domain.follow.implement.GithubFollowUser;

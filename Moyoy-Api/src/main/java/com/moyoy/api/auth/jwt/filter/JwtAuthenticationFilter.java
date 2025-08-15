@@ -27,9 +27,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import com.moyoy.api.auth.security.dto.GithubOAuth2User;
-import com.moyoy.common.exception.auth.JwtTokenExpiredException;
-import com.moyoy.common.exception.auth.JwtTokenInvalidException;
-import com.moyoy.common.exception.auth.JwtTokenTypeMismatchException;
+import com.moyoy.core.support.error.auth.JwtTokenExpiredException;
+import com.moyoy.core.support.error.auth.JwtTokenInvalidException;
+import com.moyoy.core.support.error.auth.JwtTokenTypeMismatchException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

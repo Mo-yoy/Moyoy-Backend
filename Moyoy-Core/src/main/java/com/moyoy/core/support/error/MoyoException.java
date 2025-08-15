@@ -1,4 +1,4 @@
-package com.moyoy.common.exception;
+package com.moyoy.core.support.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -22,9 +22,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.moyoy.api.support.response.ApiResponse;
-import com.moyoy.common.exception.CommonErrorCode;
-import com.moyoy.common.exception.ErrorReason;
-import com.moyoy.common.exception.MoyoException;
+import com.moyoy.core.support.error.CommonErrorCode;
+import com.moyoy.core.support.error.ErrorReason;
+import com.moyoy.core.support.error.MoyoException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

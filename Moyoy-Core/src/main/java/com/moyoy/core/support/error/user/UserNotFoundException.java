@@ -1,6 +1,6 @@
-package com.moyoy.common.exception.user;
+package com.moyoy.core.support.error.user;
 
-import com.moyoy.common.exception.MoyoException;
+import com.moyoy.core.support.error.MoyoException;
 
 public class UserNotFoundException extends MoyoException {
 	public UserNotFoundException() {

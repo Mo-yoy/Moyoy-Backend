@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.common.exception.user.UserNotFoundException;
+import com.moyoy.core.support.error.user.UserNotFoundException;
 import com.moyoy.core.domain.github.GithubOAuthTokenReader;
 import com.moyoy.infra.client.github.feign.GithubFollowClient;
 import com.moyoy.core.domain.user.implement.User;

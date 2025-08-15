@@ -3,7 +3,7 @@ package com.moyoy.core.domain.ranking.business;
 import java.util.List;
 
 import com.moyoy.core.domain.ranking.implement.Ranking;
-import com.moyoy.common.enums.RankingPeriod;
+import com.moyoy.core.domain.ranking.implement.RankingPeriod;
 import com.moyoy.core.domain.ranking.implement.RankingWithUser;
 
 public record RankingSearchResult(

@@ -1,6 +1,5 @@
 package com.moyoy.infra.database.domain.user;
 
-import com.moyoy.common.enums.Role;
 import com.moyoy.infra.database.support.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;
@@ -37,11 +36,10 @@ public class UserEntity extends BaseTimeEntity {
 	private String profileImgUrl;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	private String role;
 
 	@Builder
-	public UserEntity(Long id, Integer githubUserId, String username, String profileImgUrl, Role role) {
+	public UserEntity(Long id, Integer githubUserId, String username, String profileImgUrl, String role) {
 		this.id = id;
 		this.githubUserId = githubUserId;
 		this.username = username;

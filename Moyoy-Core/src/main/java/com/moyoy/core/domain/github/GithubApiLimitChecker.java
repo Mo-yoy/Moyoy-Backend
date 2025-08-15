@@ -2,7 +2,7 @@ package com.moyoy.core.domain.github;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import com.moyoy.common.exception.github.GithubApiLimitExceedException;
+import com.moyoy.core.support.error.github.GithubApiLimitExceedException;
 import com.moyoy.infra.client.github.feign.GithubProfileClient;
 import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 import lombok.RequiredArgsConstructor;

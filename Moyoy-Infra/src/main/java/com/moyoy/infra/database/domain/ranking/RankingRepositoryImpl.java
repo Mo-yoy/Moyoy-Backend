@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.common.enums.RankingPeriod;
-
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -34,13 +32,13 @@ public class RankingRepositoryImpl implements RankingRepository {
 	}
 
 	@Override
-	public Slice<RankingEntity> findAll(RankingPeriod duration, Pageable pageable) {
+	public Slice<RankingEntity> findAll(String duration, Pageable pageable) {
 
 		return rankingQueryDslRepository.findAll(duration, pageable);
 	}
 
 	@Override
-	public Slice<RankingEntity> findFollowingUserRankings(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+	public Slice<RankingEntity> findFollowingUserRankings(List<Integer> followingUserIds, String rankingPeriod, Pageable pageable) {
 		return rankingQueryDslRepository.findByUserIds(followingUserIds, rankingPeriod, pageable);
 	}
 }

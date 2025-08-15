@@ -7,7 +7,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import com.moyoy.common.enums.RankingPeriod;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,12 +22,13 @@ public class RankingQueryDslRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	public Slice<RankingEntity> findAll(RankingPeriod duration, Pageable pageable) {
+	public Slice<RankingEntity> findAll(String duration, Pageable pageable) {
 
 		OrderSpecifier<?> orderCondition = switch (duration) {
-			case RankingPeriod.WEEK -> rankingEntity.weeklyPoint.desc();
-			case RankingPeriod.MONTH -> rankingEntity.monthlyPoint.desc();
-			case RankingPeriod.YEAR -> rankingEntity.yearlyPoint.desc();
+			case "week" -> rankingEntity.weeklyPoint.desc();
+			case "month" -> rankingEntity.monthlyPoint.desc();
+			case "year" -> rankingEntity.yearlyPoint.desc();
+			default -> throw new IllegalStateException("Unexpected value: " + duration);
 		};
 
 		List<RankingEntity> rankings = jpaQueryFactory
@@ -45,12 +45,13 @@ public class RankingQueryDslRepository {
 		return new SliceImpl<>(rankings, pageable, hasNext);
 	}
 
-	public Slice<RankingEntity> findByUserIds(List<Integer> followingUserIds, RankingPeriod rankingPeriod, Pageable pageable) {
+	public Slice<RankingEntity> findByUserIds(List<Integer> followingUserIds, String rankingPeriod, Pageable pageable) {
 
 		OrderSpecifier<?> orderCondition = switch (rankingPeriod) {
-			case RankingPeriod.WEEK -> rankingEntity.weeklyPoint.desc();
-			case RankingPeriod.MONTH -> rankingEntity.monthlyPoint.desc();
-			case RankingPeriod.YEAR -> rankingEntity.yearlyPoint.desc();
+			case "week" -> rankingEntity.weeklyPoint.desc();
+			case "month" -> rankingEntity.monthlyPoint.desc();
+			case "year" -> rankingEntity.yearlyPoint.desc();
+			default -> throw new IllegalStateException("Unexpected value: " + rankingPeriod);
 		};
 
 		List<RankingEntity> rankings = jpaQueryFactory

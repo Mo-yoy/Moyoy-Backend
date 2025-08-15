@@ -3,9 +3,9 @@ name: Moyo Batch Test Server Deploy
 on:
   push:
     branches:
-      - develop
+#      - develop
     path:
-      - Moyoy-Batch/**
+#      - Moyoy-Batch/**
 
 jobs:
   deploy:

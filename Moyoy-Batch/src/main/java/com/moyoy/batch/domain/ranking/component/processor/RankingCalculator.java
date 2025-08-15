@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.batch.domain.ranking.step.dto.RankingCalculatorParameters;
 import com.moyoy.batch.domain.ranking.step.dto.RankingCalculatorResult;
-import com.moyoy.common.enums.RankingPeriod;
+import com.moyoy.core.domain.ranking.implement.RankingPeriod;
 
 @Component
 public class RankingCalculator {

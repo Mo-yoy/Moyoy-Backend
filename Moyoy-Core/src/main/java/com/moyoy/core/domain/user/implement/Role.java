@@ -1,4 +1,4 @@
-package com.moyoy.common.enums;
+package com.moyoy.core.domain.user.implement;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
