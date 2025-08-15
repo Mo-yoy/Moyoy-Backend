@@ -166,48 +166,6 @@ paths:
                     followingCount\":20}}"
       security:
       - bearerAuthJWT: []
-  /api/v1/users/me/followings/rankings:
-    get:
-      tags:
-      - 🏆 랭킹 조회
-      summary: 사용자의 팔로잉 유저들 중에서 우리 서비스 회원들 랭킹 조회 API
-      description: "사용자가 깃허브 상에서 팔로우 중인 유저들 중, 우리 서비스의 회원인 사용자의 랭킹 리스트를 반환합니다."
-      operationId: 팔로잉 랭킹 조회 성공
-      parameters:
-      - name: period
-        in: query
-        description: 조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: "조회할 페이지 (default: 0)"
-        required: false
-        schema:
-          type: integer
-          format: int32
-      - name: size
-        in: query
-        description: "페이징 사이즈 (default: 20)"
-        required: false
-        schema:
-          type: integer
-          format: int32
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/api-v1-rankings1445726081"
-              examples:
-                팔로잉 랭킹 조회 성공:
-                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
-                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
-      security:
-      - bearerAuthJWT: []
   /api/v1/users/me/followings/{detectType}:
     get:
       tags:

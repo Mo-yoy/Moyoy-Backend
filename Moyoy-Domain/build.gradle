@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':Moyoy-Common') // 상수 같은거만 갖다씀
+
+    /// TODO : Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+}
+
+jar.enabled = true

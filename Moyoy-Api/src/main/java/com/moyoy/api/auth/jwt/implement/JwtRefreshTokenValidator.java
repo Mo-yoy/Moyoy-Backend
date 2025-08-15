@@ -16,11 +16,11 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
-import com.moyoy.core.support.error.auth.JwtTokenBlockedException;
-import com.moyoy.core.support.error.auth.JwtTokenExpiredException;
-import com.moyoy.core.support.error.auth.JwtTokenInvalidException;
-import com.moyoy.core.support.error.auth.JwtTokenNotExistException;
-import com.moyoy.core.support.error.auth.JwtTokenTypeMismatchException;
+import com.moyoy.domain.support.error.auth.JwtTokenBlockedException;
+import com.moyoy.domain.support.error.auth.JwtTokenExpiredException;
+import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
+import com.moyoy.domain.support.error.auth.JwtTokenNotExistException;
+import com.moyoy.domain.support.error.auth.JwtTokenTypeMismatchException;
 
 @Slf4j
 @Component

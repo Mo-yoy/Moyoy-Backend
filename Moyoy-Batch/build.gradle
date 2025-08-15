@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':Moyoy-Core')
+    implementation project(':Moyoy-Domain')
     implementation project(':Moyoy-Common')
     implementation project(':Moyoy-Infra')
 

@@ -27,8 +27,8 @@ import com.moyoy.api.auth.security.component.HttpCookieOAuth2AuthorizationReques
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationFailureHandler;
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationSuccessHandler;
 import com.moyoy.api.auth.security.component.RdbOAuth2AuthorizedClientService;
-import com.moyoy.api.support.filter.RequestInfoMDCFilter;
-import com.moyoy.api.support.filter.UserContextMDCFilter;
+import com.moyoy.api.common.filter.RequestInfoMDCFilter;
+import com.moyoy.api.common.filter.UserContextMDCFilter;
 
 @EnableWebSecurity
 @Configuration

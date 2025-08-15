@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.moyoy.core.domain.user.implement.User;
+import com.moyoy.domain.user.User;
 
 /**
  *  Spring Security 에서 요구하는 OAuth2User

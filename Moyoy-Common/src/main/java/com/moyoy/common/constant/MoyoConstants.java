@@ -2,7 +2,7 @@ package com.moyoy.common.constant;
 
 public class MoyoConstants {
 
-	// HTTP Header 
+	// HTTP Header
 	public static final String SET_COOKIE = "Set-Cookie";
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String JSON = "application/json";

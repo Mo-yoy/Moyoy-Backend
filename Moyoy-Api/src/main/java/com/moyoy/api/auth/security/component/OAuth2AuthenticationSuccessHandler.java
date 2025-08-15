@@ -20,7 +20,7 @@ import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
 import com.moyoy.api.auth.jwt.implement.JwtProvider;
 import com.moyoy.api.auth.jwt.implement.JwtRefreshToken;
 import com.moyoy.api.auth.jwt.implement.JwtUserInfo;
-import com.moyoy.api.support.util.CookieUtils;
+import com.moyoy.api.common.util.CookieUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

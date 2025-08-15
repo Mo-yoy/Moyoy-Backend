@@ -1,7 +1,6 @@
 spring:
   config:
     import:
-      - data.yml
       - infra.yml
 
   security:

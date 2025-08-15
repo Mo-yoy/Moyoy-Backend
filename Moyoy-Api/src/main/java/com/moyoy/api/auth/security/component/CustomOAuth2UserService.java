@@ -9,10 +9,10 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
+import com.moyoy.api.auth.github.GithubUserSynchronizer;
 import com.moyoy.api.auth.security.dto.GithubOAuth2User;
-import com.moyoy.core.domain.user.implement.GithubUserProfileDto;
-import com.moyoy.core.domain.user.implement.GithubUserSynchronizer;
-import com.moyoy.core.domain.user.implement.User;
+import com.moyoy.api.user.application.request.GithubUserProfileDto;
+import com.moyoy.domain.user.User;
 
 /**
  *  우리 서비스의 성격이 깃허브와 깃허브 사용자 간의 미들웨어 느낌의 서비스인 점,
