@@ -10,14 +10,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.common.exception.user.UserNotFoundException;
-import com.moyoy.core.common.helper.GithubApiLimitChecker;
-import com.moyoy.core.common.helper.GithubOAuthTokenReader;
+import com.moyoy.core.support.error.user.UserNotFoundException;
+import com.moyoy.core.domain.github.GithubApiLimitChecker;
+import com.moyoy.core.domain.github.GithubOAuthTokenReader;
 import com.moyoy.core.domain.user.implement.UserReader;
-import com.moyoy.infra.github.feign.GithubFollowClient;
-import com.moyoy.infra.github.feign.GithubProfileClient;
-import com.moyoy.infra.github.dto.GithubFollowUserResponse;
-import com.moyoy.infra.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.feign.GithubFollowClient;
+import com.moyoy.infra.client.github.feign.GithubProfileClient;
+import com.moyoy.infra.client.github.dto.GithubFollowUserResponse;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

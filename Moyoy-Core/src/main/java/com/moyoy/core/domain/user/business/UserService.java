@@ -2,7 +2,8 @@ package com.moyoy.core.domain.user.business;
 
 import org.springframework.stereotype.Service;
 
-import com.moyoy.core.common.helper.GithubOAuthTokenReader;
+import com.moyoy.core.support.error.user.UserNotFoundException;
+import com.moyoy.core.domain.github.GithubOAuthTokenReader;
 import com.moyoy.core.domain.follow.implement.GithubUserReader;
 import com.moyoy.core.domain.ranking.implement.Ranking;
 import com.moyoy.core.domain.ranking.implement.RankingReader;
@@ -23,7 +24,7 @@ public class UserService {
 
 	public UserProfileResult getUserProfile(Long userId) {
 
-		User user = userReader.findById(userId).orElseThrow();
+		User user = userReader.findById(userId).orElseThrow(UserNotFoundException::new);
 		Ranking ranking = rankingReader.getRanking(user.getId());
 
 		Integer githubUserId = user.getGithubUserId();

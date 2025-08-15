@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.moyoy.api.support.response.ApiResponse;
-import com.moyoy.common.exception.BaseErrorCode;
+import com.moyoy.core.support.error.BaseErrorCode;
 
 import jakarta.servlet.http.HttpServletResponse;
 

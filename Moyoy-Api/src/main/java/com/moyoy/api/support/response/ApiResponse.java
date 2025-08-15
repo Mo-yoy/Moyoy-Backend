@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.moyoy.common.exception.ErrorReason;
+import com.moyoy.core.support.error.ErrorReason;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

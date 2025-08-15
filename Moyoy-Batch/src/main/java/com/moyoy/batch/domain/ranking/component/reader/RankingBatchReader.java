@@ -18,11 +18,11 @@ import com.moyoy.batch.domain.ranking.component.dto.GithubContributorDetails;
 import com.moyoy.batch.domain.ranking.component.dto.GithubRepoDetails;
 import com.moyoy.batch.domain.ranking.component.dto.RepoContributorStats;
 import com.moyoy.batch.domain.ranking.component.dto.UserRankingProfile;
-import com.moyoy.infra.github.dto.GithubProfileResponse;
-import com.moyoy.infra.github.dto.GithubRepoContributorsResponse;
-import com.moyoy.infra.github.dto.GithubRepoResponse;
-import com.moyoy.infra.github.feign.GithubProfileClient;
-import com.moyoy.infra.github.feign.GithubRepoClient;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.dto.GithubRepoContributorsResponse;
+import com.moyoy.infra.client.github.dto.GithubRepoResponse;
+import com.moyoy.infra.client.github.feign.GithubProfileClient;
+import com.moyoy.infra.client.github.feign.GithubRepoClient;
 
 @Slf4j
 @Component

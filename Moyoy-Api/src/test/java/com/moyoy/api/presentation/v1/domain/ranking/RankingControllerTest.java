@@ -33,11 +33,11 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyoy.api.presentation.ApiControllerAdvice;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
+import com.moyoy.core.domain.user.implement.Role;
 import com.moyoy.core.domain.ranking.business.RankingSearchResult;
 import com.moyoy.core.domain.ranking.business.RankingService;
 import com.moyoy.core.domain.ranking.implement.Ranking;
 import com.moyoy.core.domain.ranking.implement.RankingWithUser;
-import com.moyoy.core.domain.user.implement.Role;
 import com.moyoy.core.domain.user.implement.User;
 
 @WebMvcTest(value = RankingController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
@@ -57,8 +57,23 @@ class RankingControllerTest {
 	void 모든_개인유저_랭킹조회() throws Exception {
 
 		// given
-		User mockUser = new User(1L, 1, "테스터1", "img/url", Role.USER);
-		Ranking mockRanking = new Ranking(1L, 1L, "A", 100, 1000, 10000);
+		User mockUser = User.builder()
+			.id(1L)
+			.githubUserId(1)
+			.username("테스터1")
+			.profileImgUrl("img/url")
+			.role(Role.USER)
+			.build();
+
+		Ranking mockRanking = Ranking.builder()
+			.id(1L)
+			.userId(1L)
+			.grade("A")
+			.weeklyPoint(100)
+			.monthlyPoint(1000)
+			.yearlyPoint(10000)
+			.build();
+
 		RankingWithUser mockRankingWithUser = new RankingWithUser(mockRanking, mockUser);
 
 		List<RankingWithUser> rankingWithUsers = List.of(mockRankingWithUser);
@@ -104,8 +119,22 @@ class RankingControllerTest {
 	void 사용자의_팔로잉_유저중_우리_서비스회원_랭킹조회() throws Exception {
 
 		// given
-		User mockUser = new User(1L, 1, "테스터1", "img/url", Role.USER);
-		Ranking mockRanking = new Ranking(1L, 1L, "A", 100, 1000, 10000);
+		User mockUser = User.builder()
+			.id(1L)
+			.githubUserId(1)
+			.username("테스터1")
+			.profileImgUrl("img/url")
+			.role(Role.USER)
+			.build();
+
+		Ranking mockRanking = Ranking.builder()
+			.id(1L)
+			.userId(1L)
+			.grade("A")
+			.weeklyPoint(100)
+			.monthlyPoint(1000)
+			.yearlyPoint(10000)
+			.build();
 		RankingWithUser mockRankingWithUser = new RankingWithUser(mockRanking, mockUser);
 
 		List<RankingWithUser> rankingWithUsers = List.of(mockRankingWithUser);

@@ -1,6 +1,6 @@
 package com.moyoy.core.domain.user.implement;
 
-import com.moyoy.infra.github.dto.GithubProfileResponse;
+import com.moyoy.infra.client.github.dto.GithubProfileResponse;
 
 public record GithubUserProfileMeta(
 	int followerCount,
