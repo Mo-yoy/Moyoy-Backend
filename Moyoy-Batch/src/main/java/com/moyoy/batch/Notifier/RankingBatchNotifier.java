@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.batch.jobRepository.ranking.RankingBatchHistory;
 import com.moyoy.batch.jobRepository.ranking.RankingBatchHistoryRepository;
-import com.moyoy.infra.client.discord.dto.DiscordWebhookRequest;
-import com.moyoy.infra.client.discord.feign.DiscordWebhookClient;
+import com.moyoy.infra.external.discord.dto.DiscordWebhookRequest;
+import com.moyoy.infra.external.discord.feign.DiscordWebhookClient;
 
 @Component
 public class RankingBatchNotifier {

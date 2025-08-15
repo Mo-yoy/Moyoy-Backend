@@ -3,7 +3,7 @@ package com.moyoy.batch.domain.ranking.component.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import com.moyoy.core.domain.ranking.implement.Ranking;
+import com.moyoy.domain.ranking.Ranking;
 
 @Getter
 @AllArgsConstructor

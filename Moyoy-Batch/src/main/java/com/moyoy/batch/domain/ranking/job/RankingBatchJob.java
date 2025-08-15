@@ -20,9 +20,9 @@ import com.moyoy.batch.domain.ranking.step.dto.RankingDataResult;
 import com.moyoy.batch.domain.ranking.step.dto.RankingUpdateParameters;
 import com.moyoy.batch.jobRepository.ranking.RankingBatchHistory;
 import com.moyoy.batch.jobRepository.ranking.RankingBatchHistoryUpdater;
-import com.moyoy.core.domain.user.implement.User;
-import com.moyoy.core.domain.user.implement.UserReader;
-import com.moyoy.core.domain.user.implement.UserStats;
+import com.moyoy.domain.user.User;
+import com.moyoy.domain.user.UserFetchSummary;
+import com.moyoy.domain.user.UserRepository;
 
 @Slf4j
 @Component
@@ -31,7 +31,7 @@ public class RankingBatchJob {
 
 	public static final int RANKING_BATCH_CHUNK_SIZE = 5;
 
-	private final UserReader userReader;
+	private final UserRepository userRepository;
 	private final RankingDataFetcherStep rankingDataFetcherStep;
 	private final RankingCalculatorStep rankingCalculatorStep;
 	private final RankingUpdatePreparationStep rankingUpdatePreparationStep;
@@ -40,15 +40,15 @@ public class RankingBatchJob {
 
 	public void execute(RankingBatchHistory rankingBatchHistory) {
 
-		UserStats userStats = userReader.getUserStats();
+		UserFetchSummary userFetchSummary = userRepository.fetchUserCountAndLastId();
 
 		List<RankingBatchStats> rankingBatchStatsList = new ArrayList<>();
 		long userIdCursor = 0;
-		long lastUserId = userStats.lastUserId();
+		long lastUserId = userFetchSummary.lastUserId();
 
 		while (userIdCursor < lastUserId) {
 
-			List<User> userList = userReader.findAll(userIdCursor, RANKING_BATCH_CHUNK_SIZE);
+			List<User> userList = userRepository.findAll(userIdCursor, RANKING_BATCH_CHUNK_SIZE);
 			List<RankingBatchResult> rankingBatchResultList = new ArrayList<>();
 
 			for (User user : userList) {

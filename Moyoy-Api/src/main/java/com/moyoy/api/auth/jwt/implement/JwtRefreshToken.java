@@ -52,5 +52,4 @@ public class JwtRefreshToken {
 			.expiresAt(expiresAt)
 			.build();
 	}
-
 }

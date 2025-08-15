@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import com.moyoy.api.auth.security.dto.GithubOAuth2User;
+import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 
 public class WithMockMoyoyUserSecurityContextFactory implements WithSecurityContextFactory<WithMockMoyoyUser> {
 	@Override

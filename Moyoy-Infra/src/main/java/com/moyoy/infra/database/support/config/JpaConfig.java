@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableJpaAuditing
-// @EntityScan(basePackages = "com.moyoy.domain")
+// @EntityScan(basePackages = "com.moyoy.infra")
 // @EnableJpaRepositories(basePackages = "com.moyoy.infra")
 @EntityScan("com.moyoy") ///  TODO : API 모듈 리프레시 토큰 임시 RDB 저장, 배치 애플리케이션 Spring Batch 도입전 Meta 데이터 직접 관리로 임시 설정
 @EnableJpaRepositories("com.moyoy")

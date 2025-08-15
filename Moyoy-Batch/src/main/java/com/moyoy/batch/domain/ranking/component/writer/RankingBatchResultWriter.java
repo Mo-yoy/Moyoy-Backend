@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 import com.moyoy.batch.domain.ranking.component.dto.RankingBatchResult;
 import com.moyoy.batch.domain.ranking.component.dto.RankingBatchStats;
 import com.moyoy.batch.jobRepository.ranking.RankingBatchDetail;
-import com.moyoy.core.domain.ranking.implement.Ranking;
-import com.moyoy.core.domain.ranking.implement.RankingUpdater;
+import com.moyoy.domain.ranking.Ranking;
+import com.moyoy.domain.ranking.RankingRepository;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RankingBatchResultWriter {
 
-	private final RankingUpdater rankingUpdater;
+	private final RankingRepository rankingRepository;
 	private final RankingBatchDetailUpdater rankingBatchDetailUpdater;
 
 	public RankingBatchStats collectResultsAndUpdate(Long batchId, List<RankingBatchResult> rankingBatchResultList) {
@@ -43,7 +43,7 @@ public class RankingBatchResultWriter {
 		}
 
 		///  TODO 작동 방식이 벌크성 연산이 아님
-		rankingUpdater.updateAll(rankings);
+		rankingRepository.saveAll(rankings);
 		rankingBatchDetailUpdater.updateAll(rankingBatchDetails);
 
 		return RankingBatchStats.of(successCount, failCount);

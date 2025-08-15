@@ -3,9 +3,9 @@ name: Moyo API Test Server Deploy # 8080
 on:
   push:
     branches:
-#      - develop
+      - develop
     path:
-#      - Moyoy-Api/**
+      - Moyoy-Api/**
 
 jobs:
   deploy:

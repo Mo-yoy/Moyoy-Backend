@@ -4,12 +4,6 @@ spring:
       parameterstore:
         enable: false
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
   jpa:
     hibernate:
       ddl-auto: update

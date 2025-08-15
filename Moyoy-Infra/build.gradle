@@ -1,16 +1,25 @@
 dependencies {
     implementation project(':Moyoy-Common')
+    implementation project(':Moyoy-Domain')
 
-    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    // AWS
     implementation "io.awspring.cloud:spring-cloud-aws-starter-parameter-store:3.4.0"
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Feign
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // JPA & QueryDSL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     /// TODO :  Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
     implementation 'org.springframework.boot:spring-boot-starter-web'
