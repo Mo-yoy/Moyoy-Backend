@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
+import com.moyoy.api.auth.jwt.legacy.JwtRefreshTokenRepository;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
-import com.moyoy.api.auth.jwt.implement.JwtRefreshToken;
+import com.moyoy.api.auth.jwt.legacy.JwtRefreshToken;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
 import com.moyoy.api.common.util.CookieUtils;
 

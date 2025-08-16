@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.implement;
+package com.moyoy.api.auth.jwt.application;
 
 public record ReissuedTokens(
 	String accessToken,

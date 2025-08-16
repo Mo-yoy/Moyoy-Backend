@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
 import com.moyoy.api.auth.jwt.support.JwtRefreshTokenValidator;
-import com.moyoy.api.auth.jwt.implement.JwtRefreshWhiteListUpdater;
+import com.moyoy.api.auth.jwt.legacy.JwtRefreshWhiteListUpdater;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
-import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
 
 @Service
 @RequiredArgsConstructor

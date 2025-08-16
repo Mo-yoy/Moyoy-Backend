@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.implement;
+package com.moyoy.api.auth.jwt.legacy;
 
 import java.text.ParseException;
 
@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nimbusds.jwt.SignedJWT;
-
-import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
 
 @Component
 @RequiredArgsConstructor

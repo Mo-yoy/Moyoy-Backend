@@ -1,6 +1,4 @@
-package com.moyoy.api.auth.jwt.data_access;
-
-import com.moyoy.api.auth.jwt.implement.JwtRefreshToken;
+package com.moyoy.api.auth.jwt.legacy;
 
 public interface JwtRefreshTokenRepository {
 
