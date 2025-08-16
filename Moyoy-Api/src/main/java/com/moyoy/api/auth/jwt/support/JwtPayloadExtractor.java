@@ -3,6 +3,9 @@ package com.moyoy.api.auth.jwt.support;
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -16,9 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtPayloadExtractor {
 
-	public JwtUserInfo extractUserInfo(String jwtRefreshToken) {
+	private JwtDecoder jwtDecoder;
 
-		JWTClaimsSet jwtClaimsSet = extractClaimsFromToken(jwtRefreshToken);
+	public JwtUserInfo extractUserInfo(String rawToken) {
+
+		SignedJWT signedJWT = jwtDecoder.decode(rawToken);
+		JWTClaimsSet jwtClaimsSet = jwtDecoder.extractClaims(signedJWT);
 
 		Long userId = (Long)jwtClaimsSet.getClaim(JWT_CLAIM_USER_ID);
 		String authority = jwtClaimsSet.getClaim(JWT_CLAIM_AUTHORITY).toString();
@@ -26,14 +32,14 @@ public class JwtPayloadExtractor {
 		return new JwtUserInfo(userId, authority);
 	}
 
-	private JWTClaimsSet extractClaimsFromToken(String jwtRefreshToken) {
+	public LocalDateTime extractExpirationTime(String rawToken) {
 
-		try {
-			SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
-			return signedJWT.getJWTClaimsSet();
-		} catch (ParseException e) {
-			log.warn("JWT 토큰 파싱 중 실패");
-			throw new JwtTokenInvalidException();
-		}
+		SignedJWT signedJWT = jwtDecoder.decode(rawToken);
+		JWTClaimsSet jwtClaimsSet = jwtDecoder.extractClaims(signedJWT);
+
+		return jwtClaimsSet.getExpirationTime()
+			.toInstant()
+			.atZone(ZoneId.systemDefault())
+			.toLocalDateTime();
 	}
 }

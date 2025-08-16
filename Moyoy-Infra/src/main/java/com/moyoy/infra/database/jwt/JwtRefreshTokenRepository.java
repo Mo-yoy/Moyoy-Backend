@@ -6,7 +6,5 @@ public interface JwtRefreshTokenRepository {
 
 	boolean existByTokenHash(String tokenHash);
 
-	void deleteByTokenValue(String tokenValue);
-
-	void flush();
+	void deleteByTokenHash(String tokenHash);
 }

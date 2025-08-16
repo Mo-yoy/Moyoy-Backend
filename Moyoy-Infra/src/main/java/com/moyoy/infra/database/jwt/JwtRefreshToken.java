@@ -45,4 +45,13 @@ public class JwtRefreshToken {
 	 * - 배치/스케줄러에서 만료된 토큰을 주기적으로 삭제
 	 */
 	private LocalDateTime expiresAt;
+
+	public static JwtRefreshToken of(Long userId, String tokenHash, LocalDateTime expiresAt) {
+
+		return JwtRefreshToken.builder()
+			.userId(userId)
+			.tokenHash(tokenHash)
+			.expiresAt(expiresAt)
+			.build();
+	}
 }

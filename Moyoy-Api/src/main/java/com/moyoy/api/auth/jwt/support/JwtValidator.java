@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtValidator {
 
+	private final JwtDecoder jwtDecoder;
 	private final MACVerifier macVerifier;
 	private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
@@ -49,10 +50,10 @@ public class JwtValidator {
 	private void validateJwt(JwtType tokenType, String rawToken){
 		validateTokenNotExist(rawToken);
 
-		SignedJWT signedJWT = parseToken(rawToken);
+		SignedJWT signedJWT = jwtDecoder.decode(rawToken);
 		validateTokenSignature(signedJWT);
 
-		JWTClaimsSet claimsSet = getJwtClaimsSet(signedJWT);
+		JWTClaimsSet claimsSet = jwtDecoder.extractClaims(signedJWT);
 		validateTokenType(tokenType, claimsSet);
 		validateTokenExpiration(claimsSet);
 	}
@@ -60,29 +61,6 @@ public class JwtValidator {
 	private void validateTokenNotExist(String rawToken) {
 
 		if (rawToken.isBlank()) throw new JwtTokenNotExistException();
-	}
-
-	private JWTClaimsSet getJwtClaimsSet(SignedJWT signedJWT) {
-		JWTClaimsSet claimsSet;
-
-		try {
-			claimsSet = signedJWT.getJWTClaimsSet();
-		} catch (ParseException e) {
-			log.warn("JWT Claim Parsing 에러");
-			throw new JwtTokenInvalidException();
-		}
-
-		return claimsSet;
-	}
-
-	private SignedJWT parseToken(String rawToken) {
-
-		try {
-			return SignedJWT.parse(rawToken);
-		} catch (ParseException e) {
-			log.warn("SignedJWT Parsing 에러");
-			throw new JwtTokenInvalidException();
-		}
 	}
 
 	private void validateTokenSignature(SignedJWT signedJWT) {
