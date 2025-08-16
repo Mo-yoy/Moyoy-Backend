@@ -4,7 +4,7 @@ public interface JwtRefreshTokenRepository {
 
 	void save(JwtRefreshToken jwtRefreshToken);
 
-	boolean existByTokenValue(String tokenValue);
+	boolean existByTokenHash(String tokenHash);
 
 	void deleteByTokenValue(String tokenValue);
 

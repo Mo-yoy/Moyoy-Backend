@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
-import com.moyoy.api.auth.jwt.support.JwtRefreshTokenValidator;
 import com.moyoy.api.auth.jwt.legacy.JwtRefreshWhiteListUpdater;
+import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
+import com.moyoy.api.auth.jwt.support.JwtValidator;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +19,12 @@ public class JwtReissueService {
 
 	private final JwtProvider jwtProvider;
 	private final JwtPayloadExtractor jwtPayloadExtractor;
-	private final JwtRefreshTokenValidator jwtRefreshTokenValidator;
+	private final JwtValidator jwtValidator;
 	private final JwtRefreshWhiteListUpdater jwtRefreshWhiteListUpdater;
 
 	public ReissuedTokens reIssueJwt(String jwtRefreshToken) {
 
-		jwtRefreshTokenValidator.validate(jwtRefreshToken);
+		jwtValidator.validate(JwtType.REFRESH, jwtRefreshToken);
 
 		JwtUserInfo jwtUserInfo = jwtPayloadExtractor.extractUserInfo(jwtRefreshToken);
 
