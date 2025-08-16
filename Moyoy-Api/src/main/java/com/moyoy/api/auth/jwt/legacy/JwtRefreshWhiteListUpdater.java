@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.moyoy.infra.database.jwt.JwtRefreshTokenRepository;
+import com.moyoy.infra.database.jwt.JwtRefreshToken;
 import com.nimbusds.jwt.SignedJWT;
 
 @Component

@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
+import com.moyoy.infra.database.jwt.JwtRefreshTokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.moyoy.api.auth.jwt.legacy.JwtRefreshTokenRepository;
 import com.moyoy.domain.support.error.auth.JwtTokenBlockedException;
 import com.moyoy.domain.support.error.auth.JwtTokenExpiredException;
 import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;

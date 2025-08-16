@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.legacy;
+package com.moyoy.infra.database.jwt;
 
 public interface JwtRefreshTokenRepository {
 
