@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.moyoy.api.auth.jwt.support.JwtType;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -62,7 +63,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 		try {
 
 			log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", jwtUserInfo.userId());
-			jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_REFRESH_TYPE);
+			jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JwtType.REFRESH);
 			response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
 
 			SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);

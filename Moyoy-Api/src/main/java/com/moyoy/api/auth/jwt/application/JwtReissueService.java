@@ -22,16 +22,16 @@ public class JwtReissueService {
 	private final JwtValidator jwtValidator;
 	private final JwtRefreshWhiteListUpdater jwtRefreshWhiteListUpdater;
 
-	public ReissuedTokens reIssueJwt(String jwtRefreshToken) {
+	public ReissuedTokens reIssueJwt(String jwtRefreshRawToken) {
 
-		jwtValidator.validate(JwtType.REFRESH, jwtRefreshToken);
+		jwtValidator.validate(JwtType.REFRESH, jwtRefreshRawToken);
 
-		JwtUserInfo jwtUserInfo = jwtPayloadExtractor.extractUserInfo(jwtRefreshToken);
+		JwtUserInfo jwtUserInfo = jwtPayloadExtractor.extractUserInfo(jwtRefreshRawToken);
 
-		String reIssueRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_REFRESH_TYPE);
-		String reIssueAccessToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_ACCESS_TYPE);
+		String reIssueRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JwtType.REFRESH);
+		String reIssueAccessToken = jwtProvider.createJwtToken(jwtUserInfo, JwtType.ACCESS);
 
-		jwtRefreshWhiteListUpdater.updateRefreshTokenWhiteList(jwtRefreshToken, reIssueRefreshToken);
+		jwtRefreshWhiteListUpdater.updateRefreshTokenWhiteList(jwtRefreshRawToken, reIssueRefreshToken);
 
 		return new ReissuedTokens(reIssueAccessToken, reIssueRefreshToken);
 	}

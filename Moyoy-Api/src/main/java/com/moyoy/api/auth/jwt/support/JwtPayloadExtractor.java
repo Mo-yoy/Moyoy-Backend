@@ -6,9 +6,13 @@ import java.text.ParseException;
 
 import org.springframework.stereotype.Component;
 
+import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JwtPayloadExtractor {
 
@@ -28,7 +32,8 @@ public class JwtPayloadExtractor {
 			SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
 			return signedJWT.getJWTClaimsSet();
 		} catch (ParseException e) {
-			throw new RuntimeException("JWT 토큰 파싱 중 실패", e);
+			log.warn("JWT 토큰 파싱 중 실패");
+			throw new JwtTokenInvalidException();
 		}
 	}
 }

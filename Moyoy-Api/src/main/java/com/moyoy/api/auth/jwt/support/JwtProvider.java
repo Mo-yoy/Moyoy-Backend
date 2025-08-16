@@ -7,6 +7,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -22,7 +23,7 @@ public class JwtProvider {
 	private final MACSigner macSigner;
 	private final JWK jwk;
 
-	public String createJwtToken(JwtUserInfo jwtUserInfo, String tokenType) {
+	public String createJwtToken(JwtUserInfo jwtUserInfo, JwtType tokenType) {
 
 		Date expirationTime = getTokenExpiration(tokenType);
 
@@ -35,11 +36,11 @@ public class JwtProvider {
 		return signedJWT.serialize();
 	}
 
-	private Date getTokenExpiration(String tokenType) {
+	private Date getTokenExpiration(JwtType tokenType) {
+
 		long expirationMillis = switch (tokenType) {
-			case JWT_REFRESH_TYPE -> JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
-			case JWT_ACCESS_TYPE -> JWT_ACCESS_TOKEN_EXPIRATION_MINUTE;
-			default -> throw new IllegalArgumentException("JWT Provider | 유효하지 않은 토큰 타입 : " + tokenType);
+			case JwtType.REFRESH -> JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
+			case JwtType.ACCESS -> JWT_ACCESS_TOKEN_EXPIRATION_MINUTE;
 		};
 
 		return new Date(System.currentTimeMillis() + expirationMillis);
@@ -52,11 +53,11 @@ public class JwtProvider {
 			.build();
 	}
 
-	private JWTClaimsSet createJWSPayload(JwtUserInfo jwtUserInfo, String tokenType, Date expirationTime) {
+	private JWTClaimsSet createJWSPayload(JwtUserInfo jwtUserInfo, JwtType tokenType, Date expirationTime) {
 
 		return new JWTClaimsSet.Builder()
 			.claim(JWT_CLAIM_USER_ID, jwtUserInfo.userId())
-			.claim(JWT_CLAIM_TOKEN_TYPE, tokenType)
+			.claim(JWT_CLAIM_TOKEN_TYPE, tokenType.getValue())
 			.claim(JWT_CLAIM_AUTHORITY, jwtUserInfo.authority())
 			.expirationTime(expirationTime)
 			.build();
@@ -67,8 +68,8 @@ public class JwtProvider {
 		try {
 			signedJWT.sign(macSigner);
 		} catch (JOSEException e) {
-			log.error("JWT Refresh Token 사인 중, 알 수 없는 이유로 사인에 실패했습니다.", e);
-			throw new RuntimeException("Jwt 발급 중 에러 발생");
+			log.warn("JWT 서명중 에러 발생");
+			throw new JwtTokenInvalidException();
 		}
 	}
 
