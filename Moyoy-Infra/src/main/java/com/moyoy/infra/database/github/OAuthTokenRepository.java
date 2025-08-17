@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface OAuthTokenRepository {
 
-	Optional<String> findToken(String registrationId, String principalName);
+	Optional<String> findAccessToken(String registrationId, String principalName);
 }

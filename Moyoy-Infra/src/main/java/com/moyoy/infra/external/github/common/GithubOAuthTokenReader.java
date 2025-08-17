@@ -2,6 +2,9 @@ package com.moyoy.infra.external.github.common;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -28,6 +31,10 @@ public class GithubOAuthTokenReader {
 
 	public String getGithubAccessToken(Long userId) {
 
-		return oAuthTokenRepository.findToken(GITHUB_REGISTRATION_ID, userId.toString()).orElseThrow();
+		Optional<String> accessToken = oAuthTokenRepository.findAccessToken(GITHUB_REGISTRATION_ID, String.valueOf(userId));
+
+		if (accessToken.isEmpty()) throw new RuntimeException("Github Access Token Not Found");
+
+		return accessToken.get();
 	}
 }

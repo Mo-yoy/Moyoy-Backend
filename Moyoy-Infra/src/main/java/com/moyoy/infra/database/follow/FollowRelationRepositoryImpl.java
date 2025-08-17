@@ -33,7 +33,9 @@ public class FollowRelationRepositoryImpl implements FollowRelationRepository {
 		GithubFollowRelationSnapshot followRelationSnapshot = followRelationSnapshotManager.loadFollowRelationSnapshot(userId, forceSync, githubUserId, accessToken);
 
 		return FollowRelation.builder()
-			.userId(followRelationSnapshot.getUserId())
+			.userId(
+				followRelationSnapshot.getUserId()
+			)
 			.followers(
 				followRelationSnapshot.getGithubFollowers()
 					.stream()
@@ -44,7 +46,9 @@ public class FollowRelationRepositoryImpl implements FollowRelationRepository {
 					.stream()
 					.map(u -> new FollowUser(u.id(), u.username(), u.profileImgUrl()))
 					.collect(Collectors.toCollection(TreeSet::new)))
-			.createdAt(followRelationSnapshot.getCreatedAt())
+			.createdAt(
+				followRelationSnapshot.getCreatedAt()
+			)
 			.build();
 	}
 
