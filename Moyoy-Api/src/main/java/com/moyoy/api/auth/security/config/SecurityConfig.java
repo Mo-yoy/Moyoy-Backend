@@ -62,8 +62,6 @@ public class SecurityConfig {
 			.addFilterAfter(userContextMDCFilter, AnonymousAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/health", "/").permitAll() // Health Check
-				.requestMatchers("/permit/all/test", "/test/**").permitAll() // Test
-				.requestMatchers("/auth/test/admin").hasRole("ADMIN")
 				.requestMatchers("/error/**", "/favicon.ico").permitAll() // Server Default
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI

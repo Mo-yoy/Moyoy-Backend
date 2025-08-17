@@ -20,7 +20,7 @@ public class JwtReissueService {
 	private final JwtValidator jwtValidator;
 	private final JwtRefreshWhiteListUpdater jwtRefreshWhiteListUpdater;
 
-	public ReissuedTokens reIssueJwt(String jwtRefreshRawToken) {
+	public ReissueJwtResult reIssueJwt(String jwtRefreshRawToken) {
 
 		jwtValidator.validate(JwtType.REFRESH, jwtRefreshRawToken);
 
@@ -31,6 +31,6 @@ public class JwtReissueService {
 
 		jwtRefreshWhiteListUpdater.updateRefreshTokenWhiteList(jwtUserInfo.userId(), jwtRefreshRawToken, reIssueRefreshToken);
 
-		return new ReissuedTokens(reIssueAccessToken, reIssueRefreshToken);
+		return new ReissueJwtResult(reIssueAccessToken, reIssueRefreshToken);
 	}
 }

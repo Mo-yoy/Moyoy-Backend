@@ -23,6 +23,9 @@ dependencies {
     // Application Layer @Transactional 사용시
     implementation 'org.springframework:spring-tx'
 
+    // API 모듈에서 인증관련 데이터를 RDB 에서 관리중에 필요한 JDBC
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
     /// TODO : 제거 예정, Cookie 관련 직렬화, 역직렬화 용
     implementation 'org.apache.commons:commons-lang3:3.18.0'
 

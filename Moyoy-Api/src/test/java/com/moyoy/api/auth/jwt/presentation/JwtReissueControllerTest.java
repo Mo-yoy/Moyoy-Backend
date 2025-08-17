@@ -34,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
-import com.moyoy.api.auth.jwt.application.ReissuedTokens;
+import com.moyoy.api.auth.jwt.application.ReissueJwtResult;
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.common.util.CookieUtils;
 import com.moyoy.domain.support.error.MoyoException;
@@ -63,10 +63,10 @@ class JwtReissueControllerTest {
 
 		// given
 		String fakeRefreshToken = "fakeRefreshTokenValue";
-		ReissuedTokens reissuedTokens = new ReissuedTokens("newAccessToken", "newRefreshToken");
+		ReissueJwtResult reissueJwtResult = new ReissueJwtResult("newAccessToken", "newRefreshToken");
 
-		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissuedTokens);
-		given(cookieUtils.createJwtRefreshTokenCookie(reissuedTokens.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
+		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissueJwtResult);
+		given(cookieUtils.createJwtRefreshTokenCookie(reissueJwtResult.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
 
 		// when
 		mockMvc.perform(post("/api/v1/auth/reissue/token")

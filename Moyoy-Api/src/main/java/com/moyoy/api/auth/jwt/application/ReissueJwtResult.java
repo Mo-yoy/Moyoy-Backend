@@ -1,6 +1,6 @@
 package com.moyoy.api.auth.jwt.application;
 
-public record ReissuedTokens(
+public record ReissueJwtResult(
 	String accessToken,
 	String refreshToken) {
 }

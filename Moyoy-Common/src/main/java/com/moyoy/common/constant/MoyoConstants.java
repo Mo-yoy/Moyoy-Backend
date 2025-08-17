@@ -10,6 +10,10 @@ public class MoyoConstants {
 	public static final String CONTENT_TYPE = "Content-Type";
 	public static final String ACCEPT = "Accept";
 
+	// HTTP Method
+	public static final String GET = "GET";
+	public static final String POST = "POST";
+
 	// HTTP 상태 코드
 	public static final int OK = 200;
 	public static final int NO_CONTENT = 204;

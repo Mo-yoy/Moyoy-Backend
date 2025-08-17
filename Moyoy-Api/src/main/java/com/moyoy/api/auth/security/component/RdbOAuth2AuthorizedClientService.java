@@ -16,5 +16,5 @@ public class RdbOAuth2AuthorizedClientService extends JdbcOAuth2AuthorizedClient
 		super(jdbcOperations, clientRegistrationRepository);
 	}
 
-	// TODO : 추후 AccessToken Value와 RefreshToken Value에 대한 암호화를 여기서 진행
+	// TODO : 추후 OAuth 토큰 암호화를 여기서 진행
 }

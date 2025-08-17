@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.jwt;
+package com.moyoy.api.auth.jwt.support;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class JwtRefreshToken {
+public class JwtRefreshTokenEntity {
 
 	/**
 	 * 고유 식별자 (PK, AUTO_INCREMENT)
@@ -46,9 +46,9 @@ public class JwtRefreshToken {
 	 */
 	private LocalDateTime expiresAt;
 
-	public static JwtRefreshToken of(Long userId, String tokenHash, LocalDateTime expiresAt) {
+	public static JwtRefreshTokenEntity of(Long userId, String tokenHash, LocalDateTime expiresAt) {
 
-		return JwtRefreshToken.builder()
+		return JwtRefreshTokenEntity.builder()
 			.userId(userId)
 			.tokenHash(tokenHash)
 			.expiresAt(expiresAt)

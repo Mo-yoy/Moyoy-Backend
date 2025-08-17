@@ -13,13 +13,14 @@ import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtPayloadExtractor {
 
-	private JwtDecoder jwtDecoder;
+	private final JwtDecoder jwtDecoder;
 
 	public JwtUserInfo extractUserInfo(String rawToken) {
 

@@ -1,8 +1,8 @@
-package com.moyoy.infra.database.jwt;
+package com.moyoy.api.auth.jwt.support;
 
 public interface JwtRefreshTokenRepository {
 
-	void save(JwtRefreshToken jwtRefreshToken);
+	void save(JwtRefreshTokenEntity jwtRefreshTokenEntity);
 
 	boolean existByTokenHash(String tokenHash);
 

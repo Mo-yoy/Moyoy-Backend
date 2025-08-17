@@ -2,7 +2,6 @@ package com.moyoy.api.auth.jwt.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import com.moyoy.domain.support.error.auth.JwtTokenExpiredException;
 import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.moyoy.domain.support.error.auth.JwtTokenNotExistException;
 import com.moyoy.domain.support.error.auth.JwtTokenTypeMismatchException;
-import com.moyoy.infra.database.jwt.JwtRefreshTokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;

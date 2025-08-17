@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.moyoy.infra.database.jwt.JwtRefreshToken;
-
 @Component
 @RequiredArgsConstructor
 public class JwtRefreshWhiteListUpdater {
@@ -23,7 +21,7 @@ public class JwtRefreshWhiteListUpdater {
 		String newTokenHash = HashUtil.sha256Base64(newRawToken);
 
 		LocalDateTime expirationTime = jwtPayloadExtractor.extractExpirationTime(newRawToken);
-		JwtRefreshToken reissuedRefreshToken = JwtRefreshToken.of(userId, newTokenHash, expirationTime);
+		JwtRefreshTokenEntity reissuedRefreshToken = JwtRefreshTokenEntity.of(userId, newTokenHash, expirationTime);
 
 		jwtRotator.rotate(oldTokenHash, reissuedRefreshToken);
 	}
