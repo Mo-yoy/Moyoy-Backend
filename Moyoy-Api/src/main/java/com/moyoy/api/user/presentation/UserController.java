@@ -22,7 +22,8 @@ public class UserController {
 
 	@GetMapping("/users/me/profile")
 	public ResponseEntity<ApiResponse<UserProfileResponse>> userProfile(
-		@LoginUserId Long userId) {
+		@LoginUserId Long userId
+	) {
 
 		UserProfileResult userProfileResult = userService.getUserProfile(userId);
 

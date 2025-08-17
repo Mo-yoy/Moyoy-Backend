@@ -1,11 +1,8 @@
 package com.moyoy.api.user.application;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
 import com.moyoy.api.user.application.request.GithubUserProfileDto;
-import com.moyoy.api.user.application.request.UserGithubFollowStats;
 import com.moyoy.api.user.application.response.UserProfileResult;
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
@@ -14,9 +11,8 @@ import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
-import com.moyoy.infra.external.github.common.GithubOAuthTokenReader;
-import com.moyoy.infra.external.github.dto.GithubProfileResponse;
-import com.moyoy.infra.external.github.feign.GithubProfileClient;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,20 +20,13 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final RankingRepository rankingRepository;
-	private final GithubOAuthTokenReader githubOAuthTokenReader;
-	private final GithubProfileClient githubProfileClient;
 
 	public UserProfileResult getUserProfile(Long userId) {
 
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 		Ranking ranking = rankingRepository.findById(userId).orElseThrow(RankingNotFoundException::new);
 
-		Integer githubUserId = user.getGithubUserId();
-		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
-		GithubProfileResponse githubProfileResponse = githubProfileClient.fetchUserProfile(accessToken, githubUserId);
-		UserGithubFollowStats userGithubFollowStats = UserGithubFollowStats.from(githubProfileResponse);
-
-		return UserProfileResult.from(user, ranking, userGithubFollowStats);
+		return UserProfileResult.from(user, ranking);
 	}
 
 	public User signUp(GithubUserProfileDto githubUserProfileDto) {

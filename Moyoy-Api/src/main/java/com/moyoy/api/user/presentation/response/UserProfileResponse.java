@@ -7,9 +7,7 @@ public record UserProfileResponse(
 	String username,
 	long rankPoint,
 	String rankGrade,
-	String profileImgUrl,
-	int followerCount,
-	int followingCount) {
+	String profileImgUrl) {
 
 	public static UserProfileResponse from(UserProfileResult userProfileResult) {
 
@@ -18,8 +16,7 @@ public record UserProfileResponse(
 			userProfileResult.username(),
 			userProfileResult.yearlyRankPoint(),
 			userProfileResult.yearlyRankGrade(),
-			userProfileResult.profileImgUrl(),
-			userProfileResult.githubFollowerCount(),
-			userProfileResult.githubFollowingCount());
+			userProfileResult.profileImgUrl()
+		);
 	}
 }

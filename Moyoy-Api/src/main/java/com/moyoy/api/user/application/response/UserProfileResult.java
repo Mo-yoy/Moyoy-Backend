@@ -1,6 +1,5 @@
 package com.moyoy.api.user.application.response;
 
-import com.moyoy.api.user.application.request.UserGithubFollowStats;
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.user.User;
 
@@ -9,19 +8,17 @@ public record UserProfileResult(
 	String username,
 	long yearlyRankPoint,
 	String yearlyRankGrade,
-	String profileImgUrl,
-	int githubFollowerCount,
-	int githubFollowingCount) {
+	String profileImgUrl
+) {
 
-	public static UserProfileResult from(User user, Ranking ranking, UserGithubFollowStats userGithubFollowStats) {
+	public static UserProfileResult from(User user, Ranking ranking) {
 
 		return new UserProfileResult(
 			user.getId(),
 			user.getUsername(),
 			ranking.getYearlyPoint(),
 			ranking.getGrade(),
-			user.getProfileImgUrl(),
-			userGithubFollowStats.followerCount(),
-			userGithubFollowStats.followingCount());
+			user.getProfileImgUrl()
+		);
 	}
 }
