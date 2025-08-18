@@ -8,7 +8,7 @@ dependencies {
     implementation project(':Moyoy-Domain')
     implementation project(':Moyoy-Infra')
 
-    // web 관련 + Security + 문서화
+    // Web, Security, Docs, Test
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -17,13 +17,14 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
 
-    // API는 별도의 로그 포맷 사용
+    // 독립 실행 가능 모듈들은 서로 별도의 로그 포맷 사용
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
-    /// TODO : 제거 예정, Cookie 관련 직렬화, 역직렬화 용
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
-    /// TODO : JWT 리프레시 토큰 저장소가 현재는 RDB라 임시로 넣어둠
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Application Layer 에서 @Transactional 필요할 경우
+    implementation 'org.springframework:spring-tx'
+
+    // API 모듈에서 인증 관련 데이터를 RDB 에서 관리중이라 필요
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
 }
 
 

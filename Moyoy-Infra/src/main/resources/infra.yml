@@ -15,3 +15,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  authorized-client:
+    crypto:
+      password: ${AUTHORIZED_CLIENT_CRYPTO_PASSWORD}
+      salt: ${AUTHORIZED_CLIENT_CRYPTO_SALT}

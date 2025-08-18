@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.moyoy.api.common.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
 import com.moyoy.api.user.application.UserService;
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.api.user.presentation.response.UserProfileResponse;
 
 @RestController
@@ -24,9 +24,9 @@ public class UserController {
 	public ResponseEntity<ApiResponse<UserProfileResponse>> userProfile(
 		@LoginUserId Long userId) {
 
-		UserProfileResult userProfileResult = userService.getUserProfile(userId);
+		UserSearchResult userSearchResult = userService.getUserProfile(userId);
 
-		UserProfileResponse responseData = UserProfileResponse.from(userProfileResult);
+		UserProfileResponse responseData = UserProfileResponse.from(userSearchResult);
 
 		return ResponseEntity.ok(ApiResponse.success(responseData));
 	}

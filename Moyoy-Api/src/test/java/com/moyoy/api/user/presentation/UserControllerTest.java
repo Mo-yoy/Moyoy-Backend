@@ -28,7 +28,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.user.application.UserService;
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = UserController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
@@ -49,14 +49,12 @@ class UserControllerTest {
 	@WithMockMoyoyUser(id = 1)
 	void 유저_프로필_조회_문서화() throws Exception {
 
-		UserProfileResult mockServiceResult = new UserProfileResult(
+		UserSearchResult mockServiceResult = new UserSearchResult(
 			1L,
 			"moyoy",
 			10000,
 			"A",
-			"http://~",
-			10,
-			20);
+			"http://~");
 
 		Mockito
 			.when(userService.getUserProfile(anyLong()))
@@ -82,9 +80,7 @@ class UserControllerTest {
 						fieldWithPath("data.username").description("🙋 사용자 이름"),
 						fieldWithPath("data.rankPoint").description("🌟 사용자 랭킹 점수"),
 						fieldWithPath("data.rankGrade").description("📊 사용자 랭킹 등급"),
-						fieldWithPath("data.profileImgUrl").description("🖼️ 사용자 프로필 이미지 URL"),
-						fieldWithPath("data.followerCount").description("👥 GitHub 팔로워 수"),
-						fieldWithPath("data.followingCount").description("👥 GitHub 팔로잉 수"))
+						fieldWithPath("data.profileImgUrl").description("🖼️ 사용자 프로필 이미지 URL"))
 					.build())));
 
 	}

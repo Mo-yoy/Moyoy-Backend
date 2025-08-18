@@ -3,22 +3,23 @@ package com.moyoy.api.auth.security.component;
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.io.IOException;
-import java.text.ParseException;
+import java.sql.Ref;
+import java.time.LocalDateTime;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-
-import com.moyoy.api.auth.jwt.data_access.JwtRefreshTokenRepository;
+import com.moyoy.api.auth.jwt.presentation.RefreshTokenCookieFactory;
+import com.moyoy.api.auth.jwt.support.HashUtil;
+import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
-import com.moyoy.api.auth.jwt.implement.JwtRefreshToken;
+import com.moyoy.api.auth.jwt.support.JwtRefreshTokenEntity;
+import com.moyoy.api.auth.jwt.support.JwtRefreshTokenRepository;
+import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
 import com.moyoy.api.common.util.CookieUtils;
 
@@ -37,18 +38,21 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtProvider jwtProvider;
-	private final CookieUtils cookieUtils;
+	private final JwtPayloadExtractor jwtPayloadExtractor;
+	private final RefreshTokenCookieFactory cookieFactory;
 	private final String frontLoginSuccessURI;
 	private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
 	public OAuth2AuthenticationSuccessHandler(
-		CookieUtils cookieUtils,
+		RefreshTokenCookieFactory cookieUtils,
 		JwtProvider jwtProvider,
+		JwtPayloadExtractor jwtPayloadExtractor,
 		JwtRefreshTokenRepository jwtRefreshTokenRepository,
 		@Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
 
-		this.cookieUtils = cookieUtils;
+		this.cookieFactory = cookieUtils;
 		this.jwtProvider = jwtProvider;
+		this.jwtPayloadExtractor = jwtPayloadExtractor;
 		this.jwtRefreshTokenRepository = jwtRefreshTokenRepository;
 		this.frontLoginSuccessURI = frontLoginSuccessURI;
 	}
@@ -56,26 +60,22 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-		String jwtRefreshToken;
 		JwtUserInfo jwtUserInfo = JwtUserInfo.from(authentication);
+		String jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JwtType.REFRESH);
+		response.addHeader(SET_COOKIE, cookieFactory.createRefreshTokenCookie(jwtRefreshToken).toString());
 
-		try {
+		Long userId = jwtUserInfo.userId();
+		LocalDateTime expirationTime = jwtPayloadExtractor.extractExpirationTime(jwtRefreshToken);
+		String refreshTokenHash = HashUtil.sha256Base64(jwtRefreshToken);
 
-			log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", jwtUserInfo.userId());
-			jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JWT_REFRESH_TYPE);
-			response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
+		jwtRefreshTokenRepository.save(JwtRefreshTokenEntity.of(userId, refreshTokenHash, expirationTime));
 
-			SignedJWT signedJWT = SignedJWT.parse(jwtRefreshToken);
-			JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-			jwtRefreshTokenRepository.save(JwtRefreshToken.from(claimsSet, jwtRefreshToken));
+		log.info("GitHub OAuth 로그인 성공, 사용자 ID: {} - JWT 발급 진행", jwtUserInfo.userId());
 
-			/**
-			 *   스프린트 1의 요구사항을 반영하여 GitHub OAuth 인증 후 사용자를 무조건 Default URI로 리다이렉트 함.
-			 *   추후, 요구사항에 따라서 쿠키에 Redirect 경로를 추가해 처리하거나 Request Cache를 사용해서 기능을 확장할 예정
-			 */
-			response.sendRedirect(frontLoginSuccessURI);
-		} catch (DataAccessException | ParseException ex) {
-			throw new RuntimeException(ex);
-		}
+		/**
+		 *   스프린트 1의 요구사항을 반영하여 GitHub OAuth 인증 후 사용자를 무조건 Default URI로 리다이렉트 함.
+		 *   추후, 요구사항에 따라서 쿠키에 Redirect 경로를 추가해 처리하거나 Request Cache를 사용해서 기능을 확장할 예정
+		 */
+		response.sendRedirect(frontLoginSuccessURI);
 	}
 }
