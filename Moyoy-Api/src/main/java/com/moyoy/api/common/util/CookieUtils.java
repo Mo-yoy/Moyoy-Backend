@@ -15,7 +15,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 public class CookieUtils {
 
 	public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
@@ -63,12 +62,10 @@ public class CookieUtils {
 	public static String serialize(Serializable object) {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 ObjectOutputStream oos = new ObjectOutputStream(baos)
-		) {
+			ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 			oos.writeObject(object);
 			return Base64.getUrlEncoder().encodeToString(baos.toByteArray());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new IllegalStateException("쿠키 직렬화 실패", e);
 		}
 	}
@@ -76,8 +73,8 @@ public class CookieUtils {
 	public static <T> T deserialize(Cookie cookie, Class<T> cls) {
 		byte[] data = Base64.getUrlDecoder().decode(cookie.getValue());
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
-			 ObjectInputStream ois = new ObjectInputStream(bais)) {
-			return (T) ois.readObject();
+			ObjectInputStream ois = new ObjectInputStream(bais)) {
+			return (T)ois.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			throw new IllegalStateException("쿠키 역직렬화 실패", e);
 		}

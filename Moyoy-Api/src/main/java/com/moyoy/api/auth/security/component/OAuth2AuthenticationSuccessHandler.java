@@ -3,7 +3,6 @@ package com.moyoy.api.auth.security.component;
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.io.IOException;
-import java.sql.Ref;
 import java.time.LocalDateTime;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import com.moyoy.api.auth.jwt.support.JwtRefreshTokenEntity;
 import com.moyoy.api.auth.jwt.support.JwtRefreshTokenRepository;
 import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
-import com.moyoy.api.common.util.CookieUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

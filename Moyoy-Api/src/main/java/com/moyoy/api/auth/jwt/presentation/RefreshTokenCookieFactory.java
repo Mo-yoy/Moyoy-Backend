@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class RefreshTokenCookieFactory {
 
@@ -17,8 +16,7 @@ public class RefreshTokenCookieFactory {
 
 	public RefreshTokenCookieFactory(
 		@Value("${spring.cookie.domain}") String domain,
-		@Value("${spring.cookie.samesite:Strict}") String sameSite
-	) {
+		@Value("${spring.cookie.samesite:Strict}") String sameSite) {
 		this.domain = domain;
 		this.sameSite = sameSite;
 	}

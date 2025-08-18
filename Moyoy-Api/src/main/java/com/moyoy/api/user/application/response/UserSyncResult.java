@@ -8,15 +8,13 @@ public record UserSyncResult(
 	Integer githubUserId,
 	String username,
 	String userProfile,
-	Role role
-) {
+	Role role) {
 	public static UserSyncResult from(User user) {
 		return new UserSyncResult(
 			user.getId(),
 			user.getGithubUserId(),
 			user.getUsername(),
 			user.getProfileImgUrl(),
-			user.getRole()
-		);
+			user.getRole());
 	}
 }

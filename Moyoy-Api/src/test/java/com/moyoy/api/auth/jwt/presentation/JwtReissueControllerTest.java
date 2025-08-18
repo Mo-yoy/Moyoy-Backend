@@ -36,7 +36,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
 import com.moyoy.api.auth.jwt.application.ReissueJwtResult;
 import com.moyoy.api.common.ApiControllerAdvice;
-import com.moyoy.api.common.util.CookieUtils;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.auth.AuthErrorCode;
 
@@ -56,7 +55,7 @@ class JwtReissueControllerTest {
 	private JwtReissueService jwtReissueService;
 
 	@MockitoBean
-	private CookieUtils cookieUtils;
+	private RefreshTokenCookieFactory cookieFactory;
 
 	@Test
 	void 쿠키에_유효한_리프레시_토큰을_전달해서_토큰_재발급을_진행_할_수있다() throws Exception {
@@ -66,7 +65,7 @@ class JwtReissueControllerTest {
 		ReissueJwtResult reissueJwtResult = new ReissueJwtResult("newAccessToken", "newRefreshToken");
 
 		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissueJwtResult);
-		given(cookieUtils.createJwtRefreshTokenCookie(reissueJwtResult.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
+		given(cookieFactory.createRefreshTokenCookie(reissueJwtResult.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
 
 		// when
 		mockMvc.perform(post("/api/v1/auth/reissue/token")

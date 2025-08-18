@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moyoy.api.user.application.request.UserSyncData;
-
 import com.moyoy.api.user.application.response.UserSearchResult;
-
 import com.moyoy.api.user.application.response.UserSyncResult;
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
@@ -65,6 +63,5 @@ public class UserService {
 		log.info("신규 회원 가입, userId={}, githubUserId={}", newUser.getId(), data.githubUserId());
 		return UserSyncResult.from(newUser);
 	}
-
 
 }
