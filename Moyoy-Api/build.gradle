@@ -25,10 +25,6 @@ dependencies {
 
     // API 모듈에서 인증 관련 데이터를 RDB 에서 관리중이라 필요
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
-
-    /// TODO : 제거 예정, Cookie 관련 직렬화, 역직렬화 용
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
-
 }
 
 

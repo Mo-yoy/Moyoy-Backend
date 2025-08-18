@@ -1,51 +1,22 @@
 package com.moyoy.api.common.util;
 
-import static com.moyoy.common.constant.MoyoConstants.*;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.Optional;
 
-import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *  추후 분리가 필요함.
- */
 
-@Component
 public class CookieUtils {
-
-	private static final long ONE_MINUTE_MILLS = 60000L; // 60 * 1000
-	private static final long JWT_REFRESH_TOKEN_COOKIE_AGE = JWT_REFRESH_TOKEN_EXPIRATION_MINUTE - ONE_MINUTE_MILLS;
-
-	private final String domain;
-	private final String samesite;
-
-	public CookieUtils(
-		@Value("${spring.cookie.domain}") String domain,
-		@Value("${spring.cookie.samesite}") String samesite) {
-
-		this.domain = domain;
-		this.samesite = samesite;
-	}
-
-	public ResponseCookie createJwtRefreshTokenCookie(String jwtRefresh) {
-		return ResponseCookie.from(JWT_REFRESH_TYPE, jwtRefresh)
-			.path("/")
-			.maxAge(JWT_REFRESH_TOKEN_COOKIE_AGE)
-			.httpOnly(true)
-			.secure(true)
-			.sameSite(samesite)
-			.domain(domain)
-			.build();
-	}
 
 	public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
 
@@ -89,14 +60,27 @@ public class CookieUtils {
 		}
 	}
 
-	public static String serialize(Object object) {
-		return Base64.getUrlEncoder()
-			.encodeToString(SerializationUtils.serialize((Serializable)object));
+	public static String serialize(Serializable object) {
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 ObjectOutputStream oos = new ObjectOutputStream(baos)
+		) {
+			oos.writeObject(object);
+			return Base64.getUrlEncoder().encodeToString(baos.toByteArray());
+		}
+		catch (IOException e) {
+			throw new IllegalStateException("쿠키 직렬화 실패", e);
+		}
 	}
 
 	public static <T> T deserialize(Cookie cookie, Class<T> cls) {
-		return cls.cast(SerializationUtils.deserialize(
-			Base64.getUrlDecoder().decode(cookie.getValue())));
+		byte[] data = Base64.getUrlDecoder().decode(cookie.getValue());
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+			 ObjectInputStream ois = new ObjectInputStream(bais)) {
+			return (T) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			throw new IllegalStateException("쿠키 역직렬화 실패", e);
+		}
 	}
 
 }

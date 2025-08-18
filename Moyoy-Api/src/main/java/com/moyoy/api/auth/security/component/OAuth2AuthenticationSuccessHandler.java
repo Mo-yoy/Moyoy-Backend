@@ -3,6 +3,7 @@ package com.moyoy.api.auth.security.component;
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.io.IOException;
+import java.sql.Ref;
 import java.time.LocalDateTime;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.moyoy.api.auth.jwt.presentation.RefreshTokenCookieFactory;
 import com.moyoy.api.auth.jwt.support.HashUtil;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
@@ -37,18 +39,18 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
 	private final JwtProvider jwtProvider;
 	private final JwtPayloadExtractor jwtPayloadExtractor;
-	private final CookieUtils cookieUtils;
+	private final RefreshTokenCookieFactory cookieFactory;
 	private final String frontLoginSuccessURI;
 	private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
 	public OAuth2AuthenticationSuccessHandler(
-		CookieUtils cookieUtils,
+		RefreshTokenCookieFactory cookieUtils,
 		JwtProvider jwtProvider,
 		JwtPayloadExtractor jwtPayloadExtractor,
 		JwtRefreshTokenRepository jwtRefreshTokenRepository,
 		@Value("${spring.login.default-uri}") String frontLoginSuccessURI) {
 
-		this.cookieUtils = cookieUtils;
+		this.cookieFactory = cookieUtils;
 		this.jwtProvider = jwtProvider;
 		this.jwtPayloadExtractor = jwtPayloadExtractor;
 		this.jwtRefreshTokenRepository = jwtRefreshTokenRepository;
@@ -60,7 +62,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
 		JwtUserInfo jwtUserInfo = JwtUserInfo.from(authentication);
 		String jwtRefreshToken = jwtProvider.createJwtToken(jwtUserInfo, JwtType.REFRESH);
-		response.addHeader(SET_COOKIE, cookieUtils.createJwtRefreshTokenCookie(jwtRefreshToken).toString());
+		response.addHeader(SET_COOKIE, cookieFactory.createRefreshTokenCookie(jwtRefreshToken).toString());
 
 		Long userId = jwtUserInfo.userId();
 		LocalDateTime expirationTime = jwtPayloadExtractor.extractExpirationTime(jwtRefreshToken);

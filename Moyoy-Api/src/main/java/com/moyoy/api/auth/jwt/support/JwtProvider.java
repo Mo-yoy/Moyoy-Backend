@@ -40,8 +40,8 @@ public class JwtProvider {
 	private Date getTokenExpiration(JwtType tokenType) {
 
 		long expirationMillis = switch (tokenType) {
-			case JwtType.REFRESH -> JWT_REFRESH_TOKEN_EXPIRATION_MINUTE;
-			case JwtType.ACCESS -> JWT_ACCESS_TOKEN_EXPIRATION_MINUTE;
+			case JwtType.REFRESH -> JWT_REFRESH_TOKEN_EXPIRATION_MINUTE_MS;
+			case JwtType.ACCESS -> JWT_ACCESS_TOKEN_EXPIRATION_MINUTE_MS;
 		};
 
 		return new Date(System.currentTimeMillis() + expirationMillis);

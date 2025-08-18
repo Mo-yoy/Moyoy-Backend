@@ -2,8 +2,6 @@ package com.moyoy.api.auth.jwt.presentation;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
 import com.moyoy.api.auth.jwt.application.ReissueJwtResult;
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.api.common.util.CookieUtils;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class JwtReissueController {
 
-	private final CookieUtils cookieUtils;
+	private final RefreshTokenCookieFactory cookieFactory;
 	private final JwtReissueService jwtReissueService;
 
 	@PostMapping("/auth/reissue/token")
@@ -28,7 +27,7 @@ public class JwtReissueController {
 
 		ReissueJwtResult reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
 
-		String refreshTokenCookie = cookieUtils.createJwtRefreshTokenCookie(reIssueTokens.refreshToken()).toString();
+		String refreshTokenCookie = cookieFactory.createRefreshTokenCookie(reIssueTokens.refreshToken()).toString();
 		JwtReissueResponse response = new JwtReissueResponse(reIssueTokens.accessToken());
 
 		return ResponseEntity

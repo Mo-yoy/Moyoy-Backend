@@ -25,14 +25,13 @@ public class MoyoConstants {
 	public static final int SERVER_ERROR = 500;
 
 	// JWT
-	public static final String JWT_ACCESS_TYPE = "access";
-	public static final String JWT_REFRESH_TYPE = "refresh";
 	public static final String JWT_CLAIM_USER_ID = "id";
 	public static final String JWT_CLAIM_TOKEN_TYPE = "type";
 	public static final String JWT_CLAIM_AUTHORITY = "authority";
-	public static final String JWT_CLAIM_EXPIRATION = "exp";
-	public static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE = 1800000L;
-	public static final long JWT_REFRESH_TOKEN_EXPIRATION_MINUTE = 18000000L;
+
+	/// TODO : properties로 분리 예정
+	public static final long JWT_ACCESS_TOKEN_EXPIRATION_MINUTE_MS = 1800000L;
+	public static final long JWT_REFRESH_TOKEN_EXPIRATION_MINUTE_MS = 18000000L;
 
 	// Github
 	public static final String GITHUB_REGISTRATION_ID = "github";
