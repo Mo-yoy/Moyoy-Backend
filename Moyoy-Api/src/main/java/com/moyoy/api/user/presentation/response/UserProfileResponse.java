@@ -1,6 +1,6 @@
 package com.moyoy.api.user.presentation.response;
 
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.response.UserSearchResult;
 
 public record UserProfileResponse(
 	Long userId,
@@ -9,13 +9,13 @@ public record UserProfileResponse(
 	String rankGrade,
 	String profileImgUrl) {
 
-	public static UserProfileResponse from(UserProfileResult userProfileResult) {
+	public static UserProfileResponse from(UserSearchResult userSearchResult) {
 
 		return new UserProfileResponse(
-			userProfileResult.userId(),
-			userProfileResult.username(),
-			userProfileResult.yearlyRankPoint(),
-			userProfileResult.yearlyRankGrade(),
-			userProfileResult.profileImgUrl());
+			userSearchResult.userId(),
+			userSearchResult.username(),
+			userSearchResult.yearlyRankPoint(),
+			userSearchResult.yearlyRankGrade(),
+			userSearchResult.profileImgUrl());
 	}
 }

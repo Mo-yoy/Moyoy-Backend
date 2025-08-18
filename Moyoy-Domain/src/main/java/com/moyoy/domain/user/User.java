@@ -23,11 +23,8 @@ public class User {
 			.build();
 	}
 
-	public void changeUsername(String username) {
+	public void changeProfile(String username, String profileImgUrl) {
 		this.username = username;
-	}
-
-	public void changeProfileImgUrl(String profileImgUrl) {
 		this.profileImgUrl = profileImgUrl;
 	}
 }

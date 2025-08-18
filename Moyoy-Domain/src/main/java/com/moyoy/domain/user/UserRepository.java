@@ -9,7 +9,7 @@ public interface UserRepository {
 
 	Optional<User> findByGithubUserId(Integer githubUserId);
 
-	void save(User user);
+	User save(User user);
 
 	List<User> findByIdIn(List<Long> userIds);
 

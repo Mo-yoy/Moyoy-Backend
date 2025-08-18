@@ -28,7 +28,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.user.application.UserService;
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = UserController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
@@ -49,7 +49,7 @@ class UserControllerTest {
 	@WithMockMoyoyUser(id = 1)
 	void 유저_프로필_조회_문서화() throws Exception {
 
-		UserProfileResult mockServiceResult = new UserProfileResult(
+		UserSearchResult mockServiceResult = new UserSearchResult(
 			1L,
 			"moyoy",
 			10000,

@@ -61,4 +61,5 @@ public record GithubProfileResponse(
 	@JsonProperty("created_at") String createdAt,
 
 	@JsonProperty("updated_at") String updatedAt) {
+
 }
