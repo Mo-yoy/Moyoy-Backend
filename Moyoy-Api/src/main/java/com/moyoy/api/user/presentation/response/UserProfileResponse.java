@@ -16,7 +16,6 @@ public record UserProfileResponse(
 			userProfileResult.username(),
 			userProfileResult.yearlyRankPoint(),
 			userProfileResult.yearlyRankGrade(),
-			userProfileResult.profileImgUrl()
-		);
+			userProfileResult.profileImgUrl());
 	}
 }

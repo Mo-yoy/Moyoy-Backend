@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,20 +17,19 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.nimbusds.jose.crypto.MACVerifier;
+
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
 import com.moyoy.api.auth.jwt.support.JwtValidator;
 import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
-import com.nimbusds.jose.crypto.MACVerifier;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 ///  JWT Access Token 검증 필터
 
@@ -44,12 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final Map<String, Set<String>> whiteList = Map.of(
 		GET, Set.of(
 			GITHUB_LOGIN_REDIRECT_URL,
-			GITHUB_LOGIN_AUTHORIZATION_CODE_URL
-		),
+			GITHUB_LOGIN_AUTHORIZATION_CODE_URL),
 		POST, Set.of(
-			TOKEN_REISSUE_URL
-		)
-	);
+			TOKEN_REISSUE_URL));
 
 	private final MACVerifier macVerifier;
 	private final JwtValidator jwtValidator;
@@ -61,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String method = request.getMethod();
 		String requestURI = request.getRequestURI();
 
-		if(whiteList.getOrDefault(method, Set.of()).contains(requestURI)) {
+		if (whiteList.getOrDefault(method, Set.of()).contains(requestURI)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -84,7 +83,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-		if (!authorizationHeader.startsWith(BEARER_PREFIX)) throw new JwtTokenInvalidException();
+		if (!authorizationHeader.startsWith(BEARER_PREFIX))
+			throw new JwtTokenInvalidException();
 
 		return authorizationHeader.substring(BEARER_PREFIX.length());
 	}

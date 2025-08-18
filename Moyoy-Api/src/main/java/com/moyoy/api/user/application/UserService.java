@@ -1,5 +1,7 @@
 package com.moyoy.api.user.application;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import com.moyoy.api.user.application.request.GithubUserProfileDto;
@@ -11,8 +13,6 @@ import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

@@ -157,13 +157,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-profile1583212755"
+                $ref: "#/components/schemas/api-v1-users-me-profile1651746436"
               examples:
                 개인 프로필 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"userId\":1,\"username\":\"moyoy\",\"rankPoint\":10000,\"rankGrade\"\
-                    :\"A\",\"profileImgUrl\":\"http://~\",\"followerCount\":10,\"\
-                    followingCount\":20}}"
+                    :\"A\",\"profileImgUrl\":\"http://~\"}}"
       security:
       - bearerAuthJWT: []
   /api/v1/users/me/followings/{detectType}:
@@ -326,6 +325,43 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
+    api-v1-users-me-profile1651746436:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - profileImgUrl
+          - rankGrade
+          - rankPoint
+          - userId
+          - username
+          type: object
+          properties:
+            rankGrade:
+              type: string
+              description: 📊 사용자 랭킹 등급
+            profileImgUrl:
+              type: string
+              description: 🖼️ 사용자 프로필 이미지 URL
+            userId:
+              type: number
+              description: 👦 사용자 ID
+            rankPoint:
+              type: number
+              description: 🌟 사용자 랭킹 점수
+            username:
+              type: string
+              description: 🙋 사용자 이름
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     api-v1-rankings1445726081:
       required:
       - code
@@ -366,51 +402,6 @@ components:
               type: boolean
               description: 📌 마지막 페이지 여부
           description: 응답 데이터
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-users-me-profile1583212755:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        data:
-          required:
-          - followerCount
-          - followingCount
-          - profileImgUrl
-          - rankGrade
-          - rankPoint
-          - userId
-          - username
-          type: object
-          properties:
-            rankGrade:
-              type: string
-              description: 📊 사용자 랭킹 등급
-            profileImgUrl:
-              type: string
-              description: 🖼️ 사용자 프로필 이미지 URL
-            followingCount:
-              type: number
-              description: 👥 GitHub 팔로잉 수
-            followerCount:
-              type: number
-              description: 👥 GitHub 팔로워 수
-            userId:
-              type: number
-              description: 👦 사용자 ID
-            rankPoint:
-              type: number
-              description: 🌟 사용자 랭킹 점수
-            username:
-              type: string
-              description: 🙋 사용자 이름
         status:
           type: number
           description: ✅ 응답 상태 코드

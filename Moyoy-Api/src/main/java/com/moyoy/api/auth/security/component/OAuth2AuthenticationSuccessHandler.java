@@ -5,6 +5,8 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -22,7 +24,6 @@ import com.moyoy.api.common.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *  사용자가 OAuth를 이용해 직접 인증 성공 후에 호출

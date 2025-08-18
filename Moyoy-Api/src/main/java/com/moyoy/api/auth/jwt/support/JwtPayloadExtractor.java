@@ -2,19 +2,15 @@ package com.moyoy.api.auth.jwt.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor

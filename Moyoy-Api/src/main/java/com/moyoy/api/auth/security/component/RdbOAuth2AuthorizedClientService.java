@@ -37,8 +37,7 @@ public class RdbOAuth2AuthorizedClientService extends JdbcOAuth2AuthorizedClient
 	public RdbOAuth2AuthorizedClientService(
 		JdbcOperations jdbcOperations,
 		ClientRegistrationRepository clientRegistrationRepository,
-		AESEncryptor aesEncryptor
-	) {
+		AESEncryptor aesEncryptor) {
 		super(jdbcOperations, clientRegistrationRepository);
 		this.encryptService = aesEncryptor;
 
@@ -95,14 +94,14 @@ public class RdbOAuth2AuthorizedClientService extends JdbcOAuth2AuthorizedClient
 				throw new DataRetrievalFailureException("ClientRegistration not found: " + regId);
 			}
 
-			OAuth2AccessToken.TokenType type =
-				OAuth2AccessToken.TokenType.BEARER.getValue()
-					.equalsIgnoreCase(rs.getString("access_token_type"))
+			OAuth2AccessToken.TokenType type = OAuth2AccessToken.TokenType.BEARER.getValue()
+				.equalsIgnoreCase(rs.getString("access_token_type"))
 					? OAuth2AccessToken.TokenType.BEARER : null;
 
 			// access token
 			byte[] atEnc = rs.getBytes("access_token_value");
-			if (atEnc == null) throw new DataRetrievalFailureException("access_token_value is null");
+			if (atEnc == null)
+				throw new DataRetrievalFailureException("access_token_value is null");
 			String at = new String(encryptService.decrypt(atEnc), StandardCharsets.UTF_8);
 
 			Instant issued = rs.getTimestamp("access_token_issued_at").toInstant();

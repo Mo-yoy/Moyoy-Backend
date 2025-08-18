@@ -8,8 +8,7 @@ public record UserProfileResult(
 	String username,
 	long yearlyRankPoint,
 	String yearlyRankGrade,
-	String profileImgUrl
-) {
+	String profileImgUrl) {
 
 	public static UserProfileResult from(User user, Ranking ranking) {
 
@@ -18,7 +17,6 @@ public record UserProfileResult(
 			user.getUsername(),
 			ranking.getYearlyPoint(),
 			ranking.getGrade(),
-			user.getProfileImgUrl()
-		);
+			user.getProfileImgUrl());
 	}
 }

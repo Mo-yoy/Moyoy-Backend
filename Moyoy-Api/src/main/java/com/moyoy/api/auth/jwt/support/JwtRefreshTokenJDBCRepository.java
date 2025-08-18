@@ -3,6 +3,7 @@ package com.moyoy.api.auth.jwt.support;
 import java.sql.Timestamp;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Repository;
 
@@ -13,22 +14,22 @@ public class JwtRefreshTokenJDBCRepository implements JwtRefreshTokenRepository 
 	private final JdbcOperations jdbcOperations;
 
 	private static final String INSERT_SQL = """
-        INSERT INTO jwt_refresh_token (user_id, token_hash, expires_at)
-        VALUES (?, ?, ?)
-        """;
+		INSERT INTO jwt_refresh_token (user_id, token_hash, expires_at)
+		VALUES (?, ?, ?)
+		""";
 
 	private static final String DELETE_SQL = """
-        DELETE FROM jwt_refresh_token
-        WHERE token_hash = ?
-        """;
+		DELETE FROM jwt_refresh_token
+		WHERE token_hash = ?
+		""";
 
 	private static final String EXISTS_SQL = """
-        SELECT EXISTS (
-            SELECT 1
-            FROM jwt_refresh_token
-            WHERE token_hash = ?
-        )
-        """;
+		SELECT EXISTS (
+		    SELECT 1
+		    FROM jwt_refresh_token
+		    WHERE token_hash = ?
+		)
+		""";
 
 	@Override
 	public void save(JwtRefreshTokenEntity jwtRefreshTokenEntity) {

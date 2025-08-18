@@ -4,20 +4,21 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.util.Date;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
 import com.moyoy.domain.support.error.auth.JwtTokenBlockedException;
 import com.moyoy.domain.support.error.auth.JwtTokenExpiredException;
 import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 import com.moyoy.domain.support.error.auth.JwtTokenNotExistException;
 import com.moyoy.domain.support.error.auth.JwtTokenTypeMismatchException;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -36,16 +37,16 @@ public class JwtValidator {
 		}
 	}
 
-	private void validateRefresh(String rawToken){
+	private void validateRefresh(String rawToken) {
 		validateJwt(JwtType.REFRESH, rawToken);
 		validateTokenExistsInWhiteList(rawToken);
 	}
 
-	private void validateAccess(String rawToken){
+	private void validateAccess(String rawToken) {
 		validateJwt(JwtType.ACCESS, rawToken);
 	}
 
-	private void validateJwt(JwtType tokenType, String rawToken){
+	private void validateJwt(JwtType tokenType, String rawToken) {
 		validateTokenNotExist(rawToken);
 
 		SignedJWT signedJWT = jwtDecoder.decode(rawToken);
@@ -58,7 +59,8 @@ public class JwtValidator {
 
 	private void validateTokenNotExist(String rawToken) {
 
-		if (rawToken.isBlank()) throw new JwtTokenNotExistException();
+		if (rawToken.isBlank())
+			throw new JwtTokenNotExistException();
 	}
 
 	private void validateTokenSignature(SignedJWT signedJWT) {

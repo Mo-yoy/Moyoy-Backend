@@ -54,8 +54,7 @@ class UserControllerTest {
 			"moyoy",
 			10000,
 			"A",
-			"http://~"
-		);
+			"http://~");
 
 		Mockito
 			.when(userService.getUserProfile(anyLong()))
@@ -81,8 +80,7 @@ class UserControllerTest {
 						fieldWithPath("data.username").description("🙋 사용자 이름"),
 						fieldWithPath("data.rankPoint").description("🌟 사용자 랭킹 점수"),
 						fieldWithPath("data.rankGrade").description("📊 사용자 랭킹 등급"),
-						fieldWithPath("data.profileImgUrl").description("🖼️ 사용자 프로필 이미지 URL")
-					)
+						fieldWithPath("data.profileImgUrl").description("🖼️ 사용자 프로필 이미지 URL"))
 					.build())));
 
 	}
