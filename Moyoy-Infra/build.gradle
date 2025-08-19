@@ -8,6 +8,9 @@ dependencies {
     // Feign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
+    // Flyway
+    implementation 'org.flywaydb:flyway-mysql'
+
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
