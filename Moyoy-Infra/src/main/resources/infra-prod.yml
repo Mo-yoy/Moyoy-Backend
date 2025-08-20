@@ -1,6 +1,1 @@
 # 배포 전
-spring:
-
-  jpa:
-    hibernate:
-      ddl-auto: none

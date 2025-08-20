@@ -3,10 +3,14 @@ spring:
     import:
       - "aws-parameterstore:/config/moyoy-test/"
 
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/{vendor}
+    baseline-on-migrate: true
+
   jpa:
     hibernate:
-      ddl-auto: update
-
+      ddl-auto: validate
 
 aws:
   parameterstore:
