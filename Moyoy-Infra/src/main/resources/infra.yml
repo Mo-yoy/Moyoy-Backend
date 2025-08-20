@@ -4,11 +4,6 @@ spring:
       region:
         static: ap-northeast-2
 
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-
   data:
     redis:
       host: ${REDIS_HOST:localhost}
