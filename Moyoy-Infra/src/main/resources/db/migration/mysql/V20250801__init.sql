@@ -1,4 +1,4 @@
-USE `moyoy-test`;
+USE `moyoy`;
 
 DROP TABLE IF EXISTS rankings; # ranking에 user_id FK
 DROP TABLE IF EXISTS users;
