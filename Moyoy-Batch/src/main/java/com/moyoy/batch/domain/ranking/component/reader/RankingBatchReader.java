@@ -18,10 +18,10 @@ import com.moyoy.batch.domain.ranking.component.dto.GithubContributorDetails;
 import com.moyoy.batch.domain.ranking.component.dto.GithubRepoDetails;
 import com.moyoy.batch.domain.ranking.component.dto.RepoContributorStats;
 import com.moyoy.batch.domain.ranking.component.dto.UserRankingProfile;
-import com.moyoy.infra.external.github.dto.GithubProfileResponse;
+import com.moyoy.infra.external.github.user.GithubUserResponse;
 import com.moyoy.infra.external.github.dto.GithubRepoContributorsResponse;
 import com.moyoy.infra.external.github.dto.GithubRepoResponse;
-import com.moyoy.infra.external.github.feign.GithubProfileClient;
+import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 import com.moyoy.infra.external.github.feign.GithubRepoClient;
 
 @Slf4j
@@ -30,14 +30,14 @@ import com.moyoy.infra.external.github.feign.GithubRepoClient;
 public class RankingBatchReader {
 
 	private final GithubContributeStatsParser githubContributeStatsParser;
-	private final GithubProfileClient githubProfileClient;
+	private final GithubUserFeignClient githubUserFeignClient;
 	private final GithubRepoClient githubRepoClient;
 
 	public UserRankingProfile fetchUserRankingProfile(String accessToken, Integer githubUserId) {
 
-		GithubProfileResponse githubProfileResponse = githubProfileClient.fetchUserProfile(accessToken, githubUserId);
+		GithubUserResponse githubUserResponse = githubUserFeignClient.fetchUser(accessToken, githubUserId);
 
-		return UserRankingProfile.from(githubProfileResponse);
+		return UserRankingProfile.from(githubUserResponse);
 	}
 
 	// 사용자가 소속된 Repo 개수가 100개가 넘지 않으면 한번에 처리됨.

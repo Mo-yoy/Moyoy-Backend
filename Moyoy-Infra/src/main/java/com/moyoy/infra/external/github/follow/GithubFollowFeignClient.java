@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.feign;
+package com.moyoy.infra.external.github.follow;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
@@ -14,30 +14,33 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.moyoy.infra.external.config.GithubFeignConfig;
-import com.moyoy.infra.external.github.dto.GithubFollowUserResponse;
+import com.moyoy.infra.external.github.user.GithubFollowUserResponse;
+import com.moyoy.infra.external.github.user.GithubUserResponse;
+
+import feign.Response;
 
 @FeignClient(name = "githubFollowClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
-public interface GithubFollowClient {
+public interface GithubFollowFeignClient {
 
 	@GetMapping("/user/followers")
-	List<GithubFollowUserResponse> fetchPagedFollowers(
+	List<GithubUserResponse> fetchPagedFollowers(
+		@RequestHeader(AUTHORIZATION) String bearer,
 		@RequestParam("per_page") int perPage,
-		@RequestParam("page") int page,
-		@RequestHeader(AUTHORIZATION) String bearer);
+		@RequestParam("page") int page);
 
 	@GetMapping("/user/following")
-	List<GithubFollowUserResponse> fetchPagedFollowings(
+	List<GithubUserResponse> fetchPagedFollowings(
+		@RequestHeader(AUTHORIZATION) String bearer,
 		@RequestParam("per_page") int perPage,
-		@RequestParam("page") int page,
-		@RequestHeader(AUTHORIZATION) String bearer);
+		@RequestParam("page") int page);
 
 	@PutMapping("/user/following/{username}")
-	ResponseEntity<Void> follow(
-		@PathVariable("username") String username,
-		@RequestHeader(AUTHORIZATION) String bearer);
+	Response follow(
+		@RequestHeader(AUTHORIZATION) String bearer,
+		@PathVariable("username") String username);
 
 	@DeleteMapping("/user/following/{username}")
-	ResponseEntity<Void> unfollow(
-		@PathVariable("username") String username,
-		@RequestHeader(AUTHORIZATION) String bearer);
+	Response unfollow(
+		@RequestHeader(AUTHORIZATION) String bearer,
+		@PathVariable("username") String username);
 }

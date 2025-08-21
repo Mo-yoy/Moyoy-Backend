@@ -1,4 +1,4 @@
-package com.moyoy.api.follow.application;
+package com.moyoy.api.github_follow.application;
 
 import java.util.List;
 
@@ -6,24 +6,34 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.moyoy.api.follow.application.request.GithubFollowDetection;
-import com.moyoy.api.follow.application.response.GithubFollowDetectionResult;
+import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
+import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 import com.moyoy.domain.follow.FollowRelation;
-import com.moyoy.domain.follow.FollowRelationRepository;
 import com.moyoy.domain.follow.FollowUser;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
+import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
-import com.moyoy.infra.external.github.common.GithubOAuthTokenReader;
+import com.moyoy.infra.external.github.follow.GithubFollowClient;
 
 @Service
 @RequiredArgsConstructor
-public class FollowService {
+public class GithubFollowService {
 
-	private final GithubOAuthTokenReader githubOAuthTokenReader;
 	private final UserRepository userRepository;
-	private final FollowRelationRepository followRelationRepository;
+	private final GithubFollowClient githubFollowClient;
 
-	public GithubFollowDetectionResult getFollowUserSlice(Long userId, GithubFollowDetection followDetection) {
+	public GithubFollowDetectionResult detect(Long userId, GithubFollowDetectionData data) {
+
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		Integer githubUserId = user.getGithubUserId();
+
+		List<?> githubFollowings = githubFollowClient.fetchFollowings(userId, githubUserId);
+		List<?> githubFollowers = githubFollowClient.fetchFollowers(userId, githubUserId);
+
+
+	}
+
+	public GithubFollowDetectionResult getFollowUserSlice(Long userId, GithubFollowDetectionData followDetection) {
 
 		Integer githubUserId = userRepository.findById(userId).orElseThrow(UserNotFoundException::new).getGithubUserId();
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -49,4 +59,6 @@ public class FollowService {
 
 		followRelationRepository.unfollow(currentUserId, currentUserGithubId, targetGithubUserId, accessToken);
 	}
+
+
 }

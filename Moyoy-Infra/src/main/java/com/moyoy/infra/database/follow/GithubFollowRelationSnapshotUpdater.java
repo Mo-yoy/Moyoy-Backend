@@ -16,7 +16,7 @@ public class GithubFollowRelationSnapshotUpdater {
 	private final CacheManager cacheManager;
 
 	@CachePut(key = "#currentUserId", unless = "#result == null")
-	public GithubFollowRelationSnapshot addFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
+	public GithubFollowRelationSnapshot addFollowingToCurrentUser(Long currentUserId, GithubUser targetUser) {
 
 		GithubFollowRelationSnapshot followRelationSnapshot
 			= cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelationSnapshot.class);
@@ -28,7 +28,7 @@ public class GithubFollowRelationSnapshotUpdater {
 	}
 
 	@CachePut(key = "#currentUserId", unless = "#result == null")
-	public GithubFollowRelationSnapshot deleteFollowingToCurrentUser(Long currentUserId, GithubFollowUser targetUser) {
+	public GithubFollowRelationSnapshot deleteFollowingToCurrentUser(Long currentUserId, GithubUser targetUser) {
 
 		GithubFollowRelationSnapshot followRelation = cacheManager.getCache("followRelation").get(currentUserId, GithubFollowRelationSnapshot.class);
 
@@ -39,7 +39,7 @@ public class GithubFollowRelationSnapshotUpdater {
 	}
 
 	@CachePut(key = "#targetUserId", unless = "#result == null")
-	public GithubFollowRelationSnapshot addFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
+	public GithubFollowRelationSnapshot addFollowerToTargetUser(Long targetUserId, GithubUser currentUser) {
 
 		GithubFollowRelationSnapshot followRelation
 			= cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelationSnapshot.class);
@@ -51,7 +51,7 @@ public class GithubFollowRelationSnapshotUpdater {
 	}
 
 	@CachePut(key = "#targetUserId", unless = "#result == null")
-	public GithubFollowRelationSnapshot deleteFollowerToTargetUser(Long targetUserId, GithubFollowUser currentUser) {
+	public GithubFollowRelationSnapshot deleteFollowerToTargetUser(Long targetUserId, GithubUser currentUser) {
 
 		GithubFollowRelationSnapshot followRelation = cacheManager.getCache("followRelation").get(targetUserId, GithubFollowRelationSnapshot.class);
 

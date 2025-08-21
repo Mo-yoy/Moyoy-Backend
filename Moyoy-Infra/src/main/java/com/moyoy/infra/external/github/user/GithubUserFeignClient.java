@@ -1,26 +1,26 @@
-package com.moyoy.infra.external.github.feign;
+package com.moyoy.infra.external.github.user;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.moyoy.infra.external.config.GithubFeignConfig;
-import com.moyoy.infra.external.github.dto.GithubProfileResponse;
+
+import feign.Response;
 
 @FeignClient(name = "githubProfileClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
-public interface GithubProfileClient {
+public interface GithubUserFeignClient {
 
 	@GetMapping("/user/{userId}")
-	GithubProfileResponse fetchUserProfile(
+	GithubUserResponse fetchUser(
 		@RequestHeader(AUTHORIZATION) String accessToken,
 		@PathVariable("userId") Integer githubUserId);
 
 	@GetMapping("/user/{userId}")
-	ResponseEntity<GithubProfileResponse> fetchUserProfileEntity(
+	Response fetchUserRawResponse(
 		@RequestHeader(AUTHORIZATION) String accessToken,
 		@PathVariable("userId") Integer githubUserId);
 }

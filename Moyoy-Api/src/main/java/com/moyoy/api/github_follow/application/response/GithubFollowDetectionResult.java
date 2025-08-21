@@ -1,10 +1,10 @@
-package com.moyoy.api.follow.application.response;
+package com.moyoy.api.github_follow.application.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.moyoy.api.follow.application.request.GithubFollowDetection;
+import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
 import com.moyoy.domain.follow.FollowUser;
 import com.moyoy.domain.support.page.SliceResult;
 
@@ -14,7 +14,7 @@ public record GithubFollowDetectionResult(
 	LocalDateTime lastSyncAt,
 	int totalFollowUserCount) {
 
-	public static GithubFollowDetectionResult from(List<FollowUser> users, GithubFollowDetection followDetection, LocalDateTime lastSyncAt) {
+	public static GithubFollowDetectionResult from(List<FollowUser> users, GithubFollowDetectionData followDetection, LocalDateTime lastSyncAt) {
 
 		int lastFetchedUserId = followDetection.lastGithubUserId();
 		int pageSize = followDetection.size();

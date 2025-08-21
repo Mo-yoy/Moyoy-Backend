@@ -1,11 +1,10 @@
-package com.moyoy.infra.external.github.dto;
+package com.moyoy.infra.external.github.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GithubFollowUserResponse(
+public record GithubUserResponse(
 
 	String login,
-
 	int id,
 
 	@JsonProperty("node_id") String nodeId,
@@ -40,5 +39,27 @@ public record GithubFollowUserResponse(
 
 	@JsonProperty("user_view_type") String userViewType,
 
-	@JsonProperty("site_admin") boolean siteAdmin) {
+	@JsonProperty("site_admin") boolean siteAdmin,
+
+	String name,
+	String company,
+	String blog,
+	String location,
+	String email,
+	Boolean hireable,
+	String bio,
+
+	@JsonProperty("twitter_username") String twitterUsername,
+
+	@JsonProperty("public_repos") int publicRepos,
+
+	@JsonProperty("public_gists") int publicGists,
+
+	int followers,
+	int following,
+
+	@JsonProperty("created_at") String createdAt,
+
+	@JsonProperty("updated_at") String updatedAt) {
+
 }

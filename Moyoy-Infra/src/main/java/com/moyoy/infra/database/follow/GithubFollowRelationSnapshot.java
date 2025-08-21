@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 public class GithubFollowRelationSnapshot {
 
 	private Long userId;
-	private TreeSet<GithubFollowUser> githubFollowers;
-	private TreeSet<GithubFollowUser> githubFollowings;
+	private TreeSet<GithubUser> githubFollowers;
+	private TreeSet<GithubUser> githubFollowings;
 	private LocalDateTime createdAt;
 
-	public static GithubFollowRelationSnapshot create(Long userId, List<GithubFollowUser> githubFollowers, List<GithubFollowUser> githubFollowings) {
+	public static GithubFollowRelationSnapshot create(Long userId, List<GithubUser> githubFollowers, List<GithubUser> githubFollowings) {
 		return GithubFollowRelationSnapshot.builder()
 			.userId(userId)
 			.githubFollowers(new TreeSet<>(githubFollowers))
@@ -34,22 +34,22 @@ public class GithubFollowRelationSnapshot {
 	}
 
 	///  캐시 오염 방지 메서드
-	public void addFollowing(GithubFollowUser user) {
+	public void addFollowing(GithubUser user) {
 
 		githubFollowings.add(user);
 	}
 
-	public void addFollower(GithubFollowUser user) {
+	public void addFollower(GithubUser user) {
 
 		githubFollowers.add(user);
 	}
 
-	public void removeFollowing(GithubFollowUser user) {
+	public void removeFollowing(GithubUser user) {
 
 		githubFollowings.remove(user);
 	}
 
-	public void removeFollower(GithubFollowUser user) {
+	public void removeFollower(GithubUser user) {
 
 		githubFollowers.remove(user);
 	}

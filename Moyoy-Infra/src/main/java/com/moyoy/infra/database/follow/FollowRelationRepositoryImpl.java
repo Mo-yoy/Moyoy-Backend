@@ -14,8 +14,8 @@ import com.moyoy.domain.follow.FollowRelationRepository;
 import com.moyoy.domain.follow.FollowUser;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
-import com.moyoy.infra.external.github.feign.GithubFollowClient;
-import com.moyoy.infra.external.github.feign.GithubProfileClient;
+import com.moyoy.infra.external.github.follow.GithubFollowFeignClient;
+import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 
 @Component
 @RequiredArgsConstructor
@@ -23,8 +23,8 @@ public class FollowRelationRepositoryImpl implements FollowRelationRepository {
 
 	private final GithubFollowRelationSnapshotReader followRelationSnapshotManager;
 	private final GithubFollowRelationSnapshotUpdater followRelationSnapshotUpdater;
-	private final GithubProfileClient githubProfileClient;
-	private final GithubFollowClient githubFollowClient;
+	private final GithubUserFeignClient githubUserFeignClient;
+	private final GithubFollowFeignClient githubFollowFeignClient;
 	private final UserRepository userRepository;
 
 	@Override
@@ -55,10 +55,12 @@ public class FollowRelationRepositoryImpl implements FollowRelationRepository {
 	@Override
 	public void follow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId, String accessToken) {
 
-		GithubFollowUser currentUser = GithubFollowUser.from(githubProfileClient.fetchUserProfile(accessToken, currentUserGithubId));
-		GithubFollowUser targetUser = GithubFollowUser.from(githubProfileClient.fetchUserProfile(accessToken, targetUserGithubId));
+		GithubUser currentUser = GithubUser.from(
+			githubUserFeignClient.fetchUser(accessToken, currentUserGithubId));
+		GithubUser targetUser = GithubUser.from(
+			githubUserFeignClient.fetchUser(accessToken, targetUserGithubId));
 
-		ResponseEntity<Void> followResult = githubFollowClient.follow(targetUser.username(), accessToken);
+		ResponseEntity<Void> followResult = githubFollowFeignClient.follow(targetUser.username(), accessToken);
 
 		int responseStatus = followResult.getStatusCode().value();
 
@@ -79,10 +81,12 @@ public class FollowRelationRepositoryImpl implements FollowRelationRepository {
 	@Override
 	public void unfollow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId, String accessToken) {
 
-		GithubFollowUser currentUser = GithubFollowUser.from(githubProfileClient.fetchUserProfile(accessToken, currentUserGithubId));
-		GithubFollowUser targetUser = GithubFollowUser.from(githubProfileClient.fetchUserProfile(accessToken, targetUserGithubId));
+		GithubUser currentUser = GithubUser.from(
+			githubUserFeignClient.fetchUser(accessToken, currentUserGithubId));
+		GithubUser targetUser = GithubUser.from(
+			githubUserFeignClient.fetchUser(accessToken, targetUserGithubId));
 
-		ResponseEntity<Void> unfollowResult = githubFollowClient.unfollow(targetUser.username(), accessToken);
+		ResponseEntity<Void> unfollowResult = githubFollowFeignClient.unfollow(targetUser.username(), accessToken);
 
 		int responseStatus = unfollowResult.getStatusCode().value();
 

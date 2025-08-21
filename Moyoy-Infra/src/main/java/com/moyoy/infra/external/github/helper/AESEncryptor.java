@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.common;
+package com.moyoy.infra.external.github.helper;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;

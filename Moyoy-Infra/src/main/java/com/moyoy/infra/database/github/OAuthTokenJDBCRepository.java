@@ -1,14 +1,12 @@
 package com.moyoy.infra.database.github;
 
-import static com.moyoy.common.constant.MoyoConstants.*;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.moyoy.infra.external.github.common.AESEncryptor;
+import com.moyoy.infra.external.github.helper.AESEncryptor;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,8 +1,7 @@
-package com.moyoy.infra.external.github.common;
+package com.moyoy.infra.external.github.helper;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;

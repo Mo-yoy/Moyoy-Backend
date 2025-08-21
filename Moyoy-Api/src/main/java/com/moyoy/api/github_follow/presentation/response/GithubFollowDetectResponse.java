@@ -1,10 +1,10 @@
-package com.moyoy.api.follow.presentation.response;
+package com.moyoy.api.github_follow.presentation.response;
 
 import java.util.List;
 
-import com.moyoy.api.follow.application.response.GithubFollowDetectionResult;
+import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 import com.moyoy.common.util.TimeSinceFormatter;
-import com.moyoy.infra.database.follow.GithubFollowUser;
+import com.moyoy.infra.database.follow.GithubUser;
 
 public record GithubFollowDetectResponse(
 	List<GithubFollowUserDto> userList,
@@ -16,7 +16,7 @@ public record GithubFollowDetectResponse(
 		Integer githubUserId,
 		String username,
 		String profileImgUrl) {
-		public static GithubFollowUserDto from(GithubFollowUser user) {
+		public static GithubFollowUserDto from(GithubUser user) {
 			return new GithubFollowUserDto(
 				user.id(),
 				user.username(),

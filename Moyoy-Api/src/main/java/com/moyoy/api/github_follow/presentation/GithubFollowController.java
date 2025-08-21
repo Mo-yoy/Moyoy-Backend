@@ -1,4 +1,4 @@
-package com.moyoy.api.follow.presentation;
+package com.moyoy.api.github_follow.presentation;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,32 +13,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.moyoy.api.common.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.api.follow.application.FollowService;
-import com.moyoy.api.follow.application.request.GithubFollowDetection;
-import com.moyoy.api.follow.application.response.GithubFollowDetectionResult;
-import com.moyoy.api.follow.presentation.response.GithubFollowDetectResponse;
+import com.moyoy.api.github_follow.application.GithubFollowService;
+import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
+import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
+import com.moyoy.api.github_follow.presentation.response.GithubFollowDetectResponse;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class GithubFollowController {
 
-	private final FollowService followService;
+	private final GithubFollowService githubFollowService;
 
 	@GetMapping("/users/me/followings/{detectType}")
-	public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> getFollowUserList(
+	public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> detectGithubFollowRelation(
 		@LoginUserId Long currentUserId,
 		@PathVariable("detectType") String detectType,
 		@RequestParam(value = "lastGithubUserId", required = false, defaultValue = "0") Integer lastGithubUserId,
 		@RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize,
 		@RequestParam(value = "forceSync", required = false) boolean forceSync) {
 
-		GithubFollowDetection followDetection = new GithubFollowDetection(detectType, lastGithubUserId, pageSize, forceSync);
-		GithubFollowDetectionResult followDetectionResult = followService.getFollowUserSlice(currentUserId, followDetection);
+		GithubFollowDetectionData data = GithubFollowDetectionData.of(detectType, lastGithubUserId, pageSize, forceSync);
+		GithubFollowDetectionResult result = githubFollowService.detect(currentUserId, data);
 
-		GithubFollowDetectResponse responseData = GithubFollowDetectResponse.from(followDetectionResult);
+		GithubFollowDetectResponse response = GithubFollowDetectResponse.from(result);
 
-		return ResponseEntity.ok(ApiResponse.success(responseData));
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
 	@PostMapping("/follow/{targetGithubUserId}")
@@ -46,7 +46,7 @@ public class GithubFollowController {
 		@LoginUserId Long currentUserId,
 		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
 
-		followService.follow(currentUserId, targetGithubUserId);
+		githubFollowService.follow(currentUserId, targetGithubUserId);
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}
@@ -56,7 +56,7 @@ public class GithubFollowController {
 		@LoginUserId Long currentUserId,
 		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
 
-		followService.unfollow(currentUserId, targetGithubUserId);
+		githubFollowService.unfollow(currentUserId, targetGithubUserId);
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}
