@@ -1,10 +1,15 @@
 package com.moyoy.domain.support.page;
 
-// 정렬 필요해 지면 추후 추가
 public record PageData(
 	int page,
-	int size) {
+	int size,
+	String sort
+	) {
 	public static PageData of(int page, int size) {
-		return new PageData(page, size);
+		return new PageData(page, size, null);
+	}
+
+	public static PageData of(int page, int size, String sort) {
+		return new PageData(page, size, sort);
 	}
 }
