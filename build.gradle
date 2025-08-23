@@ -96,7 +96,7 @@ subprojects {
     spotless {
         java {
             eclipse().configFile("${rootProject.projectDir}/config/spotless/naver-code-convention.xml")
-            importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyo', '')
+            importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyoy.api', 'com.moyoy.batch', 'com.moyoy.domain', 'com.moyoy.infra', 'com.moyoy.common')
             removeUnusedImports()
             trimTrailingWhitespace()
             endWithNewline()

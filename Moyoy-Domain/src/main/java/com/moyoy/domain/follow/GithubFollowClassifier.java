@@ -1,40 +1,35 @@
 package com.moyoy.domain.follow;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import lombok.Builder;
-import lombok.Getter;
+import org.springframework.stereotype.Component;
 
-@Getter
-@Builder
-public class FollowRelation {
+@Component
+public class GithubFollowClassifier {
 
-	private Long userId;
-	private TreeSet<GithubUser> followers;
-	private TreeSet<GithubUser> followings;
-	private LocalDateTime createdAt;
+	public List<GithubUser> classifyByDetectType(DetectType detectType, List<GithubUser> followers, List<GithubUser> followings) {
 
-	public List<GithubUser> filterUsersByDetectType(DetectType detectType) {
-		Set<GithubUser> tempSet = new TreeSet<>();
+		Set<GithubUser> tempSet = switch (detectType) {
 
-		switch (detectType) {
 			case MUTUAL -> {
 				tempSet = new TreeSet<>(followings);
 				tempSet.retainAll(followers);
+				yield tempSet;
 			}
 			case FOLLOW_ONLY -> {
 				tempSet = new TreeSet<>(followings);
 				tempSet.removeAll(followers);
+				yield tempSet;
 			}
 			case FOLLOWED_ONLY -> {
 				tempSet = new TreeSet<>(followers);
 				tempSet.removeAll(followings);
+				yield tempSet;
 			}
-		}
+		};
 
 		return new ArrayList<>(tempSet);
 	}

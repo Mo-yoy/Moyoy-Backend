@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.support.config;
+package com.moyoy.infra.cache.support.config;
 
 import java.time.Duration;
 

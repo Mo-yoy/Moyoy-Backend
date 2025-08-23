@@ -44,11 +44,13 @@ import com.epages.restdocs.apispec.SimpleType;
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.github_follow.application.GithubFollowService;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
-import com.moyoy.common.annotation.WithMockMoyoyUser;
+
 import com.moyoy.domain.follow.FollowUser;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.github.GithubErrorCode;
 import com.moyoy.domain.support.page.SliceResult;
+
+import com.moyoy.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs

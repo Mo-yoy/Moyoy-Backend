@@ -1,19 +1,25 @@
 package com.moyoy.api.github_follow.application;
 
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.moyoy.api.common.util.SlicePagingUtils;
 import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
-import com.moyoy.domain.follow.FollowRelation;
-import com.moyoy.domain.follow.FollowUser;
+import com.moyoy.domain.follow.DetectType;
+import com.moyoy.domain.follow.GithubFollowClassifier;
+import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
+import com.moyoy.domain.support.page.SliceResult;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.infra.cache.GithubFollowCacheManager;
+import com.moyoy.infra.cache.GithubFollowRelationSnapshot;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -21,44 +27,55 @@ public class GithubFollowService {
 
 	private final UserRepository userRepository;
 	private final GithubFollowClient githubFollowClient;
+	private final GithubFollowClassifier githubFollowClassifier;
+	private final GithubFollowCacheManager githubFollowCacheManager;
 
-	public GithubFollowDetectionResult detect(Long userId, GithubFollowDetectionData data) {
+	public Optional<GithubFollowDetectionResult> detect(Long userId, GithubFollowDetectionData data) {
 
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Integer githubUserId = user.getGithubUserId();
+		Optional<GithubFollowRelationSnapshot> followRelationSnapshot = githubFollowCacheManager.findFollowSnapshot(userId);
 
-		List<?> githubFollowings = githubFollowClient.fetchFollowings(userId, githubUserId);
-		List<?> githubFollowers = githubFollowClient.fetchFollowers(userId, githubUserId);
+		if(followRelationSnapshot.isEmpty()) {
 
+			///  TODO : SQS에 인큐 , 이미 작업이 들어있을 때 제어해야함. 분산락?
 
-	}
+			return Optional.empty();
+		}
 
-	public GithubFollowDetectionResult getFollowUserSlice(Long userId, GithubFollowDetectionData followDetection) {
+		GithubFollowRelationSnapshot followRelation = followRelationSnapshot.get();
+		List<GithubUser> githubFollowers = followRelation.getGithubFollowers();
+		List<GithubUser> githubFollowings = followRelation.getGithubFollowings();
 
-		Integer githubUserId = userRepository.findById(userId).orElseThrow(UserNotFoundException::new).getGithubUserId();
-		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
+		DetectType detectType = data.detectType();
+		List<GithubUser> classifiedUserList = githubFollowClassifier.classifyByDetectType(detectType, githubFollowers, githubFollowings);
 
-		FollowRelation followRelation = followRelationRepository.loadFollowRelation(userId, followDetection.forceSync(), githubUserId, accessToken);
-		List<FollowUser> filteredFollowUsers = followRelation.filterUsersByDetectType(followDetection.detectType());
+		SliceResult<GithubUser> sliceResult = SlicePagingUtils.window(
+			classifiedUserList,
+			data.lastGithubUserId(),
+			data.size(),
+			GithubUser::id
+		);
 
-		return GithubFollowDetectionResult.from(filteredFollowUsers, followDetection, followRelation.getCreatedAt());
+		GithubFollowDetectionResult result = GithubFollowDetectionResult.of(
+			sliceResult,
+			followRelation.getSnapshotTime(),
+			classifiedUserList.size());
+
+		return Optional.of(result);
 	}
 
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
-		Integer currentUserGithubId = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new).getGithubUserId();
-		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
+		User user = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
+		Integer githubUserId = user.getGithubUserId();
 
-		followRelationRepository.follow(currentUserId, currentUserGithubId, targetUserGithubId, accessToken);
+		githubFollowClient.follow(currentUserId, githubUserId, targetUserGithubId);
 	}
 
 	public void unfollow(Long currentUserId, Integer targetGithubUserId) {
 
-		Integer currentUserGithubId = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new).getGithubUserId();
-		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
+		User user = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
+		Integer githubUserId = user.getGithubUserId();
 
-		followRelationRepository.unfollow(currentUserId, currentUserGithubId, targetGithubUserId, accessToken);
+		githubFollowClient.unFollow(currentUserId, githubUserId, targetGithubUserId);
 	}
-
-
 }

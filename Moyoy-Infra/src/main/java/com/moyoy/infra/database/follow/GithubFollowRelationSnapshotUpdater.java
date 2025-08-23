@@ -8,6 +8,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
+import com.moyoy.domain.follow.GithubUser;
+
 @Component
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "followRelation")

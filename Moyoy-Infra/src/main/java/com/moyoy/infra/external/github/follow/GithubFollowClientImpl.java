@@ -8,11 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
-import com.moyoy.infra.database.follow.GithubUser;
+import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
@@ -57,7 +58,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 
 			githubFollowings.addAll(
 				followingsResponseList.stream()
-					.map(GithubUser::from)
+					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 		}
 
@@ -65,6 +66,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 	}
 
 	@Override
+	@Cacheable(value = "githubFollowers", key = "#userId")
 	public List<GithubUser> fetchFollowers(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -89,7 +91,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 
 			githubFollowers.addAll(
 				followersResponseList.stream()
-					.map(GithubUser::from)
+					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 
 		}

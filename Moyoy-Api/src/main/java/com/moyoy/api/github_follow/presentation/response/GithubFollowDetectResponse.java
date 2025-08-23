@@ -3,8 +3,10 @@ package com.moyoy.api.github_follow.presentation.response;
 import java.util.List;
 
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
+
+import com.moyoy.domain.follow.GithubUser;
+
 import com.moyoy.common.util.TimeSinceFormatter;
-import com.moyoy.infra.database.follow.GithubUser;
 
 public record GithubFollowDetectResponse(
 	List<GithubFollowUserDto> userList,

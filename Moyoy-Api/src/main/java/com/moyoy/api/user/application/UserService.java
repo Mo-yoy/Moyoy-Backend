@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.moyoy.api.user.application.request.UserSyncData;
 import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.api.user.application.response.UserSyncResult;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
 import com.moyoy.domain.support.error.ranking.RankingNotFoundException;

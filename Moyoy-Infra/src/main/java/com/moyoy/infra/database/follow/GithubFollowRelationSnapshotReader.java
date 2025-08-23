@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.moyoy.infra.external.github.follow.GithubUserFollowSummary;
 import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
 import com.moyoy.infra.external.github.user.GithubFollowUserResponse;
+import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
 import com.moyoy.infra.external.github.follow.GithubFollowFeignClient;
 import com.moyoy.infra.external.github.user.GithubUserFeignClient;

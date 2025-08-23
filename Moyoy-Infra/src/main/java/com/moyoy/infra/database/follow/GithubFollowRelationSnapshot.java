@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.moyoy.domain.follow.GithubUser;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

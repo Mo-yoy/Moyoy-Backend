@@ -1,5 +1,7 @@
 package com.moyoy.api.github_follow.presentation;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -30,14 +32,18 @@ public class GithubFollowController {
 		@LoginUserId Long currentUserId,
 		@PathVariable("detectType") String detectType,
 		@RequestParam(value = "lastGithubUserId", required = false, defaultValue = "0") Integer lastGithubUserId,
-		@RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize,
-		@RequestParam(value = "forceSync", required = false) boolean forceSync) {
+		@RequestParam(value = "size", required = false, defaultValue = "30") int size) {
 
-		GithubFollowDetectionData data = GithubFollowDetectionData.of(detectType, lastGithubUserId, pageSize, forceSync);
-		GithubFollowDetectionResult result = githubFollowService.detect(currentUserId, data);
+		GithubFollowDetectionData data = GithubFollowDetectionData.of(detectType, lastGithubUserId, size);
 
-		GithubFollowDetectResponse response = GithubFollowDetectResponse.from(result);
+		Optional<GithubFollowDetectionResult> result = githubFollowService.detect(currentUserId, data);
 
+		if(result.isEmpty()) {
+
+			return ResponseEntity.accepted().build();
+		}
+
+		GithubFollowDetectResponse response = GithubFollowDetectResponse.from(result.get());
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 

@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.support.config;
+package com.moyoy.infra.cache.support.config;
 
 import lombok.extern.slf4j.Slf4j;
 

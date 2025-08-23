@@ -34,6 +34,7 @@ import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.ranking.application.RankingService;
 import com.moyoy.api.ranking.application.response.RankingSearchResult;
 import com.moyoy.api.ranking.application.response.RankingUserView;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.User;
