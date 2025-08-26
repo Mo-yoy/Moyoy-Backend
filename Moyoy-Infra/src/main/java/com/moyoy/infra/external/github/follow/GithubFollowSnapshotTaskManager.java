@@ -3,13 +3,12 @@ package com.moyoy.infra.external.github.follow;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Component;
-
-import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
-import com.moyoy.infra.database.redis.support.RedissonLock;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
+import com.moyoy.infra.database.redis.support.RedissonLock;
 
 @Slf4j
 @Component

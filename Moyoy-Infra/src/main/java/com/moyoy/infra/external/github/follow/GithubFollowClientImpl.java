@@ -8,24 +8,27 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
+
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
 
 import feign.Response;
 import feign.Util;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GithubFollowClientImpl implements GithubFollowClient{
+public class GithubFollowClientImpl implements GithubFollowClient {
 
 	private final GithubFollowFeignClient githubFollowFeignClient;
 	private final GithubUserFeignClient githubUserFeignClient;
@@ -43,7 +46,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 		int maxFollowingPageSize = githubUserResponse.following() / GITHUB_MAX_QUERY_PAGING_SIZE + 1;
 		log.info("{}의 깃허브 팔로잉 리스트 조회 요청 로그 (page size = {}) | followingMaxPage : {},", userId, GITHUB_MAX_QUERY_PAGING_SIZE, maxFollowingPageSize);
 
-		if(rateLimitRemaining - maxFollowingPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
+		if (rateLimitRemaining - maxFollowingPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
 			log.error("팔로잉 리스트 조회 중 API Limit 초과 | GitHub User Id : {}, Remaining : {}", githubUserId, rateLimitRemaining);
 			throw new GithubApiLimitExceedException();
 		}
@@ -75,7 +78,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 		int maxFollowerPageSize = githubUserResponse.followers() / GITHUB_MAX_QUERY_PAGING_SIZE + 1;
 		log.info("{}의 깃허브 팔로워 리스트 조회 요청 로그 (page size = {}) | followerMaxPage : {},", userId, GITHUB_MAX_QUERY_PAGING_SIZE, maxFollowerPageSize);
 
-		if(rateLimitRemaining - maxFollowerPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
+		if (rateLimitRemaining - maxFollowerPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
 			log.error("팔로워 리스트 조회 중 API Limit 초과 | GitHub User Id : {}, Remaining : {}", githubUserId, rateLimitRemaining);
 			throw new GithubApiLimitExceedException();
 		}
@@ -107,8 +110,7 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 		if (responseStatus == 204) {
 
 			log.info("깃허브 팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId, targetUserGithubId);
-		}
-		else {
+		} else {
 
 			log.warn("깃허브 팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
 			throw new RuntimeException("깃허브 팔로우 요청 처리 실패"); /// TODO 추후 처리
@@ -127,14 +129,12 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 
 			log.info("깃허브 언팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId,
 				targetUserGithubId);
-		}
-		else {
+		} else {
 
 			log.warn("깃허브 언팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
 			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패"); /// TODO 추후 처리
 		}
 	}
-
 
 	private int getLimitRemaining(Response response) {
 

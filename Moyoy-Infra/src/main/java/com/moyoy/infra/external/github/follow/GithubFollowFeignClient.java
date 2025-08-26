@@ -5,7 +5,6 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.moyoy.infra.external.config.GithubFeignConfig;
-import com.moyoy.infra.external.github.user.GithubFollowUserResponse;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
 
 import feign.Response;

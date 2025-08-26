@@ -70,16 +70,16 @@ public class GithubFollowService {
 		githubFollowClient.follow(currentUserId, targetUserGithubId);
 
 		followSnapshotCacheManager.findFollowSnapshot(currentUserId)
-			.ifPresent(currentUserSnapshot ->{
+			.ifPresent(currentUserSnapshot -> {
 
-					GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
-					currentUserSnapshot.addFollowing(targetGithubUser);
-					followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
-				}
-			);
+				GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
+				currentUserSnapshot.addFollowing(targetGithubUser);
+				followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
+			});
 
 		Optional<User> targetMoyoyUser = userRepository.findByGithubUserId(targetUserGithubId);
-		if (targetMoyoyUser.isEmpty()) return;
+		if (targetMoyoyUser.isEmpty())
+			return;
 
 		followSnapshotCacheManager.findFollowSnapshot(targetMoyoyUser.get().getId())
 			.ifPresent(
@@ -88,8 +88,7 @@ public class GithubFollowService {
 					GithubUser currentGithubUser = fromUser(currentMoyoyUser);
 					targetUserSnapshot.addFollower(currentGithubUser);
 					followSnapshotCacheManager.save(targetMoyoyUser.get().getId(), targetUserSnapshot);
-				}
-			);
+				});
 	}
 
 	public void unfollow(Long currentUserId, Integer targetUserGithubId) {
@@ -106,7 +105,8 @@ public class GithubFollowService {
 			});
 
 		Optional<User> targetMoyoyUser = userRepository.findByGithubUserId(targetUserGithubId);
-		if (targetMoyoyUser.isEmpty()) return;
+		if (targetMoyoyUser.isEmpty())
+			return;
 
 		followSnapshotCacheManager.findFollowSnapshot(targetMoyoyUser.get().getId())
 			.ifPresent(
@@ -115,8 +115,7 @@ public class GithubFollowService {
 					GithubUser currentGithubUser = fromUser(currentMoyoyUser);
 					targetUserSnapshot.removeFollower(currentGithubUser);
 					followSnapshotCacheManager.save(targetMoyoyUser.get().getId(), targetUserSnapshot);
-				}
-			);
+				});
 	}
 
 	private GithubUser fromApi(Long currentUserId, Integer targetGithubUserId) {

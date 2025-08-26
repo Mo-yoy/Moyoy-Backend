@@ -4,14 +4,16 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
+
 import com.moyoy.infra.external.github.user.GithubUserClient;
 
 import feign.Response;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *  Github User Info API를 이용해서 API LIMIT 체크

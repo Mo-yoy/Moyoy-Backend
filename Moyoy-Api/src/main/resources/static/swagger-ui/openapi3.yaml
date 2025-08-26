@@ -182,7 +182,6 @@ paths:
         required: true
         schema:
           type: string
-          default: mutual
       - name: lastGithubUserId
         in: query
         description: "이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지\

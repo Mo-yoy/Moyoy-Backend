@@ -3,8 +3,7 @@ package com.moyoy.domain.support.page;
 public record PageData(
 	int page,
 	int size,
-	String sort
-) {
+	String sort) {
 	public static PageData of(int page, int size) {
 		return new PageData(page, size, null);
 	}

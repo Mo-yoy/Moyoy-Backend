@@ -2,19 +2,18 @@ package com.moyoy.infra.external.github.follow;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.data.redis.util.RedisAssertions;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.follow.GithubFollowSnapshot;
 import com.moyoy.domain.follow.GithubUser;
-import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 
 @Slf4j
 @Component

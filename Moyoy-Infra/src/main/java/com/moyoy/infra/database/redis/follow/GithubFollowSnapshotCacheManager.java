@@ -2,15 +2,14 @@ package com.moyoy.infra.database.redis.follow;
 
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.follow.GithubFollowSnapshot;
-import com.moyoy.infra.external.github.user.GithubUserClient;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -21,8 +20,7 @@ public class GithubFollowSnapshotCacheManager {
 
 	public Optional<GithubFollowSnapshot> findFollowSnapshot(Long userId) {
 
-		GithubFollowSnapshot githubFollowSnapshot
-			= cacheManager.getCache("followSnapshot").get(userId, GithubFollowSnapshot.class);
+		GithubFollowSnapshot githubFollowSnapshot = cacheManager.getCache("followSnapshot").get(userId, GithubFollowSnapshot.class);
 		return Optional.ofNullable(githubFollowSnapshot);
 	}
 

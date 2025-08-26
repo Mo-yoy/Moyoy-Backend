@@ -2,7 +2,6 @@ package com.moyoy.domain.follow;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,7 +18,7 @@ public class GithubFollowSnapshot {
 	private Set<GithubUser> githubFollowings;
 	private LocalDateTime snapshotTime;
 
-	public static GithubFollowSnapshot of(List<GithubUser> githubFollowers, List<GithubUser> githubFollowings, LocalDateTime snapshotTime){
+	public static GithubFollowSnapshot of(List<GithubUser> githubFollowers, List<GithubUser> githubFollowings, LocalDateTime snapshotTime) {
 
 		return new GithubFollowSnapshot(
 			new TreeSet<>(githubFollowers),

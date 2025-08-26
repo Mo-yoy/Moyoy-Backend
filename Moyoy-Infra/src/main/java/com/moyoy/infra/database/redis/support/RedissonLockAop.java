@@ -2,7 +2,9 @@ package com.moyoy.infra.database.redis.support;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -16,9 +18,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Aspect
 @Component
@@ -31,7 +30,7 @@ public class RedissonLockAop {
 
 	@Around("@annotation(com.moyoy.infra.database.redis.support.RedissonLock)")
 	public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
-		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		Method method = signature.getMethod();
 		RedissonLock redissonLock = method.getAnnotation(RedissonLock.class);
 
@@ -46,8 +45,7 @@ public class RedissonLockAop {
 			acquired = rLock.tryLock(
 				redissonLock.waitTime(),
 				redissonLock.leaseTime(),
-				redissonLock.timeUnit()
-			);
+				redissonLock.timeUnit());
 		}
 
 		if (!acquired) {
@@ -62,8 +60,7 @@ public class RedissonLockAop {
 		try {
 			result = joinPoint.proceed();
 			return handleResultWithLock(rLock, key, result);
-		}
-		finally {
+		} finally {
 
 			if (!isAsyncResult(result)) {
 				unlock(rLock, key);
@@ -79,7 +76,7 @@ public class RedissonLockAop {
 
 		if (result instanceof CompletableFuture<?>) {
 
-			return ((CompletableFuture<?>) result).whenComplete((r, ex) -> {
+			return ((CompletableFuture<?>)result).whenComplete((r, ex) -> {
 				forceUnlock(rLock, key);
 			});
 		}
@@ -98,7 +95,7 @@ public class RedissonLockAop {
 		}
 	}
 
-	private void forceUnlock(RLock rLock, String key){
+	private void forceUnlock(RLock rLock, String key) {
 		try {
 			rLock.forceUnlock();
 			log.info("비동기 락 강제 해제 | Key: {}", key);
