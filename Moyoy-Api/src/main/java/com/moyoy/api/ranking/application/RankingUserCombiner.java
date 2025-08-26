@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.api.ranking.application.response.RankingUserView;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.user.User;
 

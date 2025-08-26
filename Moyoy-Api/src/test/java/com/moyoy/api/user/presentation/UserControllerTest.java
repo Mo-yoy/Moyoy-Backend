@@ -29,6 +29,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.user.application.UserService;
 import com.moyoy.api.user.application.response.UserSearchResult;
+
 import com.moyoy.common.annotation.WithMockMoyoyUser;
 
 @WebMvcTest(value = UserController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {

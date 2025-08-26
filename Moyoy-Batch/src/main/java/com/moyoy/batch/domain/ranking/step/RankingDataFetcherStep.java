@@ -16,8 +16,8 @@ import com.moyoy.batch.domain.ranking.component.processor.GithubRepoClassifier;
 import com.moyoy.batch.domain.ranking.component.reader.RankingBatchReader;
 import com.moyoy.batch.domain.ranking.step.dto.RankingDataResult;
 import com.moyoy.domain.user.User;
-import com.moyoy.infra.external.github.common.GithubApiLimitChecker;
-import com.moyoy.infra.external.github.common.GithubOAuthTokenReader;
+import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
+import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class RankingDataFetcherStep {
 
 		// 1. 사용자 id로 username, follower 수, 소유 중인 개인 Repo 수, RateLimitRemaining 체크
 		UserRankingProfile userRankingProfile = rankingBatchReader.fetchUserRankingProfile(githubAccessToken, currentGithubUserId);
-		githubApiLimitChecker.assertCanGithubRequest(githubAccessToken, currentGithubUserId);
+		githubApiLimitChecker.assertCanGithubRequest(currentUserId, currentGithubUserId);
 
 		// 2. 해당 사용자가 read, write, owner 권한을 가지고 있는 올해 Repo 모두 가져옴
 		List<GithubRepoDetails> githubRepoDetailsList = rankingBatchReader.fetchAllGithubRepoDetails(githubAccessToken);

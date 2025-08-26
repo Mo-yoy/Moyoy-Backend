@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moyoy.api.ranking.application.request.RankingSearch;
 import com.moyoy.api.ranking.application.response.RankingSearchResult;
 import com.moyoy.api.ranking.application.response.RankingUserView;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
 import com.moyoy.domain.support.page.PageData;
