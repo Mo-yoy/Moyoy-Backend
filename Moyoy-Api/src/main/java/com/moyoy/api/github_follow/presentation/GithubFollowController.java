@@ -45,6 +45,15 @@ public class GithubFollowController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
+	@PostMapping("/users/me/followings/refresh")
+	public ResponseEntity<ApiResponse<Void>> refreshGithubFollowRelation(
+		@LoginUserId Long currentUserId) {
+
+		githubFollowService.refresh(currentUserId);
+
+		return ResponseEntity.accepted().body(ApiResponse.accepted());
+	}
+
 	@PostMapping("/follow/{targetGithubUserId}")
 	public ResponseEntity<ApiResponse<Void>> followGithubUser(
 		@LoginUserId Long currentUserId,

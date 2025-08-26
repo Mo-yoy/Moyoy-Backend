@@ -15,6 +15,7 @@ import com.moyoy.api.github_follow.application.response.GithubFollowDetectionRes
 import com.moyoy.domain.follow.GithubFollowClassifier;
 import com.moyoy.domain.follow.GithubFollowSnapshot;
 import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.support.error.github_follow.GithubFollowSnapshotCoolDownNotExpiredException;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.support.page.SliceResult;
 import com.moyoy.domain.user.User;
@@ -62,6 +63,22 @@ public class GithubFollowService {
 				sliceResult,
 				githubFollowSnapshot.get().getSnapshotTime(),
 				classifiedUserList.size()));
+	}
+
+	public void refresh(Long currentUserId) {
+
+		Optional<GithubFollowSnapshot> followSnapshot = followSnapshotCacheManager.findFollowSnapshot(currentUserId);
+		if (followSnapshot.isPresent()) {
+
+			boolean canRefresh = followSnapshot.get().canRefresh();
+
+			if (!canRefresh)
+				throw new GithubFollowSnapshotCoolDownNotExpiredException();
+		}
+
+		User user = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
+		log.info("Github Follow Snapshot Refresh 시도, userId={}", currentUserId);
+		githubFollowSnapshotTaskManager.submit(currentUserId, user.getGithubUserId());
 	}
 
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
@@ -127,4 +144,5 @@ public class GithubFollowService {
 	private GithubUser fromUser(User user) {
 		return GithubUser.of(user.getGithubUserId(), user.getUsername(), user.getProfileImgUrl());
 	}
+
 }

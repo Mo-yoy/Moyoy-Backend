@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.moyoy.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
 import static com.moyoy.domain.support.error.github.GithubErrorCode.*;
+import static com.moyoy.domain.support.error.github_follow.FollowErrorCode.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -49,6 +50,7 @@ import com.moyoy.api.github_follow.application.response.GithubFollowDetectionRes
 import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.github.GithubErrorCode;
+import com.moyoy.domain.support.error.github_follow.FollowErrorCode;
 import com.moyoy.domain.support.page.SliceResult;
 
 import com.moyoy.common.annotation.WithMockMoyoyUser;
@@ -159,8 +161,8 @@ class GithubFollowControllerTest {
 
 	@WithMockMoyoyUser
 	@ParameterizedTest(name = "{index} => errorCode={0}")
-	@MethodSource("followDetectorErrorCodes")
-	void 맞팔탐지기_에러코드_문서화(GithubErrorCode errorCode) throws Exception {
+	@MethodSource("followDetectErrorCodes")
+	void 맞팔탐지기_조회_에러코드_문서화(GithubErrorCode errorCode) throws Exception {
 		// given
 		doThrow(new MoyoException(errorCode)).when(githubFollowService).detect(anyLong(), any());
 
@@ -186,9 +188,69 @@ class GithubFollowControllerTest {
 					.build())));
 	}
 
-	static Stream<GithubErrorCode> followDetectorErrorCodes() {
+	static Stream<GithubErrorCode> followDetectErrorCodes() {
 		return Stream.of(
 			LIMIT_EXCEED);
+	}
+
+	@WithMockMoyoyUser
+	@Test
+	void 맞팔탐지기_리프레시_성공_문서화() throws Exception {
+
+		// given
+		willDoNothing()
+			.given(githubFollowService)
+			.refresh(anyLong());
+
+		// when
+		mockMvc.perform(post("/api/v1/users/me/followings/refresh")
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+			.andExpect(status().isAccepted())
+
+			// REST Docs
+			.andDo(document("맞팔탐지기 조회를 위한 데이터 강제 갱신 요청",
+				resource(ResourceSnippetParameters.builder()
+					.tag("👥 깃허브 팔로우 관계 탐지")
+					.summary("깃허브 팔로우 관계 탐지기 캐시 강제 갱신 요청")
+					.description("현재 사용자의 요청을 처리하기 위한 데이터 강제 갱신 요청, 캐시에 데이터가 이미 존재하면 강제갱신, 데이터가 없으면 수집")
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						subsectionWithPath("data").description("🚫 데이터 없음 (null)").optional())
+					.build())));
+	}
+
+	@WithMockMoyoyUser
+	@ParameterizedTest(name = "{index} => errorCode={0}")
+	@MethodSource("followRefreshErrorCodes")
+	void 맞팔탐지기_리프레시_에러코드_문서화(FollowErrorCode errorCode) throws Exception {
+
+		// given
+		doThrow(new MoyoException(errorCode)).when(githubFollowService).refresh(anyLong());
+
+		// when
+		mockMvc.perform(post("/api/v1/users/me/followings/refresh")
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+			.andExpect(status().is(errorCode.getStatus()))
+			.andExpect(jsonPath("$.code").value(errorCode.getCode()))
+			.andExpect(jsonPath("$.message").value(errorCode.getMessage()))
+
+			// REST Docs
+			.andDo(document(errorCode.getCode(),
+				resource(ResourceSnippetParameters.builder()
+					.tag("👥 깃허브 팔로우 관계 탐지")
+					.responseFields(
+						fieldWithPath("status").description("❌ 응답 상태 코드 (HTTP status)"),
+						fieldWithPath("code").description("🔢 도메인 에러 코드"),
+						fieldWithPath("message").description("📝 상세 에러 메시지"),
+						subsectionWithPath("data").description("🚫 데이터 없음 (null)").optional())
+					.build())));
+	}
+
+	static Stream<FollowErrorCode> followRefreshErrorCodes() {
+		return Stream.of(
+			SNAPSHOT_COOLDOWN_NOT_EXPIRED);
 	}
 
 	@Test

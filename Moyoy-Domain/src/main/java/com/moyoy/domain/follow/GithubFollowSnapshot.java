@@ -45,4 +45,9 @@ public class GithubFollowSnapshot {
 
 		githubFollowers.remove(user);
 	}
+
+	public boolean canRefresh(){
+
+		return snapshotTime.plusMinutes(5).isBefore(LocalDateTime.now());
+	}
 }
