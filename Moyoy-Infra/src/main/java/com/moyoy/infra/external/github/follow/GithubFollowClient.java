@@ -10,7 +10,7 @@ public interface GithubFollowClient {
 
 	List<GithubUser> fetchFollowers(Long userId, Integer githubUserId);
 
-	void follow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId);
+	void follow(Long currentUserId, Integer targetUserGithubId);
 
-	void unFollow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId);
+	void unFollow(Long currentUserId, Integer targetUserGithubId);
 }

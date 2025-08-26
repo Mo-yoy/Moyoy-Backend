@@ -10,4 +10,8 @@ public record GithubUser(
 	public int compareTo(GithubUser otherUser) {
 		return this.id.compareTo(otherUser.id);
 	}
+
+	public static GithubUser of(Integer id, String username, String profileImgUrl) {
+		return new GithubUser(id, username, profileImgUrl);
+	}
 }

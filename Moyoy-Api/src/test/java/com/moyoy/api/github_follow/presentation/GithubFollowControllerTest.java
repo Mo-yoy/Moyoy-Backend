@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.github_follow.application.GithubFollowService;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.follow.FollowUser;
+import com.moyoy.domain.follow.GithubUser;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.github.GithubErrorCode;
 import com.moyoy.domain.support.page.SliceResult;
@@ -67,29 +68,27 @@ class GithubFollowControllerTest {
 
 	@WithMockMoyoyUser
 	@Test
-	void 맞팔탐지기_성공_문서화() throws Exception {
+	void 맞팔탐지기_성공_문서화_200_OK() throws Exception {
 
 		// given
-		FollowUser user1 = new FollowUser(12345, "username1", "http://profile.image/1");
-		FollowUser user2 = new FollowUser(67890, "username2", "http://profile.image/2");
+		GithubUser user1 = new GithubUser(12345, "username1", "http://profile.image/1");
+		GithubUser user2 = new GithubUser(67890, "username2", "http://profile.image/2");
 
-		List<FollowUser> userList = List.of(user1, user2);
+		List<GithubUser> userList = List.of(user1, user2);
 		int totalUserCount = userList.size();
 		LocalDateTime createdAt = LocalDateTime.now().minusMinutes(5);
 
-		SliceResult<FollowUser> userSlice = SliceResult.of(userList, false);
+		SliceResult<GithubUser> userSlice = SliceResult.of(userList, false);
 
-		GithubFollowDetectionResult result = new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount);
+		Optional<GithubFollowDetectionResult> result = Optional.of(new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount));
 
-		// Mockito 빈을 사용하는데 해당 빈의 어떤 메서드에 어떤 입력을 넣었을 때 원하는 응답이 오도록 조절함.
-		given(githubFollowService.getFollowUserSlice(anyLong(), any())).willReturn(result);
+		given(githubFollowService.detect(anyLong(), any())).willReturn(result);
 
 		// when
 		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("lastGithubUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
-			.param("pageSize", "1")
-			.param("forceSync", "false"))
+			.param("size", "1"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.userList").isArray())
 			.andExpect(jsonPath("$.data.totalUserCount").value(2))
@@ -102,11 +101,10 @@ class GithubFollowControllerTest {
 					.summary("깃허브 팔로우 관계 탐지 API")
 					.description("현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을 한 번이라도 진행한 적이 있어야 사용 가능합니다.")
 					.pathParameters(
-						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING).defaultValue("mutual"))
+						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING))
 					.queryParameters(
 						parameterWithName("lastGithubUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
-						parameterWithName("pageSize").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional(),
-						parameterWithName("forceSync").description("강제 동기화 여부 (default: false)").type(SimpleType.BOOLEAN).optional())
+						parameterWithName("size").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 응답 코드"),
@@ -123,17 +121,54 @@ class GithubFollowControllerTest {
 	}
 
 	@WithMockMoyoyUser
+	@Test
+	void 맞팔탐지기_성공_문서화_202_ACCEPTED() throws Exception {
+
+		// given
+		Optional<GithubFollowDetectionResult> result = Optional.empty();
+		given(githubFollowService.detect(anyLong(), any())).willReturn(result);
+
+		// when
+		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual")
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+			.param("lastGithubUserId", "22")
+			.param("size", "1")
+
+		)
+			.andExpect(status().isAccepted())
+
+			// REST Docs
+			.andDo(document("맞팔탐지기 조회를 위한 데이터 수집 요청 완료",
+				resource(ResourceSnippetParameters.builder()
+					.tag("👥 깃허브 팔로우 관계 탐지")
+					.summary("깃허브 팔로우 관계 탐지 API")
+					.description("현재 사용자의 요청을 처리하기 위한 데이터 수집 요청 제출 완료")
+					.pathParameters(
+						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING))
+					.queryParameters(
+						parameterWithName("lastGithubUserId").description("이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지 조회로 간주 합니다. ").type(SimpleType.INTEGER).optional(),
+						parameterWithName("size").description("조회할 사용자 수 (default: 30)").type(SimpleType.INTEGER).optional())
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						subsectionWithPath("data").description("🚫 데이터 없음 (null)").optional())
+					.build())));
+
+	}
+
+	@WithMockMoyoyUser
 	@ParameterizedTest(name = "{index} => errorCode={0}")
 	@MethodSource("followDetectorErrorCodes")
 	void 맞팔탐지기_에러코드_문서화(GithubErrorCode errorCode) throws Exception {
 		// given
-		doThrow(new MoyoException(errorCode)).when(githubFollowService).getFollowUserSlice(anyLong(), any());
+		doThrow(new MoyoException(errorCode)).when(githubFollowService).detect(anyLong(), any());
 
 		// when & then
 		mockMvc.perform(get("/api/v1/users/me/followings/{detectType}", "mutual") // 어떤 입력을 넣어도 Request DTO로 취합
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
 			.param("targetGithubUserId", "22") // 어떤 입력을 넣어도 Reqeust DTO로 취합
-			.param("pageSize", "1"))
+			.param("size", "1"))
 			.andExpect(status().is(errorCode.getStatus()))
 			.andExpect(jsonPath("$.code").value(errorCode.getCode()))
 			.andExpect(jsonPath("$.message").value(errorCode.getMessage()))
@@ -142,7 +177,7 @@ class GithubFollowControllerTest {
 				resource(ResourceSnippetParameters.builder()
 					.tag("👥 깃허브 팔로우 관계 탐지")
 					.pathParameters(
-						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)"))
+						parameterWithName("detectType").description("mutual  (맞팔로우)<br/> follow-only  (나만 상대를 팔로우)<br/> followed-only (상대만 나를 팔로우)").type(SimpleType.STRING))
 					.responseFields(
 						fieldWithPath("status").description("❌ 응답 상태 코드 (HTTP status)"),
 						fieldWithPath("code").description("🔢 도메인 에러 코드"),

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.database.github.OAuthTokenRepository;
+import com.moyoy.infra.database.mysql.github.OAuthTokenRepository;
 
 /**
  *  API, Batch 등의 서비스에서 같이 써야 하는데

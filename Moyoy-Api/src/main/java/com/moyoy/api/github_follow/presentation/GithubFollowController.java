@@ -35,12 +35,10 @@ public class GithubFollowController {
 		@RequestParam(value = "size", required = false, defaultValue = "30") int size) {
 
 		GithubFollowDetectionData data = GithubFollowDetectionData.of(detectType, lastGithubUserId, size);
-
 		Optional<GithubFollowDetectionResult> result = githubFollowService.detect(currentUserId, data);
 
-		if(result.isEmpty()) {
-
-			return ResponseEntity.accepted().build();
+		if (result.isEmpty()) {
+			return ResponseEntity.accepted().body(ApiResponse.accepted());
 		}
 
 		GithubFollowDetectResponse response = GithubFollowDetectResponse.from(result.get());

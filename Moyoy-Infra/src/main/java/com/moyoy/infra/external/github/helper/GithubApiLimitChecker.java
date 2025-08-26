@@ -24,9 +24,9 @@ public class GithubApiLimitChecker {
 
 	private final GithubUserClient githubUserClient;
 
-	public void assertCanGithubRequest(String accessToken, Integer githubUserId) {
+	public void assertCanGithubRequest(Long userId, Integer githubUserId) {
 
-		Response response = githubUserClient.fetchUserRawResponse(accessToken, githubUserId);
+		Response response = githubUserClient.fetchUserRawResponse(userId, githubUserId);
 
 		String remainingHeader = response.headers()
 			.getOrDefault(GITHUB_RATE_LIMIT_HEADER, List.of())

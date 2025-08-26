@@ -8,12 +8,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
 import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
@@ -66,7 +65,6 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 	}
 
 	@Override
-	@Cacheable(value = "githubFollowers", key = "#userId")
 	public List<GithubUser> fetchFollowers(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -99,50 +97,41 @@ public class GithubFollowClientImpl implements GithubFollowClient{
 	}
 
 	@Override
-	public void follow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId) {
+	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
-
-		// GithubUserResponse currentUserResponse = githubUserFeignClient.fetchUser(accessToken, currentUserGithubId);
 		GithubUserResponse targetUserResponse = githubUserFeignClient.fetchUser(accessToken, targetUserGithubId);
-
-		// GithubUser currentUser = GithubUser.from(currentUserResponse);
-		// GithubUser targetUser = GithubUser.from(targetUserResponse);
-
 		Response followCommandResponse = githubFollowFeignClient.follow(accessToken, targetUserResponse.login());
 		int responseStatus = followCommandResponse.status();
 
 		if (responseStatus == 204) {
 
-			log.info("깃허브 팔로우 요청 성공 | currentUserId : {}, targetUserId : {}, ", currentUserId, targetUserGithubId);
+			log.info("깃허브 팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId, targetUserGithubId);
 		}
 		else {
 
 			log.warn("깃허브 팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
+			throw new RuntimeException("깃허브 팔로우 요청 처리 실패"); /// TODO 추후 처리
 		}
 	}
 
 	@Override
-	public void unFollow(Long currentUserId, Integer currentUserGithubId, Integer targetUserGithubId) {
+	public void unFollow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
-
-		// GithubUserResponse currentUserResponse = githubUserFeignClient.fetchUser(accessToken, currentUserGithubId);
 		GithubUserResponse targetUserResponse = githubUserFeignClient.fetchUser(accessToken, targetUserGithubId);
-
-		// GithubUser currentUser = GithubUser.from(currentUserResponse);
-		// GithubUser targetUser = GithubUser.from(targetUserResponse);
-
 		Response unFollowCommandResponse = githubFollowFeignClient.unfollow(accessToken, targetUserResponse.login());
 		int responseStatus = unFollowCommandResponse.status();
 
 		if (responseStatus == 204) {
 
-			log.info("깃허브 언팔로우 요청 성공 | currentUserId : {}, targetUserId : {}, ", currentUserId, targetUserGithubId);
+			log.info("깃허브 언팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId,
+				targetUserGithubId);
 		}
 		else {
 
 			log.warn("깃허브 언팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
+			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패"); /// TODO 추후 처리
 		}
 	}
 

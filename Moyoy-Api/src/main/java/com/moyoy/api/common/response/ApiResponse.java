@@ -28,6 +28,10 @@ public class ApiResponse<T> {
 		return new ApiResponse<>(OK, "OK", null, data);
 	}
 
+	public static <S> ApiResponse<S> accepted() {
+		return new ApiResponse<>(ACCEPTED, "ACCEPTED", null, null);
+	}
+
 	public static <S> ApiResponse<S> noContent() {
 
 		return new ApiResponse<>(NO_CONTENT, "NO_CONTENT", null, null);

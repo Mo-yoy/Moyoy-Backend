@@ -173,7 +173,7 @@ paths:
       description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
         우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\
         \ 한 번이라도 진행한 적이 있어야 사용 가능합니다."
-      operationId: GITHUB_400_1맞팔탐지기 조회 성공
+      operationId: GITHUB_400_1맞팔탐지기 조회 성공맞팔탐지기 조회를 위한 데이터 수집 요청 완료
       parameters:
       - name: detectType
         in: path
@@ -182,6 +182,7 @@ paths:
         required: true
         schema:
           type: string
+          default: mutual
       - name: lastGithubUserId
         in: query
         description: "이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지\
@@ -190,19 +191,13 @@ paths:
         schema:
           type: integer
           format: int32
-      - name: pageSize
+      - name: size
         in: query
         description: "조회할 사용자 수 (default: 30)"
         required: false
         schema:
           type: integer
           format: int32
-      - name: forceSync
-        in: query
-        description: "강제 동기화 여부 (default: false)"
-        required: false
-        schema:
-          type: boolean
       responses:
         "400":
           description: "400"
@@ -228,10 +223,33 @@ paths:
                     :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
                     }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5분\
                     \ 전\"}}"
+        "202":
+          description: "202"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType63148865"
+              examples:
+                맞팔탐지기 조회를 위한 데이터 수집 요청 완료:
+                  value: "{\"status\":202,\"code\":\"ACCEPTED\",\"message\":null,\"\
+                    data\":null}"
       security:
       - bearerAuthJWT: []
 components:
   schemas:
+    api-v1-users-me-followings-detectType63148865:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     api-v1-auth-reissue-token-1735855461:
       required:
       - code

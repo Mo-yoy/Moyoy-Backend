@@ -37,7 +37,7 @@ public class RankingDataFetcherStep {
 
 		// 1. 사용자 id로 username, follower 수, 소유 중인 개인 Repo 수, RateLimitRemaining 체크
 		UserRankingProfile userRankingProfile = rankingBatchReader.fetchUserRankingProfile(githubAccessToken, currentGithubUserId);
-		githubApiLimitChecker.assertCanGithubRequest(githubAccessToken, currentGithubUserId);
+		githubApiLimitChecker.assertCanGithubRequest(currentUserId, currentGithubUserId);
 
 		// 2. 해당 사용자가 read, write, owner 권한을 가지고 있는 올해 Repo 모두 가져옴
 		List<GithubRepoDetails> githubRepoDetailsList = rankingBatchReader.fetchAllGithubRepoDetails(githubAccessToken);
