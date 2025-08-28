@@ -17,23 +17,24 @@ import com.moyoy.domain.follow.GithubFollowSnapshot;
 @RequiredArgsConstructor
 public class GithubFollowSnapshotCacheManager {
 
+	private static final String FOLLOW_CACHE_NAME = "followSnapshot";
+
 	private final CacheManager cacheManager;
 
 	public Optional<GithubFollowSnapshot> findFollowSnapshot(Long userId) {
 
-		GithubFollowSnapshot githubFollowSnapshot = cacheManager.getCache("followSnapshot").get(userId, GithubFollowSnapshot.class);
+		GithubFollowSnapshot githubFollowSnapshot = cacheManager.getCache(FOLLOW_CACHE_NAME).get(userId, GithubFollowSnapshot.class);
 		return Optional.ofNullable(githubFollowSnapshot);
 	}
 
-	@CachePut(cacheNames = "followSnapshot", key = "#userId")
+	@CachePut(cacheNames = FOLLOW_CACHE_NAME, key = "#userId")
 	public GithubFollowSnapshot save(Long userId, GithubFollowSnapshot githubFollowRelationSnapshot) {
 		return githubFollowRelationSnapshot;
 	}
 
-	@CacheEvict(cacheNames = "followSnapshot", key = "#userId")
+	@CacheEvict(cacheNames = FOLLOW_CACHE_NAME, key = "#userId")
 	public void delete(Long userId) {
 
 	}
-
 
 }

@@ -22,7 +22,7 @@ import com.moyoy.domain.follow.GithubFollowSnapshot;
 /**
  *   [추후 확장시 고려 사항]
  *
- *   팔로우 뿐만 아니라 다른 객체도 범용적으로 저장 하는 캐시로 사용하고 싶다면 ObjectMapper의 activateDefaultTyping()을 통한 추가 설정이 필요함.
+ *   팔로우 관련 뿐만 아니라 다른 객체도 범용적으로 저장 하는 캐시로 사용하고 싶다면 ObjectMapper의 activateDefaultTyping()을 통한 추가 설정이 필요함.
  *   이 경우, JSON 데이터에 클래스 메타 데이터가 추가로 저장됨.
  *
  *   또는, 각기 다른 직렬화기를 갖는 여러가지의 RedisCacheManager를 스프링 빈으로 등록하고 사용해도 됨.
