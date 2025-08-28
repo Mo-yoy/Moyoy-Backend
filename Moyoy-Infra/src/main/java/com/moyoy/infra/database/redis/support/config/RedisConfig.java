@@ -26,22 +26,6 @@ public class RedisConfig {
 		return Redisson.create(config);
 	}
 
-	@Bean
-	public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
-		RedisTemplate<String, String> template = new RedisTemplate<>();
-
-		template.setConnectionFactory(connectionFactory);
-
-		StringRedisSerializer stringSerializer = new StringRedisSerializer();
-		template.setKeySerializer(stringSerializer);
-		template.setValueSerializer(stringSerializer);
-		template.setHashKeySerializer(stringSerializer);
-		template.setHashValueSerializer(stringSerializer);
-
-		template.afterPropertiesSet();
-		return template;
-	}
-
 	@RequiredArgsConstructor
 	@ConfigurationProperties("spring.data.redis")
 	static class RedisProperties {

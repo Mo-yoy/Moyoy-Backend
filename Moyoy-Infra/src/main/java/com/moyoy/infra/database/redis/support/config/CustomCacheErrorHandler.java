@@ -33,6 +33,6 @@ public class CustomCacheErrorHandler implements CacheErrorHandler {
 	}
 
 	private void handleExceptionInternal(RuntimeException exception) {
-		log.error("Redis 서버 에러", exception);
+		log.error("Redis 에러", exception);
 	}
 }
