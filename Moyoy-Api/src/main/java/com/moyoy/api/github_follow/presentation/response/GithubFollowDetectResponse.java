@@ -1,18 +1,17 @@
 package com.moyoy.api.github_follow.presentation.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
 import com.moyoy.domain.follow.GithubUser;
 
-import com.moyoy.common.util.TimeSinceFormatter;
-
 public record GithubFollowDetectResponse(
 	List<GithubFollowUserDto> userList,
 	boolean lastPage,
 	int totalUserCount,
-	String lastSyncAt) {
+	LocalDateTime lastSyncAt) {
 
 	public record GithubFollowUserDto(
 		Integer githubUserId,
@@ -38,6 +37,6 @@ public record GithubFollowDetectResponse(
 			userDtoList,
 			followDetectionResult.users().isLast(),
 			followDetectionResult.totalFollowUserCount(),
-			TimeSinceFormatter.formatTimeSince(followDetectionResult.lastSyncAt()));
+			followDetectionResult.lastSyncAt());
 	}
 }
