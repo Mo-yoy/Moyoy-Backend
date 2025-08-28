@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
@@ -28,5 +29,11 @@ public class GithubFollowSnapshotCacheManager {
 	public GithubFollowSnapshot save(Long userId, GithubFollowSnapshot githubFollowRelationSnapshot) {
 		return githubFollowRelationSnapshot;
 	}
+
+	@CacheEvict(cacheNames = "followSnapshot", key = "#userId")
+	public void delete(Long userId) {
+
+	}
+
 
 }
