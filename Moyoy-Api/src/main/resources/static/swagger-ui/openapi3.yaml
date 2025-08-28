@@ -179,7 +179,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-refresh492296449"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType492296449"
               examples:
                 FOLLOW_400_1:
                   value: "{\"status\":400,\"code\":\"FOLLOW_400_1\",\"message\":\"\
@@ -189,7 +189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-refresh63148865"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType63148865"
               examples:
                 맞팔탐지기 조회를 위한 데이터 강제 갱신 요청:
                   value: "{\"status\":202,\"code\":\"ACCEPTED\",\"message\":null,\"\
@@ -234,7 +234,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-refresh492296449"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType492296449"
               examples:
                 GITHUB_400_1:
                   value: "{\"status\":400,\"code\":\"GITHUB_400_1\",\"message\":\"\
@@ -244,21 +244,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-detectType1462305756"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType220603757"
               examples:
                 맞팔탐지기 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"userList\":[{\"githubUserId\":12345,\"username\":\"username1\"\
                     ,\"profileImgUrl\":\"http://profile.image/1\"},{\"githubUserId\"\
                     :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
-                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5분\
-                    \ 전\"}}"
+                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"2025-08-28T16:16:10.944301811\"\
+                    }}"
         "202":
           description: "202"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-refresh63148865"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType63148865"
               examples:
                 맞팔탐지기 조회를 위한 데이터 수집 요청 완료:
                   value: "{\"status\":202,\"code\":\"ACCEPTED\",\"message\":null,\"\
@@ -267,7 +267,7 @@ paths:
       - bearerAuthJWT: []
 components:
   schemas:
-    api-v1-users-me-followings-refresh63148865:
+    api-v1-users-me-followings-detectType63148865:
       required:
       - code
       - message
@@ -296,56 +296,7 @@ components:
         status:
           type: number
           description: ❌ 응답 상태 코드
-    api-v1-users-me-followings-detectType1462305756:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        data:
-          required:
-          - lastPage
-          - lastSyncAt
-          - totalUserCount
-          - userList
-          type: object
-          properties:
-            totalUserCount:
-              type: number
-              description: 📊 총 사용자 수
-            userList:
-              type: array
-              description: 👤 탐지된 사용자 목록
-              items:
-                required:
-                - githubUserId
-                - profileImgUrl
-                - username
-                type: object
-                properties:
-                  profileImgUrl:
-                    type: string
-                    description: 사용자 프로필 이미지 URL
-                  githubUserId:
-                    type: number
-                    description: 사용자 Github ID
-                  username:
-                    type: string
-                    description: 사용자 이름
-            lastPage:
-              type: boolean
-              description: 📌 마지막 페이지 여부
-            lastSyncAt:
-              type: string
-              description: ⏱ 마지막 싱크 시간 (x 분전)
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-users-me-followings-refresh492296449:
+    api-v1-users-me-followings-detectType492296449:
       required:
       - code
       - message
@@ -407,6 +358,55 @@ components:
             username:
               type: string
               description: 🙋 사용자 이름
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-users-me-followings-detectType220603757:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - lastPage
+          - lastSyncAt
+          - totalUserCount
+          - userList
+          type: object
+          properties:
+            totalUserCount:
+              type: number
+              description: 📊 총 사용자 수
+            userList:
+              type: array
+              description: 👤 탐지된 사용자 목록
+              items:
+                required:
+                - githubUserId
+                - profileImgUrl
+                - username
+                type: object
+                properties:
+                  profileImgUrl:
+                    type: string
+                    description: 사용자 프로필 이미지 URL
+                  githubUserId:
+                    type: number
+                    description: 사용자 Github ID
+                  username:
+                    type: string
+                    description: 사용자 이름
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            lastSyncAt:
+              type: string
+              description: ⏱ 마지막 싱크 시간 타임 스탬프
         status:
           type: number
           description: ✅ 응답 상태 코드

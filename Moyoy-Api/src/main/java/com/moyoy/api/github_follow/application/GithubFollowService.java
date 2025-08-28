@@ -72,7 +72,7 @@ public class GithubFollowService {
 
 			boolean canRefresh = followSnapshot.get().canRefresh();
 
-			if (!canRefresh){
+			if (!canRefresh) {
 				log.warn("팔로우 캐시 5분 내 강제 갱신 시도 발생 | userId={}", currentUserId);
 				throw new GithubFollowSnapshotCoolDownNotExpiredException();
 			}

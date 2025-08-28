@@ -70,7 +70,7 @@ class GithubFollowControllerTest {
 
 	@WithMockMoyoyUser
 	@Test
-	void 맞팔탐지기_성공_문서화_200_OK() throws Exception {
+	void 맞팔탐지기_조회_성공_문서화_200_OK() throws Exception {
 
 		// given
 		GithubUser user1 = new GithubUser(12345, "username1", "http://profile.image/1");
@@ -78,7 +78,7 @@ class GithubFollowControllerTest {
 
 		List<GithubUser> userList = List.of(user1, user2);
 		int totalUserCount = userList.size();
-		LocalDateTime createdAt = LocalDateTime.now().minusMinutes(5);
+		LocalDateTime createdAt = LocalDateTime.of(2025, 8, 28, 16, 16, 10, 944301811);
 
 		SliceResult<GithubUser> userSlice = SliceResult.of(userList, false);
 
@@ -95,6 +95,7 @@ class GithubFollowControllerTest {
 			.andExpect(jsonPath("$.data.userList").isArray())
 			.andExpect(jsonPath("$.data.totalUserCount").value(2))
 			.andExpect(jsonPath("$.data.lastPage").value(true))
+			.andExpect(jsonPath("$.data.lastSyncAt").exists())
 
 			// REST Docs
 			.andDo(document("맞팔탐지기 조회 성공",
@@ -117,14 +118,14 @@ class GithubFollowControllerTest {
 						fieldWithPath("data.userList[].profileImgUrl").description("사용자 프로필 이미지 URL"),
 						fieldWithPath("data.totalUserCount").description("📊 총 사용자 수"),
 						fieldWithPath("data.lastPage").description("📌 마지막 페이지 여부"),
-						fieldWithPath("data.lastSyncAt").description("⏱ 마지막 싱크 시간 (x 분전)"))
+						fieldWithPath("data.lastSyncAt").description("⏱ 마지막 싱크 시간 타임 스탬프"))
 					.build())));
 
 	}
 
 	@WithMockMoyoyUser
 	@Test
-	void 맞팔탐지기_성공_문서화_202_ACCEPTED() throws Exception {
+	void 맞팔탐지기_조회_성공_문서화_202_ACCEPTED() throws Exception {
 
 		// given
 		Optional<GithubFollowDetectionResult> result = Optional.empty();
