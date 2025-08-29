@@ -3,6 +3,8 @@ dependencies {
     implementation project(':Moyoy-Common')
     implementation project(':Moyoy-Infra')
 
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     /// TODO : 스프링 배치 도입 전에 직접 만드는 중이라 JobRepository등 메타 데이터 저장 구현 때문에 임시로 들어옴, 스프링 배치 도입 후 제거할 예정
