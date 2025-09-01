@@ -32,8 +32,7 @@ public class GithubOAuthTokenReader {
 
 		Optional<String> accessToken = oAuthTokenRepository.findAccessToken(GITHUB_REGISTRATION_ID, String.valueOf(userId));
 
-		if (accessToken.isEmpty())
-			throw new RuntimeException("Github Access Token Not Found");
+		if (accessToken.isEmpty()) throw new RuntimeException("Github Access Token Not Found");
 
 		return accessToken.get();
 	}

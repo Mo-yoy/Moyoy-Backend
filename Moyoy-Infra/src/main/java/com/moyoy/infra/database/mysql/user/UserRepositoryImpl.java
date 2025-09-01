@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserFetchSummary;
 import com.moyoy.domain.user.UserRepository;
 
 @Repository
@@ -53,13 +52,6 @@ public class UserRepositoryImpl implements UserRepository {
 
 		List<UserEntity> userEntityList = userQueryDslRepository.findAll(lastUserId, size);
 		return userEntityList.stream().map(UserMapper::toModel).toList();
-	}
-
-	@Override
-	public UserFetchSummary fetchUserCountAndLastId() {
-
-		UserEntityMetaDto userEntityMetaDto = userQueryDslRepository.fetchUserCountAndLastId();
-		return new UserFetchSummary(userEntityMetaDto.userCount(), userEntityMetaDto.lastUserId());
 	}
 
 }

@@ -17,16 +17,6 @@ public class UserQueryDslRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
 
-	public UserEntityMetaDto fetchUserCountAndLastId() {
-
-		return jpaQueryFactory
-			.select(Projections.constructor(UserEntityMetaDto.class,
-				userEntity.count().intValue(),
-				userEntity.id.max()))
-			.from(userEntity)
-			.fetchOne();
-	}
-
 	public List<UserEntity> findAll(Long lastUserId, int size) {
 
 		return jpaQueryFactory

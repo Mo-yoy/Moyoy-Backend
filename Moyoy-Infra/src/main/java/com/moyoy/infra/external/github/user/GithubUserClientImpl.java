@@ -26,6 +26,17 @@ public class GithubUserClientImpl implements GithubUserClient {
 	}
 
 	@Override
+	public GithubUserResponse fetchUser(String accessToken, Integer githubUserId) {
+
+		return githubUserFeignClient.fetchUser(accessToken, githubUserId);
+	}
+
+	@Override
+	public Response fetchUserRawResponse(String accessToken, Integer githubUserId) {
+		return githubUserFeignClient.fetchUserRawResponse(accessToken, githubUserId);
+	}
+
+	@Override
 	public Response fetchUserRawResponse(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
