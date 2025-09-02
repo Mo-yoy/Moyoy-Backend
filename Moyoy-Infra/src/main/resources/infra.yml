@@ -19,3 +19,8 @@ spring:
     crypto:
       password: ${AUTHORIZED_CLIENT_CRYPTO_PASSWORD}
       salt: ${AUTHORIZED_CLIENT_CRYPTO_SALT}
+
+discord:
+  webhook-uri:
+    id: ${RANKING_DISCORD_WEBHOOK_ID}
+    token : ${RANKING_DISCORD_WEBHOOK_TOKEN}

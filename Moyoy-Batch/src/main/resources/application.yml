@@ -3,16 +3,16 @@ spring:
     import:
       - infra.yml
 
+  batch:
+    job:
+      enabled: false
+
 logging:
   config: classpath:logback/logback-${spring.profiles.active:local}.xml
 
   level:
     org.springframework.batch.core.repository.support: DEBUG
 
-discord:
-  webhook-uri:
-    id: ${RANKING_DISCORD_WEBHOOK_ID}
-    token : ${RANKING_DISCORD_WEBHOOK_TOKEN}
 
 server:
   port: 9000

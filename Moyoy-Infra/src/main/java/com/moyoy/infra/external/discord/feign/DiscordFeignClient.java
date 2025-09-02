@@ -9,10 +9,10 @@ import com.moyoy.infra.external.config.DiscordFeignConfig;
 import com.moyoy.infra.external.discord.dto.DiscordWebhookRequest;
 
 @FeignClient(name = "discordWebhookClient", url = "https://discord.com/api/webhooks", configuration = DiscordFeignConfig.class)
-public interface DiscordWebhookClient {
+public interface DiscordFeignClient {
 
 	@PostMapping("/{id}/{token}")
-	void send(
+	void sendNotification(
 		@PathVariable String id,
 		@PathVariable String token,
 		@RequestBody DiscordWebhookRequest body);
