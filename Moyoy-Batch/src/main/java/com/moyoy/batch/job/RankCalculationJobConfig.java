@@ -35,7 +35,7 @@ import com.moyoy.batch.dto.UserSummaryContext;
 import com.moyoy.batch.dto.UserProfileContext;
 import com.moyoy.batch.helper.GithubCommitStatCalculator;
 import com.moyoy.domain.ranking.GithubCommitStats;
-import com.moyoy.batch.legacy.domain.ranking.component.dto.GithubContributorDetails;
+import com.moyoy.batch.dto.GithubContributorDetails;
 import com.moyoy.domain.ranking.RankingCalculatorParameters;
 import com.moyoy.infra.database.mysql.user.UserEntity;
 import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
@@ -58,7 +58,6 @@ public class RankCalculationJobConfig {
 	private final GithubUserClient githubUserClient;
 	private final GithubRepoClient githubRepoClient;
 	private final RankingCalculator rankingCalculator;
-
 
 	@Bean
 	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingStep) {

@@ -1,4 +1,4 @@
-package com.moyoy.batch.legacy.domain.ranking.component.dto;
+package com.moyoy.batch.dto;
 
 import com.moyoy.infra.external.github.repo.GithubRepoContributorsResponse;
 
