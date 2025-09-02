@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -15,6 +17,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +27,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.moyoy.batch.dto.GithubRepoCommitStats;
 import com.moyoy.batch.dto.RepoCandidatesContext;
 import com.moyoy.batch.dto.GithubRepoDetails;
+import com.moyoy.batch.dto.UserRankResult;
 import com.moyoy.domain.ranking.RankingCalculator;
 import com.moyoy.domain.ranking.RankingCalculatorResult;
 import com.moyoy.batch.dto.UserAuthContext;
@@ -65,18 +69,13 @@ public class RankCalculationJobConfig {
 	}
 
 	@Bean
-	public Step userRankingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+	public Step userRankingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, DataSource dataSource) {
 
 		return new StepBuilder("userRankingStep", jobRepository)
-			.<UserEntity, RankingCalculatorResult>chunk(10, transactionManager)
+			.<UserEntity, UserRankResult>chunk(10, transactionManager)
 			.reader(userReader())
 			.processor(userRankingProcessor())
-			.writer(userRankingWriter())
-			.faultTolerant()
-			.skip(ApiCallException.class)
-			.skip(SocketTimeoutException.class)
-			.skipLimit(5)  // 청크당 최대 5개까지 실패 허용
-			.listener(rankingProgressListener())
+			.writer(userRankingWriter(dataSource))
 			.build();
 	}
 
@@ -95,15 +94,14 @@ public class RankCalculationJobConfig {
 	}
 
 	@Bean
-	public ItemProcessor<UserEntity, RankingCalculatorResult> userRankingProcessor() {
+	public ItemProcessor<UserEntity, UserRankResult> userRankingProcessor() {
 
-		return new CompositeItemProcessorBuilder<UserEntity, RankingCalculatorResult>()
+		return new CompositeItemProcessorBuilder<UserEntity, UserRankResult>()
 			.delegates(
 				createUserAuthContext(),
 				fetchUserProfile(),
 				prepareRankingRepoCandidates(),
 				fetchContributorStats(),
-				createRankingCalculatorParameters(),
 				calculateRankingResult()
 			)
 			.build();
@@ -202,12 +200,13 @@ public class RankCalculationJobConfig {
 	}
 
 	@Bean
-	public ItemProcessor<UserSummaryContext, RankingCalculatorParameters> createRankingCalculatorParameters() {
+	public ItemProcessor<UserSummaryContext, UserRankResult> calculateRankingResult() {
 
 		return userSummaryContext -> {
 
 			List<GithubRepoDetails> candidateRepos = userSummaryContext.repoCandidatesContext().candidateRepos();
 			UserProfileContext userProfileContext = userSummaryContext.repoCandidatesContext().userProfileContext();
+			Long userId = userProfileContext.auth().userId();
 
 			int stars = candidateRepos.stream()
 				.mapToInt(GithubRepoDetails::starCount)
@@ -217,21 +216,38 @@ public class RankCalculationJobConfig {
 
 			GithubCommitStats githubCommitStats = userSummaryContext.githubCommitStats();
 
-			return RankingCalculatorParameters.of(stars, followers, githubCommitStats);
+			RankingCalculatorParameters rankingCalculatorParameters = RankingCalculatorParameters.of(stars, followers, githubCommitStats);
+			RankingCalculatorResult rankingCalculatorResult = rankingCalculator.calculate(rankingCalculatorParameters);
+
+			return new UserRankResult(userId, rankingCalculatorResult);
 		};
 	}
 
 	@Bean
-	public ItemProcessor<RankingCalculatorParameters, RankingCalculatorResult> calculateRankingResult() {
+	public ItemWriter<UserRankResult> userRankingWriter(DataSource dataSource) {
 
-		return rankingCalculator::calculate;
-	}
+		String sql = """
+        UPDATE rankings
+        SET weekly_point = ?,
+            monthly_point = ?,
+            yearly_point  = ?,
+            grade         = ?,
+            modified_at   = NOW(6)
+        WHERE user_id = ?
+        """;
 
-	@Bean
-	public ItemWriter<RankingCalculatorResult> userRankingWriter() {
-		return new JpaItemWriterBuilder<UserRankResult>()
-			.entityManagerFactory(entityManagerFactory)
+		return new JdbcBatchItemWriterBuilder<UserRankResult>()
+			.dataSource(dataSource)
+			.sql(sql)
+			.itemPreparedStatementSetter((userRankResult, preparedStatement) -> {
+				RankingCalculatorResult rankingCalculatorResult = userRankResult.rankingCalculatorResult();
+				preparedStatement.setLong(1, rankingCalculatorResult.weekRankingPoint());
+				preparedStatement.setLong(2, rankingCalculatorResult.monthRankingPoint());
+				preparedStatement.setLong(3, rankingCalculatorResult.yearRankingPoint());
+				preparedStatement.setString(4, rankingCalculatorResult.rankingGrade());
+				preparedStatement.setLong(5, userRankResult.userId());
+			})
+			.assertUpdates(true)
 			.build();
-}
-
+	}
 }
