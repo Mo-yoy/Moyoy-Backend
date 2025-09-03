@@ -9,7 +9,7 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.external.discord.dto.DiscordWebhookRequest;
+import com.moyoy.infra.external.discord.dto.DiscordClientRequest;
 import com.moyoy.infra.external.discord.feign.DiscordClient;
 
 import lombok.RequiredArgsConstructor;
@@ -70,11 +70,11 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 			totalRead, success, fail, successRate
 		);
 
-		DiscordWebhookRequest.Embed embed =
-			new DiscordWebhookRequest.Embed(title, description, color);
+		DiscordClientRequest.Embed embed =
+			new DiscordClientRequest.Embed(title, description, color);
 
-		DiscordWebhookRequest request =
-			DiscordWebhookRequest.withEmbeds("랭킹 배치 잡 알림", List.of(embed));
+		DiscordClientRequest request =
+			DiscordClientRequest.withEmbeds("랭킹 배치 잡 알림", List.of(embed));
 
 		discordClient.sendNotification(request);
 	}
