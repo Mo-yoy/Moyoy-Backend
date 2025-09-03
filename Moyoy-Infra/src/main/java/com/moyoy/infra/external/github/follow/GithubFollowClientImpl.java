@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	private final ObjectMapper objectMapper;
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "followFetchFallBack")
 	public List<GithubUser> fetchFollowings(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -68,6 +71,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "followFetchFallBack")
 	public List<GithubUser> fetchFollowers(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -100,6 +104,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "followCommandFallback")
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
@@ -118,6 +123,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "followCommandFallback")
 	public void unFollow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
@@ -134,6 +140,21 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 			log.warn("깃허브 언팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
 			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패"); /// TODO 추후 처리
 		}
+	}
+
+
+	private void followFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
+		if(throwable instanceof CallNotPermittedException){
+
+		}
+		/// TODO : 에러코드 회의 후 처리
+	}
+
+	private void followCommandFallback(Long userId, Integer githubUserId, Throwable throwable) {
+		if(throwable instanceof CallNotPermittedException){
+
+		}
+		/// TODO : 에러코드 회의 후 처리
 	}
 
 	private int getLimitRemaining(Response response) {

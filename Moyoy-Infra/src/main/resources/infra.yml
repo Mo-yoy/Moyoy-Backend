@@ -24,3 +24,17 @@ discord:
   webhook-uri:
     id: ${DISCORD_WEBHOOK_ID}
     token : ${DISCORD_WEBHOOK_TOKEN}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      githubApi:
+        sliding-window-type: count_based
+        sliding-window-size: 100
+        minimum-number-of-calls: 10
+        wait-duration-in-open-state:
+          seconds: 20
+        failure-rate-threshold: 50
+        permitted-number-of-calls-in-half-open-state: 10
+        #record-exceptions: 기준이 될 에러 설정
+        #ignore-exceptions: 제외할 에러 설정

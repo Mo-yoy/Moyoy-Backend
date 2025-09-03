@@ -15,6 +15,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.Response;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +29,7 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 	private final ObjectMapper objectMapper;
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "repoFetchFallBack")
 	public List<GithubRepoResponse> fetchReposCreatedThisYear(String accessToken) {
 
 		final String affiliation = "owner,organization_member";
@@ -59,12 +62,14 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 	}
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "repoFetchFallBack")
 	public List<GithubRepoContributorsResponse> fetchRepoContributors(String accessToken, String repoFullName) {
 
 		return githubRepoFeignClient.fetchRepoContributors(repoFullName, accessToken);
 	}
 
 	@Override
+	@CircuitBreaker(name = "githubApi", fallbackMethod = "statFetchFallBack")
 	public List<GithubRepoCommitStatsResponse> fetchRepoContributorStats(String repoFullName, String accessToken) {
 
 		int maxTryCount = 10;
@@ -98,6 +103,19 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 		return parseContributorStatsResponse(response, repoFullName);
 	}
 
+	private void repoFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
+		if(throwable instanceof CallNotPermittedException){
+
+		}
+		/// TODO : 에러코드 회의 후 처리
+	}
+
+	private void statFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
+		if(throwable instanceof CallNotPermittedException){
+
+		}
+		/// TODO : 에러코드 회의 후 처리
+	}
 
 	private List<GithubRepoCommitStatsResponse> parseContributorStatsResponse(Response response, String repoFullName) {
 		try {
