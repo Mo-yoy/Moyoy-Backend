@@ -14,6 +14,4 @@ public interface UserRepository {
 	List<User> findByIdIn(List<Long> userIds);
 
 	List<User> findAll(Long lastUserId, int size);
-
-	UserFetchSummary fetchUserCountAndLastId();
 }

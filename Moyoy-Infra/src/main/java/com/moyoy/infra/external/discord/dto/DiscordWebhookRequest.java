@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // null 필드는 직렬화 시 제외
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record DiscordWebhookRequest(
 	String content,
 	String username,
