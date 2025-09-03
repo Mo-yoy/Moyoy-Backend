@@ -39,6 +39,10 @@ public class MoyoConstants {
 	public static final String GITHUB_OAUTH2_USER_ID = "id";
 	public static final String GITHUB_OAUTH2_USER_NAME = "login";
 	public static final String GITHUB_OAUTH2_USER_AVATAR_URL = "avatar_url";
+	public static final String GITHUB_OAUTH2_USER_FOLLOWING = "following";
+	public static final String GITHUB_OAUTH2_USER_FOLLOWERS = "followers";
+	public static final String GITHUB_OAUTH2_USER_TYPE = "type";
+
 	public static final int GITHUB_MAX_QUERY_PAGING_SIZE = 100;
 	public static final String GITHUB_RATE_LIMIT_HEADER = "X-RateLimit-Remaining";
 	public static final int GITHUB_MIN_REQUEST_THRESHOLD = 2000;

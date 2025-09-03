@@ -5,6 +5,7 @@ CREATE TABLE users (
     github_user_id INT NOT NULL,
     username VARCHAR(255) NOT NULL,
     profile_img_url VARCHAR(255) NOT NULL,
+    social_size ENUM('SMALL', 'MEDIUM', 'LARGE', 'HUGE') NOT NULL DEFAULT 'SMALL',
     role ENUM ('ADMIN', 'USER') NOT NULL,
     created_at DATETIME(6) NULL,
     modified_at DATETIME(6) NULL,

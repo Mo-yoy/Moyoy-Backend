@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import com.moyoy.domain.user.Role;
 
+import com.moyoy.domain.user.SocialSize;
 import com.moyoy.infra.database.mysql.support.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;
@@ -40,14 +41,19 @@ public class UserEntity extends BaseTimeEntity {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
+	private SocialSize socialSize;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	@Builder
-	public UserEntity(Long id, Integer githubUserId, String username, String profileImgUrl, Role role) {
+	public UserEntity(Long id, Integer githubUserId, String username, String profileImgUrl, SocialSize socialSize, Role role) {
 		this.id = id;
 		this.githubUserId = githubUserId;
 		this.username = username;
 		this.profileImgUrl = profileImgUrl;
+		this.socialSize = socialSize;
 		this.role = role;
 	}
 }

@@ -11,6 +11,7 @@ public class UserMapper {
 			.githubUserId(userEntity.getGithubUserId())
 			.username(userEntity.getUsername())
 			.profileImgUrl(userEntity.getProfileImgUrl())
+			.socialSize(userEntity.getSocialSize())
 			.role(userEntity.getRole())
 			.build();
 	}
@@ -22,6 +23,7 @@ public class UserMapper {
 			.githubUserId(user.getGithubUserId())
 			.username(user.getUsername())
 			.profileImgUrl(user.getProfileImgUrl())
+			.socialSize(user.getSocialSize())
 			.role(user.getRole())
 			.build();
 	}
