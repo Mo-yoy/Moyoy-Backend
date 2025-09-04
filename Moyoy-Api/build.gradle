@@ -25,6 +25,8 @@ dependencies {
 
     // API 모듈에서 인증 관련 데이터를 RDB 에서 관리중이라 필요
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
+    implementation'com.bucket4j:bucket4j-core:8.10.1'
 }
 
 

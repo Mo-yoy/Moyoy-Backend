@@ -5,6 +5,7 @@ import static org.springframework.security.access.hierarchicalroles.RoleHierarch
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.catalina.filters.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -27,6 +28,7 @@ import com.moyoy.api.auth.security.component.HttpCookieOAuth2AuthorizationReques
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationFailureHandler;
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationSuccessHandler;
 import com.moyoy.api.auth.security.component.RdbOAuth2AuthorizedClientService;
+import com.moyoy.api.common.filter.RateLimitingFilter;
 import com.moyoy.api.common.filter.RequestInfoMDCFilter;
 import com.moyoy.api.common.filter.UserContextMDCFilter;
 
@@ -46,6 +48,7 @@ public class SecurityConfig {
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 	private final UserContextMDCFilter userContextMDCFilter;
 	private final RequestInfoMDCFilter requestInfoMDCFilter;
+	private final RateLimitingFilter rateLimitingFilter;
 
 	@Bean
 	public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
@@ -60,6 +63,7 @@ public class SecurityConfig {
 			.addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
 			.addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
 			.addFilterAfter(userContextMDCFilter, AnonymousAuthenticationFilter.class)
+			.addFilterAfter(rateLimitingFilter, JwtAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/health", "/").permitAll() // Health Check
 				.requestMatchers("/error/**", "/favicon.ico").permitAll() // Server Default

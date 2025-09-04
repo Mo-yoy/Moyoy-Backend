@@ -5,7 +5,6 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import com.moyoy.common.constant.MoyoConstants;
 import com.moyoy.domain.support.error.BaseErrorCode;
 import com.moyoy.domain.support.error.ErrorReason;
 

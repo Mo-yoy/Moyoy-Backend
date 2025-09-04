@@ -27,6 +27,10 @@ dependencies {
 
     // resilience4j
     implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j"
+
+    // bucket4j
+    implementation'com.bucket4j:bucket4j-core:8.10.1'
+    implementation 'com.bucket4j:bucket4j-redis:8.10.1'
 }
 
 jar.enabled = true
