@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.moyoy.api.common.util.ErrorResponseWriter;
@@ -64,6 +65,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 			return "token::user::" + auth.getName();
 		}
 
-		return "token::ip::" + request.getRemoteAddr();
+		return "token::ip::" + extractClientIp(request);
+	}
+
+	private String extractClientIp(final HttpServletRequest request) {
+
+		return Optional.ofNullable(request.getHeader("X-Forwarded-For"))
+			.map(xff -> xff.split(",")[0].trim())
+			.orElse(request.getRemoteAddr());
 	}
 }
