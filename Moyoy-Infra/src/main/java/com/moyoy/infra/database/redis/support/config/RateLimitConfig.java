@@ -29,8 +29,8 @@ public class RateLimitConfig {
 	public BucketConfiguration defaultBucketConfiguration() {
 		return BucketConfiguration.builder()
 			.addLimit(limit ->
-				limit.capacity(3)
-					.refillIntervally(3, Duration.ofMinutes(1))
+				limit.capacity(30)
+					.refillIntervally(30, Duration.ofMinutes(1))
 					.id("per-minute")
 			)
 			.build();
