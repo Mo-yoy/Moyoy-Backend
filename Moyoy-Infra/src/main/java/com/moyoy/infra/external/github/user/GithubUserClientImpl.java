@@ -1,7 +1,5 @@
 package com.moyoy.infra.external.github.user;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,6 +8,8 @@ import org.springframework.stereotype.Component;
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 
 import feign.Response;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Slf4j
 @Component
@@ -50,9 +50,8 @@ public class GithubUserClientImpl implements GithubUserClient {
 		return githubUserFeignClient.fetchUserRawResponse(accessToken, githubUserId);
 	}
 
-
 	private void userFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
-		if(throwable instanceof CallNotPermittedException){
+		if (throwable instanceof CallNotPermittedException) {
 
 		}
 		/// TODO : 에러코드 회의 후 처리

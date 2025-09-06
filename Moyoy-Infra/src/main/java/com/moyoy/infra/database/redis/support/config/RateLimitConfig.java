@@ -22,27 +22,23 @@ public class RateLimitConfig {
 	/** Redis에 저장될 버킷 상태의 만료 전략
 	 *  - 버킷이 다시 가득 찰 때까지의 시간 기준으로 TTL 설정 (안 쓰는 키 자동 정리)
 	 */
-	private static final ExpirationAfterWriteStrategy EXPIRATION =
-		ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(ofSeconds(10));
+	private static final ExpirationAfterWriteStrategy EXPIRATION = ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(ofSeconds(10));
 
 	@Bean
 	public BucketConfiguration defaultBucketConfiguration() {
 		return BucketConfiguration.builder()
-			.addLimit(limit ->
-				limit.capacity(30)
-					.refillIntervally(30, Duration.ofMinutes(1))
-					.id("per-minute")
-			)
+			.addLimit(limit -> limit.capacity(30)
+				.refillIntervally(30, Duration.ofMinutes(1))
+				.id("per-minute"))
 			.build();
 	}
-
 
 	/** Redis 분산 버킷 매니저 (Redisson) */
 	@Bean
 	public ProxyManager<String> redissonProxyManager(RedissonClient redissonClient) {
 
 		// Bucket4j가 Redisson의 내부 CommandExecutor를 요구함
-		CommandAsyncExecutor commandExecutor = ((Redisson) redissonClient).getCommandExecutor();
+		CommandAsyncExecutor commandExecutor = ((Redisson)redissonClient).getCommandExecutor();
 
 		ClientSideConfig config = ClientSideConfig.getDefault()
 			.withExpirationAfterWriteStrategy(EXPIRATION);

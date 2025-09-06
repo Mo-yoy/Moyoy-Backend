@@ -54,6 +54,11 @@ subprojects {
     tasks.named('test') {
         useJUnitPlatform()
         finalizedBy jacocoTestReport
+
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
     }
 
     jacoco {
@@ -83,6 +88,7 @@ subprojects {
                                 "**/*Response*",
                                 "**/*Data*",
                                 "**/*Result*",
+                                "**/*View*",
                                 "**/*Exception*"
                         ] + Qdomains)
                     })
@@ -90,10 +96,18 @@ subprojects {
         }
     }
 
-
-    tasks.named('build') {
-        dependsOn 'spotlessApply'
+    tasks.named('classes') {
+        dependsOn tasks.named('spotlessApply')
     }
+
+    tasks.matching { it.name == 'jar' }.configureEach {
+        dependsOn tasks.named('spotlessApply')
+    }
+
+    tasks.matching { it.name == 'bootJar' }.configureEach {
+        dependsOn tasks.named('spotlessApply')
+    }
+
 
     spotless {
         java {
@@ -122,5 +136,25 @@ sonar {
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
                 '**/*Dto*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
 
+    }
+}
+
+project(':Moyoy-Api') {
+    tasks.named('build') {
+        dependsOn(
+                ':Moyoy-Common:check',
+                ':Moyoy-Domain:check',
+                ':Moyoy-Infra:check'
+        )
+    }
+}
+
+project(':Moyoy-Batch') {
+    tasks.named('build') {
+        dependsOn(
+                ':Moyoy-Common:check',
+                ':Moyoy-Domain:check',
+                ':Moyoy-Infra:check'
+        )
     }
 }

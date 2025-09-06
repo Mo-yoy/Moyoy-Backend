@@ -51,8 +51,6 @@ public class RankingRepositoryImpl implements RankingRepository {
 		rankingJpaRepository.saveAll(rankingEntityList);
 	}
 
-
-
 	@Override
 	public SliceResult<Ranking> findAll(RankingPeriod duration, PageData pageData) {
 

@@ -15,6 +15,6 @@ public record GithubRepoCommitStatsResponse(
 		@JsonProperty("w") long w,
 		@JsonProperty("a") int a,
 		@JsonProperty("d") int d,
-		@JsonProperty("c") int c
-	) {}
+		@JsonProperty("c") int c) {
+	}
 }

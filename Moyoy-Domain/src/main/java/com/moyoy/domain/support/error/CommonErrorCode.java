@@ -2,10 +2,10 @@ package com.moyoy.domain.support.error;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import com.moyoy.common.constant.MoyoConstants;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import com.moyoy.common.constant.MoyoConstants;
 
 @Getter
 @RequiredArgsConstructor

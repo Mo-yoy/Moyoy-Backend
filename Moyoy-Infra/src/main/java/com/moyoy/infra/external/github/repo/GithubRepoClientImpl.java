@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,13 +20,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GithubRepoClientImpl implements GithubRepoClient{
+public class GithubRepoClientImpl implements GithubRepoClient {
 
 	private final GithubRepoFeignClient githubRepoFeignClient;
 	private final ObjectMapper objectMapper;
@@ -50,8 +51,7 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 				since,
 				GITHUB_MAX_QUERY_PAGING_SIZE,
 				page,
-				accessToken
-			);
+				accessToken);
 
 			repoResponseList.addAll(reposPage);
 			page++;
@@ -91,8 +91,7 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 				sleep(10000);
 			} else {
 				throw new RuntimeException(
-					String.format("Repo [%s] 통계 수집 중 오류 발생 (status=%d)", repoFullName, status)
-				);
+					String.format("Repo [%s] 통계 수집 중 오류 발생 (status=%d)", repoFullName, status));
 			}
 		}
 
@@ -104,14 +103,14 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 	}
 
 	private void repoFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
-		if(throwable instanceof CallNotPermittedException){
+		if (throwable instanceof CallNotPermittedException) {
 
 		}
 		/// TODO : 에러코드 회의 후 처리
 	}
 
 	private void statFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
-		if(throwable instanceof CallNotPermittedException){
+		if (throwable instanceof CallNotPermittedException) {
 
 		}
 		/// TODO : 에러코드 회의 후 처리
@@ -121,8 +120,7 @@ public class GithubRepoClientImpl implements GithubRepoClient{
 		try {
 			return objectMapper.readValue(
 				response.body().asInputStream(),
-				new TypeReference<List<GithubRepoCommitStatsResponse>>() {}
-			);
+				new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
 		} catch (IOException e) {
 			throw new RuntimeException("Repo [" + repoFullName + "] JSON 파싱 실패", e);
 		}

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.moyoy.infra.external.discord.dto.DiscordClientRequest;
 
 @Component
-public class DiscordClientImpl implements DiscordClient{
+public class DiscordClientImpl implements DiscordClient {
 
 	private final DiscordFeignClient discordFeignClient;
 	private final String discordWebhookId;
