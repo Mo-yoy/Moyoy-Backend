@@ -10,8 +10,7 @@ public record UserSyncData(
 	String profileImgUrl,
 	String type,
 	int followers,
-	int following
-) {
+	int following) {
 
 	public static UserSyncData from(OAuth2User oAuth2User) {
 		return new UserSyncData(
@@ -20,7 +19,6 @@ public record UserSyncData(
 			oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_AVATAR_URL).toString(),
 			oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_TYPE).toString(),
 			(Integer)oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_FOLLOWERS),
-			(Integer)oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_FOLLOWING)
-		);
+			(Integer)oAuth2User.getAttributes().get(GITHUB_OAUTH2_USER_FOLLOWING));
 	}
 }

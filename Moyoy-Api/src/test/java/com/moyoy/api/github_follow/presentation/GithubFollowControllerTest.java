@@ -47,7 +47,7 @@ import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.github_follow.application.GithubFollowService;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.github.GithubErrorCode;
 import com.moyoy.domain.support.error.github_follow.FollowErrorCode;

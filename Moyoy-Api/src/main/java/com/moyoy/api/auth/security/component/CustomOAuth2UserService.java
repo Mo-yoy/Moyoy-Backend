@@ -13,7 +13,6 @@ import com.moyoy.api.auth.security.principal.GithubOAuth2User;
 import com.moyoy.api.user.application.UserService;
 import com.moyoy.api.user.application.request.UserSyncData;
 import com.moyoy.api.user.application.response.UserSyncResult;
-import com.moyoy.infra.external.discord.feign.DiscordClient;
 
 /**
  *  <p>우리 서비스의 성격이 깃허브와 깃허브 사용자 간의 미들웨어 느낌의 서비스인 점,

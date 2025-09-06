@@ -1,5 +1,7 @@
 package com.moyoy.domain.ranking;
 
+import com.moyoy.domain.ranking.dto.RankingUpdate;
+
 import lombok.Builder;
 import lombok.Getter;
 

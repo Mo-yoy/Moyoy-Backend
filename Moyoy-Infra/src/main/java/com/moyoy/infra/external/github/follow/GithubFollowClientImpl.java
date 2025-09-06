@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
 
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;

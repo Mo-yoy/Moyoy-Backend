@@ -2,6 +2,8 @@ package com.moyoy.domain.ranking;
 
 import org.springframework.stereotype.Component;
 
+import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
+import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
 
 @Component
 public class RankingCalculator {

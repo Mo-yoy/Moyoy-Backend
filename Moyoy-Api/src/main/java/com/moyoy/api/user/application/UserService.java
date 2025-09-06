@@ -2,12 +2,16 @@ package com.moyoy.api.user.application;
 
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moyoy.api.user.application.request.UserSyncData;
 import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.api.user.application.response.UserSyncResult;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
 import com.moyoy.domain.support.error.ranking.RankingNotFoundException;
@@ -16,9 +20,6 @@ import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -31,7 +32,7 @@ public class UserService {
 	public UserSearchResult getUserProfile(Long userId) {
 
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Ranking ranking = rankingRepository.findById(userId).orElseThrow(RankingNotFoundException::new);
+		Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow(RankingNotFoundException::new);
 
 		return UserSearchResult.from(user, ranking);
 	}
@@ -64,7 +65,8 @@ public class UserService {
 	private UserSyncResult signUp(UserSyncData data) {
 
 		///  TODO : 추후 처리
-		if(!data.type().equals("User")) throw new RuntimeException("User Type Only Supported, type=" + data.type() + "");
+		if (!data.type().equals("User"))
+			throw new RuntimeException("User Type Only Supported, type=" + data.type() + "");
 
 		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
 

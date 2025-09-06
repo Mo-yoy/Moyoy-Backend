@@ -1,4 +1,4 @@
-package com.moyoy.domain.follow;
+package com.moyoy.domain.github_follow;
 
 import java.time.LocalDateTime;
 import java.util.List;

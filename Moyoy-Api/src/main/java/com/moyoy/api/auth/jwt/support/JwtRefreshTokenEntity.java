@@ -20,7 +20,7 @@ public class JwtRefreshTokenEntity {
 
 	/**
 	 * 고유 식별자 (PK, AUTO_INCREMENT)
-	 * - 한 사용자 다중 기기 로그인 허용 + InnoDB 클러스터링 인덱스를 위해 별도의 Auto Increment id 추가
+	 * - 한 사용자 다중 기기 로그인 허용 + InnoDB 클러스터링 인덱스를 위해 별도의 Auto Increment userId 추가
 	 */
 	private Long id;
 
