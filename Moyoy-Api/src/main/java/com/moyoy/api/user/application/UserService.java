@@ -9,39 +9,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moyoy.api.user.application.request.UserSyncData;
-import com.moyoy.api.user.application.response.UserSearchResult;
 import com.moyoy.api.user.application.response.UserSyncResult;
 
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.ranking.RankingNotFoundException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
+
+import com.moyoy.infra.database.mysql.common.UserRankingQueryRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
+	private final UserRankingQueryRepository userRankingQueryRepository;
 	private final UserRepository userRepository;
 	private final RankingRepository rankingRepository;
-
-	public UserSearchResult getUserProfile(Long userId) {
-
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow(RankingNotFoundException::new);
-
-		return UserSearchResult.from(user, ranking);
-	}
 
 	@Transactional
 	public UserSyncResult syncOrSignUp(UserSyncData userSyncData) {
 
 		Integer githubUserId = userSyncData.githubUserId();
-
 		Optional<User> foundUser = userRepository.findByGithubUserId(githubUserId);
 
 		return foundUser
