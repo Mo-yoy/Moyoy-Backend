@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      - "aws-parameterstore:/config/moyoy-test/"
+      - "aws-parameterstore:/config/moyoy-test/" 
 
   flyway:
     enabled: true

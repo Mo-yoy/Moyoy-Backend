@@ -4,21 +4,21 @@
 
 <!-- 텍스트 로그 (로컬/실시간/백업) -->
 <appender name="DAILY_API_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-test/logs/api.log</file>
+    <file>/home/ubuntu/moyoy-dev/logs/api.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-test/logs/api.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-dev/logs/api.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>2</maxHistory>
     </rollingPolicy>
     <encoder>
-        <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][TEST][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+        <pattern>%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%-5level) %clr(${PID:-N/A}){magenta} --- [API][DEV][%thread] %clr(%-40.40logger{39}){cyan} : %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
     </encoder>
 </appender>
 
 <!-- JSON 로그 (CloudWatch 업로드용) -->
 <appender name="JSON_CLOUD_WATCH_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/home/ubuntu/moyoy-test/logs/api-json.log</file>
+    <file>/home/ubuntu/moyoy-dev/logs/api-json.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>/home/ubuntu/moyoy-test/logs/api-json.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <fileNamePattern>/home/ubuntu/moyoy-dev/logs/api-json.%d{yyyy-MM-dd}.log</fileNamePattern>
         <maxHistory>2</maxHistory>
     </rollingPolicy>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">

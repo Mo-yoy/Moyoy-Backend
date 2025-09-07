@@ -1,4 +1,4 @@
-name: Moyo API Test Server Deploy # 8080
+name: Moyo API Dev Server Deploy # 8080
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.TEST_SERVER_EC2_USERNAME }}
           key: ${{ secrets.TEST_SERVER_EC2_PRIVATE_KEY }}
           source: moyoy-api.jar
-          target: /home/ubuntu/moyoy-test/api/tobe
+          target: /home/ubuntu/moyoy-dev/api/tobe
 
       - name: SSH로 EC2에 접속 후 애플리케이션 실행
         uses: appleboy/ssh-action@v1.0.3
@@ -57,10 +57,10 @@ jobs:
           key: ${{ secrets.TEST_SERVER_EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/moyoy-test/api/current
-            mkdir /home/ubuntu/moyoy-test/api/current
-            mv /home/ubuntu/moyoy-test/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-test/api/current/moyoy-api.jar
-            cd /home/ubuntu/moyoy-test/api/current
+            rm -rf /home/ubuntu/moyoy-dev/api/current
+            mkdir /home/ubuntu/moyoy-dev/api/current
+            mv /home/ubuntu/moyoy-dev/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-dev/api/current/moyoy-api.jar
+            cd /home/ubuntu/moyoy-dev/api/current
             sudo fuser -k -n tcp 8080 || true    
-            nohup java -jar moyoy-api.jar --spring.profiles.active=test > ./output.log 2>&1 &
-            rm -rf /home/ubuntu/moyoy-test/api/tobe
+            nohup java -jar moyoy-api.jar --spring.profiles.active=dev > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/moyoy-dev/api/tobe
