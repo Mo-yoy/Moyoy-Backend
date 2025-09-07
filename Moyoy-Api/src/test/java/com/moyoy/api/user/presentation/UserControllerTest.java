@@ -3,7 +3,6 @@ package com.moyoy.api.user.presentation;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static com.moyoy.common.constant.TestConstant.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,7 +25,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.common.ApiControllerAdvice;
-import com.moyoy.api.user.application.UserProfileService;
 import com.moyoy.api.user.application.UserService;
 import com.moyoy.api.user.application.response.UserProfileQueryResult;
 
@@ -45,9 +43,6 @@ class UserControllerTest {
 	@MockitoBean
 	private UserService userService;
 
-	@MockitoBean
-	private UserProfileService userProfileService;
-
 	@Test
 	@WithMockMoyoyUser(id = 1234)
 	void 유저_프로필_조회_API_문서화를_성공한다() throws Exception {
@@ -59,7 +54,7 @@ class UserControllerTest {
 			"A",
 			"https://~");
 
-		when(userProfileService.getUserProfile(1234L))
+		when(userService.getUserProfile(1234L))
 			.thenReturn(mockProfileResult);
 
 		mockMvc

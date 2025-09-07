@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public record UserSyncData(
 	Integer githubUserId,
-	String userTag,
+	String username,
 	String profileImgUrl,
 	String type,
 	int followers,
