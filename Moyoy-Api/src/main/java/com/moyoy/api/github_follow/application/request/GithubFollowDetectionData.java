@@ -1,6 +1,6 @@
 package com.moyoy.api.github_follow.application.request;
 
-import com.moyoy.domain.follow.DetectType;
+import com.moyoy.domain.github_follow.DetectType;
 
 public record GithubFollowDetectionData(
 	DetectType detectType,

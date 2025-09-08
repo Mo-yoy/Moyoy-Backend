@@ -1,24 +1,26 @@
 package com.moyoy.api.user.application;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.moyoy.api.user.application.request.UserSyncData;
-import com.moyoy.api.user.application.response.UserSearchResult;
+import com.moyoy.api.user.application.response.UserProfileQueryResult;
 import com.moyoy.api.user.application.response.UserSyncResult;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.ranking.RankingNotFoundException;
+import com.moyoy.domain.support.error.github.GithubAccountTypeNotAllowException;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.moyoy.infra.database.mysql.common.UserRankingQueryRepository;
+import com.moyoy.infra.database.mysql.common.UserRankingView;
 
 @Slf4j
 @Service
@@ -27,13 +29,14 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final RankingRepository rankingRepository;
+	private final UserRankingQueryRepository userRankingQueryRepository;
 
-	public UserSearchResult getUserProfile(Long userId) {
+	///  도메인 모델이 필요없는 단순 조회
+	public UserProfileQueryResult getUserProfile(Long userId) {
 
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Ranking ranking = rankingRepository.findById(userId).orElseThrow(RankingNotFoundException::new);
+		UserRankingView userRankingView = userRankingQueryRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
 
-		return UserSearchResult.from(user, ranking);
+		return UserProfileQueryResult.from(userRankingView);
 	}
 
 	@Transactional
@@ -41,19 +44,17 @@ public class UserService {
 
 		Integer githubUserId = userSyncData.githubUserId();
 
-		Optional<User> foundUser = userRepository.findByGithubUserId(githubUserId);
-
-		return foundUser
-			.map(user -> updateProfile(user, userSyncData))
+		return userRepository.findByGithubUserId(githubUserId)
+			.map(user -> sync(user, userSyncData))
 			.orElseGet(() -> signUp(userSyncData));
 	}
 
-	private UserSyncResult updateProfile(User user, UserSyncData data) {
+	private UserSyncResult sync(User user, UserSyncData data) {
 
 		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
 
 		user.changeSocialSize(socialSize);
-		user.changeProfile(data.userTag(), data.profileImgUrl());
+		user.changeProfile(data.username(), data.profileImgUrl());
 		userRepository.save(user);
 
 		log.info("기존 회원 GitHub 프로필 업데이트, userId={}", user.getId());
@@ -63,12 +64,12 @@ public class UserService {
 
 	private UserSyncResult signUp(UserSyncData data) {
 
-		///  TODO : 추후 처리
-		if(!data.type().equals("User")) throw new RuntimeException("User Type Only Supported, type=" + data.type() + "");
+		if (!data.type().equals("User"))
+			throw new GithubAccountTypeNotAllowException();
 
 		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
 
-		UserCreate create = UserCreate.of(data.githubUserId(), data.userTag(), data.profileImgUrl(), socialSize);
+		UserCreate create = UserCreate.of(data.githubUserId(), data.username(), data.profileImgUrl(), socialSize);
 		User newUser = User.from(create);
 		newUser = userRepository.save(newUser);
 

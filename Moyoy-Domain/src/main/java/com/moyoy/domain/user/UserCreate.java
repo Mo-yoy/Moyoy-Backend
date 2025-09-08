@@ -7,6 +7,6 @@ public record UserCreate(
 	SocialSize socialSize) {
 
 	public static UserCreate of(Integer githubUserId, String username, String profileImgUrl, SocialSize socialSize) {
-		return new UserCreate(githubUserId, username, profileImgUrl,socialSize);
+		return new UserCreate(githubUserId, username, profileImgUrl, socialSize);
 	}
 }

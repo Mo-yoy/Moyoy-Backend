@@ -38,7 +38,7 @@ public class CookieUtils {
 			.path("/")
 			.httpOnly(true)
 			.maxAge(1800)
-			.sameSite("None") // test : None , prod : Strict, 추후 환경 변수화
+			.sameSite("None") // TODO : dev : None , prod : Strict, 추후 환경 변수화
 			.secure(true)
 			.build();
 

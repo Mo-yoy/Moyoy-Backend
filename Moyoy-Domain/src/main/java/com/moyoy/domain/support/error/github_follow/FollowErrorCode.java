@@ -12,8 +12,7 @@ import com.moyoy.domain.support.error.ErrorReason;
 @AllArgsConstructor
 public enum FollowErrorCode implements BaseErrorCode {
 
-	SNAPSHOT_COOLDOWN_NOT_EXPIRED(BAD_REQUEST, "FOLLOW_400_1","최신 스냅샷 생성 후 5분 이상 경과해야 갱신할 수 있습니다.")
-	;
+	SNAPSHOT_COOLDOWN_NOT_EXPIRED(BAD_REQUEST, "FOLLOW_400_1", "최신 스냅샷 생성 후 5분 이상 경과해야 갱신할 수 있습니다.");
 
 	private final Integer status;
 	private final String code;

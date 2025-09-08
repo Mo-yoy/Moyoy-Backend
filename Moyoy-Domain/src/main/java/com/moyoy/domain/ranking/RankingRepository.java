@@ -8,11 +8,13 @@ import com.moyoy.domain.support.page.SliceResult;
 
 public interface RankingRepository {
 
+	Optional<Ranking> findById(Long id);
+
+	Optional<Ranking> findByUserId(Long userId);
+
 	void save(Ranking ranking);
 
 	void saveAll(List<Ranking> rankings);
-
-	Optional<Ranking> findById(Long userId);
 
 	SliceResult<Ranking> findAll(RankingPeriod duration, PageData pageData);
 }

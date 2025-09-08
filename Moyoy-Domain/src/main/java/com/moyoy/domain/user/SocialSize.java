@@ -16,9 +16,12 @@ public enum SocialSize {
 
 		int count = followerCount + followingCount;
 
-		if (count >= HUGE.threshold) return HUGE;
-		if (count >= LARGE.threshold) return LARGE;
-		if (count >= MEDIUM.threshold) return MEDIUM;
+		if (count >= HUGE.threshold)
+			return HUGE;
+		if (count >= LARGE.threshold)
+			return LARGE;
+		if (count >= MEDIUM.threshold)
+			return MEDIUM;
 		return SMALL;
 	}
 }

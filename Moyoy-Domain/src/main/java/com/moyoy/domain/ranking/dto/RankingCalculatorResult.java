@@ -1,4 +1,4 @@
-package com.moyoy.domain.ranking;
+package com.moyoy.domain.ranking.dto;
 
 public record RankingCalculatorResult(
 	long weekRankingPoint,

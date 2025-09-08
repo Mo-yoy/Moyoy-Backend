@@ -150,7 +150,7 @@ paths:
       - 🙋 유저 프로필
       summary: 유저 개인 프로필 조회 API
       description: 유저의 프로필 및 관련 데이터를 조회합니다.
-      operationId: 개인 프로필 조회 성공
+      operationId: 사용자 프로필 조회 성공
       responses:
         "200":
           description: "200"
@@ -159,10 +159,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/api-v1-users-me-profile1651746436"
               examples:
-                개인 프로필 조회 성공:
+                사용자 프로필 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userId\":1,\"username\":\"moyoy\",\"rankPoint\":10000,\"rankGrade\"\
-                    :\"A\",\"profileImgUrl\":\"http://~\"}}"
+                    :{\"userId\":1234,\"username\":\"moyoy\",\"rankPoint\":10000,\"\
+                    rankGrade\":\"A\",\"profileImgUrl\":\"https://~\"}}"
       security:
       - bearerAuthJWT: []
   /api/v1/users/me/followings/refresh:

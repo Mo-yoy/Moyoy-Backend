@@ -1,4 +1,4 @@
-package com.moyoy.domain.follow;
+package com.moyoy.domain.github_follow;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

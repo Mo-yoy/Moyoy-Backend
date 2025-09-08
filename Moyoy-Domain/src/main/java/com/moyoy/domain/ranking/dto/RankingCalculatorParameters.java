@@ -1,4 +1,6 @@
-package com.moyoy.domain.ranking;
+package com.moyoy.domain.ranking.dto;
+
+import com.moyoy.domain.ranking.GithubCommitStats;
 
 public record RankingCalculatorParameters(
 	int stars,

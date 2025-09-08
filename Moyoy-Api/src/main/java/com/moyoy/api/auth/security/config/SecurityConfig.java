@@ -5,7 +5,6 @@ import static org.springframework.security.access.hierarchicalroles.RoleHierarch
 
 import lombok.RequiredArgsConstructor;
 
-import org.apache.catalina.filters.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;

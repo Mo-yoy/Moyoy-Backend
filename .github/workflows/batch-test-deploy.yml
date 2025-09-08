@@ -1,4 +1,4 @@
-name: Moyo Batch Test Server Deploy
+name: Moyo Batch Dev Server Deploy
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.TEST_SERVER_EC2_USERNAME }}
           key: ${{ secrets.TEST_SERVER_EC2_PRIVATE_KEY }}
           source: moyoy-batch.jar
-          target: /home/ubuntu/moyoy-test/batch/tobe
+          target: /home/ubuntu/moyoy-dev/batch/tobe
 
       - name: SSH로 EC2에 접속 후 애플리케이션 실행
         uses: appleboy/ssh-action@v1.0.3
@@ -57,10 +57,10 @@ jobs:
           key: ${{ secrets.TEST_SERVER_EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/moyoy-test/batch/current
-            mkdir /home/ubuntu/moyoy-test/batch/current
-            mv /home/ubuntu/moyoy-test/batch/tobe/moyoy-batch.jar /home/ubuntu/moyoy-test/batch/current/moyoy-batch.jar
-            cd /home/ubuntu/moyoy-test/batch/current
+            rm -rf /home/ubuntu/moyoy-dev/batch/current
+            mkdir /home/ubuntu/moyoy-dev/batch/current
+            mv /home/ubuntu/moyoy-dev/batch/tobe/moyoy-batch.jar /home/ubuntu/moyoy-dev/batch/current/moyoy-batch.jar
+            cd /home/ubuntu/moyoy-dev/batch/current
             sudo fuser -k -n tcp 9000 || true    
-            nohup java -jar moyoy-batch.jar --spring.profiles.active=test > ./output.log 2>&1 &
-            rm -rf /home/ubuntu/moyoy-test/batch/tobe
+            nohup java -jar moyoy-batch.jar --spring.profiles.active=dev > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/moyoy-dev/batch/tobe

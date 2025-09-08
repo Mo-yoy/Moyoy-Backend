@@ -2,7 +2,7 @@ package com.moyoy.infra.external.github.follow;
 
 import java.util.List;
 
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubUser;
 
 public interface GithubFollowClient {
 

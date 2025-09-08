@@ -3,6 +3,8 @@ package com.moyoy.domain.ranking;
 import lombok.Builder;
 import lombok.Getter;
 
+import com.moyoy.domain.ranking.dto.RankingUpdate;
+
 @Getter
 @Builder
 public class Ranking {

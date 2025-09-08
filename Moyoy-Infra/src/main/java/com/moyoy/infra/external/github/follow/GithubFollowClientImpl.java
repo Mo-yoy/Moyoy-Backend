@@ -8,8 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
 
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
@@ -26,6 +24,8 @@ import com.moyoy.infra.external.github.user.GithubUserResponse;
 
 import feign.Response;
 import feign.Util;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Slf4j
 @Component
@@ -142,16 +142,15 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 		}
 	}
 
-
 	private void followFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
-		if(throwable instanceof CallNotPermittedException){
+		if (throwable instanceof CallNotPermittedException) {
 
 		}
 		/// TODO : 에러코드 회의 후 처리
 	}
 
 	private void followCommandFallback(Long userId, Integer githubUserId, Throwable throwable) {
-		if(throwable instanceof CallNotPermittedException){
+		if (throwable instanceof CallNotPermittedException) {
 
 		}
 		/// TODO : 에러코드 회의 후 처리

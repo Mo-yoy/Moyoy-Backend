@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.follow.GithubFollowSnapshot;
+import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 
 @Slf4j
 @Component

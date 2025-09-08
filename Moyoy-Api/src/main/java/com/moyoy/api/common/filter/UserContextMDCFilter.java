@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserContextMDCFilter extends OncePerRequestFilter {
 
 	private static final String MDC_KEY_IP = "ip";
-	private static final String MDC_KEY_USER_ID = "userId";
+	private static final String MDC_KEY_USER_ID = "id";
 	private static final String MDC_KEY_USER_AGENT = "userAgent";
 
 	@Override

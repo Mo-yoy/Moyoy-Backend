@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.moyoy.domain.user.Role;
-
 import com.moyoy.domain.user.SocialSize;
+
 import com.moyoy.infra.database.mysql.support.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;

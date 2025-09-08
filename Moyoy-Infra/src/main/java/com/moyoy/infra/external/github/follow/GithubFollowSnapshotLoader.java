@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.follow.GithubFollowSnapshot;
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubFollowSnapshot;
+import com.moyoy.domain.github_follow.GithubUser;
 
 import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 

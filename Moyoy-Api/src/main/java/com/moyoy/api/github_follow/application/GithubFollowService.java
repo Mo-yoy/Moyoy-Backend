@@ -12,9 +12,9 @@ import com.moyoy.api.common.util.SlicePagingUtils;
 import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.follow.GithubFollowClassifier;
-import com.moyoy.domain.follow.GithubFollowSnapshot;
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubFollowClassifier;
+import com.moyoy.domain.github_follow.GithubFollowSnapshot;
+import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.domain.support.error.github_follow.GithubFollowSnapshotCoolDownNotExpiredException;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.support.page.SliceResult;

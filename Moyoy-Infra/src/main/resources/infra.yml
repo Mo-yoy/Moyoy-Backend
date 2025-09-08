@@ -4,17 +4,6 @@ spring:
       region:
         static: ap-northeast-2
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
   authorized-client:
     crypto:
       password: ${AUTHORIZED_CLIENT_CRYPTO_PASSWORD}

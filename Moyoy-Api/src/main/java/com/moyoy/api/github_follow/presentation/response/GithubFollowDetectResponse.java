@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.follow.GithubUser;
+import com.moyoy.domain.github_follow.GithubUser;
 
 public record GithubFollowDetectResponse(
 	List<GithubFollowUserDto> userList,

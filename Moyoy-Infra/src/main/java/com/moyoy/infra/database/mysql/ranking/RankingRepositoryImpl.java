@@ -24,6 +24,20 @@ public class RankingRepositoryImpl implements RankingRepository {
 	private final RankingQueryDslRepository rankingQueryDslRepository;
 
 	@Override
+	public Optional<Ranking> findById(Long id) {
+
+		Optional<RankingEntity> rankingEntity = rankingJpaRepository.findById(id);
+		return rankingEntity.map(RankingMapper::toModel);
+	}
+
+	@Override
+	public Optional<Ranking> findByUserId(Long userId) {
+
+		RankingEntity rankingEntity = rankingJpaRepository.findByUserId(userId);
+		return Optional.ofNullable(RankingMapper.toModel(rankingEntity));
+	}
+
+	@Override
 	public void save(Ranking ranking) {
 
 		RankingEntity rankingEntity = RankingMapper.toEntity(ranking);
@@ -35,13 +49,6 @@ public class RankingRepositoryImpl implements RankingRepository {
 
 		List<RankingEntity> rankingEntityList = updatedRankings.stream().map(RankingMapper::toEntity).toList();
 		rankingJpaRepository.saveAll(rankingEntityList);
-	}
-
-	@Override
-	public Optional<Ranking> findById(Long userId) {
-
-		RankingEntity rankingEntity = rankingJpaRepository.findByUserId(userId);
-		return Optional.ofNullable(RankingMapper.toModel(rankingEntity));
 	}
 
 	@Override
