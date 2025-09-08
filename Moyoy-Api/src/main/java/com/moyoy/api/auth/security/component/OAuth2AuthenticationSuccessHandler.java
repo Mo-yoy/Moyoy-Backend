@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.api.auth.jwt.presentation.RefreshTokenCookieFactory;
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 import com.moyoy.api.auth.jwt.support.HashUtil;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;

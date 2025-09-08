@@ -1,4 +1,4 @@
-package com.moyoy.api.auth.jwt.presentation;
+package com.moyoy.api.auth.jwt.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

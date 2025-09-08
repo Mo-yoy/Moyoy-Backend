@@ -29,5 +29,3 @@ spring:
 
 logging:
   config: classpath:logback/logback-${spring.profiles.active:local}.xml
-
-

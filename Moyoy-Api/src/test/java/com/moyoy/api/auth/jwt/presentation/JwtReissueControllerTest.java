@@ -14,39 +14,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseCookie;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
-import com.moyoy.api.auth.jwt.application.ReissueJwtResult;
-import com.moyoy.api.common.ApiControllerAdvice;
+import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
 
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.auth.AuthErrorCode;
 
+import com.moyoy.common.annotation.ControllerTest;
+
 import jakarta.servlet.http.Cookie;
 
-@WebMvcTest(value = JwtReissueController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
-@AutoConfigureRestDocs
-@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@Import(ApiControllerAdvice.class)
+@ControllerTest(controllers = JwtReissueController.class)
 class JwtReissueControllerTest {
 
 	@Autowired

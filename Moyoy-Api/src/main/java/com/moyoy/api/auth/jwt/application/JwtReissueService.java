@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
 import com.moyoy.api.auth.jwt.support.JwtRefreshWhiteListUpdater;

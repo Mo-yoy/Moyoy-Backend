@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
-import com.moyoy.api.auth.jwt.application.ReissueJwtResult;
+import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
+import com.moyoy.api.auth.jwt.presentation.response.JwtReissueResponse;
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 import com.moyoy.api.common.response.ApiResponse;
 
 @RestController

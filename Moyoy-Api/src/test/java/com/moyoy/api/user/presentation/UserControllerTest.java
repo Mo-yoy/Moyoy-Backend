@@ -9,32 +9,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
-import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.user.application.UserService;
 import com.moyoy.api.user.application.response.UserProfileQueryResult;
 
+import com.moyoy.common.annotation.ControllerTest;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
 
-@WebMvcTest(controllers = UserController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
-@Import(ApiControllerAdvice.class)
-@AutoConfigureRestDocs
-@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(RestDocumentationExtension.class)
+@ControllerTest(controllers = UserController.class)
 class UserControllerTest {
 
 	@Autowired
