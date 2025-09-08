@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 import com.moyoy.api.auth.jwt.support.HashUtil;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtProvider;
@@ -20,6 +19,7 @@ import com.moyoy.api.auth.jwt.support.JwtRefreshTokenEntity;
 import com.moyoy.api.auth.jwt.support.JwtRefreshTokenRepository;
 import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
