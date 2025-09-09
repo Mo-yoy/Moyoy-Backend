@@ -24,13 +24,11 @@ import com.moyoy.infra.external.github.user.GithubUserResponse;
 
 import feign.Response;
 import feign.Util;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GithubFollowClientImpl implements GithubFollowClient {
+class GithubFollowClientImpl implements GithubFollowClient {
 
 	private final GithubFollowFeignClient githubFollowFeignClient;
 	private final GithubUserFeignClient githubUserFeignClient;
@@ -38,7 +36,6 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	private final ObjectMapper objectMapper;
 
 	@Override
-	@CircuitBreaker(name = "githubApi", fallbackMethod = "followFetchFallBack")
 	public List<GithubUser> fetchFollowings(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -63,6 +60,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 
 			githubFollowings.addAll(
 				followingsResponseList.stream()
+					.filter(userResponse -> "User".equalsIgnoreCase(userResponse.type()))
 					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 		}
@@ -71,7 +69,6 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
-	@CircuitBreaker(name = "githubApi", fallbackMethod = "followFetchFallBack")
 	public List<GithubUser> fetchFollowers(Long userId, Integer githubUserId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
@@ -96,6 +93,7 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 
 			githubFollowers.addAll(
 				followersResponseList.stream()
+					.filter(userResponse -> "User".equalsIgnoreCase(userResponse.type()))
 					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 
@@ -104,11 +102,11 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
-	@CircuitBreaker(name = "githubApi", fallbackMethod = "followCommandFallback")
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
 		GithubUserResponse targetUserResponse = githubUserFeignClient.fetchUser(accessToken, targetUserGithubId);
+
 		Response followCommandResponse = githubFollowFeignClient.follow(accessToken, targetUserResponse.login());
 		int responseStatus = followCommandResponse.status();
 
@@ -123,7 +121,6 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 	}
 
 	@Override
-	@CircuitBreaker(name = "githubApi", fallbackMethod = "followCommandFallback")
 	public void unFollow(Long currentUserId, Integer targetUserGithubId) {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
@@ -140,20 +137,6 @@ public class GithubFollowClientImpl implements GithubFollowClient {
 			log.warn("깃허브 언팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
 			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패"); /// TODO 추후 처리
 		}
-	}
-
-	private void followFetchFallBack(Long userId, Integer githubUserId, Throwable throwable) {
-		if (throwable instanceof CallNotPermittedException) {
-
-		}
-		/// TODO : 에러코드 회의 후 처리
-	}
-
-	private void followCommandFallback(Long userId, Integer githubUserId, Throwable throwable) {
-		if (throwable instanceof CallNotPermittedException) {
-
-		}
-		/// TODO : 에러코드 회의 후 처리
 	}
 
 	private int getLimitRemaining(Response response) {

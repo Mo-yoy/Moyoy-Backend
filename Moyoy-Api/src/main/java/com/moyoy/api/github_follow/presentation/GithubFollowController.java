@@ -7,35 +7,37 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moyoy.api.common.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.api.github_follow.application.GithubFollowService;
+import com.moyoy.api.github_follow.application.GithubFollowCommandService;
+import com.moyoy.api.github_follow.application.GithubFollowDetectService;
 import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
+import com.moyoy.api.github_follow.presentation.request.GithubFollowCommandRequest;
+import com.moyoy.api.github_follow.presentation.request.GithubFollowDetectRequest;
 import com.moyoy.api.github_follow.presentation.response.GithubFollowDetectResponse;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class GithubFollowController {
 
-	private final GithubFollowService githubFollowService;
+	private final GithubFollowDetectService githubFollowDetectService;
+	private final GithubFollowCommandService githubFollowCommandService;
 
 	@GetMapping("/users/me/followings/{detectType}")
 	public ResponseEntity<ApiResponse<GithubFollowDetectResponse>> detectGithubFollowRelation(
 		@LoginUserId Long currentUserId,
-		@PathVariable("detectType") String detectType,
-		@RequestParam(value = "lastGithubUserId", required = false, defaultValue = "0") Integer lastGithubUserId,
-		@RequestParam(value = "size", required = false, defaultValue = "30") int size) {
+		@Valid GithubFollowDetectRequest request) {
 
-		GithubFollowDetectionData data = GithubFollowDetectionData.of(detectType, lastGithubUserId, size);
-		Optional<GithubFollowDetectionResult> result = githubFollowService.detect(currentUserId, data);
+		GithubFollowDetectionData data = GithubFollowDetectionData.of(request.detectType(), request.lastGithubUserId(), request.size());
+		Optional<GithubFollowDetectionResult> result = githubFollowDetectService.detect(currentUserId, data);
 
 		if (result.isEmpty()) {
 			return ResponseEntity.accepted().body(ApiResponse.accepted());
@@ -49,7 +51,7 @@ public class GithubFollowController {
 	public ResponseEntity<ApiResponse<Void>> refreshGithubFollowRelation(
 		@LoginUserId Long currentUserId) {
 
-		githubFollowService.refresh(currentUserId);
+		githubFollowDetectService.refresh(currentUserId);
 
 		return ResponseEntity.accepted().body(ApiResponse.accepted());
 	}
@@ -57,9 +59,9 @@ public class GithubFollowController {
 	@PostMapping("/follow/{targetGithubUserId}")
 	public ResponseEntity<ApiResponse<Void>> followGithubUser(
 		@LoginUserId Long currentUserId,
-		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
+		@Valid GithubFollowCommandRequest request) {
 
-		githubFollowService.follow(currentUserId, targetGithubUserId);
+		githubFollowCommandService.follow(currentUserId, request.targetGithubUserId());
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}
@@ -67,9 +69,9 @@ public class GithubFollowController {
 	@DeleteMapping("/unfollow/{targetGithubUserId}")
 	public ResponseEntity<ApiResponse<Void>> unFollowGithubUser(
 		@LoginUserId Long currentUserId,
-		@PathVariable("targetGithubUserId") Integer targetGithubUserId) {
+		@Valid GithubFollowCommandRequest request) {
 
-		githubFollowService.unfollow(currentUserId, targetGithubUserId);
+		githubFollowCommandService.unfollow(currentUserId, request.targetGithubUserId());
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}

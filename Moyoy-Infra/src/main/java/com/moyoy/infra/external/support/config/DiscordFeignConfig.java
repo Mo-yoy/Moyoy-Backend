@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.config;
+package com.moyoy.infra.external.support.config;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

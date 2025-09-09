@@ -1,9 +1,11 @@
-package com.moyoy.infra.external.config;
+package com.moyoy.infra.external.support.config;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.moyoy.infra.external.support.GithubErrorDecoder;
 
 import feign.RequestInterceptor;
 
@@ -19,5 +21,10 @@ public class GithubFeignConfig {
 			requestTemplate.header(ACCEPT, "application/vnd.github+json");
 			requestTemplate.header("X-GitHub-Api-Version", "2022-11-28");
 		};
+	}
+
+	@Bean
+	public GithubErrorDecoder githubErrorDecoder() {
+		return new GithubErrorDecoder();
 	}
 }

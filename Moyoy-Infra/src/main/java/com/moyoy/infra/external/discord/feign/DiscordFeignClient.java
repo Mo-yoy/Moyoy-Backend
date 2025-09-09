@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.moyoy.infra.external.config.DiscordFeignConfig;
 import com.moyoy.infra.external.discord.dto.DiscordClientRequest;
+import com.moyoy.infra.external.support.config.DiscordFeignConfig;
 
 @FeignClient(name = "discordWebhookClient", url = "https://discord.com/api/webhooks", configuration = DiscordFeignConfig.class)
-public interface DiscordFeignClient {
+interface DiscordFeignClient {
 
 	@PostMapping("/{id}/{token}")
 	void sendNotification(

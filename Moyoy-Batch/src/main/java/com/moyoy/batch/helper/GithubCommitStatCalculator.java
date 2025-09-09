@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.batch.dto.GithubRepoCommitStats;
+
 import com.moyoy.domain.ranking.GithubCommitStats;
 
 @Component

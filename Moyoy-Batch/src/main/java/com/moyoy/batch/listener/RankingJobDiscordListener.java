@@ -3,6 +3,9 @@ package com.moyoy.batch.listener;
 import java.time.Duration;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -11,9 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.infra.external.discord.dto.DiscordClientRequest;
 import com.moyoy.infra.external.discord.feign.DiscordClient;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -33,8 +33,8 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 			totalRead += (int)stepExecution.getReadCount();
 			totalWrite += (int)stepExecution.getWriteCount();
 			totalSkip += (int)(stepExecution.getReadSkipCount()
-							+ stepExecution.getProcessSkipCount()
-							+ stepExecution.getWriteSkipCount());
+				+ stepExecution.getProcessSkipCount()
+				+ stepExecution.getWriteSkipCount());
 		}
 
 		int success = totalWrite;
@@ -43,8 +43,7 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 
 		Duration duration = Duration.between(
 			jobExecution.getStartTime(),
-			jobExecution.getEndTime()
-		);
+			jobExecution.getEndTime());
 
 		String today = jobExecution.getJobParameters().getString("today");
 
@@ -53,28 +52,25 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 
 		String title = "📌 랭킹 배치 결과";
 		String description = String.format("""
-        📅 **실행일**: %s
-        **잡 이름**: %s
+			📅 **실행일**: %s
+			**잡 이름**: %s
 
-        ⏳ **소요 시간**: %02d시간 %02d분 %02d초
+			⏳ **소요 시간**: %02d시간 %02d분 %02d초
 
-        👥 **대상 유저**: %d명
-        ✅ **성공**: %d명
-        ❌ **실패**: %d명
+			👥 **대상 유저**: %d명
+			✅ **성공**: %d명
+			❌ **실패**: %d명
 
-        📊 **성공률**: %.2f%%
-        """,
+			📊 **성공률**: %.2f%%
+			""",
 			today,
 			jobExecution.getJobInstance().getJobName(),
 			duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart(),
-			totalRead, success, fail, successRate
-		);
+			totalRead, success, fail, successRate);
 
-		DiscordClientRequest.Embed embed =
-			new DiscordClientRequest.Embed(title, description, color);
+		DiscordClientRequest.Embed embed = new DiscordClientRequest.Embed(title, description, color);
 
-		DiscordClientRequest request =
-			DiscordClientRequest.withEmbeds("랭킹 배치 잡 알림", List.of(embed));
+		DiscordClientRequest request = DiscordClientRequest.withEmbeds("랭킹 배치 잡 알림", List.of(embed));
 
 		discordClient.sendNotification(request);
 	}

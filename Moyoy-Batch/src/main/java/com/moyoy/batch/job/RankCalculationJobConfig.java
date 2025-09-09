@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -38,10 +40,12 @@ import com.moyoy.batch.dto.UserRankResult;
 import com.moyoy.batch.dto.UserSummaryContext;
 import com.moyoy.batch.helper.GithubCommitStatCalculator;
 import com.moyoy.batch.listener.RankingJobDiscordListener;
+
 import com.moyoy.domain.ranking.GithubCommitStats;
 import com.moyoy.domain.ranking.RankingCalculator;
 import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
+
 import com.moyoy.infra.database.mysql.user.UserEntity;
 import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
 import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
@@ -50,7 +54,6 @@ import com.moyoy.infra.external.github.user.GithubUserClient;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
 
 import jakarta.persistence.EntityManagerFactory;
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -92,12 +95,10 @@ public class RankCalculationJobConfig {
 	@StepScope
 	public JpaPagingItemReader<UserEntity> userReader(
 		@Value("#{jobParameters['batchStartTime']}") Date batchStartTime,
-		EntityManagerFactory entityManagerFactory
-	) {
+		EntityManagerFactory entityManagerFactory) {
 		LocalDateTime cutoff = LocalDateTime.ofInstant(
 			batchStartTime.toInstant(),
-			ZoneId.systemDefault()
-		);
+			ZoneId.systemDefault());
 
 		return new JpaPagingItemReaderBuilder<UserEntity>()
 			.name("userReader")
@@ -108,7 +109,6 @@ public class RankCalculationJobConfig {
 			.build();
 	}
 
-
 	@Bean
 	public ItemProcessor<UserEntity, UserRankResult> userRankingProcessor() {
 
@@ -118,8 +118,7 @@ public class RankCalculationJobConfig {
 				fetchUserProfile(),
 				prepareRankingRepoCandidates(),
 				fetchContributorStats(),
-				calculateRankingResult()
-			)
+				calculateRankingResult())
 			.build();
 	}
 
@@ -177,8 +176,7 @@ public class RankCalculationJobConfig {
 
 			List<GithubRepoDetails> candidateRepos = Stream.concat(
 				userOwnedRepos.stream(),
-				userContributedRepos.stream()
-			).toList();
+				userContributedRepos.stream()).toList();
 
 			return new RepoCandidatesContext(userContext, candidateRepos);
 		};
@@ -243,14 +241,14 @@ public class RankCalculationJobConfig {
 	public ItemWriter<UserRankResult> userRankingWriter(DataSource dataSource) {
 
 		String sql = """
-        UPDATE rankings
-        SET weekly_point = ?,
-            monthly_point = ?,
-            yearly_point  = ?,
-            grade         = ?,
-            modified_at   = NOW(6)
-        WHERE user_id = ?
-        """;
+			UPDATE rankings
+			SET weekly_point = ?,
+			    monthly_point = ?,
+			    yearly_point  = ?,
+			    grade         = ?,
+			    modified_at   = NOW(6)
+			WHERE user_id = ?
+			""";
 
 		return new JdbcBatchItemWriterBuilder<UserRankResult>()
 			.dataSource(dataSource)
