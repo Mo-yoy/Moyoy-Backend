@@ -61,4 +61,28 @@ public record GithubUserResponse(
 	@JsonProperty("created_at") String createdAt,
 
 	@JsonProperty("updated_at") String updatedAt) {
+
+	public static GithubUserResponse createTest() {
+		return new GithubUserResponse(
+			"login",
+			1,
+			null,
+			"avatar",
+			null,
+			null, null, null, null, null, null,
+			null, null, null, null, null,
+			"User",
+			null,
+			false,
+			null, null, null, null, null, null, null,
+			null,
+			0,
+			0,
+			0,
+			0,
+			null,
+			null
+		);
+	}
+
 }
