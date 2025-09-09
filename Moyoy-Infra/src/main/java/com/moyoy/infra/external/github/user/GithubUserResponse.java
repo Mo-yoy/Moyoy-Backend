@@ -81,8 +81,7 @@ public record GithubUserResponse(
 			0,
 			0,
 			null,
-			null
-		);
+			null);
 	}
 
 }

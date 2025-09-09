@@ -1,7 +1,6 @@
 package com.moyoy.api.github_follow.application;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;

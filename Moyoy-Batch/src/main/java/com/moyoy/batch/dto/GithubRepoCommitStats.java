@@ -6,20 +6,17 @@ import com.moyoy.infra.external.github.repo.GithubRepoCommitStatsResponse;
 
 public record GithubRepoCommitStats(
 	Author author,
-	List<Week> weeks
-) {
+	List<Week> weeks) {
 
 	public record Author(
-		String username
-	) {
+		String username) {
 
 	}
 
 	public record Week(
 		long weekTimeStamp,
 		int addCodeLine,
-		int commit
-	) {
+		int commit) {
 
 	}
 
@@ -29,7 +26,6 @@ public record GithubRepoCommitStats(
 			new Author(response.author().login()),
 			response.weeks().stream()
 				.map(w -> new Week(w.w(), w.a(), w.c()))
-				.toList()
-		);
+				.toList());
 	}
 }

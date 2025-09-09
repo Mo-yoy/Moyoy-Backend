@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.follow;
+package com.moyoy.infra.database.redis.follow;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 import com.moyoy.domain.github_follow.GithubUser;
 
-import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
+import com.moyoy.infra.external.github.follow.GithubFollowClient;
 
 @Slf4j
 @Component

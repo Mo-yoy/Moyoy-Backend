@@ -36,5 +36,4 @@ public class GithubFollowSnapshotCacheManager {
 	public void delete(Long userId) {
 
 	}
-
 }
