@@ -45,6 +45,7 @@ public interface GithubUserApi {
 		@RequestHeader(AUTHORIZATION) String bearer,
 		@PathVariable("userId") Integer githubUserId);
 
+
 	/**
 	 * <p>GitHub 사용자 정보를 원본 Response 형태로 반환합니다.<br>
 	 * 헤더(X-RateLimit 등) 확인이나 raw body 파싱이 필요할 때 사용합니다.</p>

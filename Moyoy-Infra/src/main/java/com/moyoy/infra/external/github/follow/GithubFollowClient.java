@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.infra.external.github.support.GithubResponseParser;
-import com.moyoy.infra.external.github.support.error.GithubApiLimitExceedException;
+import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserApi;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
@@ -50,7 +50,7 @@ public class GithubFollowClient {
 		if (!canRequest) {
 
 			logFollowQueryError(FOLLOWING, userId, rateLimitRemaining);
-			throw new GithubApiLimitExceedException();
+			throw new GithubPreCheckLimitExceedException();
 		}
 
 		List<GithubUser> githubFollowings = new ArrayList<>();
@@ -88,7 +88,7 @@ public class GithubFollowClient {
 		if (!canRequest) {
 
 			logFollowQueryError(FOLLOWER, userId, rateLimitRemaining);
-			throw new GithubApiLimitExceedException();
+			throw new GithubPreCheckLimitExceedException();
 		}
 
 		List<GithubUser> githubFollowers = new ArrayList<>();

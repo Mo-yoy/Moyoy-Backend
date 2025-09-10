@@ -4,8 +4,8 @@ import static com.moyoy.infra.external.github.support.error.GithubErrorCode.*;
 
 import com.moyoy.common.error.MoyoException;
 
-public class GithubResourceNotFoundException extends MoyoException {
-	public GithubResourceNotFoundException() {
-		super(GITHUB_RESOURCE_NOT_FOUND);
+public class GithubUnauthorizedException extends MoyoException {
+	public GithubUnauthorizedException() {
+		super(GITHUB_UNAUTHORIZED);
 	}
 }

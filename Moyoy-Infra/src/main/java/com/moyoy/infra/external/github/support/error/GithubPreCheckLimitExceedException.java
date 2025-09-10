@@ -4,8 +4,8 @@ import static com.moyoy.infra.external.github.support.error.GithubErrorCode.*;
 
 import com.moyoy.common.error.MoyoException;
 
-public class GithubApiLimitExceedException extends MoyoException {
-	public GithubApiLimitExceedException() {
-		super(LIMIT_EXCEED);
+public class GithubPreCheckLimitExceedException extends MoyoException {
+	public GithubPreCheckLimitExceedException() {
+		super(GITHUB_LIMIT_PRE_CHECK_EXCEED);
 	}
 }

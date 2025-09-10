@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.external.github.support.error.GithubApiLimitExceedException;
+import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserClient;
 
 import feign.Response;
@@ -41,7 +41,7 @@ public class GithubApiLimitChecker {
 
 		if (apiLimitRemaining < GITHUB_MIN_REQUEST_THRESHOLD) {
 			log.warn("API Limit Exceeded | GitHub User Id : {}, Remaining : {}", githubUserId, apiLimitRemaining);
-			throw new GithubApiLimitExceedException();
+			throw new GithubPreCheckLimitExceedException();
 		}
 	}
 
@@ -61,7 +61,7 @@ public class GithubApiLimitChecker {
 
 		if (apiLimitRemaining < GITHUB_MIN_REQUEST_THRESHOLD) {
 			log.warn("API Limit Exceeded | GitHub User Id : {}, Remaining : {}", githubUserId, apiLimitRemaining);
-			throw new GithubApiLimitExceedException();
+			throw new GithubPreCheckLimitExceedException();
 		}
 	}
 }
