@@ -67,7 +67,7 @@ public class GithubFollowCommandService {
 		followSnapshotCacheManager.findFollowSnapshot(currentUserId)
 			.ifPresent(currentUserSnapshot -> {
 
-				GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
+				GithubUser targetGithubUser = fromApi(bearerToken, targetUserGithubId);
 				currentUserSnapshot.removeFollowing(targetGithubUser);
 				followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
 			});
@@ -86,9 +86,9 @@ public class GithubFollowCommandService {
 				});
 	}
 
-	private GithubUser fromApi(Long currentUserId, Integer targetGithubUserId) {
+	private GithubUser fromApi(String bearerToken, Integer targetGithubUserId) {
 
-		GithubUserResponse res = githubUserClient.fetchUser(currentUserId, targetGithubUserId);
+		GithubUserResponse res = githubUserClient.fetchUser(bearerToken, targetGithubUserId);
 		return GithubUser.of(res.id(), res.login(), res.avatarUrl());
 	}
 

@@ -19,6 +19,7 @@ import com.moyoy.infra.external.github.repo.dto.GithubRepoCommitStatsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoResponse;
 import com.moyoy.infra.external.github.support.GithubResponseParser;
+import com.moyoy.infra.external.github.support.error.GithubPollingApiTimeOutException;
 
 import feign.Response;
 
@@ -30,70 +31,71 @@ public class GithubRepoClient {
 	private final GithubRepoApi githubRepoApi;
 	private final GithubResponseParser responseParser;
 
-	public List<GithubRepoResponse> fetchReposCreatedThisYear(String accessToken) {
+	public List<GithubRepoResponse> fetchReposCreatedThisYear(String bearerToken) {
 
 		final String affiliation = "owner,organization_member";
 
-		final String since = LocalDate.now()
+		final String thisYearSince = LocalDate.now()
 			.withDayOfYear(1)
 			.atStartOfDay()
 			.format(DateTimeFormatter.ISO_DATE_TIME);
 
 		List<GithubRepoResponse> repoResponseList = new ArrayList<>();
-		int page = 1;
+		int currentPage = 1;
 
 		List<GithubRepoResponse> reposPage;
 
 		do {
 			reposPage = githubRepoApi.fetchPagedRepos(
-				accessToken,
+				bearerToken,
 				affiliation,
-				since,
+				thisYearSince,
 				GITHUB_MAX_QUERY_PAGING_SIZE,
-				page);
+				currentPage);
 
 			repoResponseList.addAll(reposPage);
-			page++;
+			currentPage++;
 
 		} while (reposPage.size() == GITHUB_MAX_QUERY_PAGING_SIZE);
 
 		return repoResponseList;
 	}
 
-	public List<GithubRepoContributorsResponse> fetchRepoContributors(String accessToken, String repoFullName) {
+	public List<GithubRepoContributorsResponse> fetchRepoContributors(String bearerToken, String repoFullName) {
 
-		return githubRepoApi.fetchRepoContributors(accessToken, repoFullName);
+		return githubRepoApi.fetchRepoContributors(bearerToken, repoFullName);
 	}
 
-	public List<GithubRepoCommitStatsResponse> fetchRepoContributorStats(String repoFullName, String accessToken) {
+	/**
+	 *	Feign 호출 후 발생한 에러는 ErrorDecoder 에서 처리됨
+	 */
+	public List<GithubRepoCommitStatsResponse> fetchRepoContributorStats(String bearerToken, String repoFullName) throws GithubPollingApiTimeOutException {
 
 		int maxTryCount = 10;
 		Response response = null;
 
 		for (int tryCount = 1; tryCount <= maxTryCount; tryCount++) {
 
-			response = githubRepoApi.fetchContributorCommitActivity(accessToken, repoFullName);
-
-			int status = response.status();
+			Response attempt = githubRepoApi.fetchContributorCommitActivity(bearerToken, repoFullName);
+			int status = attempt.status();
 
 			if (status == 200) {
 
-				log.info("Repo [{}] 통계 데이터 {}번째 시도에 성공", repoFullName, tryCount);
+				log.info("Repo [{}] 통계 {}번째 시도 성공", repoFullName, tryCount);
+				response = attempt;
 				break;
 			} else if (status == 202) {
 
+				attempt.close();
 				log.info("Repo [{}] 통계 준비 중 ({}번째 시도). 10초 후 재시도", repoFullName, tryCount);
 				sleep(10000);
-			} else {
-				throw new RuntimeException(
-					String.format("Repo [%s] 통계 수집 중 오류 발생 (status=%d)", repoFullName, status));
-			}
+			} else
+				attempt.close();
 		}
 
-		if (response.status() != 200) {
-			throw new RuntimeException("Repo [" + repoFullName + "] 통계 데이터를 끝내 불러오지 못했습니다.");
-		}
-
-		return responseParser.parseBody(response, new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
+		if (response != null) {
+			return responseParser.parseBody(response, new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
+		} else
+			throw new GithubPollingApiTimeOutException();
 	}
 }

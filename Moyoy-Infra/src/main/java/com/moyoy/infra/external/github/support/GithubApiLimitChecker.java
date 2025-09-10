@@ -16,6 +16,8 @@ import feign.Response;
 
 /**
  *  Github User Info API를 이용해서 API LIMIT 체크
+ *
+ *  TODO : 좀 이상함.
  */
 
 @Slf4j
@@ -25,42 +27,25 @@ public class GithubApiLimitChecker {
 
 	private final GithubUserClient githubUserClient;
 
-	public void assertCanGithubRequest(String accessToken, Integer githubUserId) {
+	public void assertCanGithubRequest(String accessToken, Long userId, Integer githubUserId) {
 
-		Response response = githubUserClient.fetchUserRawResponse(accessToken, githubUserId);
+		String remainingHeader;
+		try (Response response = githubUserClient.fetchUserRawResponse(accessToken, githubUserId)) {
 
-		String remainingHeader = response.headers()
-			.getOrDefault(GITHUB_RATE_LIMIT_HEADER, List.of())
-			.stream()
-			.findFirst()
-			.orElse("0");
-
-		int apiLimitRemaining = remainingHeader.isBlank() ? 0 : Integer.parseInt(remainingHeader);
-
-		log.info("API Limit Remaining : {} | GitHub User Id : {}", apiLimitRemaining, githubUserId);
-
-		if (apiLimitRemaining < GITHUB_MIN_REQUEST_THRESHOLD) {
-			log.warn("API Limit Exceeded | GitHub User Id : {}, Remaining : {}", githubUserId, apiLimitRemaining);
-			throw new GithubPreCheckLimitExceedException();
+			remainingHeader = response.headers()
+				.getOrDefault(GITHUB_RATE_LIMIT_HEADER, List.of())
+				.stream()
+				.findFirst()
+				.orElse("0");
 		}
-	}
-
-	public void assertCanGithubRequest(Long userId, Integer githubUserId) {
-
-		Response response = githubUserClient.fetchUserRawResponse(userId, githubUserId);
-
-		String remainingHeader = response.headers()
-			.getOrDefault(GITHUB_RATE_LIMIT_HEADER, List.of())
-			.stream()
-			.findFirst()
-			.orElse("0");
 
 		int apiLimitRemaining = remainingHeader.isBlank() ? 0 : Integer.parseInt(remainingHeader);
 
-		log.info("API Limit Remaining : {} | GitHub User Id : {}", apiLimitRemaining, githubUserId);
+		log.info("User Id : {} | API Limit Remaining : {}", userId, apiLimitRemaining);
 
 		if (apiLimitRemaining < GITHUB_MIN_REQUEST_THRESHOLD) {
-			log.warn("API Limit Exceeded | GitHub User Id : {}, Remaining : {}", githubUserId, apiLimitRemaining);
+
+			log.error("API Limit Exceeded | User Id : {}, Remaining : {}", userId, apiLimitRemaining);
 			throw new GithubPreCheckLimitExceedException();
 		}
 	}

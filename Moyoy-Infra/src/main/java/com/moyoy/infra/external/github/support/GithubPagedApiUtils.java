@@ -2,9 +2,6 @@ package com.moyoy.infra.external.github.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public final class GithubPagedApiUtils {
 
 	private GithubPagedApiUtils() {}
