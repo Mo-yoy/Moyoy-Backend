@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public record GithubFollowDetectRequest(
-
 	@NotBlank @Pattern(regexp = "mutual|follow-only|followed-only") String detectType,
 
 	@Min(0) Integer lastGithubUserId,

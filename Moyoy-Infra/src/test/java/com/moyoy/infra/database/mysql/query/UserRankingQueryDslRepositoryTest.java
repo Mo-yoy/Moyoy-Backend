@@ -14,7 +14,7 @@ import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.SocialSize;
 
 import com.moyoy.infra.database.mysql.query.config.QueryDslTestConfig;
-import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserProfileView;
 import com.moyoy.infra.database.mysql.ranking.RankingEntity;
 import com.moyoy.infra.database.mysql.user.UserEntity;
 
@@ -54,7 +54,7 @@ class UserRankingQueryDslRepositoryTest {
 		entityManager.clear();
 
 		// when
-		Optional<UserRankingView> result = userRankingQueryDslRepository.findUserRankingView(user.getId());
+		Optional<UserProfileView> result = userRankingQueryDslRepository.findUserRankingView(user.getId());
 
 		// then
 		assertThat(result).isPresent();
@@ -71,7 +71,7 @@ class UserRankingQueryDslRepositoryTest {
 		Long notExistUserId = 9999L;
 
 		// when
-		Optional<UserRankingView> result = userRankingQueryDslRepository.findUserRankingView(notExistUserId);
+		Optional<UserProfileView> result = userRankingQueryDslRepository.findUserRankingView(notExistUserId);
 
 		// then
 		assertThat(result).isEmpty();
