@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyoy.domain.github_follow.GithubUser;
 import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
 
-import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
+import com.moyoy.infra.external.github.support.GithubOAuthTokenReader;
 import com.moyoy.infra.external.github.user.GithubUserFeignClient;
 import com.moyoy.infra.external.github.user.GithubUserResponse;
 
@@ -30,7 +30,7 @@ import feign.Util;
 @RequiredArgsConstructor
 class GithubFollowClientImpl implements GithubFollowClient {
 
-	private final GithubFollowFeignClient githubFollowFeignClient;
+	private final GithubFollowApi githubFollowApi;
 	private final GithubUserFeignClient githubUserFeignClient;
 	private final GithubOAuthTokenReader githubOAuthTokenReader;
 	private final ObjectMapper objectMapper;
@@ -56,7 +56,7 @@ class GithubFollowClientImpl implements GithubFollowClient {
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
 		for (int currentPage = 1; currentPage <= maxFollowingPageSize; currentPage++) {
 
-			List<GithubUserResponse> followingsResponseList = githubFollowFeignClient.fetchPagedFollowings(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
+			List<GithubUserResponse> followingsResponseList = githubFollowApi.fetchPagedFollowings(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
 
 			githubFollowings.addAll(
 				followingsResponseList.stream()
@@ -89,7 +89,7 @@ class GithubFollowClientImpl implements GithubFollowClient {
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
 		for (int currentPage = 1; currentPage <= maxFollowerPageSize; currentPage++) {
 
-			List<GithubUserResponse> followersResponseList = githubFollowFeignClient.fetchPagedFollowers(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
+			List<GithubUserResponse> followersResponseList = githubFollowApi.fetchPagedFollowers(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
 
 			githubFollowers.addAll(
 				followersResponseList.stream()
@@ -107,7 +107,7 @@ class GithubFollowClientImpl implements GithubFollowClient {
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
 		GithubUserResponse targetUserResponse = githubUserFeignClient.fetchUser(accessToken, targetUserGithubId);
 
-		Response followCommandResponse = githubFollowFeignClient.follow(accessToken, targetUserResponse.login());
+		Response followCommandResponse = githubFollowApi.follow(accessToken, targetUserResponse.login());
 		int responseStatus = followCommandResponse.status();
 
 		if (responseStatus == 204) {
@@ -125,7 +125,7 @@ class GithubFollowClientImpl implements GithubFollowClient {
 
 		String accessToken = githubOAuthTokenReader.getGithubAccessToken(currentUserId);
 		GithubUserResponse targetUserResponse = githubUserFeignClient.fetchUser(accessToken, targetUserGithubId);
-		Response unFollowCommandResponse = githubFollowFeignClient.unfollow(accessToken, targetUserResponse.login());
+		Response unFollowCommandResponse = githubFollowApi.unfollow(accessToken, targetUserResponse.login());
 		int responseStatus = unFollowCommandResponse.status();
 
 		if (responseStatus == 204) {

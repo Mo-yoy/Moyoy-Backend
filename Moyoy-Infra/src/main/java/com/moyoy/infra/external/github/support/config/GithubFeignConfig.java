@@ -1,9 +1,11 @@
-package com.moyoy.infra.external.github.support;
+package com.moyoy.infra.external.github.support.config;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.moyoy.infra.external.github.support.GithubErrorDecoder;
 
 import feign.RequestInterceptor;
 

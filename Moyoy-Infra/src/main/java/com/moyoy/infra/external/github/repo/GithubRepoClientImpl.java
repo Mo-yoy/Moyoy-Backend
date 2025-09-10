@@ -26,7 +26,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 @RequiredArgsConstructor
 public class GithubRepoClientImpl implements GithubRepoClient {
 
-	private final GithubRepoFeignClient githubRepoFeignClient;
+	private final GithubRepoApi githubRepoApi;
 	private final ObjectMapper objectMapper;
 
 	@Override
@@ -46,7 +46,7 @@ public class GithubRepoClientImpl implements GithubRepoClient {
 		List<GithubRepoResponse> reposPage;
 
 		do {
-			reposPage = githubRepoFeignClient.fetchPagedRepos(
+			reposPage = githubRepoApi.fetchPagedRepos(
 				affiliation,
 				since,
 				GITHUB_MAX_QUERY_PAGING_SIZE,
@@ -65,7 +65,7 @@ public class GithubRepoClientImpl implements GithubRepoClient {
 	@CircuitBreaker(name = "githubApi", fallbackMethod = "repoFetchFallBack")
 	public List<GithubRepoContributorsResponse> fetchRepoContributors(String accessToken, String repoFullName) {
 
-		return githubRepoFeignClient.fetchRepoContributors(repoFullName, accessToken);
+		return githubRepoApi.fetchRepoContributors(repoFullName, accessToken);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class GithubRepoClientImpl implements GithubRepoClient {
 
 		for (int tryCount = 1; tryCount <= maxTryCount; tryCount++) {
 
-			response = githubRepoFeignClient.fetchContributorCommitActivity(repoFullName, accessToken);
+			response = githubRepoApi.fetchContributorCommitActivity(repoFullName, accessToken);
 
 			int status = response.status();
 

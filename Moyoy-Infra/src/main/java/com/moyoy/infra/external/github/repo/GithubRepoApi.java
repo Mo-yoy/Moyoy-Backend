@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.moyoy.infra.external.github.support.GithubFeignConfig;
+import com.moyoy.infra.external.github.support.config.GithubFeignConfig;
 
 import feign.Response;
 
 @FeignClient(name = "githubRepoClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
-public interface GithubRepoFeignClient {
+public interface GithubRepoApi {
 
 	@GetMapping("/user/repos")
 	List<GithubRepoResponse> fetchPagedRepos(

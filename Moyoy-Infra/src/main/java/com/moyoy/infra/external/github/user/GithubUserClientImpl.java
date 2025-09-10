@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
+import com.moyoy.infra.external.github.support.GithubOAuthTokenReader;
 
 import feign.Response;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
