@@ -39,7 +39,7 @@ public class GithubFollowCommandService {
 		followSnapshotCacheManager.findFollowSnapshot(currentUserId)
 			.ifPresent(currentUserSnapshot -> {
 
-				GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
+				GithubUser targetGithubUser = fromApi(bearerToken, targetUserGithubId);
 				currentUserSnapshot.addFollowing(targetGithubUser);
 				followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
 			});

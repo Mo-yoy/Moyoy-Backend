@@ -1,6 +1,5 @@
 package com.moyoy.infra.database.mysql.support;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +7,11 @@ import org.springframework.stereotype.Component;
 public class AESEncryptor {
 
 	private final AesBytesEncryptor aesBytesEncryptor;
+	private final AESEncryptorProperties encryptorProperties;
 
-	public AESEncryptor(
-		@Value("${spring.authorized-client.crypto.password}") String password,
-		@Value("${spring.authorized-client.crypto.salt}") String salt) {
-		this.aesBytesEncryptor = new AesBytesEncryptor(password, salt);
+	public AESEncryptor(AESEncryptorProperties encryptorProperties) {
+		this.encryptorProperties = encryptorProperties;
+		this.aesBytesEncryptor = new AesBytesEncryptor(encryptorProperties.password(), encryptorProperties.salt());
 	}
 
 	public byte[] encrypt(byte[] plain) {
