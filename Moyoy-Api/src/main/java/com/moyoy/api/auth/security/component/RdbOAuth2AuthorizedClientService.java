@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.moyoy.infra.external.github.helper.AESEncryptor;
+import com.moyoy.infra.database.mysql.support.AESEncryptor;
 
 @Component
 public class RdbOAuth2AuthorizedClientService extends JdbcOAuth2AuthorizedClientService {

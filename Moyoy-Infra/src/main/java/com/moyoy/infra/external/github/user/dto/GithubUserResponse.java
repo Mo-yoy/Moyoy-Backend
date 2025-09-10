@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.user;
+package com.moyoy.infra.external.github.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

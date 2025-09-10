@@ -2,7 +2,7 @@ package com.moyoy.batch.dto;
 
 import java.util.List;
 
-import com.moyoy.infra.external.github.repo.GithubRepoCommitStatsResponse;
+import com.moyoy.infra.external.github.repo.dto.GithubRepoCommitStatsResponse;
 
 public record GithubRepoCommitStats(
 	Author author,

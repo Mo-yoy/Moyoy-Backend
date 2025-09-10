@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.support;
+package com.moyoy.infra.database.mysql.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
@@ -24,7 +24,7 @@ import com.moyoy.infra.database.mysql.github.OAuthTokenRepository;
 
 @Component
 @RequiredArgsConstructor
-public class GithubOAuthTokenReader {
+public class OAuthTokenReader {
 
 	private final OAuthTokenRepository oAuthTokenRepository;
 

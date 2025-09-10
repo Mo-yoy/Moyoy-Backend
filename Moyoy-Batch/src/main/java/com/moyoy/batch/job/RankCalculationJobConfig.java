@@ -47,11 +47,11 @@ import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
 
 import com.moyoy.infra.database.mysql.user.UserEntity;
-import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
-import com.moyoy.infra.external.github.support.GithubOAuthTokenReader;
+import com.moyoy.infra.external.github.support.GithubApiLimitChecker;
+import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
 import com.moyoy.infra.external.github.repo.GithubRepoClient;
 import com.moyoy.infra.external.github.user.GithubUserClient;
-import com.moyoy.infra.external.github.user.GithubUserResponse;
+import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -59,7 +59,7 @@ import jakarta.persistence.EntityManagerFactory;
 @RequiredArgsConstructor
 public class RankCalculationJobConfig {
 
-	private final GithubOAuthTokenReader githubOAuthTokenReader;
+	private final OAuthTokenReader OAuthTokenReader;
 	private final GithubApiLimitChecker githubApiLimitChecker;
 	private final GithubCommitStatCalculator githubCommitStatCalculator;
 	private final GithubUserClient githubUserClient;
@@ -127,7 +127,7 @@ public class RankCalculationJobConfig {
 
 		return userEntity -> {
 
-			String githubAccessToken = githubOAuthTokenReader.getGithubAccessToken(userEntity.getId());
+			String githubAccessToken = OAuthTokenReader.getGithubAccessToken(userEntity.getId());
 			return new UserAuthContext(userEntity.getId(), userEntity.getGithubUserId(), githubAccessToken);
 		};
 	}

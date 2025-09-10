@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.helper;
+package com.moyoy.infra.external.github.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

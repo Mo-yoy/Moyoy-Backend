@@ -15,7 +15,7 @@ import com.moyoy.domain.user.UserRepository;
 import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;
 import com.moyoy.infra.external.github.user.GithubUserClient;
-import com.moyoy.infra.external.github.user.GithubUserResponse;
+import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 @Slf4j
 @Service

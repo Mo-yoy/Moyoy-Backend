@@ -1,6 +1,6 @@
 package com.moyoy.batch.dto;
 
-import com.moyoy.infra.external.github.repo.GithubRepoResponse;
+import com.moyoy.infra.external.github.repo.dto.GithubRepoResponse;
 
 public record GithubRepoDetails(
 	String repoFullName,

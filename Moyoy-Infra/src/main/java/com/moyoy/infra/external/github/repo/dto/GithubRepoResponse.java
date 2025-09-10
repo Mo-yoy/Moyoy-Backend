@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.repo;
+package com.moyoy.infra.external.github.repo.dto;
 
 import java.time.ZonedDateTime;
 

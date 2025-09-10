@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.github.helper;
+package com.moyoy.infra.database.mysql.support;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
