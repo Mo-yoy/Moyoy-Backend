@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
+import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
@@ -16,11 +16,11 @@ import feign.Response;
 public class GithubUserClient {
 
 	private final GithubUserApi githubUserApi;
-	private final OAuthTokenReader OAuthTokenReader;
+	private final GithubTokenReader githubTokenReader;
 
 	public GithubUserResponse fetchUser(Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessBearerToken(userId);
+		String accessToken = githubTokenReader.findAccessTokenWithTokenType(userId).orElseThrow(() -> new IllegalStateException("User Github Token Not Found"));
 
 		return githubUserApi.fetchUser(accessToken, githubUserId);
 	}
@@ -36,7 +36,7 @@ public class GithubUserClient {
 
 	public Response fetchUserRawResponse(Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessBearerToken(userId);
+		String accessToken = githubTokenReader.findAccessTokenWithTokenType(userId).orElseThrow();
 
 		return githubUserApi.fetchUserRawResponse(accessToken, githubUserId);
 	}

@@ -6,17 +6,19 @@ import static com.moyoy.infra.external.github.support.GithubPagedApiUtils.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.github_follow.GithubUser;
+
 import com.moyoy.infra.external.github.support.GithubResponseParser;
 import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserApi;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -109,38 +111,21 @@ public class GithubFollowClient {
 		return githubFollowers;
 	}
 
+	/**
+	 *  Feign 호출 후 발생한 Error는 ErrorDecoder 우리 에러로 변경해서 넘김.
+	 */
 	public void follow(String bearerToken, Long userId, Integer targetUserGithubId) {
 
 		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(bearerToken, targetUserGithubId);
-
-		int responseStatus;
-		try (Response followCommandResponse = githubFollowApi.follow(bearerToken, targetUserResponse.login())) {
-			responseStatus = followCommandResponse.status();
-		}
-
-		if (responseStatus == 204) logFollowCommand(FOLLOW, userId, targetUserGithubId);
-		else {
-
-			logFollowCommandError(FOLLOW, userId, targetUserGithubId, responseStatus);
-			throw new RuntimeException("깃허브 팔로우 요청 처리 실패");
-		}
+		githubFollowApi.follow(bearerToken, targetUserResponse.login());
+		logFollowCommand(FOLLOW, userId, targetUserGithubId);
 	}
 
 	public void unFollow(String bearerToken, Long userId, Integer targetUserGithubId) {
 
 		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(bearerToken, targetUserGithubId);
-
-		int responseStatus;
-		try (Response unFollowCommandResponse = githubFollowApi.unfollow(bearerToken, targetUserResponse.login())) {
-			responseStatus = unFollowCommandResponse.status();
-		}
-
-		if (responseStatus == 204) logFollowCommand(UNFOLLOW, userId, targetUserGithubId);
-		else {
-
-			logFollowCommandError(UNFOLLOW, userId, targetUserGithubId, responseStatus);
-			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패");
-		}
+		githubFollowApi.unfollow(bearerToken, targetUserResponse.login());
+		logFollowCommand(UNFOLLOW, userId, targetUserGithubId);
 	}
 
 	private void logFollowQuery(String type, Long userId, int maxPageSize) {
@@ -153,13 +138,8 @@ public class GithubFollowClient {
 		log.error("{} 리스트 조회가 API Limit 초과로 불가능 합니다. | userId : {}, 남은 API 호출 횟수 : {}", type, userId, rateLimitRemaining);
 	}
 
-	private void logFollowCommand(String type, Long userId, Integer targetUserGithubId){
+	private void logFollowCommand(String type, Long userId, Integer targetUserGithubId) {
 
 		log.info("깃허브 {} 요청 성공 | userId : {} -> targetUserGithubId : {}, ", type, userId, targetUserGithubId);
-	}
-
-	private void logFollowCommandError(String type, Long userId, Integer targetUserGithubId, int responseStatus){
-
-		log.error("깃허브 {} 요청 실패 | userId : {} -x> targetUserId : {}, responseStatus : {}", type, userId, targetUserGithubId, responseStatus);
 	}
 }

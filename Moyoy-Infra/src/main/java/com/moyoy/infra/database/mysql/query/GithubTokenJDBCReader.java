@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.moyoy.common.constant.MoyoConstants;
 import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
 import com.moyoy.infra.database.mysql.support.AESEncryptor;
 

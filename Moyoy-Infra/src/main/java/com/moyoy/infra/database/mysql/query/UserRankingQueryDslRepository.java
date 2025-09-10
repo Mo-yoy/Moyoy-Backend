@@ -9,9 +9,10 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
-import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 
 @Repository
 @RequiredArgsConstructor

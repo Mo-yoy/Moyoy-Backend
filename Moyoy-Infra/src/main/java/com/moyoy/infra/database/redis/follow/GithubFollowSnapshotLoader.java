@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 import com.moyoy.domain.github_follow.GithubUser;
-
 import com.moyoy.domain.user.error.UserGithubTokenNotFoundException;
+
 import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
-import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;
 
 @Slf4j

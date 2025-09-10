@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MoyoException extends RuntimeException {
+public abstract class MoyoException extends RuntimeException {
 
 	private final BaseErrorCode errorCode;
 

@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.moyoy.infra.external.github.support.GithubFeignConfig;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
-import feign.Response;
-
 @FeignClient(name = "githubFollowClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
 interface GithubFollowApi {
 
@@ -91,10 +89,9 @@ interface GithubFollowApi {
 	 *
 	 * @param bearer GitHub OAuth Access Token ("Bearer {token}")
 	 * @param username 팔로우할 대상 GitHub username
-	 * @return GitHub 응답(Response), 보통 본문은 없음
 	 */
 	@PutMapping("/user/following/{username}")
-	Response follow(
+	void follow(
 		@RequestHeader(AUTHORIZATION) String bearer,
 		@PathVariable("username") String username);
 
@@ -116,10 +113,9 @@ interface GithubFollowApi {
 	 *
 	 * @param bearer GitHub OAuth Access Token ("Bearer {token}")
 	 * @param username 언팔로우할 대상 GitHub username
-	 * @return GitHub 응답(Response), 보통 본문은 없음
 	 */
 	@DeleteMapping("/user/following/{username}")
-	Response unfollow(
+	void unfollow(
 		@RequestHeader(AUTHORIZATION) String bearer,
 		@PathVariable("username") String username);
 }

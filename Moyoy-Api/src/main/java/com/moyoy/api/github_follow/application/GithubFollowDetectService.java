@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.moyoy.api.support.SlicePagingUtils;
 import com.moyoy.api.github_follow.application.event.DetectEvent;
 import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
+import com.moyoy.api.support.SlicePagingUtils;
 
 import com.moyoy.domain.github_follow.GithubFollowClassifier;
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;

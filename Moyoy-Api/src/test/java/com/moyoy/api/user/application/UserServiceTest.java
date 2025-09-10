@@ -27,8 +27,8 @@ import com.moyoy.domain.user.dto.UserCreate;
 import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
 import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
 import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
