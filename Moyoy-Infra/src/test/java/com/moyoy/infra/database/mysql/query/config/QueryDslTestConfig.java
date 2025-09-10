@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common.config;
+package com.moyoy.infra.database.mysql.query.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

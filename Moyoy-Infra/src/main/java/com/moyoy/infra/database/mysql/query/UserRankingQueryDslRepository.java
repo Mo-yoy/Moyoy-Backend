@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common;
+package com.moyoy.infra.database.mysql.query;
 
 import static com.moyoy.infra.database.mysql.ranking.QRankingEntity.*;
 import static com.moyoy.infra.database.mysql.user.QUserEntity.*;

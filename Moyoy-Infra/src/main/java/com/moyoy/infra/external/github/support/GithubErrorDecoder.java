@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.support;
+package com.moyoy.infra.external.github.support;
 
 import com.moyoy.domain.support.error.github.GithubResourceNotFoundException;
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.moyoy.infra.external.github.user.GithubUserResponse;
-import com.moyoy.infra.external.support.config.GithubFeignConfig;
+import com.moyoy.infra.external.github.support.GithubFeignConfig;
 
 import feign.Response;
 

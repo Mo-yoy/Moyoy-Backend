@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common;
+package com.moyoy.infra.database.mysql.query;
 
 import java.util.Optional;
 

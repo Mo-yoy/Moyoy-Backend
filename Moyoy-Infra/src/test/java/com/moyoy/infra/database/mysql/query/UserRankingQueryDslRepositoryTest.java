@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common;
+package com.moyoy.infra.database.mysql.query;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.SocialSize;
 
-import com.moyoy.infra.database.mysql.common.config.QueryDslTestConfig;
+import com.moyoy.infra.database.mysql.query.config.QueryDslTestConfig;
 import com.moyoy.infra.database.mysql.ranking.RankingEntity;
 import com.moyoy.infra.database.mysql.user.UserEntity;
 

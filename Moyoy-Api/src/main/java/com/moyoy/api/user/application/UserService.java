@@ -19,8 +19,8 @@ import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
 
-import com.moyoy.infra.database.mysql.common.UserRankingQueryRepository;
-import com.moyoy.infra.database.mysql.common.UserRankingView;
+import com.moyoy.infra.database.mysql.query.UserRankingQueryRepository;
+import com.moyoy.infra.database.mysql.query.UserRankingView;
 
 @Slf4j
 @Service

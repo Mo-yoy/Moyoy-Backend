@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common.config;
+package com.moyoy.infra.database.mysql.query.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.TestConfiguration;

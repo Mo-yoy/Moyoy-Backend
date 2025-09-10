@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.common;
+package com.moyoy.infra.database.mysql.query;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserRankingQueryRepositoryImpl implements UserRankingQueryRepository {
+class UserRankingQueryRepositoryImpl implements UserRankingQueryRepository {
 
 	private final UserRankingQueryDslRepository userRankingQueryDslRepository;
 

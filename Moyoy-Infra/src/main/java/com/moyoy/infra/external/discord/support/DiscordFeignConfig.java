@@ -1,4 +1,4 @@
-package com.moyoy.infra.external.support.config;
+package com.moyoy.infra.external.discord.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 
