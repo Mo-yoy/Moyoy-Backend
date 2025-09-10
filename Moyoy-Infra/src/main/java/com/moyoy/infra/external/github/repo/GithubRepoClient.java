@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoCommitStatsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoResponse;
+import com.moyoy.infra.external.github.support.GithubResponseParser;
 
 import feign.Response;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -30,7 +31,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 public class GithubRepoClient {
 
 	private final GithubRepoApi githubRepoApi;
-	private final ObjectMapper objectMapper;
+	private final GithubResponseParser responseParser;
 
 	public List<GithubRepoResponse> fetchReposCreatedThisYear(String accessToken) {
 
@@ -97,16 +98,6 @@ public class GithubRepoClient {
 			throw new RuntimeException("Repo [" + repoFullName + "] 통계 데이터를 끝내 불러오지 못했습니다.");
 		}
 
-		return parseContributorStatsResponse(response, repoFullName);
-	}
-
-	private List<GithubRepoCommitStatsResponse> parseContributorStatsResponse(Response response, String repoFullName) {
-		try {
-			return objectMapper.readValue(
-				response.body().asInputStream(),
-				new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
-		} catch (IOException e) {
-			throw new RuntimeException("Repo [" + repoFullName + "] JSON 파싱 실패", e);
-		}
+		return responseParser.parseBody(response, new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
 	}
 }

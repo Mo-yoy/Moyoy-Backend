@@ -42,5 +42,4 @@ public class GithubUserClient {
 
 		return githubUserApi.fetchUserRawResponse(accessToken, githubUserId);
 	}
-
 }
