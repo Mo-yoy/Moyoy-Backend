@@ -1,5 +1,6 @@
 package com.moyoy.common.page;
 
+///  defaultPage = 0
 public record PageData(
 	int page,
 	int size,
@@ -10,5 +11,9 @@ public record PageData(
 
 	public static PageData of(int page, int size, String sort) {
 		return new PageData(page, size, sort);
+	}
+
+	public long offset() {
+		return (long)page * size;
 	}
 }

@@ -19,7 +19,7 @@ import com.moyoy.domain.user.dto.UserCreate;
 import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
 import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserProfileView;
 import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
 
 @Slf4j
@@ -34,9 +34,9 @@ public class UserService {
 	///  도메인 모델이 필요없는 단순 조회
 	public UserProfileQueryResult getUserProfile(Long userId) {
 
-		UserRankingView userRankingView = userRankingReader.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+		UserProfileView userProfileView = userRankingReader.findByUserId(userId).orElseThrow(UserNotFoundException::new);
 
-		return UserProfileQueryResult.from(userRankingView);
+		return UserProfileQueryResult.from(userProfileView);
 	}
 
 	@Transactional

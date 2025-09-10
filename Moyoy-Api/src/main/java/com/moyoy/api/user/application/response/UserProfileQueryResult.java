@@ -1,6 +1,6 @@
 package com.moyoy.api.user.application.response;
 
-import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserProfileView;
 
 public record UserProfileQueryResult(
 	Long userId,
@@ -9,12 +9,12 @@ public record UserProfileQueryResult(
 	String yearlyRankGrade,
 	String profileImgUrl) {
 
-	public static UserProfileQueryResult from(UserRankingView userRankingView) {
+	public static UserProfileQueryResult from(UserProfileView userProfileView) {
 		return new UserProfileQueryResult(
-			userRankingView.userId(),
-			userRankingView.username(),
-			userRankingView.yearlyRankPoint(),
-			userRankingView.yearlyRankGrade(),
-			userRankingView.profileImgUrl());
+			userProfileView.userId(),
+			userProfileView.username(),
+			userProfileView.yearlyRankPoint(),
+			userProfileView.yearlyRankGrade(),
+			userProfileView.profileImgUrl());
 	}
 }

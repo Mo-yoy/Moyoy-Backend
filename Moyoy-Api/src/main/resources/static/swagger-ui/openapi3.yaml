@@ -22,6 +22,7 @@ paths:
         required: true
         schema:
           type: string
+          default: week
       - name: page
         in: query
         description: "조회할 페이지 (default: 0)"
@@ -42,12 +43,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-rankings1445726081"
+                $ref: "#/components/schemas/api-v1-rankings-897472962"
               examples:
                 전체 개인 랭킹 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
-                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
+                    :{\"rankingList\":[{\"userId\":1,\"profileImageUrl\":\"image\"\
+                    ,\"username\":\"moyoy\",\"rankPoint\":1234}],\"lastPage\":true}}"
   /api/v1/follow/{targetUserId}:
     post:
       tags:
@@ -406,7 +407,7 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
-    api-v1-rankings1445726081:
+    api-v1-rankings-897472962:
       required:
       - code
       - data
@@ -420,31 +421,35 @@ components:
         data:
           required:
           - lastPage
-          - userList
+          - rankingList
           type: object
           properties:
-            userList:
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            rankingList:
               type: array
               description: 👤 탐지된 사용자 목록
               items:
                 required:
                 - profileImageUrl
                 - rankPoint
+                - userId
                 - username
                 type: object
                 properties:
                   profileImageUrl:
                     type: string
                     description: 사용자 프로필 이미지 URL
+                  userId:
+                    type: number
+                    description: 사용자 Id
                   rankPoint:
                     type: number
                     description: 사용자 랭킹 점수
                   username:
                     type: string
                     description: 사용자 이름
-            lastPage:
-              type: boolean
-              description: 📌 마지막 페이지 여부
           description: 응답 데이터
         status:
           type: number
