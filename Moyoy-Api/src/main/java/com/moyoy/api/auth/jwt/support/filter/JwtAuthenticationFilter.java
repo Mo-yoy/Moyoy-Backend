@@ -19,13 +19,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.nimbusds.jose.crypto.MACVerifier;
 
+import com.moyoy.api.auth.error.JwtTokenInvalidException;
 import com.moyoy.api.auth.jwt.support.JwtPayloadExtractor;
 import com.moyoy.api.auth.jwt.support.JwtType;
 import com.moyoy.api.auth.jwt.support.JwtUserInfo;
 import com.moyoy.api.auth.jwt.support.JwtValidator;
 import com.moyoy.api.auth.security.principal.GithubOAuth2User;
-
-import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -3,7 +3,6 @@ package com.moyoy.infra.external.github.repo;
 import static com.moyoy.common.constant.MoyoConstants.GITHUB_MAX_QUERY_PAGING_SIZE;
 import static com.moyoy.common.util.ThreadUtils.*;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,15 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.moyoy.infra.external.github.repo.dto.GithubRepoCommitStatsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoResponse;
 import com.moyoy.infra.external.github.support.GithubResponseParser;
 
 import feign.Response;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Slf4j
 @Component
@@ -53,8 +50,7 @@ public class GithubRepoClient {
 				affiliation,
 				since,
 				GITHUB_MAX_QUERY_PAGING_SIZE,
-				page
-				);
+				page);
 
 			repoResponseList.addAll(reposPage);
 			page++;

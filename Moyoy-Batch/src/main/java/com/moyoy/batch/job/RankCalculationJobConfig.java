@@ -46,10 +46,10 @@ import com.moyoy.domain.ranking.RankingCalculator;
 import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
 
-import com.moyoy.infra.database.mysql.user.UserEntity;
-import com.moyoy.infra.external.github.support.GithubApiLimitChecker;
 import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
+import com.moyoy.infra.database.mysql.user.UserEntity;
 import com.moyoy.infra.external.github.repo.GithubRepoClient;
+import com.moyoy.infra.external.github.support.GithubApiLimitChecker;
 import com.moyoy.infra.external.github.user.GithubUserClient;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 

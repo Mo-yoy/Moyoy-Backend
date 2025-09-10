@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.moyoy.api.common.util.ErrorResponseWriter;
 
-import com.moyoy.domain.support.error.CommonErrorCode;
+import com.moyoy.common.error.CommonErrorCode;
 
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;

@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
-
+import com.moyoy.infra.external.github.support.error.GithubApiLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserClient;
 
 import feign.Response;

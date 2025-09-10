@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
 import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;

@@ -7,6 +7,9 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,8 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.Response;
 import feign.Util;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -41,8 +42,7 @@ public class GithubResponseParser {
 
 			String body = Util.toString(reader);
 			return objectMapper.readValue(body, clazz);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 
 			log.error("GitHub API response 파싱 실패", e);
 			throw new IllegalStateException("Failed to parse GitHub API response", e);
@@ -54,12 +54,10 @@ public class GithubResponseParser {
 
 			String body = Util.toString(reader);
 			return objectMapper.readValue(body, typeRef);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 
 			log.error("GitHub API response 파싱 실패 ", e);
 			throw new IllegalStateException("Failed to parse GitHub API response", e);
 		}
 	}
 }
-

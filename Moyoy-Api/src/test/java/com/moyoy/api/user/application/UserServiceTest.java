@@ -19,13 +19,13 @@ import com.moyoy.api.user.application.response.UserSyncResult;
 
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.github.GithubAccountTypeNotAllowException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.dto.UserCreate;
+import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
 import com.moyoy.infra.database.mysql.query.UserRankingQueryRepository;
 import com.moyoy.infra.database.mysql.query.UserRankingView;
@@ -170,7 +170,7 @@ class UserServiceTest {
 
 			// when & then
 			assertThatThrownBy(() -> userService.syncOrSignUp(data))
-				.isInstanceOf(GithubAccountTypeNotAllowException.class);
+				.isInstanceOf(UserGithubAccountTypeNotAllowException.class);
 		}
 	}
 }

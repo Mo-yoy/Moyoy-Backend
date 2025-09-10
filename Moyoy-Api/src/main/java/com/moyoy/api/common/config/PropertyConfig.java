@@ -5,5 +5,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationPropertiesScan(basePackages = "com.moyoy")
-public class PropertyConfig {
-}
+public class PropertyConfig {}

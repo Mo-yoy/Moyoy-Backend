@@ -17,13 +17,14 @@ import com.moyoy.api.github_follow.application.response.GithubFollowDetectionRes
 import com.moyoy.domain.github_follow.GithubFollowClassifier;
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.github_follow.GithubFollowSnapshotCoolDownNotExpiredException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.domain.github_follow.error.GithubFollowSnapshotCoolDownNotExpiredException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
 import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
+
+import com.moyoy.common.page.SliceResult;
 
 @Slf4j
 @Service

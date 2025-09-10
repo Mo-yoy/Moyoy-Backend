@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingPeriod;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.page.PageData;
-import com.moyoy.domain.support.page.SliceResult;
+
+import com.moyoy.common.page.PageData;
+import com.moyoy.common.page.SliceResult;
 
 @Component
 @RequiredArgsConstructor

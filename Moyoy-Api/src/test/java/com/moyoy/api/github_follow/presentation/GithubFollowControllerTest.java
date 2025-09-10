@@ -4,8 +4,6 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.moyoy.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
-import static com.moyoy.domain.support.error.github.GithubErrorCode.*;
-import static com.moyoy.domain.support.error.github_follow.FollowErrorCode.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -37,13 +35,13 @@ import com.moyoy.api.github_follow.application.GithubFollowDetectService;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.CommonErrorCode;
-import com.moyoy.domain.support.error.github_follow.FollowErrorCode;
-import com.moyoy.domain.support.error.github_follow.GithubFollowSnapshotCoolDownNotExpiredException;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.domain.github_follow.error.FollowErrorCode;
+import com.moyoy.domain.github_follow.error.GithubFollowSnapshotCoolDownNotExpiredException;
 
 import com.moyoy.common.annotation.ControllerTest;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
+import com.moyoy.common.error.CommonErrorCode;
+import com.moyoy.common.page.SliceResult;
 
 @ControllerTest(controllers = GithubFollowController.class)
 class GithubFollowControllerTest {

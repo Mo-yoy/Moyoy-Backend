@@ -15,7 +15,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
+import com.moyoy.api.auth.error.JwtTokenInvalidException;
 
 @Slf4j
 @RequiredArgsConstructor

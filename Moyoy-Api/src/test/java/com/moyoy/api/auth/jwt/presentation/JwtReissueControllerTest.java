@@ -2,7 +2,7 @@ package com.moyoy.api.auth.jwt.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.moyoy.domain.support.error.auth.AuthErrorCode.*;
+import static com.moyoy.api.auth.error.AuthErrorCode.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -23,14 +23,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
+import com.moyoy.api.auth.error.AuthErrorCode;
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
 import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
 import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 
-import com.moyoy.domain.support.error.MoyoException;
-import com.moyoy.domain.support.error.auth.AuthErrorCode;
-
 import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.error.MoyoException;
 
 import jakarta.servlet.http.Cookie;
 

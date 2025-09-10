@@ -23,9 +23,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.moyoy.api.common.response.ApiResponse;
 
-import com.moyoy.domain.support.error.CommonErrorCode;
-import com.moyoy.domain.support.error.ErrorReason;
-import com.moyoy.domain.support.error.MoyoException;
+import com.moyoy.common.error.CommonErrorCode;
+import com.moyoy.common.error.ErrorReason;
+import com.moyoy.common.error.MoyoException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

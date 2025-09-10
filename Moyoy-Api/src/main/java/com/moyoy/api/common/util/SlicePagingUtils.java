@@ -3,7 +3,7 @@ package com.moyoy.api.common.util;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.SliceResult;
 
 public class SlicePagingUtils {
 

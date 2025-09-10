@@ -1,6 +1,6 @@
 package com.moyoy.infra.external.github.support;
 
-import com.moyoy.domain.support.error.github.GithubResourceNotFoundException;
+import com.moyoy.infra.external.github.support.error.GithubResourceNotFoundException;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;

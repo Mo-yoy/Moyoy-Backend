@@ -16,11 +16,7 @@ import com.moyoy.infra.external.github.support.GithubFeignConfig;
 
 import feign.Response;
 
-@FeignClient(
-	name = "githubRepoClient",
-	url = "https://api.github.com",
-	configuration = GithubFeignConfig.class
-)
+@FeignClient(name = "githubRepoClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
 public interface GithubRepoApi {
 
 	/**
@@ -55,7 +51,6 @@ public interface GithubRepoApi {
 		@RequestParam("per_page") int perPage,
 		@RequestParam("page") int page);
 
-
 	/**
 	 * <a href="https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-contributors">
 	 * List repository contributors
@@ -83,7 +78,6 @@ public interface GithubRepoApi {
 	List<GithubRepoContributorsResponse> fetchRepoContributors(
 		@RequestHeader(AUTHORIZATION) String bearer,
 		@PathVariable("fullName") String repoFullName);
-
 
 	/**
 	 * <a href="https://docs.github.com/en/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity">

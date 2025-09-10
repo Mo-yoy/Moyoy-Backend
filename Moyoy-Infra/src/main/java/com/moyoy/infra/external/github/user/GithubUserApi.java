@@ -12,11 +12,7 @@ import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
 
-@FeignClient(
-	name = "githubProfileClient",
-	url = "https://api.github.com",
-	configuration = GithubFeignConfig.class
-)
+@FeignClient(name = "githubProfileClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
 public interface GithubUserApi {
 
 	/**
@@ -47,8 +43,7 @@ public interface GithubUserApi {
 	@GetMapping("/user/{userId}")
 	GithubUserResponse fetchUser(
 		@RequestHeader(AUTHORIZATION) String bearer,
-		@PathVariable("userId") Integer githubUserId
-	);
+		@PathVariable("userId") Integer githubUserId);
 
 	/**
 	 * <p>GitHub 사용자 정보를 원본 Response 형태로 반환합니다.<br>
@@ -61,7 +56,6 @@ public interface GithubUserApi {
 	@GetMapping("/user/{userId}")
 	Response fetchUserRawResponse(
 		@RequestHeader(AUTHORIZATION) String bearer,
-		@PathVariable("userId") Integer githubUserId
-	);
+		@PathVariable("userId") Integer githubUserId);
 
 }

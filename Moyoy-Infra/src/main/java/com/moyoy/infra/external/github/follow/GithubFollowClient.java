@@ -5,27 +5,29 @@ import static com.moyoy.common.constant.MoyoConstants.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.github.GithubApiLimitExceedException;
+
 import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
 import com.moyoy.infra.external.github.support.GithubResponseParser;
+import com.moyoy.infra.external.github.support.error.GithubApiLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserApi;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GithubFollowClient{
+public class GithubFollowClient {
 
 	private final GithubFollowApi githubFollowApi;
-	private final GithubResponseParser responseParser;
 	private final GithubUserApi githubUserApi;
+	private final GithubResponseParser responseParser;
 	private final OAuthTokenReader OAuthTokenReader;
 
 	public List<GithubUser> fetchFollowings(Long userId, Integer githubUserId) {

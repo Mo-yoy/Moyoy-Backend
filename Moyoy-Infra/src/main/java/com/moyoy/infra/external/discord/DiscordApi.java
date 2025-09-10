@@ -16,5 +16,4 @@ interface DiscordApi {
 		@PathVariable String id,
 		@PathVariable String token,
 		@RequestBody DiscordClientRequest body);
-
 }
