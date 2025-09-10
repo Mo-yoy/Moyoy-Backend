@@ -89,6 +89,7 @@ subprojects {
                                 "**/*Data*",
                                 "**/*Result*",
                                 "**/*View*",
+                                "**/*Properties*",
                                 "**/*Exception*"
                         ] + Qdomains)
                     })

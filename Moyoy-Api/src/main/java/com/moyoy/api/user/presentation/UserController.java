@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moyoy.api.common.annotation.LoginUserId;
+import com.moyoy.api.auth.security.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
 import com.moyoy.api.user.application.UserService;
 import com.moyoy.api.user.application.response.UserProfileQueryResult;

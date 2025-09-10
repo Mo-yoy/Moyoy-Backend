@@ -12,8 +12,8 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.stereotype.Component;
 
+import com.moyoy.infra.external.discord.DiscordClient;
 import com.moyoy.infra.external.discord.dto.DiscordClientRequest;
-import com.moyoy.infra.external.discord.feign.DiscordClient;
 
 @Slf4j
 @Component

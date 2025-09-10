@@ -23,6 +23,7 @@ public class MoyoConstants {
 	public static final int FORBIDDEN = 403;
 	public static final int NOT_FOUND = 404;
 	public static final int METHOD_NOT_ALLOWED = 405;
+	public static final int UNPROCESSABLE_ENTITY = 422;
 	public static final int TOO_MANY_REQUEST = 429;
 	public static final int SERVER_ERROR = 500;
 
@@ -43,9 +44,10 @@ public class MoyoConstants {
 	public static final String GITHUB_OAUTH2_USER_FOLLOWING = "following";
 	public static final String GITHUB_OAUTH2_USER_FOLLOWERS = "followers";
 	public static final String GITHUB_OAUTH2_USER_TYPE = "type";
-
-	public static final int GITHUB_MAX_QUERY_PAGING_SIZE = 2;
 	public static final String GITHUB_RATE_LIMIT_HEADER = "X-RateLimit-Remaining";
+	public static final String GITHUB_OAUTH2_USER_TYPE_USER = "User";
+
+	public static final int GITHUB_MAX_QUERY_PAGING_SIZE = 100;
 	public static final int GITHUB_MIN_REQUEST_THRESHOLD = 2000;
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moyoy.api.common.annotation.LoginUserId;
+import com.moyoy.api.auth.security.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
 import com.moyoy.api.github_follow.application.GithubFollowCommandService;
 import com.moyoy.api.github_follow.application.GithubFollowDetectService;

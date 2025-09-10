@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import com.moyoy.domain.support.error.auth.JwtTokenInvalidException;
+import com.moyoy.api.auth.error.JwtTokenInvalidException;
 
 @Slf4j
 @Component

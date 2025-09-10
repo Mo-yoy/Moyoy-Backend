@@ -19,16 +19,16 @@ import com.moyoy.api.user.application.response.UserSyncResult;
 
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.github.GithubAccountTypeNotAllowException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.dto.UserCreate;
+import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.mysql.common.UserRankingQueryRepository;
-import com.moyoy.infra.database.mysql.common.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -37,7 +37,7 @@ class UserServiceTest {
 	private UserService userService;
 
 	@Mock
-	private UserRankingQueryRepository userRankingQueryRepository;
+	private UserRankingReader userRankingReader;
 
 	@Mock
 	private UserRepository userRepository;
@@ -57,7 +57,7 @@ class UserServiceTest {
 			Long userId = 1L;
 			UserRankingView mockView = new UserRankingView(userId, "moyoy", 1000, "A", "https://profile.img");
 
-			when(userRankingQueryRepository.findByUserId(userId))
+			when(userRankingReader.findByUserId(userId))
 				.thenReturn(Optional.of(mockView));
 
 			// when
@@ -76,7 +76,7 @@ class UserServiceTest {
 		void not_found_exception() {
 
 			Long userId = 999L;
-			when(userRankingQueryRepository.findByUserId(userId))
+			when(userRankingReader.findByUserId(userId))
 				.thenReturn(Optional.empty());
 
 			assertThatThrownBy(() -> userService.getUserProfile(userId))
@@ -170,7 +170,7 @@ class UserServiceTest {
 
 			// when & then
 			assertThatThrownBy(() -> userService.syncOrSignUp(data))
-				.isInstanceOf(GithubAccountTypeNotAllowException.class);
+				.isInstanceOf(UserGithubAccountTypeNotAllowException.class);
 		}
 	}
 }

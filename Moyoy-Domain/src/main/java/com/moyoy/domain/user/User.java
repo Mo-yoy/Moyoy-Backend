@@ -3,6 +3,8 @@ package com.moyoy.domain.user;
 import lombok.Builder;
 import lombok.Getter;
 
+import com.moyoy.domain.user.dto.UserCreate;
+
 @Getter
 @Builder
 public class User {

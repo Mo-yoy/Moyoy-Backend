@@ -1,13 +1,27 @@
 package com.moyoy.infra.external.github.user;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
+import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
+
 import feign.Response;
 
-public interface GithubUserClient {
-	GithubUserResponse fetchUser(Long userId, Integer githubUserId);
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class GithubUserClient {
 
-	GithubUserResponse fetchUser(String accessToken, Integer githubUserId);
+	private final GithubUserApi githubUserApi;
 
-	Response fetchUserRawResponse(String accessToken, Integer githubUserId);
+	public GithubUserResponse fetchUser(String bearerToken, Integer githubUserId) {
 
-	Response fetchUserRawResponse(Long userId, Integer githubUserId);
+		return githubUserApi.fetchUser(bearerToken, githubUserId);
+	}
+
+	public Response fetchUserRawResponse(String bearerToken, Integer githubUserId) {
+		return githubUserApi.fetchUserRawResponse(bearerToken, githubUserId);
+	}
 }

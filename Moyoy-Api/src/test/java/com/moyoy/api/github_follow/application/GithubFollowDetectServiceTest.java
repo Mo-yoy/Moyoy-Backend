@@ -24,7 +24,7 @@ import com.moyoy.domain.github_follow.DetectType;
 import com.moyoy.domain.github_follow.GithubFollowClassifier;
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.github_follow.GithubFollowSnapshotCoolDownNotExpiredException;
+import com.moyoy.domain.github_follow.error.GithubFollowSnapshotCoolDownNotExpiredException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
 

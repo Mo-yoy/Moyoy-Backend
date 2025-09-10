@@ -45,13 +45,14 @@ import com.moyoy.domain.ranking.GithubCommitStats;
 import com.moyoy.domain.ranking.RankingCalculator;
 import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
+import com.moyoy.domain.user.error.UserGithubTokenNotFoundException;
 
+import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
 import com.moyoy.infra.database.mysql.user.UserEntity;
-import com.moyoy.infra.external.github.helper.GithubApiLimitChecker;
-import com.moyoy.infra.external.github.helper.GithubOAuthTokenReader;
 import com.moyoy.infra.external.github.repo.GithubRepoClient;
+import com.moyoy.infra.external.github.support.GithubApiLimitChecker;
 import com.moyoy.infra.external.github.user.GithubUserClient;
-import com.moyoy.infra.external.github.user.GithubUserResponse;
+import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -59,7 +60,7 @@ import jakarta.persistence.EntityManagerFactory;
 @RequiredArgsConstructor
 public class RankCalculationJobConfig {
 
-	private final GithubOAuthTokenReader githubOAuthTokenReader;
+	private final GithubTokenReader githubTokenReader;
 	private final GithubApiLimitChecker githubApiLimitChecker;
 	private final GithubCommitStatCalculator githubCommitStatCalculator;
 	private final GithubUserClient githubUserClient;
@@ -127,7 +128,8 @@ public class RankCalculationJobConfig {
 
 		return userEntity -> {
 
-			String githubAccessToken = githubOAuthTokenReader.getGithubAccessToken(userEntity.getId());
+			String githubAccessToken = githubTokenReader.findAccessTokenWithTokenType(userEntity.getId()).orElseThrow(UserGithubTokenNotFoundException::new);
+
 			return new UserAuthContext(userEntity.getId(), userEntity.getGithubUserId(), githubAccessToken);
 		};
 	}
@@ -148,9 +150,11 @@ public class RankCalculationJobConfig {
 		return userContext -> {
 
 			String githubAccessToken = userContext.auth().githubAccessToken();
+			Long userId = userContext.auth().userId();
+			Integer githubUserId = userContext.auth().githubUserId();
 			String username = userContext.username();
 
-			githubApiLimitChecker.assertCanGithubRequest(githubAccessToken, userContext.auth().githubUserId());
+			githubApiLimitChecker.assertCanGithubRequest(githubAccessToken, userId, githubUserId);
 
 			List<GithubRepoDetails> githubRepoDetailsList = githubRepoClient.fetchReposCreatedThisYear(githubAccessToken)
 				.stream()
@@ -187,10 +191,12 @@ public class RankCalculationJobConfig {
 
 		return repoCandidatesContext -> {
 
+			Long userId = repoCandidatesContext.userProfileContext().auth().userId();
+			Integer githubUserId = repoCandidatesContext.userProfileContext().auth().githubUserId();
 			String accessToken = repoCandidatesContext.userProfileContext().auth().githubAccessToken();
 			String username = repoCandidatesContext.userProfileContext().username();
 
-			githubApiLimitChecker.assertCanGithubRequest(accessToken, repoCandidatesContext.userProfileContext().auth().githubUserId());
+			githubApiLimitChecker.assertCanGithubRequest(accessToken, userId, githubUserId);
 
 			List<GithubRepoCommitStats> userCommitStats = new ArrayList<>();
 

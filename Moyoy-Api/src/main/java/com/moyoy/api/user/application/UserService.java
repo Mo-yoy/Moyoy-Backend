@@ -12,15 +12,15 @@ import com.moyoy.api.user.application.response.UserSyncResult;
 
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.github.GithubAccountTypeNotAllowException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.dto.UserCreate;
+import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.mysql.common.UserRankingQueryRepository;
-import com.moyoy.infra.database.mysql.common.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
+import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
 
 @Slf4j
 @Service
@@ -29,12 +29,12 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final RankingRepository rankingRepository;
-	private final UserRankingQueryRepository userRankingQueryRepository;
+	private final UserRankingReader userRankingReader;
 
 	///  도메인 모델이 필요없는 단순 조회
 	public UserProfileQueryResult getUserProfile(Long userId) {
 
-		UserRankingView userRankingView = userRankingQueryRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+		UserRankingView userRankingView = userRankingReader.findByUserId(userId).orElseThrow(UserNotFoundException::new);
 
 		return UserProfileQueryResult.from(userRankingView);
 	}
@@ -65,7 +65,7 @@ public class UserService {
 	private UserSyncResult signUp(UserSyncData data) {
 
 		if (!data.type().equals("User"))
-			throw new GithubAccountTypeNotAllowException();
+			throw new UserGithubAccountTypeNotAllowException();
 
 		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
 

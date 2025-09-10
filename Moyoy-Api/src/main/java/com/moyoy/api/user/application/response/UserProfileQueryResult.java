@@ -1,6 +1,6 @@
 package com.moyoy.api.user.application.response;
 
-import com.moyoy.infra.database.mysql.common.UserRankingView;
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 
 public record UserProfileQueryResult(
 	Long userId,

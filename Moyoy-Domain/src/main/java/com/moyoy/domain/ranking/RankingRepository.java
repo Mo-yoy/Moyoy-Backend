@@ -3,8 +3,8 @@ package com.moyoy.domain.ranking;
 import java.util.List;
 import java.util.Optional;
 
-import com.moyoy.domain.support.page.PageData;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.PageData;
+import com.moyoy.common.page.SliceResult;
 
 public interface RankingRepository {
 

@@ -1,6 +1,6 @@
 package com.moyoy.batch.dto;
 
-import com.moyoy.infra.external.github.repo.GithubRepoContributorsResponse;
+import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 
 public record GithubContributorDetails(
 	String username) {

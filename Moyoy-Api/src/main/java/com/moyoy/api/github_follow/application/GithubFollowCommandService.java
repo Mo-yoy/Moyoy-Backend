@@ -8,34 +8,38 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
+import com.moyoy.domain.user.error.UserGithubTokenNotFoundException;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
+import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
 import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;
 import com.moyoy.infra.external.github.user.GithubUserClient;
-import com.moyoy.infra.external.github.user.GithubUserResponse;
+import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GithubFollowCommandService {
 
-	private final GithubFollowClient githubFollowClient;
+	private final GithubTokenReader githubTokenReader;
 	private final GithubUserClient githubUserClient;
+	private final GithubFollowClient githubFollowClient;
 	private final GithubFollowSnapshotCacheManager followSnapshotCacheManager;
 	private final UserRepository userRepository;
 
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
+		String bearerToken = githubTokenReader.findAccessTokenWithTokenType(currentUserId).orElseThrow(UserGithubTokenNotFoundException::new);
 		User currentMoyoyUser = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
-		githubFollowClient.follow(currentUserId, targetUserGithubId);
+		githubFollowClient.follow(bearerToken, currentUserId, targetUserGithubId);
 
 		followSnapshotCacheManager.findFollowSnapshot(currentUserId)
 			.ifPresent(currentUserSnapshot -> {
 
-				GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
+				GithubUser targetGithubUser = fromApi(bearerToken, targetUserGithubId);
 				currentUserSnapshot.addFollowing(targetGithubUser);
 				followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
 			});
@@ -56,13 +60,14 @@ public class GithubFollowCommandService {
 
 	public void unfollow(Long currentUserId, Integer targetUserGithubId) {
 
+		String bearerToken = githubTokenReader.findAccessTokenWithTokenType(currentUserId).orElseThrow(UserGithubTokenNotFoundException::new);
 		User currentMoyoyUser = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
-		githubFollowClient.unFollow(currentUserId, targetUserGithubId);
+		githubFollowClient.unFollow(bearerToken, currentUserId, targetUserGithubId);
 
 		followSnapshotCacheManager.findFollowSnapshot(currentUserId)
 			.ifPresent(currentUserSnapshot -> {
 
-				GithubUser targetGithubUser = fromApi(currentUserId, targetUserGithubId);
+				GithubUser targetGithubUser = fromApi(bearerToken, targetUserGithubId);
 				currentUserSnapshot.removeFollowing(targetGithubUser);
 				followSnapshotCacheManager.save(currentMoyoyUser.getId(), currentUserSnapshot);
 			});
@@ -81,9 +86,9 @@ public class GithubFollowCommandService {
 				});
 	}
 
-	private GithubUser fromApi(Long currentUserId, Integer targetGithubUserId) {
+	private GithubUser fromApi(String bearerToken, Integer targetGithubUserId) {
 
-		GithubUserResponse res = githubUserClient.fetchUser(currentUserId, targetGithubUserId);
+		GithubUserResponse res = githubUserClient.fetchUser(bearerToken, targetGithubUserId);
 		return GithubUser.of(res.id(), res.login(), res.avatarUrl());
 	}
 

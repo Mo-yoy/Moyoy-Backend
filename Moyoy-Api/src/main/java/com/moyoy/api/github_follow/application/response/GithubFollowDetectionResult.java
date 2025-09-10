@@ -3,7 +3,8 @@ package com.moyoy.api.github_follow.application.response;
 import java.time.LocalDateTime;
 
 import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.support.page.SliceResult;
+
+import com.moyoy.common.page.SliceResult;
 
 public record GithubFollowDetectionResult(
 
