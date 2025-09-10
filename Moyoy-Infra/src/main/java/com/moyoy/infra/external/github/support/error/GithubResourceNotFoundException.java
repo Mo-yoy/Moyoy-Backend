@@ -1,6 +1,6 @@
 package com.moyoy.infra.external.github.support.error;
 
-import static com.moyoy.infra.external.github.support.error.GithubErrorCode.*;
+import static com.moyoy.infra.external.github.support.error.code.GithubErrorCode.*;
 
 import com.moyoy.common.error.MoyoException;
 
