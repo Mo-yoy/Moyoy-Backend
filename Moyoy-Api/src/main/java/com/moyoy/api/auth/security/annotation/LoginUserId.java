@@ -1,4 +1,4 @@
-package com.moyoy.api.common.annotation;
+package com.moyoy.api.auth.security.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package com.moyoy.api.common.util;
+package com.moyoy.api.support;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
 

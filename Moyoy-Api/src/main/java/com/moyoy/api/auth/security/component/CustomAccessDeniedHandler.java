@@ -12,7 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.api.auth.error.AuthErrorCode;
-import com.moyoy.api.common.util.ErrorResponseWriter;
+import com.moyoy.api.support.ErrorResponseWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

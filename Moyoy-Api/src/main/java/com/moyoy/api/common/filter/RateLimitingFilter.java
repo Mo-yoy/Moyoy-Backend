@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.moyoy.api.common.util.ErrorResponseWriter;
+import com.moyoy.api.support.ErrorResponseWriter;
 
 import com.moyoy.common.error.CommonErrorCode;
 

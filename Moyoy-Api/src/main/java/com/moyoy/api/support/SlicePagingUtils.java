@@ -1,4 +1,4 @@
-package com.moyoy.api.common.util;
+package com.moyoy.api.support;
 
 import java.util.List;
 import java.util.function.ToIntFunction;

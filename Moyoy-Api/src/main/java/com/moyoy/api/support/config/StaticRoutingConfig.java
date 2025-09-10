@@ -1,4 +1,4 @@
-package com.moyoy.api.common.config;
+package com.moyoy.api.support.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

@@ -1,4 +1,4 @@
-package com.moyoy.api.common.config;
+package com.moyoy.api.support.config;
 
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Configuration;
