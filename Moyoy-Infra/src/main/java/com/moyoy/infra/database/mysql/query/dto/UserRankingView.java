@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.mysql.query;
+package com.moyoy.infra.database.mysql.query.dto;
 
 public record UserRankingView(
 	Long userId,

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import com.moyoy.domain.github_follow.GithubFollowSnapshot;
 import com.moyoy.domain.github_follow.GithubUser;
 
+import com.moyoy.domain.user.error.UserGithubTokenNotFoundException;
+import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
+import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
 import com.moyoy.infra.external.github.follow.GithubFollowClient;
 
 @Slf4j
@@ -20,16 +23,19 @@ import com.moyoy.infra.external.github.follow.GithubFollowClient;
 @RequiredArgsConstructor
 public class GithubFollowSnapshotLoader {
 
+	private final GithubTokenReader githubTokenReader;
 	private final GithubFollowClient githubFollowClient;
 	private final GithubFollowSnapshotCacheManager githubFollowCacheManager;
 
 	@Async("followLoadExecutor")
 	public CompletableFuture<Void> load(Long userId, Integer githubUserId) {
 
+		String bearerToken = githubTokenReader.findAccessTokenWithTokenType(userId).orElseThrow(UserGithubTokenNotFoundException::new);
+
 		log.info("GithubFollowSnapshot 데이터 수집 시작 | userId : {}, githubUserId : {}", userId, githubUserId);
 
-		List<GithubUser> githubFollowers = githubFollowClient.fetchFollowers(userId, githubUserId);
-		List<GithubUser> githubFollowings = githubFollowClient.fetchFollowings(userId, githubUserId);
+		List<GithubUser> githubFollowings = githubFollowClient.fetchFollowings(bearerToken, userId, githubUserId);
+		List<GithubUser> githubFollowers = githubFollowClient.fetchFollowers(bearerToken, userId, githubUserId);
 
 		GithubFollowSnapshot githubFollowRelationSnapshot = GithubFollowSnapshot.of(githubFollowers, githubFollowings, LocalDateTime.now());
 		githubFollowCacheManager.save(userId, githubFollowRelationSnapshot);

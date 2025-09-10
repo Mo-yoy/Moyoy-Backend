@@ -27,8 +27,8 @@ import com.moyoy.domain.user.dto.UserCreate;
 import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
 import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.mysql.query.UserRankingQueryRepository;
-import com.moyoy.infra.database.mysql.query.UserRankingView;
+import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -37,7 +37,7 @@ class UserServiceTest {
 	private UserService userService;
 
 	@Mock
-	private UserRankingQueryRepository userRankingQueryRepository;
+	private UserRankingReader userRankingReader;
 
 	@Mock
 	private UserRepository userRepository;
@@ -57,7 +57,7 @@ class UserServiceTest {
 			Long userId = 1L;
 			UserRankingView mockView = new UserRankingView(userId, "moyoy", 1000, "A", "https://profile.img");
 
-			when(userRankingQueryRepository.findByUserId(userId))
+			when(userRankingReader.findByUserId(userId))
 				.thenReturn(Optional.of(mockView));
 
 			// when
@@ -76,7 +76,7 @@ class UserServiceTest {
 		void not_found_exception() {
 
 			Long userId = 999L;
-			when(userRankingQueryRepository.findByUserId(userId))
+			when(userRankingReader.findByUserId(userId))
 				.thenReturn(Optional.empty());
 
 			assertThatThrownBy(() -> userService.getUserProfile(userId))

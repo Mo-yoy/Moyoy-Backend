@@ -20,7 +20,7 @@ public class GithubUserClient {
 
 	public GithubUserResponse fetchUser(Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(userId);
+		String accessToken = OAuthTokenReader.getGithubAccessBearerToken(userId);
 
 		return githubUserApi.fetchUser(accessToken, githubUserId);
 	}
@@ -36,7 +36,7 @@ public class GithubUserClient {
 
 	public Response fetchUserRawResponse(Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(userId);
+		String accessToken = OAuthTokenReader.getGithubAccessBearerToken(userId);
 
 		return githubUserApi.fetchUserRawResponse(accessToken, githubUserId);
 	}

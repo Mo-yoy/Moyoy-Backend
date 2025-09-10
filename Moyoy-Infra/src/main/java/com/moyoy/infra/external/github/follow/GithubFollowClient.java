@@ -1,60 +1,68 @@
 package com.moyoy.infra.external.github.follow;
 
 import static com.moyoy.common.constant.MoyoConstants.*;
+import static com.moyoy.infra.external.github.support.GithubPagedApiUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.github_follow.GithubUser;
-
-import com.moyoy.infra.database.mysql.support.OAuthTokenReader;
 import com.moyoy.infra.external.github.support.GithubResponseParser;
 import com.moyoy.infra.external.github.support.error.GithubApiLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserApi;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class GithubFollowClient {
 
+	private static final String FOLLOWING = "팔로잉";
+	private static final String FOLLOWER = "팔로워";
+	private static final String FOLLOW = "팔로우";
+	private static final String UNFOLLOW = "언팔로우";
+
 	private final GithubFollowApi githubFollowApi;
 	private final GithubUserApi githubUserApi;
 	private final GithubResponseParser responseParser;
-	private final OAuthTokenReader OAuthTokenReader;
 
-	public List<GithubUser> fetchFollowings(Long userId, Integer githubUserId) {
+	public List<GithubUser> fetchFollowings(String bearerToken, Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(userId);
-		Response userRawResponse = githubUserApi.fetchUserRawResponse(accessToken, githubUserId);
-		GithubUserResponse githubUserResponse = responseParser.parseBody(userRawResponse, GithubUserResponse.class);
-		int rateLimitRemaining = responseParser.extractRateLimit(userRawResponse);
+		GithubUserResponse githubUserResponse;
+		int rateLimitRemaining;
 
-		int maxFollowingPageSize = githubUserResponse.following() / GITHUB_MAX_QUERY_PAGING_SIZE + 1;
-		log.info("{}의 깃허브 팔로잉 리스트 조회 요청 로그 (page size = {}) | followingMaxPage : {},", userId, GITHUB_MAX_QUERY_PAGING_SIZE, maxFollowingPageSize);
+		try (Response userRawResponse = githubUserApi.fetchUserRawResponse(bearerToken, githubUserId)) {
 
-		if (rateLimitRemaining - maxFollowingPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
-			log.error("팔로잉 리스트 조회 중 API Limit 초과 | GitHub User Id : {}, Remaining : {}", githubUserId, rateLimitRemaining);
+			githubUserResponse = responseParser.parseBody(userRawResponse, GithubUserResponse.class);
+			rateLimitRemaining = responseParser.extractRateLimit(userRawResponse);
+		}
+
+		int followingPageSize = calculateMaxPage(githubUserResponse.following());
+		logFollowQuery(FOLLOWING, userId, followingPageSize);
+
+		boolean canRequest = isRateLimitExceeded(rateLimitRemaining, followingPageSize);
+		if (!canRequest) {
+
+			logFollowQueryError(FOLLOWING, userId, rateLimitRemaining);
 			throw new GithubApiLimitExceedException();
 		}
 
 		List<GithubUser> githubFollowings = new ArrayList<>();
 
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
-		for (int currentPage = 1; currentPage <= maxFollowingPageSize; currentPage++) {
+		for (int currentPage = 1; currentPage <= followingPageSize; currentPage++) {
 
-			List<GithubUserResponse> followingsResponseList = githubFollowApi.fetchPagedFollowings(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
+			List<GithubUserResponse> followingsResponseList = githubFollowApi.fetchPagedFollowings(bearerToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
 
 			githubFollowings.addAll(
 				followingsResponseList.stream()
-					.filter(userResponse -> "User".equalsIgnoreCase(userResponse.type()))
+					.filter(userResponse -> GITHUB_OAUTH2_USER_TYPE_USER.equalsIgnoreCase(userResponse.type()))
 					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 		}
@@ -62,71 +70,96 @@ public class GithubFollowClient {
 		return githubFollowings;
 	}
 
-	public List<GithubUser> fetchFollowers(Long userId, Integer githubUserId) {
+	public List<GithubUser> fetchFollowers(String bearerToken, Long userId, Integer githubUserId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(userId);
-		Response userRawResponse = githubUserApi.fetchUserRawResponse(accessToken, githubUserId);
-		GithubUserResponse githubUserResponse = responseParser.parseBody(userRawResponse, GithubUserResponse.class);
-		int rateLimitRemaining = responseParser.extractRateLimit(userRawResponse);
+		GithubUserResponse githubUserResponse;
+		int rateLimitRemaining;
 
-		int maxFollowerPageSize = githubUserResponse.followers() / GITHUB_MAX_QUERY_PAGING_SIZE + 1;
-		log.info("{}의 깃허브 팔로워 리스트 조회 요청 로그 (page size = {}) | followerMaxPage : {},", userId, GITHUB_MAX_QUERY_PAGING_SIZE, maxFollowerPageSize);
+		try (Response userRawResponse = githubUserApi.fetchUserRawResponse(bearerToken, githubUserId)) {
 
-		if (rateLimitRemaining - maxFollowerPageSize < GITHUB_MIN_REQUEST_THRESHOLD) {
-			log.error("팔로워 리스트 조회 중 API Limit 초과 | GitHub User Id : {}, Remaining : {}", githubUserId, rateLimitRemaining);
+			githubUserResponse = responseParser.parseBody(userRawResponse, GithubUserResponse.class);
+			rateLimitRemaining = responseParser.extractRateLimit(userRawResponse);
+		}
+
+		int followerPageSize = calculateMaxPage(githubUserResponse.followers());
+		logFollowQuery(FOLLOWER, userId, followerPageSize);
+
+		boolean canRequest = isRateLimitExceeded(rateLimitRemaining, followerPageSize);
+		if (!canRequest) {
+
+			logFollowQueryError(FOLLOWER, userId, rateLimitRemaining);
 			throw new GithubApiLimitExceedException();
 		}
 
 		List<GithubUser> githubFollowers = new ArrayList<>();
 
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
-		for (int currentPage = 1; currentPage <= maxFollowerPageSize; currentPage++) {
+		for (int currentPage = 1; currentPage <= followerPageSize; currentPage++) {
 
-			List<GithubUserResponse> followersResponseList = githubFollowApi.fetchPagedFollowers(accessToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
+			List<GithubUserResponse> followersResponseList = githubFollowApi.fetchPagedFollowers(bearerToken, GITHUB_MAX_QUERY_PAGING_SIZE, currentPage);
 
 			githubFollowers.addAll(
 				followersResponseList.stream()
-					.filter(userResponse -> "User".equalsIgnoreCase(userResponse.type()))
+					.filter(userResponse -> GITHUB_OAUTH2_USER_TYPE_USER.equalsIgnoreCase(userResponse.type()))
 					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 
 		}
+
 		return githubFollowers;
 	}
 
-	public void follow(Long currentUserId, Integer targetUserGithubId) {
+	public void follow(String bearerToken, Long userId, Integer targetUserGithubId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(currentUserId);
-		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(accessToken, targetUserGithubId);
+		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(bearerToken, targetUserGithubId);
 
-		Response followCommandResponse = githubFollowApi.follow(accessToken, targetUserResponse.login());
-		int responseStatus = followCommandResponse.status();
+		int responseStatus;
+		try (Response followCommandResponse = githubFollowApi.follow(bearerToken, targetUserResponse.login())) {
+			responseStatus = followCommandResponse.status();
+		}
 
-		if (responseStatus == 204) {
+		if (responseStatus == 204) logFollowCommand(FOLLOW, userId, targetUserGithubId);
+		else {
 
-			log.info("깃허브 팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId, targetUserGithubId);
-		} else {
-
-			log.warn("깃허브 팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
-			throw new RuntimeException("깃허브 팔로우 요청 처리 실패"); /// TODO 추후 처리
+			logFollowCommandError(FOLLOW, userId, targetUserGithubId, responseStatus);
+			throw new RuntimeException("깃허브 팔로우 요청 처리 실패");
 		}
 	}
 
-	public void unFollow(Long currentUserId, Integer targetUserGithubId) {
+	public void unFollow(String bearerToken, Long userId, Integer targetUserGithubId) {
 
-		String accessToken = OAuthTokenReader.getGithubAccessToken(currentUserId);
-		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(accessToken, targetUserGithubId);
-		Response unFollowCommandResponse = githubFollowApi.unfollow(accessToken, targetUserResponse.login());
-		int responseStatus = unFollowCommandResponse.status();
+		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(bearerToken, targetUserGithubId);
 
-		if (responseStatus == 204) {
-
-			log.info("깃허브 언팔로우 요청 성공 | currentUserId : {}, targetUserGithubId : {}, ", currentUserId,
-				targetUserGithubId);
-		} else {
-
-			log.warn("깃허브 언팔로우 요청 실패 | currentUserId : {}, targetUserId : {}, responseStatus : {}", currentUserId, targetUserGithubId, responseStatus);
-			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패"); /// TODO 추후 처리
+		int responseStatus;
+		try (Response unFollowCommandResponse = githubFollowApi.unfollow(bearerToken, targetUserResponse.login())) {
+			responseStatus = unFollowCommandResponse.status();
 		}
+
+		if (responseStatus == 204) logFollowCommand(UNFOLLOW, userId, targetUserGithubId);
+		else {
+
+			logFollowCommandError(UNFOLLOW, userId, targetUserGithubId, responseStatus);
+			throw new RuntimeException("깃허브 언팔로우 요청 처리 실패");
+		}
+	}
+
+	private void logFollowQuery(String type, Long userId, int maxPageSize) {
+
+		log.info("GitHub {} 리스트 조회 요청 | userId={}, pageSize={}, totalPages={}", type, userId, GITHUB_MAX_QUERY_PAGING_SIZE, maxPageSize);
+	}
+
+	private void logFollowQueryError(String type, Long userId, int rateLimitRemaining) {
+
+		log.error("{} 리스트 조회가 API Limit 초과로 불가능 합니다. | userId : {}, 남은 API 호출 횟수 : {}", type, userId, rateLimitRemaining);
+	}
+
+	private void logFollowCommand(String type, Long userId, Integer targetUserGithubId){
+
+		log.info("깃허브 {} 요청 성공 | userId : {} -> targetUserGithubId : {}, ", type, userId, targetUserGithubId);
+	}
+
+	private void logFollowCommandError(String type, Long userId, Integer targetUserGithubId, int responseStatus){
+
+		log.error("깃허브 {} 요청 실패 | userId : {} -x> targetUserId : {}, responseStatus : {}", type, userId, targetUserGithubId, responseStatus);
 	}
 }

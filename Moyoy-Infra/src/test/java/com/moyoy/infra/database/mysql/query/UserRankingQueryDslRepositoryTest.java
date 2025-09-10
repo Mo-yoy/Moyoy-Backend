@@ -14,6 +14,7 @@ import com.moyoy.domain.user.Role;
 import com.moyoy.domain.user.SocialSize;
 
 import com.moyoy.infra.database.mysql.query.config.QueryDslTestConfig;
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 import com.moyoy.infra.database.mysql.ranking.RankingEntity;
 import com.moyoy.infra.database.mysql.user.UserEntity;
 

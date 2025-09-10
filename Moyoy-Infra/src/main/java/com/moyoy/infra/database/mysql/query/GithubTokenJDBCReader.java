@@ -1,4 +1,6 @@
-package com.moyoy.infra.database.mysql.support;
+package com.moyoy.infra.database.mysql.query;
+
+import static com.moyoy.common.constant.MoyoConstants.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -8,15 +10,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.moyoy.common.constant.MoyoConstants;
+import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
+import com.moyoy.infra.database.mysql.support.AESEncryptor;
+
 @Repository
 @RequiredArgsConstructor
-class OAuthTokenJDBCRepository implements OAuthTokenRepository {
+class GithubTokenJDBCReader implements GithubTokenReader {
 
 	private final JdbcTemplate jdbc;
 	private final AESEncryptor encryptor;
 
 	@Override
-	public Optional<String> findAccessToken(String registrationId, String principalName) {
+	public Optional<String> findAccessTokenWithTokenType(Long userId) {
 
 		return jdbc.query(
 			"""
@@ -25,8 +31,8 @@ class OAuthTokenJDBCRepository implements OAuthTokenRepository {
 				WHERE client_registration_id = ? AND principal_name = ?
 				""",
 			ps -> {
-				ps.setString(1, registrationId);
-				ps.setString(2, principalName);
+				ps.setString(1, GITHUB_REGISTRATION_ID);
+				ps.setString(2, userId.toString());
 			},
 			rs -> {
 				if (!rs.next())
