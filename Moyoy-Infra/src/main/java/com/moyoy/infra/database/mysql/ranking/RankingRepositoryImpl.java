@@ -22,7 +22,6 @@ import com.moyoy.common.page.SliceResult;
 public class RankingRepositoryImpl implements RankingRepository {
 
 	private final RankingJpaRepository rankingJpaRepository;
-	private final RankingQueryDslRepository rankingQueryDslRepository;
 
 	@Override
 	public Optional<Ranking> findById(Long id) {
@@ -34,8 +33,8 @@ public class RankingRepositoryImpl implements RankingRepository {
 	@Override
 	public Optional<Ranking> findByUserId(Long userId) {
 
-		RankingEntity rankingEntity = rankingJpaRepository.findByUserId(userId);
-		return Optional.ofNullable(RankingMapper.toModel(rankingEntity));
+		Optional<RankingEntity> rankingEntity = rankingJpaRepository.findByUserId(userId);
+		return rankingEntity.map(RankingMapper::toModel);
 	}
 
 	@Override
@@ -43,23 +42,6 @@ public class RankingRepositoryImpl implements RankingRepository {
 
 		RankingEntity rankingEntity = RankingMapper.toEntity(ranking);
 		rankingJpaRepository.save(rankingEntity);
-	}
-
-	@Override
-	public void saveAll(List<Ranking> updatedRankings) {
-
-		List<RankingEntity> rankingEntityList = updatedRankings.stream().map(RankingMapper::toEntity).toList();
-		rankingJpaRepository.saveAll(rankingEntityList);
-	}
-
-	@Override
-	public SliceResult<Ranking> findAll(RankingPeriod duration, PageData pageData) {
-
-		Pageable pageable = PageRequest.of(pageData.page(), pageData.size());
-		Slice<RankingEntity> rankingEntitySlice = rankingQueryDslRepository.findAll(duration, pageable);
-		List<Ranking> rankingList = rankingEntitySlice.getContent().stream().map(RankingMapper::toModel).toList();
-
-		return SliceResult.of(rankingList, rankingEntitySlice.hasNext());
 	}
 
 }

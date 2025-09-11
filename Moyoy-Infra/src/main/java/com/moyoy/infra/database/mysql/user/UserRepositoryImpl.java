@@ -15,8 +15,6 @@ import com.moyoy.domain.user.UserRepository;
 public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
-	private final UserQueryDslRepository userQueryDslRepository;
-
 	@Override
 	public Optional<User> findById(Long userId) {
 
@@ -38,20 +36,6 @@ public class UserRepositoryImpl implements UserRepository {
 		userEntity = userJpaRepository.save(userEntity);
 
 		return UserMapper.toModel(userEntity);
-	}
-
-	@Override
-	public List<User> findByIdIn(List<Long> userIds) {
-
-		List<UserEntity> userEntityList = userJpaRepository.findAllById(userIds);
-		return userEntityList.stream().map(UserMapper::toModel).toList();
-	}
-
-	@Override
-	public List<User> findAll(Long lastUserId, int size) {
-
-		List<UserEntity> userEntityList = userQueryDslRepository.findAll(lastUserId, size);
-		return userEntityList.stream().map(UserMapper::toModel).toList();
 	}
 
 }

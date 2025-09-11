@@ -14,11 +14,14 @@ public enum DetectType {
 	private final String value;
 
 	public static DetectType fromValue(String value) {
+
 		for (DetectType type : values()) {
+
 			if (type.getValue().equalsIgnoreCase(value)) {
 				return type;
 			}
 		}
+
 		throw new IllegalArgumentException();
 	}
 }
