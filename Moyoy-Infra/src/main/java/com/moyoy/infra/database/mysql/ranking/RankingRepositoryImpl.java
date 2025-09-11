@@ -1,21 +1,13 @@
 package com.moyoy.infra.database.mysql.ranking;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.domain.ranking.Ranking;
-import com.moyoy.domain.ranking.RankingPeriod;
 import com.moyoy.domain.ranking.RankingRepository;
-
-import com.moyoy.common.page.PageData;
-import com.moyoy.common.page.SliceResult;
 
 @Component
 @RequiredArgsConstructor

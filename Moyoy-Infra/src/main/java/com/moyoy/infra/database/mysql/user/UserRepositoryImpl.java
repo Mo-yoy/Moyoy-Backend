@@ -1,6 +1,5 @@
 package com.moyoy.infra.database.mysql.user;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import com.moyoy.domain.user.UserRepository;
 public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
+
 	@Override
 	public Optional<User> findById(Long userId) {
 
