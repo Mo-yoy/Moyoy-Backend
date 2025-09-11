@@ -1,8 +1,8 @@
 package com.moyoy.domain.user;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum SocialSize {
 
 	SMALL(0),

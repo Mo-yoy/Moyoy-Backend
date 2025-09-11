@@ -16,14 +16,6 @@ public class Ranking {
 	private long monthlyPoint;
 	private long yearlyPoint;
 
-	public void update(RankingUpdate rankingUpdate) {
-
-		this.grade = rankingUpdate.grade();
-		this.weeklyPoint = rankingUpdate.weeklyPoint();
-		this.monthlyPoint = rankingUpdate.monthlyPoint();
-		this.yearlyPoint = rankingUpdate.yearlyPoint();
-	}
-
 	public static Ranking createInitial(Long userId) {
 		return Ranking.builder()
 			.userId(userId)
@@ -32,5 +24,13 @@ public class Ranking {
 			.monthlyPoint(0L)
 			.yearlyPoint(0L)
 			.build();
+	}
+
+	public void update(RankingUpdate rankingUpdate) {
+
+		this.grade = rankingUpdate.grade();
+		this.weeklyPoint = rankingUpdate.weeklyPoint();
+		this.monthlyPoint = rankingUpdate.monthlyPoint();
+		this.yearlyPoint = rankingUpdate.yearlyPoint();
 	}
 }

@@ -12,6 +12,7 @@ public record RankingCalculatorParameters(
 	public record CommitStatsSummary(
 		int commits,
 		int commitLines) {
+
 	}
 
 	public static RankingCalculatorParameters of(int stars, int followers, GithubCommitStats commitStats) {
