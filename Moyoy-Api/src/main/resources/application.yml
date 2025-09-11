@@ -18,7 +18,7 @@ spring:
     secret: ${JWT_SECRET_KEY}
 
   cors:
-    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
+    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}4
 
   cookie:
     samesite: ${COOKIE_SAME_SITE:Strict}
@@ -29,3 +29,15 @@ spring:
 
 logging:
   config: classpath:logback/logback-${spring.profiles.active:local}.xml
+
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
+actuator:
+  monitoring:
+    password: ${PROMETHEUS_PASSWORD:prometheus}
