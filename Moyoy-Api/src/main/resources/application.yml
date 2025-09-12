@@ -18,7 +18,7 @@ spring:
     secret: ${JWT_SECRET_KEY}
 
   cors:
-    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}4
+    allow-origin: ${ALLOW_ORIGIN:http://localhost:5173}
 
   cookie:
     samesite: ${COOKIE_SAME_SITE:Strict}
