@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -50,6 +51,7 @@ public class SecurityConfig {
 	private final RateLimitingFilter rateLimitingFilter;
 
 	@Bean
+	@Order(2)
 	public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
 
 		http
@@ -71,6 +73,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/v1/rankings").permitAll() // [Domain] Ranking
 				.requestMatchers(GET, "/api/v1/pr-review").permitAll()
 				.requestMatchers("/api/v1/pr-review/{pr-reviewId}").permitAll()
+				.requestMatchers("/actuator/**").permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
 				.authorizationEndpoint(authorization -> authorization
