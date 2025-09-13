@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support;
+package com.moyoy.infra.redis.support;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +28,7 @@ public class RedissonLockAop {
 
 	private final RedissonClient redissonClient;
 
-	@Around("@annotation(com.moyoy.infra.database.redis.support.RedissonLock)")
+	@Around("@annotation(com.moyoy.infra.redis.support.RedissonLock)")
 	public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		Method method = signature.getMethod();

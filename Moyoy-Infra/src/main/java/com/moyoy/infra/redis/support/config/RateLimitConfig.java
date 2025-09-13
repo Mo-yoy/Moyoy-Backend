@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support.config;
+package com.moyoy.infra.redis.support.config;
 
 import static java.time.Duration.*;
 

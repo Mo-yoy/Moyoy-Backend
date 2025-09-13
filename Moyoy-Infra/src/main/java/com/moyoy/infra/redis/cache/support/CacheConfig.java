@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support.config;
+package com.moyoy.infra.redis.cache.support;
 
 import java.time.Duration;
 
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import com.moyoy.domain.github_follow.GithubFollowSnapshot;
+import com.moyoy.infra.redis.cache.github_follow.GithubFollowSnapshot;
 
 /**
  *   [추후 확장시 고려 사항]

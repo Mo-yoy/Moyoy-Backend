@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface GithubTokenReader {
 
-	Optional<String> findAccessTokenWithTokenType(Long userId);
+	Optional<String> findAccessBearerToken(Long userId);
 }

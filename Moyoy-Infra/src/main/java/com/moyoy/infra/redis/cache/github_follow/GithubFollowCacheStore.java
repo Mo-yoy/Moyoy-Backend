@@ -1,21 +1,17 @@
-package com.moyoy.infra.database.redis.follow;
+package com.moyoy.infra.redis.cache.github_follow;
 
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.github_follow.GithubFollowSnapshot;
-
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class GithubFollowSnapshotCacheManager {
+public class GithubFollowCacheStore {
 
 	private static final String FOLLOW_CACHE_NAME = "followSnapshot";
 

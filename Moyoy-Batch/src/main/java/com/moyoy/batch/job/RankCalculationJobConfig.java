@@ -128,7 +128,7 @@ public class RankCalculationJobConfig {
 
 		return userEntity -> {
 
-			String githubAccessToken = githubTokenReader.findAccessTokenWithTokenType(userEntity.getId()).orElseThrow(UserGithubTokenNotFoundException::new);
+			String githubAccessToken = githubTokenReader.findAccessBearerToken(userEntity.getId()).orElseThrow(UserGithubTokenNotFoundException::new);
 
 			return new UserAuthContext(userEntity.getId(), userEntity.getGithubUserId(), githubAccessToken);
 		};

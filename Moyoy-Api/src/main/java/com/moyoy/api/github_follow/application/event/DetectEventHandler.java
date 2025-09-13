@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotLoader;
-import com.moyoy.infra.database.redis.support.RedissonLock;
+import com.moyoy.infra.redis.support.RedissonLock;
 
 @Slf4j
 @Component
