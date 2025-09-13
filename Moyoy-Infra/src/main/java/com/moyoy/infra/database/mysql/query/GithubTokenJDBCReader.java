@@ -21,7 +21,7 @@ class GithubTokenJDBCReader implements GithubTokenReader {
 	private final AESEncryptor encryptor;
 
 	@Override
-	public Optional<String> findAccessTokenWithTokenType(Long userId) {
+	public Optional<String> findAccessBearerToken(Long userId) {
 
 		return jdbc.query(
 			"""

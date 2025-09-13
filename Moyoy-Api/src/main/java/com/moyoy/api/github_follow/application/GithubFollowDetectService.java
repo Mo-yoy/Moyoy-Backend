@@ -14,15 +14,14 @@ import com.moyoy.api.github_follow.application.request.GithubFollowDetectionData
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 import com.moyoy.api.support.SlicePagingUtils;
 
-import com.moyoy.domain.github_follow.GithubFollowClassifier;
-import com.moyoy.domain.github_follow.GithubFollowSnapshot;
-import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.github_follow.error.GithubFollowSnapshotCoolDownNotExpiredException;
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
 import com.moyoy.domain.user.error.UserNotFoundException;
 
-import com.moyoy.infra.database.redis.follow.GithubFollowSnapshotCacheManager;
+import com.moyoy.infra.redis.cache.github_follow.GithubFollowCacheStore;
+import com.moyoy.infra.redis.cache.github_follow.GithubFollowSnapshot;
+import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
+import com.moyoy.infra.redis.cache.support.error.GithubFollowSnapshotCoolDownNotExpiredException;
 
 import com.moyoy.common.page.SliceResult;
 
@@ -32,53 +31,57 @@ import com.moyoy.common.page.SliceResult;
 public class GithubFollowDetectService {
 
 	private final UserRepository userRepository;
+	private final GithubFollowCacheStore followCacheStore;
 	private final ApplicationEventPublisher eventPublisher;
-	private final GithubFollowSnapshotCacheManager followSnapshotCacheManager;
-	private final GithubFollowClassifier githubFollowClassifier;
 
 	public Optional<GithubFollowDetectionResult> detect(Long userId, GithubFollowDetectionData data) {
 
-		Optional<GithubFollowSnapshot> githubFollowSnapshot = followSnapshotCacheManager.findFollowSnapshot(userId);
+		Optional<GithubFollowSnapshot> githubFollowSnapshot = followCacheStore.findFollowSnapshot(userId);
 
 		if (githubFollowSnapshot.isEmpty()) {
 
 			User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-			eventPublisher.publishEvent(new DetectEvent(userId, user.getGithubUserId()));
+			DetectEvent detectEvent = DetectEvent.from(user);
+			eventPublisher.publishEvent(detectEvent);
 			return Optional.empty();
 		}
 
-		List<GithubUser> classifiedUserList = githubFollowClassifier.classifyByDetectType(data.detectType(), githubFollowSnapshot.get());
+		List<GithubUserProfile> filteredUserList = githubFollowSnapshot.get().filterByDetectType(data.detectType());
 
-		SliceResult<GithubUser> sliceResult = SlicePagingUtils.window(
-			classifiedUserList,
+		SliceResult<GithubUserProfile> sliceResult = SlicePagingUtils.window(
+			filteredUserList,
 			data.lastGithubUserId(),
 			data.size(),
-			GithubUser::id);
+			GithubUserProfile::id);
 
-		return Optional.of(
-			GithubFollowDetectionResult.of(
-				sliceResult,
-				githubFollowSnapshot.get().getSnapshotTime(),
-				classifiedUserList.size()));
+		GithubFollowDetectionResult detectionResult = GithubFollowDetectionResult.of(
+			sliceResult,
+			githubFollowSnapshot.get().getSnapshotTime(),
+			filteredUserList.size());
+
+		return Optional.of(detectionResult);
 	}
 
-	public void refresh(Long currentUserId) {
+	public void refresh(Long userId) {
 
-		Optional<GithubFollowSnapshot> followSnapshot = followSnapshotCacheManager.findFollowSnapshot(currentUserId);
+		Optional<GithubFollowSnapshot> followSnapshot = followCacheStore.findFollowSnapshot(userId);
+
 		if (followSnapshot.isPresent()) {
 
 			boolean canRefresh = followSnapshot.get().canRefresh();
 
 			if (!canRefresh) {
-				log.warn("팔로우 캐시 5분 내 강제 갱신 시도 발생 | userId={}", currentUserId);
+
+				log.warn("팔로우 캐시 5분 내 강제 갱신 시도 발생 | userId={}", userId);
 				throw new GithubFollowSnapshotCoolDownNotExpiredException();
 			}
 
-			followSnapshotCacheManager.delete(currentUserId);
+			followCacheStore.delete(userId);
 		}
 
-		User user = userRepository.findById(currentUserId).orElseThrow(UserNotFoundException::new);
-		log.info("Github Follow Snapshot Refresh 시도, userId={}", currentUserId);
-		eventPublisher.publishEvent(new DetectEvent(currentUserId, user.getGithubUserId()));
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		log.info("Github Follow Snapshot Refresh 시도, userId={}", userId);
+		DetectEvent detectEvent = DetectEvent.from(user);
+		eventPublisher.publishEvent(detectEvent);
 	}
 }

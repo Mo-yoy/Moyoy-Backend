@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support.config;
+package com.moyoy.infra.redis.support.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

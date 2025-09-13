@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.github_follow.GithubUser;
+import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
 public record GithubFollowDetectResponse(
 	List<GithubFollowUserDto> userList,
@@ -17,7 +17,7 @@ public record GithubFollowDetectResponse(
 		Integer githubUserId,
 		String username,
 		String profileImgUrl) {
-		public static GithubFollowUserDto from(GithubUser user) {
+		public static GithubFollowUserDto from(GithubUserProfile user) {
 			return new GithubFollowUserDto(
 				user.id(),
 				user.username(),

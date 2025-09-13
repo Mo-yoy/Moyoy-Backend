@@ -34,9 +34,9 @@ import com.moyoy.api.github_follow.application.GithubFollowCommandService;
 import com.moyoy.api.github_follow.application.GithubFollowDetectService;
 import com.moyoy.api.github_follow.application.response.GithubFollowDetectionResult;
 
-import com.moyoy.domain.github_follow.GithubUser;
-import com.moyoy.domain.github_follow.error.FollowErrorCode;
-import com.moyoy.domain.github_follow.error.GithubFollowSnapshotCoolDownNotExpiredException;
+import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
+import com.moyoy.infra.redis.cache.support.error.CacheErrorCode;
+import com.moyoy.infra.redis.cache.support.error.GithubFollowSnapshotCoolDownNotExpiredException;
 
 import com.moyoy.common.annotation.ControllerTest;
 import com.moyoy.common.annotation.WithMockMoyoyUser;
@@ -60,14 +60,14 @@ class GithubFollowControllerTest {
 	void 맞팔탐지기_조회_성공_200_OK() throws Exception {
 
 		// given
-		GithubUser user1 = new GithubUser(12345, "username1", "http://profile.image/1");
-		GithubUser user2 = new GithubUser(67890, "username2", "http://profile.image/2");
+		GithubUserProfile user1 = new GithubUserProfile(12345, "username1", "http://profile.image/1");
+		GithubUserProfile user2 = new GithubUserProfile(67890, "username2", "http://profile.image/2");
 
-		List<GithubUser> userList = List.of(user1, user2);
+		List<GithubUserProfile> userList = List.of(user1, user2);
 		int totalUserCount = userList.size();
 		LocalDateTime createdAt = LocalDateTime.of(2025, 8, 28, 16, 16, 10, 944301811);
 
-		SliceResult<GithubUser> userSlice = SliceResult.of(userList, false);
+		SliceResult<GithubUserProfile> userSlice = SliceResult.of(userList, false);
 
 		Optional<GithubFollowDetectionResult> result = Optional.of(new GithubFollowDetectionResult(userSlice, createdAt, totalUserCount));
 
@@ -272,8 +272,8 @@ class GithubFollowControllerTest {
 		mockMvc.perform(post("/api/v1/users/me/followings/refresh")
 			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.status").value(FollowErrorCode.SNAPSHOT_COOLDOWN_NOT_EXPIRED.getStatus()))
-			.andExpect(jsonPath("$.code").value(FollowErrorCode.SNAPSHOT_COOLDOWN_NOT_EXPIRED.getCode()))
+			.andExpect(jsonPath("$.status").value(CacheErrorCode.SNAPSHOT_COOLDOWN_NOT_EXPIRED.getStatus()))
+			.andExpect(jsonPath("$.code").value(CacheErrorCode.SNAPSHOT_COOLDOWN_NOT_EXPIRED.getCode()))
 
 			.andDo(document("github-follow-refresh-fail",
 				resource(ResourceSnippetParameters.builder()

@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support.config;
+package com.moyoy.infra.redis.cache.support;
 
 import lombok.extern.slf4j.Slf4j;
 

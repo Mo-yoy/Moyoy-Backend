@@ -11,12 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import com.moyoy.domain.github_follow.GithubUser;
-
 import com.moyoy.infra.external.github.support.GithubResponseParser;
 import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 import com.moyoy.infra.external.github.user.GithubUserApi;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
+import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
 import feign.Response;
 
@@ -34,7 +33,7 @@ public class GithubFollowClient {
 	private final GithubUserApi githubUserApi;
 	private final GithubResponseParser responseParser;
 
-	public List<GithubUser> fetchFollowings(String bearerToken, Long userId, Integer githubUserId) {
+	public List<GithubUserProfile> fetchFollowings(String bearerToken, Long userId, Integer githubUserId) {
 
 		GithubUserResponse githubUserResponse;
 		int rateLimitRemaining;
@@ -55,7 +54,7 @@ public class GithubFollowClient {
 			throw new GithubPreCheckLimitExceedException();
 		}
 
-		List<GithubUser> githubFollowings = new ArrayList<>();
+		List<GithubUserProfile> githubFollowings = new ArrayList<>();
 
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
 		for (int currentPage = 1; currentPage <= followingPageSize; currentPage++) {
@@ -65,14 +64,14 @@ public class GithubFollowClient {
 			githubFollowings.addAll(
 				followingsResponseList.stream()
 					.filter(userResponse -> GITHUB_OAUTH2_USER_TYPE_USER.equalsIgnoreCase(userResponse.type()))
-					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
+					.map(userResponse -> new GithubUserProfile(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 		}
 
 		return githubFollowings;
 	}
 
-	public List<GithubUser> fetchFollowers(String bearerToken, Long userId, Integer githubUserId) {
+	public List<GithubUserProfile> fetchFollowers(String bearerToken, Long userId, Integer githubUserId) {
 
 		GithubUserResponse githubUserResponse;
 		int rateLimitRemaining;
@@ -93,7 +92,7 @@ public class GithubFollowClient {
 			throw new GithubPreCheckLimitExceedException();
 		}
 
-		List<GithubUser> githubFollowers = new ArrayList<>();
+		List<GithubUserProfile> githubFollowers = new ArrayList<>();
 
 		// 추후 비동기로 개선할 성능 장애 지점, 깃허브 페이지는 1부터 시작
 		for (int currentPage = 1; currentPage <= followerPageSize; currentPage++) {
@@ -103,7 +102,7 @@ public class GithubFollowClient {
 			githubFollowers.addAll(
 				followersResponseList.stream()
 					.filter(userResponse -> GITHUB_OAUTH2_USER_TYPE_USER.equalsIgnoreCase(userResponse.type()))
-					.map(userResponse -> new GithubUser(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
+					.map(userResponse -> new GithubUserProfile(userResponse.id(), userResponse.login(), userResponse.avatarUrl()))
 					.toList());
 
 		}
@@ -121,7 +120,7 @@ public class GithubFollowClient {
 		logFollowCommand(FOLLOW, userId, targetUserGithubId);
 	}
 
-	public void unFollow(String bearerToken, Long userId, Integer targetUserGithubId) {
+	public void unfollow(String bearerToken, Long userId, Integer targetUserGithubId) {
 
 		GithubUserResponse targetUserResponse = githubUserApi.fetchUser(bearerToken, targetUserGithubId);
 		githubFollowApi.unfollow(bearerToken, targetUserResponse.login());

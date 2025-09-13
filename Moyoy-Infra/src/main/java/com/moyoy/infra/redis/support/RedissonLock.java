@@ -1,4 +1,4 @@
-package com.moyoy.infra.database.redis.support;
+package com.moyoy.infra.redis.support;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
