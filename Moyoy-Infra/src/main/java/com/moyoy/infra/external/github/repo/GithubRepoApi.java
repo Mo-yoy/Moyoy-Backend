@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 import com.moyoy.infra.external.github.repo.dto.GithubRepoResponse;
+import com.moyoy.infra.external.github.support.GithubFallbackFactory;
 import com.moyoy.infra.external.github.support.GithubFeignConfig;
 
 import feign.Response;
 
-@FeignClient(name = "githubRepoClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
+@FeignClient(name = "githubRepoClient", url = "https://api.github.com", configuration = GithubFeignConfig.class, fallbackFactory = GithubFallbackFactory.class)
 public interface GithubRepoApi {
 
 	/**

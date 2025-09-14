@@ -16,7 +16,8 @@ public enum GithubErrorCode implements BaseErrorCode {
 	GITHUB_UNAUTHORIZED(UNAUTHORIZED, "GITHUB_401_1", "GitHub 인증에 실패했습니다. Access Token을 확인해 주세요."),
 	GITHUB_FORBIDDEN(FORBIDDEN, "GITHUB_403_1", "권한이 부족하거나 GitHub API Rate Limit이 초과되었습니다."),
 	GITHUB_RESOURCE_NOT_FOUND(NOT_FOUND, "GITHUB_404_1", "존재하지 않는 GitHub 리소스입니다."),
-	GITHUB_VALIDATION_FAILED(UNPROCESSABLE_ENTITY, "GITHUB_422_1", "GitHub 요청 파라미터 검증에 실패했거나 과한 요청으로 스팸처리되었습니다.");
+	GITHUB_VALIDATION_FAILED(UNPROCESSABLE_ENTITY, "GITHUB_422_1", "GitHub 요청 파라미터 검증에 실패했거나 과한 요청으로 스팸처리되었습니다."),
+	GITHUB_SERVER_UNAVAILABLE(SERVICE_UNAVAILABLE, "GITHUB_503_1", "깃허브 서버가 현재 응답하지 않거나 연결에 문제가 있습니다.");
 
 	private final Integer status;
 	private final String code;
