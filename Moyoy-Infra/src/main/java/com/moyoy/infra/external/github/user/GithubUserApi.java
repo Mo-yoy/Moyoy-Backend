@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.moyoy.infra.external.github.support.GithubFallbackFactory;
 import com.moyoy.infra.external.github.support.GithubFeignConfig;
 import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
 
 import feign.Response;
 
-@FeignClient(name = "githubProfileClient", url = "https://api.github.com", configuration = GithubFeignConfig.class)
+@FeignClient(name = "githubProfileClient", url = "https://api.github.com", configuration = GithubFeignConfig.class, fallbackFactory = GithubFallbackFactory.class)
 public interface GithubUserApi {
 
 	/**

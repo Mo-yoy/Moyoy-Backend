@@ -1,4 +1,4 @@
-package com.moyoy.batch.scheduler.config;
+package com.moyoy.batch.scheduler;
 
 import java.util.Date;
 

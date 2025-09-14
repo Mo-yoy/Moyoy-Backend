@@ -26,6 +26,7 @@ public class MoyoConstants {
 	public static final int UNPROCESSABLE_ENTITY = 422;
 	public static final int TOO_MANY_REQUEST = 429;
 	public static final int SERVER_ERROR = 500;
+	public static final int SERVICE_UNAVAILABLE = 503;
 
 	// JWT
 	public static final String JWT_CLAIM_USER_ID = "id";

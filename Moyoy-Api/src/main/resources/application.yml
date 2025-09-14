@@ -41,3 +41,5 @@ management:
 actuator:
   monitoring:
     password: ${PROMETHEUS_PASSWORD:prometheus}
+
+
