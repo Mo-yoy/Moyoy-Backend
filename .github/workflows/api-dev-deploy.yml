@@ -62,5 +62,5 @@ jobs:
             mv /home/ubuntu/moyoy-dev/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-dev/api/current/moyoy-api.jar
             cd /home/ubuntu/moyoy-dev/api/current
             sudo fuser -k -n tcp 8080 || true    
-            nohup java -jar moyoy-api.jar --spring.profiles.active=dev > ./output.log 2>&1 &
+            nohup java -Duser.timezone=Asia/Seoul -jar moyoy-api.jar --spring.profiles.active=dev > ./output.log 2>&1 &
             rm -rf /home/ubuntu/moyoy-dev/api/tobe
