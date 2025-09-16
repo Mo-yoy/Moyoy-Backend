@@ -1,4 +1,4 @@
-name: Moyo Batch Dev Server Deploy
+name: Moyoy Batch Dev Server Deploy
 
 on:
   push:

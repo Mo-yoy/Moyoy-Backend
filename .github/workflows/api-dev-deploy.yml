@@ -1,4 +1,4 @@
-name: Moyo API Dev Server Deploy
+name: Moyoy API Dev Server Deploy
 
 on:
   push:
