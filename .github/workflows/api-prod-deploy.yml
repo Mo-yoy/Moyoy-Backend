@@ -1,0 +1,64 @@
+name: Moyoy API PROD Server Deploy
+
+on:
+  push:
+    tags:
+      - 'api-v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Github Repository 에서 파일 불러 오기
+        uses: actions/checkout@v4
+
+      - name: JDK 21버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle','**/*.gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: 빌드
+        run: ./gradlew :Moyoy-Api:clean :Moyoy-Api:build
+
+      - name: 빌드된 JAR 파일 이름 변경
+        run: mv ./Moyoy-Api/build/libs/*SNAPSHOT.jar ./moyoy-api.jar
+
+      - name: EC2 서버로 JAR 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_SERVER_EC2_HOST }}
+          username: ${{ secrets.PROD_SERVER_EC2_USERNAME }}
+          key: ${{ secrets.PROD_SERVER_EC2_PRIVATE_KEY }}
+          source: moyoy-api.jar
+          target: /home/ubuntu/moyoy-dev/api/tobe
+
+      - name: SSH로 EC2에 접속 후 애플리케이션 실행
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_SERVER_EC2_HOST }}
+          username: ${{ secrets.PROD_SERVER_EC2_USERNAME }}
+          key: ${{ secrets.PROD_SERVER_EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            rm -rf /home/ubuntu/moyoy-dev/api/current
+            mkdir /home/ubuntu/moyoy-dev/api/current
+            mv /home/ubuntu/moyoy-dev/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-dev/api/current/moyoy-api.jar
+            cd /home/ubuntu/moyoy-dev/api/current
+            sudo fuser -k -n tcp 8080 || true    
+            nohup java -Duser.timezone=Asia/Seoul -jar moyoy-api.jar --spring.profiles.active=dev > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/moyoy-dev/api/tobe

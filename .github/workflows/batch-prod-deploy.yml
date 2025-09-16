@@ -1,0 +1,65 @@
+name: Moyoy Batch PROD Server Deploy
+
+on:
+  push:
+    tags:
+      - 'batch-v*'
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Github Repository 에서 파일 불러 오기
+        uses: actions/checkout@v4
+
+      - name: JDK 21버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle','**/*.gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: 빌드
+        run: ./gradlew :Moyoy-Batch:clean :Moyoy-Batch:build
+
+      - name: JAR 이름 변경
+        run: mv ./Moyoy-Batch/build/libs/*SNAPSHOT.jar ./moyoy-batch.jar
+
+      - name: EC2 서버로 JAR 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.BATCH_SERVER_EC2_HOST }}
+          username: ${{ secrets.BATCH_SERVER_EC2_USERNAME }}
+          key: ${{ secrets.BATCH_SERVER_EC2_PRIVATE_KEY }}
+          source: moyoy-batch.jar
+          target: /home/ubuntu/moyoy-dev/batch/tobe
+
+      - name: SSH로 EC2에 접속 후 애플리케이션 실행
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.BATCH_SERVER_EC2_HOST }}
+          username: ${{ secrets.BATCH_SERVER_EC2_USERNAME }}
+          key: ${{ secrets.BATCH_SERVER_EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            rm -rf /home/ubuntu/moyoy-dev/batch/current
+            mkdir /home/ubuntu/moyoy-dev/batch/current
+            mv /home/ubuntu/moyoy-dev/batch/tobe/moyoy-batch.jar /home/ubuntu/moyoy-dev/batch/current/moyoy-batch.jar
+            cd /home/ubuntu/moyoy-dev/batch/current
+            sudo fuser -k -n tcp 9000 || true    
+            nohup java -Duser.timezone=Asia/Seoul -jar moyoy-batch.jar --spring.profiles.active=dev > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/moyoy-dev/batch/tobe
