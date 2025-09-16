@@ -40,6 +40,7 @@
                 <fieldName>threadName</fieldName>
             </threadName>
             <mdc>
+                <includeMdcKeyName>traceId</includeMdcKeyName>
                 <includeMdcKeyName>userId</includeMdcKeyName>
                 <includeMdcKeyName>ip</includeMdcKeyName>
                 <includeMdcKeyName>userAgent</includeMdcKeyName>

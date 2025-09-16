@@ -1,6 +1,7 @@
 package com.moyoy.api.common.filter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ public class RequestInfoMDCFilter extends OncePerRequestFilter {
 	private static final String QUERY_STRING = "queryString";
 	private static final String REFERER = "Referer";
 	private static final String HOST = "Host";
+	private static final String TRACE_ID = "traceId";
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-		throws ServletException,
-			IOException {
+		throws ServletException, IOException {
+
 		try {
+			MDC.put(TRACE_ID, UUID.randomUUID().toString());
 			MDC.put(REQUEST_URI, request.getRequestURI());
 			MDC.put(HTTP_METHOD, request.getMethod());
 			MDC.put(QUERY_STRING, getHeaderOrDefault(request.getQueryString(), ""));
