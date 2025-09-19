@@ -1,4 +1,4 @@
-package com.moyoy.batch.dto;
+package com.moyoy.batch.job.processor.dto;
 
 import com.moyoy.infra.external.github.repo.dto.GithubRepoContributorsResponse;
 

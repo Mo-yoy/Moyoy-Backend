@@ -1,4 +1,4 @@
-package com.moyoy.batch.dto;
+package com.moyoy.batch.job.processor.dto;
 
 import com.moyoy.domain.ranking.GithubCommitStats;
 
