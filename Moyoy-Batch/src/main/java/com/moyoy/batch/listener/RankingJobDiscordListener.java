@@ -1,6 +1,9 @@
 package com.moyoy.batch.listener;
 
 import java.time.Duration;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -45,7 +48,11 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 			jobExecution.getStartTime(),
 			jobExecution.getEndTime());
 
-		String today = jobExecution.getJobParameters().getString("today");
+		Date today = jobExecution.getJobParameters().getDate("batchStartTime");
+		String todayStr = today.toInstant()
+			.atZone(ZoneId.systemDefault())
+			.toLocalDate()
+			.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
 
 		// 색상: 초록=성공, 빨강=실패
 		int color = jobExecution.getStatus() == BatchStatus.COMPLETED ? 0x00FF00 : 0xFF0000;
@@ -53,20 +60,23 @@ public class RankingJobDiscordListener implements JobExecutionListener {
 		String title = "📌 랭킹 배치 결과";
 		String description = String.format("""
 			📅 **실행일**: %s
-			**잡 이름**: %s
+			🏷️ **잡 이름**: %s
 
-			⏳ **소요 시간**: %02d시간 %02d분 %02d초
+			⏳ **소요 시간**
+			> %02d시간 %02d분 %02d초
 
-			👥 **대상 유저**: %d명
-			✅ **성공**: %d명
-			❌ **실패**: %d명
+			👥 **처리 현황**
+			- 📥 총 대상: **%d명**
+			- ✅ 성공: **%d명**
+			- ⚠️ 스킵: **%d명**
+			- ❌ 실패: **%d명**
 
-			📊 **성공률**: %.2f%%
+			📊 **성공률**: **%.2f%%**
 			""",
-			today,
+			todayStr,
 			jobExecution.getJobInstance().getJobName(),
 			duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart(),
-			totalRead, success, fail, successRate);
+			totalRead, success, totalSkip, fail, successRate);
 
 		DiscordClientRequest.Embed embed = new DiscordClientRequest.Embed(title, description, color);
 

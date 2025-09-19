@@ -89,13 +89,16 @@ public class GithubRepoClient {
 				attempt.close();
 				log.info("Repo [{}] 통계 준비 중 ({}번째 시도). 10초 후 재시도", repoFullName, tryCount);
 				sleep(10000);
-			} else
+			} else {
+
 				attempt.close();
+			}
 		}
 
 		if (response != null) {
 			return responseParser.parseBody(response, new TypeReference<List<GithubRepoCommitStatsResponse>>() {});
-		} else
+		} else {
 			throw new GithubPollingApiTimeOutException();
+		}
 	}
 }

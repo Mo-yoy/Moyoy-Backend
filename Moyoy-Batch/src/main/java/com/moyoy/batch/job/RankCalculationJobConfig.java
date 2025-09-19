@@ -2,11 +2,8 @@ package com.moyoy.batch.job;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -30,29 +27,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.moyoy.batch.dto.GithubContributorDetails;
-import com.moyoy.batch.dto.GithubRepoCommitStats;
-import com.moyoy.batch.dto.GithubRepoDetails;
-import com.moyoy.batch.dto.RepoCandidatesContext;
-import com.moyoy.batch.dto.UserAuthContext;
-import com.moyoy.batch.dto.UserProfileContext;
-import com.moyoy.batch.dto.UserRankResult;
-import com.moyoy.batch.dto.UserSummaryContext;
-import com.moyoy.batch.helper.GithubCommitStatCalculator;
+import com.moyoy.batch.job.processor.CalculateRankingResultProcessor;
+import com.moyoy.batch.job.processor.CreateUserAuthContextProcessor;
+import com.moyoy.batch.job.processor.FetchContributorStatsProcessor;
+import com.moyoy.batch.job.processor.FetchGithubProfileProcessor;
+import com.moyoy.batch.job.processor.PrepareRankingRepoCandidatesProcessor;
+import com.moyoy.batch.job.processor.dto.UserRankResult;
 import com.moyoy.batch.listener.RankingJobDiscordListener;
 
-import com.moyoy.domain.ranking.GithubCommitStats;
-import com.moyoy.domain.ranking.RankingCalculator;
-import com.moyoy.domain.ranking.dto.RankingCalculatorParameters;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
-import com.moyoy.domain.user.error.UserGithubTokenNotFoundException;
 
-import com.moyoy.infra.database.mysql.query.port.GithubTokenReader;
 import com.moyoy.infra.database.mysql.user.UserEntity;
-import com.moyoy.infra.external.github.repo.GithubRepoClient;
-import com.moyoy.infra.external.github.support.GithubApiLimitChecker;
-import com.moyoy.infra.external.github.user.GithubUserClient;
-import com.moyoy.infra.external.github.user.dto.GithubUserResponse;
+import com.moyoy.infra.external.github.support.error.GithubPollingApiTimeOutException;
+import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -60,49 +47,49 @@ import jakarta.persistence.EntityManagerFactory;
 @RequiredArgsConstructor
 public class RankCalculationJobConfig {
 
-	private final GithubTokenReader githubTokenReader;
-	private final GithubApiLimitChecker githubApiLimitChecker;
-	private final GithubCommitStatCalculator githubCommitStatCalculator;
-	private final GithubUserClient githubUserClient;
-	private final GithubRepoClient githubRepoClient;
-	private final RankingCalculator rankingCalculator;
 	private final RankingJobDiscordListener rankingJobDiscordListener;
 
 	@Bean
-	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingStep) {
+	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingCalculationStep) {
 
 		return new JobBuilder("rankCalculationJob", jobRepository)
 			.listener(rankingJobDiscordListener)
-			.start(userRankingStep)
+			.start(userRankingCalculationStep)
 			.build();
 	}
 
 	@Bean
-	public Step userRankingStep(
+	public Step userRankingCalculationStep(
 		JobRepository jobRepository,
 		PlatformTransactionManager transactionManager,
 		DataSource dataSource,
-		ItemReader<UserEntity> userReader) {
+		ItemReader<UserEntity> userEntityReader,
+		ItemProcessor<UserEntity, UserRankResult> userRankingCalculateProcessor) {
 
-		return new StepBuilder("userRankingStep", jobRepository)
+		return new StepBuilder("userRankingCalculationStep", jobRepository)
 			.<UserEntity, UserRankResult>chunk(10, transactionManager)
-			.reader(userReader)
-			.processor(userRankingProcessor())
+			.reader(userEntityReader)
+			.processor(userRankingCalculateProcessor)
 			.writer(userRankingWriter(dataSource))
+			.faultTolerant()
+			.skip(GithubPollingApiTimeOutException.class)
+			.skip(GithubPreCheckLimitExceedException.class)
+			.skipLimit(Integer.MAX_VALUE)
 			.build();
 	}
 
 	@Bean
 	@StepScope
-	public JpaPagingItemReader<UserEntity> userReader(
+	public JpaPagingItemReader<UserEntity> userEntityReader(
 		@Value("#{jobParameters['batchStartTime']}") Date batchStartTime,
 		EntityManagerFactory entityManagerFactory) {
+
 		LocalDateTime cutoff = LocalDateTime.ofInstant(
 			batchStartTime.toInstant(),
 			ZoneId.systemDefault());
 
 		return new JpaPagingItemReaderBuilder<UserEntity>()
-			.name("userReader")
+			.name("userEntityReader")
 			.entityManagerFactory(entityManagerFactory)
 			.queryString("SELECT u FROM UserEntity u WHERE u.createdAt <= :cutoff ORDER BY u.id")
 			.parameterValues(Map.of("cutoff", cutoff))
@@ -111,136 +98,20 @@ public class RankCalculationJobConfig {
 	}
 
 	@Bean
-	public ItemProcessor<UserEntity, UserRankResult> userRankingProcessor() {
-
+	public ItemProcessor<UserEntity, UserRankResult> userRankingCalculateProcessor(
+		CreateUserAuthContextProcessor createUserAuthContextProcessor,
+		FetchGithubProfileProcessor fetchGithubProfileProcessor,
+		PrepareRankingRepoCandidatesProcessor prepareRankingRepoCandidatesProcessor,
+		FetchContributorStatsProcessor fetchContributorStatsProcessor,
+		CalculateRankingResultProcessor calculateRankingResultProcessor) {
 		return new CompositeItemProcessorBuilder<UserEntity, UserRankResult>()
 			.delegates(
-				createUserAuthContext(),
-				fetchUserProfile(),
-				prepareRankingRepoCandidates(),
-				fetchContributorStats(),
-				calculateRankingResult())
+				createUserAuthContextProcessor,
+				fetchGithubProfileProcessor,
+				prepareRankingRepoCandidatesProcessor,
+				fetchContributorStatsProcessor,
+				calculateRankingResultProcessor)
 			.build();
-	}
-
-	@Bean
-	public ItemProcessor<UserEntity, UserAuthContext> createUserAuthContext() {
-
-		return userEntity -> {
-
-			String githubAccessToken = githubTokenReader.findAccessBearerToken(userEntity.getId()).orElseThrow(UserGithubTokenNotFoundException::new);
-
-			return new UserAuthContext(userEntity.getId(), userEntity.getGithubUserId(), githubAccessToken);
-		};
-	}
-
-	@Bean
-	public ItemProcessor<UserAuthContext, UserProfileContext> fetchUserProfile() {
-		return auth -> {
-
-			GithubUserResponse githubUserResponse = githubUserClient.fetchUser(auth.githubAccessToken(), auth.githubUserId());
-
-			return new UserProfileContext(auth, githubUserResponse.login(), githubUserResponse.followers());
-		};
-	}
-
-	@Bean
-	public ItemProcessor<UserProfileContext, RepoCandidatesContext> prepareRankingRepoCandidates() {
-
-		return userContext -> {
-
-			String githubAccessToken = userContext.auth().githubAccessToken();
-			Long userId = userContext.auth().userId();
-			Integer githubUserId = userContext.auth().githubUserId();
-			String username = userContext.username();
-
-			githubApiLimitChecker.assertCanGithubRequest(githubAccessToken, userId, githubUserId);
-
-			List<GithubRepoDetails> githubRepoDetailsList = githubRepoClient.fetchReposCreatedThisYear(githubAccessToken)
-				.stream()
-				.map(GithubRepoDetails::from)
-				.toList();
-
-			List<GithubRepoDetails> userOwnedRepos = githubRepoDetailsList.stream()
-				.filter(repo -> repo.ownerName().equals(username))
-				.toList();
-
-			List<GithubRepoDetails> userContributedRepos = githubRepoDetailsList.stream()
-				.filter(repo -> !repo.ownerName().equals(username))
-				.filter(repo -> {
-
-					List<GithubContributorDetails> contributors = githubRepoClient.fetchRepoContributors(githubAccessToken, repo.repoFullName())
-						.stream()
-						.map(GithubContributorDetails::from)
-						.toList();
-
-					return contributors.stream().anyMatch(c -> c.username().equals(username));
-				})
-				.toList();
-
-			List<GithubRepoDetails> candidateRepos = Stream.concat(
-				userOwnedRepos.stream(),
-				userContributedRepos.stream()).toList();
-
-			return new RepoCandidatesContext(userContext, candidateRepos);
-		};
-	}
-
-	@Bean
-	public ItemProcessor<RepoCandidatesContext, UserSummaryContext> fetchContributorStats() {
-
-		return repoCandidatesContext -> {
-
-			Long userId = repoCandidatesContext.userProfileContext().auth().userId();
-			Integer githubUserId = repoCandidatesContext.userProfileContext().auth().githubUserId();
-			String accessToken = repoCandidatesContext.userProfileContext().auth().githubAccessToken();
-			String username = repoCandidatesContext.userProfileContext().username();
-
-			githubApiLimitChecker.assertCanGithubRequest(accessToken, userId, githubUserId);
-
-			List<GithubRepoCommitStats> userCommitStats = new ArrayList<>();
-
-			for (GithubRepoDetails repoDetails : repoCandidatesContext.candidateRepos()) {
-
-				List<GithubRepoCommitStats> githubRepoCommitStatsList = githubRepoClient.fetchRepoContributorStats(repoDetails.repoFullName(), accessToken)
-					.stream()
-					.map(GithubRepoCommitStats::from)
-					.toList();
-
-				githubRepoCommitStatsList.stream()
-					.filter(contributor -> contributor.author().username().equals(username))
-					.findFirst()
-					.ifPresent(userCommitStats::add);
-			}
-
-			GithubCommitStats githubCommitStats = githubCommitStatCalculator.calculateCommitStats(userCommitStats);
-
-			return new UserSummaryContext(repoCandidatesContext, githubCommitStats);
-		};
-	}
-
-	@Bean
-	public ItemProcessor<UserSummaryContext, UserRankResult> calculateRankingResult() {
-
-		return userSummaryContext -> {
-
-			List<GithubRepoDetails> candidateRepos = userSummaryContext.repoCandidatesContext().candidateRepos();
-			UserProfileContext userProfileContext = userSummaryContext.repoCandidatesContext().userProfileContext();
-			Long userId = userProfileContext.auth().userId();
-
-			int stars = candidateRepos.stream()
-				.mapToInt(GithubRepoDetails::starCount)
-				.sum();
-
-			int followers = userProfileContext.followerCount();
-
-			GithubCommitStats githubCommitStats = userSummaryContext.githubCommitStats();
-
-			RankingCalculatorParameters rankingCalculatorParameters = RankingCalculatorParameters.of(stars, followers, githubCommitStats);
-			RankingCalculatorResult rankingCalculatorResult = rankingCalculator.calculate(rankingCalculatorParameters);
-
-			return new UserRankResult(userId, rankingCalculatorResult);
-		};
 	}
 
 	@Bean
