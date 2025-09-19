@@ -69,22 +69,22 @@ public class RankCalculationJobConfig {
 	private final RankingJobDiscordListener rankingJobDiscordListener;
 
 	@Bean
-	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingStep) {
+	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingCalculationStep) {
 
 		return new JobBuilder("rankCalculationJob", jobRepository)
-			.listener(rankingJobDiscordListener)
-			.start(userRankingStep)
+			// .listener(rankingJobDiscordListener)
+			.start(userRankingCalculationStep)
 			.build();
 	}
 
 	@Bean
-	public Step userRankingStep(
+	public Step userRankingCalculationStep(
 		JobRepository jobRepository,
 		PlatformTransactionManager transactionManager,
 		DataSource dataSource,
 		ItemReader<UserEntity> userReader) {
 
-		return new StepBuilder("userRankingStep", jobRepository)
+		return new StepBuilder("userRankingCalculationStep", jobRepository)
 			.<UserEntity, UserRankResult>chunk(10, transactionManager)
 			.reader(userReader)
 			.processor(userRankingProcessor())
@@ -97,6 +97,7 @@ public class RankCalculationJobConfig {
 	public JpaPagingItemReader<UserEntity> userReader(
 		@Value("#{jobParameters['batchStartTime']}") Date batchStartTime,
 		EntityManagerFactory entityManagerFactory) {
+
 		LocalDateTime cutoff = LocalDateTime.ofInstant(
 			batchStartTime.toInstant(),
 			ZoneId.systemDefault());
@@ -202,7 +203,7 @@ public class RankCalculationJobConfig {
 
 			for (GithubRepoDetails repoDetails : repoCandidatesContext.candidateRepos()) {
 
-				List<GithubRepoCommitStats> githubRepoCommitStatsList = githubRepoClient.fetchRepoContributorStats(repoDetails.repoFullName(), accessToken)
+				List<GithubRepoCommitStats> githubRepoCommitStatsList = githubRepoClient.fetchRepoContributorStats(accessToken, repoDetails.repoFullName())
 					.stream()
 					.map(GithubRepoCommitStats::from)
 					.toList();
