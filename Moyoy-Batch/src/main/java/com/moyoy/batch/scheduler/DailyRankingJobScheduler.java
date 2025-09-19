@@ -18,7 +18,7 @@ public class DailyRankingJobScheduler {
 	private final JobLauncher jobLauncher;
 	private final Job rankCalculationJob;
 
-	@Scheduled(cron = "10 34 01 * * *")
+	@Scheduled(cron = "00 00 00 * * *")
 	public void runRankingJob() throws Exception {
 
 		JobParameters params = new JobParametersBuilder()

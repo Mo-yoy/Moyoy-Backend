@@ -38,6 +38,8 @@ import com.moyoy.batch.listener.RankingJobDiscordListener;
 import com.moyoy.domain.ranking.dto.RankingCalculatorResult;
 
 import com.moyoy.infra.database.mysql.user.UserEntity;
+import com.moyoy.infra.external.github.support.error.GithubPollingApiTimeOutException;
+import com.moyoy.infra.external.github.support.error.GithubPreCheckLimitExceedException;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -51,7 +53,7 @@ public class RankCalculationJobConfig {
 	public Job rankCalculationJob(JobRepository jobRepository, Step userRankingCalculationStep) {
 
 		return new JobBuilder("rankCalculationJob", jobRepository)
-			// .listener(rankingJobDiscordListener)
+			.listener(rankingJobDiscordListener)
 			.start(userRankingCalculationStep)
 			.build();
 	}
@@ -69,6 +71,10 @@ public class RankCalculationJobConfig {
 			.reader(userEntityReader)
 			.processor(userRankingCalculateProcessor)
 			.writer(userRankingWriter(dataSource))
+			.faultTolerant()
+			.skip(GithubPollingApiTimeOutException.class)
+			.skip(GithubPreCheckLimitExceedException.class)
+			.skipLimit(Integer.MAX_VALUE)
 			.build();
 	}
 

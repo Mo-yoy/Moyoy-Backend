@@ -45,4 +45,25 @@ public record GithubRepoResponse(
 
 		@JsonProperty("html_url") String htmlUrl) {
 	}
+
+	public static GithubRepoResponse createForTest(String fullName, String ownerName, int stargazersCount) {
+		return new GithubRepoResponse(
+			1L,
+			"node-1",
+			fullName.substring(fullName.indexOf("/") + 1),
+			fullName,
+			false,
+			new Owner(ownerName, 100L, "avatar.png", "https://github.com/" + ownerName),
+			"https://github.com/" + fullName,
+			"test repo",
+			false,
+			ZonedDateTime.now(),
+			ZonedDateTime.now(),
+			ZonedDateTime.now(),
+			stargazersCount,
+			10,
+			"Java",
+			0,
+			0);
+	}
 }

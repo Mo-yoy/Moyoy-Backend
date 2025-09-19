@@ -62,12 +62,12 @@ public record GithubUserResponse(
 
 	@JsonProperty("updated_at") String updatedAt) {
 
-	public static GithubUserResponse createTest() {
+	public static GithubUserResponse createForTest(String login, Integer id, String avatarUrl, int followers, int following) {
 		return new GithubUserResponse(
-			"login",
-			1,
+			login,
+			id,
 			null,
-			"avatar",
+			avatarUrl,
 			null,
 			null, null, null, null, null, null,
 			null, null, null, null, null,
@@ -78,8 +78,8 @@ public record GithubUserResponse(
 			null,
 			0,
 			0,
-			0,
-			0,
+			followers,
+			following,
 			null,
 			null);
 	}

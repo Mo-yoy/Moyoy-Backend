@@ -29,7 +29,7 @@ public class FetchContributorStatsProcessor implements ItemProcessor<RepoCandida
 	private final GithubCommitStatCalculator githubCommitStatCalculator;
 
 	@Override
-	public UserSummaryContext process(RepoCandidatesContext repoCandidatesContext) {
+	public UserSummaryContext process(RepoCandidatesContext repoCandidatesContext) throws GithubPollingApiTimeOutException {
 		Long userId = repoCandidatesContext.userProfileContext().auth().userId();
 		Integer githubUserId = repoCandidatesContext.userProfileContext().auth().githubUserId();
 		String accessToken = repoCandidatesContext.userProfileContext().auth().githubAccessToken();
@@ -43,14 +43,10 @@ public class FetchContributorStatsProcessor implements ItemProcessor<RepoCandida
 
 			List<GithubRepoCommitStats> githubRepoCommitStatsList;
 
-			try {
-				githubRepoCommitStatsList = githubRepoClient.fetchRepoContributorStats(accessToken, repoDetails.repoFullName())
-					.stream()
-					.map(GithubRepoCommitStats::from)
-					.toList();
-			} catch (GithubPollingApiTimeOutException e) {
-				throw new RuntimeException(e);
-			}
+			githubRepoCommitStatsList = githubRepoClient.fetchRepoContributorStats(accessToken, repoDetails.repoFullName())
+				.stream()
+				.map(GithubRepoCommitStats::from)
+				.toList();
 
 			githubRepoCommitStatsList.stream()
 				.filter(contributor -> contributor.author().username().equals(username))
