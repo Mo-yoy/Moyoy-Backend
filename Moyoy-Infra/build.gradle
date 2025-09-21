@@ -8,8 +8,14 @@ dependencies {
     // Feign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
+    // Flyway
+    implementation 'org.flywaydb:flyway-mysql'
+
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Test
+    testImplementation 'com.h2database:h2'
 
     // JPA & QueryDSL
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -20,9 +26,14 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.43.0'
 
-    /// TODO :  Spring Web (ResponseEntity 등) , 임시로 넣고 추후 제거
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // resilience4j
+    implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j"
+
+    // bucket4j
+    implementation'com.bucket4j:bucket4j-core:8.10.1'
+    implementation 'com.bucket4j:bucket4j-redis:8.10.1'
 }
 
 jar.enabled = true

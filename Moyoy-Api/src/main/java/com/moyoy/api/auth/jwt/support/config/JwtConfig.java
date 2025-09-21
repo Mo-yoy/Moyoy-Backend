@@ -21,7 +21,7 @@ import com.moyoy.api.auth.jwt.support.JwtProvider;
 @Configuration
 public class JwtConfig {
 
-	private static final String JWT_SECRET_KEY_ID = "macKey_2025_05";
+	private static final String JWT_SECRET_KEY_ID = "macKey_2025_08";
 
 	private final SecretKey jwtSecret;
 

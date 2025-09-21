@@ -1,0 +1,29 @@
+package com.moyoy.common.error;
+
+import static com.moyoy.common.constant.MoyoConstants.*;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import com.moyoy.common.constant.MoyoConstants;
+
+@Getter
+@RequiredArgsConstructor
+public enum CommonErrorCode implements BaseErrorCode {
+
+	INVALID_PARAM(BAD_REQUEST, "COMMON_400_1", "파라미터를 다시 확인해 주세요."),
+	RESOURCE_NOT_FOUND(NOT_FOUND, "COMMON_404_1", "리소스를 찾을 수 없습니다."),
+	NOT_ALLOWED_METHOD(METHOD_NOT_ALLOWED, "COMMON_405_1", "허용되지 않은 메서드 입니다."),
+	TOO_MANY_REQUEST(MoyoConstants.TOO_MANY_REQUEST, "COMMON_429_1", "너무 많은 API를 호출했습니다. 나중에 재시도 해 주세요"),
+	UNKNOWN_INTERNAL_SERVER_ERROR(SERVER_ERROR, "COMMON_500_1", "서버 내부에서 알수 없는 에러가 발생 했습니다. 관리자에게 문의해 주세요."),
+	HTTP_CLIENT_ERROR(SERVER_ERROR, "COMMON_500_2", "API 서버와 깃허브 서버 통신중 에러가 발생했습니다.");
+
+	private final Integer status;
+	private final String code;
+	private final String message;
+
+	@Override
+	public ErrorReason getErrorReason() {
+		return new ErrorReason(status, code, message);
+	}
+}

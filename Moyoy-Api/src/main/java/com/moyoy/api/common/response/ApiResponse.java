@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.moyoy.domain.support.error.ErrorReason;
+import com.moyoy.common.error.ErrorReason;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,6 +26,10 @@ public class ApiResponse<T> {
 	public static <S> ApiResponse<S> success(S data) {
 
 		return new ApiResponse<>(OK, "OK", null, data);
+	}
+
+	public static <S> ApiResponse<S> accepted() {
+		return new ApiResponse<>(ACCEPTED, "ACCEPTED", null, null);
 	}
 
 	public static <S> ApiResponse<S> noContent() {

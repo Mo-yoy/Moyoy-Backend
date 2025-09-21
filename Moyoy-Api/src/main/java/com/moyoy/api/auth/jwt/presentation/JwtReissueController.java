@@ -11,29 +11,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
-import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
+import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
+import com.moyoy.api.auth.jwt.presentation.response.JwtReissueResponse;
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.api.common.util.CookieUtils;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class JwtReissueController {
 
-	private final CookieUtils cookieUtils;
+	private final RefreshTokenCookieFactory cookieFactory;
 	private final JwtReissueService jwtReissueService;
 
 	@PostMapping("/auth/reissue/token")
 	public ResponseEntity<ApiResponse<JwtReissueResponse>> reissueJwtTokens(@CookieValue(value = "refresh", defaultValue = "") String jwtRefreshToken) {
 
-		ReissuedTokens reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
+		ReissueJwtResult reIssueTokens = jwtReissueService.reIssueJwt(jwtRefreshToken);
 
-		String refreshTokenCookie = cookieUtils.createJwtRefreshTokenCookie(reIssueTokens.refreshToken()).toString();
-		JwtReissueResponse responseData = new JwtReissueResponse(reIssueTokens.accessToken());
+		String refreshTokenCookie = cookieFactory.createRefreshTokenCookie(reIssueTokens.refreshToken()).toString();
+		JwtReissueResponse response = new JwtReissueResponse(reIssueTokens.accessToken());
 
 		return ResponseEntity
 			.status(OK)
 			.header(SET_COOKIE, refreshTokenCookie)
-			.body(ApiResponse.success(responseData));
+			.body(ApiResponse.success(response));
 	}
 }

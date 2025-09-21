@@ -22,6 +22,7 @@ paths:
         required: true
         schema:
           type: string
+          default: week
       - name: page
         in: query
         description: "조회할 페이지 (default: 0)"
@@ -42,12 +43,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-rankings1445726081"
+                $ref: "#/components/schemas/api-v1-rankings-897472962"
               examples:
                 전체 개인 랭킹 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userList\":[{\"userId\":1,\"profileImageUrl\":\"img/url\"\
-                    ,\"username\":\"테스터1\",\"rankPoint\":1000}],\"lastPage\":true}}"
+                    :{\"rankingList\":[{\"userId\":1,\"profileImageUrl\":\"image\"\
+                    ,\"username\":\"moyoy\",\"rankPoint\":1234}],\"lastPage\":true}}"
   /api/v1/follow/{targetUserId}:
     post:
       tags:
@@ -150,20 +151,50 @@ paths:
       - 🙋 유저 프로필
       summary: 유저 개인 프로필 조회 API
       description: 유저의 프로필 및 관련 데이터를 조회합니다.
-      operationId: 개인 프로필 조회 성공
+      operationId: 사용자 프로필 조회 성공
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-profile1583212755"
+                $ref: "#/components/schemas/api-v1-users-me-profile1651746436"
               examples:
-                개인 프로필 조회 성공:
+                사용자 프로필 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"userId\":1,\"username\":\"moyoy\",\"rankPoint\":10000,\"rankGrade\"\
-                    :\"A\",\"profileImgUrl\":\"http://~\",\"followerCount\":10,\"\
-                    followingCount\":20}}"
+                    :{\"userId\":1234,\"username\":\"moyoy\",\"rankPoint\":10000,\"\
+                    rankGrade\":\"A\",\"profileImgUrl\":\"https://~\"}}"
+      security:
+      - bearerAuthJWT: []
+  /api/v1/users/me/followings/refresh:
+    post:
+      tags:
+      - 👥 깃허브 팔로우 관계 탐지
+      summary: 깃허브 팔로우 관계 탐지기 캐시 강제 갱신 요청
+      description: "현재 사용자의 요청을 처리하기 위한 데이터 강제 갱신 요청, 캐시에 데이터가 이미 존재하면 강제갱신, 데이터가\
+        \ 없으면 수집"
+      operationId: github-follow-refresh-fail맞팔탐지기 조회를 위한 데이터 강제 갱신 요청
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-refresh492296449"
+              examples:
+                github-follow-refresh-fail:
+                  value: "{\"status\":400,\"code\":\"FOLLOW_400_1\",\"message\":\"\
+                    최신 스냅샷 생성 후 5분 이상 경과해야 갱신할 수 있습니다.\",\"data\":null}"
+        "202":
+          description: "202"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType63148865"
+              examples:
+                맞팔탐지기 조회를 위한 데이터 강제 갱신 요청:
+                  value: "{\"status\":202,\"code\":\"ACCEPTED\",\"message\":null,\"\
+                    data\":null}"
       security:
       - bearerAuthJWT: []
   /api/v1/users/me/followings/{detectType}:
@@ -171,10 +202,15 @@ paths:
       tags:
       - 👥 깃허브 팔로우 관계 탐지
       summary: 깃허브 팔로우 관계 탐지 API
-      description: "현재 로그인한 사용자의 Github상 팔로워, 팔로잉 목록 데이터에서 사용자가 입력한 detectType(맞팔로\
-        우, 나만 팔로우, 상대만 나를 팔로우)를 기준으로 사용자 목록을 조회합니다. <br/><br/> 깃허브 OAuth를 이용한 로그인을\
-        \ 한 번이라도 진행한 적이 있어야 사용 가능합니다."
-      operationId: GITHUB_400_1맞팔탐지기 조회 성공
+      description: |
+        현재 로그인한 사용자의 Github 팔로워/팔로잉 목록에서
+        요청한 detectType(맞팔로우, 나만 팔로우, 상대만 나를 팔로우)에 해당하는 사용자 목록을 조회합니다.
+        <br/>
+        캐시를 활용해 성능을 최적화합니다.
+        - 캐시에 데이터가 존재하는 경우: 서버는 즉시 `200 OK`와 함께 결과를 반환합니다.
+        - 캐시에 데이터가 없는 경우: 서버는 `202 Accepted`를 반환하고, 백그라운드 작업을 통해 데이터를 캐시에 적재합니다.
+          클라이언트는 잠시 대기 후 동일 요청을 다시 시도하면, 이후에는 `200 OK`와 함께 캐시된 결과를 받을 수 있습니다.
+      operationId: 맞팔탐지기 조회
       parameters:
       - name: detectType
         in: path
@@ -183,6 +219,7 @@ paths:
         required: true
         schema:
           type: string
+          default: mutual
       - name: lastGithubUserId
         in: query
         description: "이전 페이지에서 조회한 회원중 마지막 회원의 GithubUserId ,해당 파라미터는 비워둘 시 첫 페이지\
@@ -191,48 +228,55 @@ paths:
         schema:
           type: integer
           format: int32
-      - name: pageSize
+      - name: size
         in: query
         description: "조회할 사용자 수 (default: 30)"
         required: false
         schema:
           type: integer
           format: int32
-      - name: forceSync
-        in: query
-        description: "강제 동기화 여부 (default: false)"
-        required: false
-        schema:
-          type: boolean
       responses:
-        "400":
-          description: "400"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-detectType492296449"
-              examples:
-                GITHUB_400_1:
-                  value: "{\"status\":400,\"code\":\"GITHUB_400_1\",\"message\":\"\
-                    Github API 호출이 제한 되었습니다. 1시간 뒤 다시 시도해 주세요\",\"data\":null}"
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-users-me-followings-detectType1462305756"
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType220603757"
               examples:
                 맞팔탐지기 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"userList\":[{\"githubUserId\":12345,\"username\":\"username1\"\
                     ,\"profileImgUrl\":\"http://profile.image/1\"},{\"githubUserId\"\
                     :67890,\"username\":\"username2\",\"profileImgUrl\":\"http://profile.image/2\"\
-                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"5분\
-                    \ 전\"}}"
+                    }],\"lastPage\":true,\"totalUserCount\":2,\"lastSyncAt\":\"2025-08-28T16:16:10.944301811\"\
+                    }}"
+        "202":
+          description: "202"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-users-me-followings-detectType63148865"
+              examples:
+                맞팔탐지기 조회를 위한 데이터 수집 요청 완료:
+                  value: "{\"status\":202,\"code\":\"ACCEPTED\",\"message\":null,\"\
+                    data\":null}"
       security:
       - bearerAuthJWT: []
 components:
   schemas:
+    api-v1-users-me-followings-detectType63148865:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     api-v1-auth-reissue-token-1735855461:
       required:
       - code
@@ -249,7 +293,72 @@ components:
         status:
           type: number
           description: ❌ 응답 상태 코드
-    api-v1-users-me-followings-detectType1462305756:
+    api-v1-users-me-followings-refresh492296449:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 도메인 에러 코드
+        message:
+          type: string
+          description: 📝 상세 에러 메시지
+        status:
+          type: number
+          description: ❌ 응답 상태 코드 (HTTP status)
+    api-v1-unfollow-targetUserId-767089392:
+      required:
+      - code
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-users-me-profile1651746436:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - profileImgUrl
+          - rankGrade
+          - rankPoint
+          - userId
+          - username
+          type: object
+          properties:
+            rankGrade:
+              type: string
+              description: 📊 사용자 랭킹 등급
+            profileImgUrl:
+              type: string
+              description: 🖼️ 사용자 프로필 이미지 URL
+            userId:
+              type: number
+              description: 👦 사용자 ID
+            rankPoint:
+              type: number
+              description: 🌟 사용자 랭킹 점수
+            username:
+              type: string
+              description: 🙋 사용자 이름
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-users-me-followings-detectType220603757:
       required:
       - code
       - message
@@ -294,39 +403,11 @@ components:
               description: 📌 마지막 페이지 여부
             lastSyncAt:
               type: string
-              description: ⏱ 마지막 싱크 시간 (x 분전)
+              description: ⏱ 마지막 싱크 시간 타임 스탬프
         status:
           type: number
           description: ✅ 응답 상태 코드
-    api-v1-users-me-followings-detectType492296449:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 도메인 에러 코드
-        message:
-          type: string
-          description: 📝 상세 에러 메시지
-        status:
-          type: number
-          description: ❌ 응답 상태 코드 (HTTP status)
-    api-v1-unfollow-targetUserId-767089392:
-      required:
-      - code
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-rankings1445726081:
+    api-v1-rankings-897472962:
       required:
       - code
       - data
@@ -340,77 +421,36 @@ components:
         data:
           required:
           - lastPage
-          - userList
+          - rankingList
           type: object
           properties:
-            userList:
+            lastPage:
+              type: boolean
+              description: 📌 마지막 페이지 여부
+            rankingList:
               type: array
               description: 👤 탐지된 사용자 목록
               items:
                 required:
                 - profileImageUrl
                 - rankPoint
+                - userId
                 - username
                 type: object
                 properties:
                   profileImageUrl:
                     type: string
                     description: 사용자 프로필 이미지 URL
+                  userId:
+                    type: number
+                    description: 사용자 Id
                   rankPoint:
                     type: number
                     description: 사용자 랭킹 점수
                   username:
                     type: string
                     description: 사용자 이름
-            lastPage:
-              type: boolean
-              description: 📌 마지막 페이지 여부
           description: 응답 데이터
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-users-me-profile1583212755:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        data:
-          required:
-          - followerCount
-          - followingCount
-          - profileImgUrl
-          - rankGrade
-          - rankPoint
-          - userId
-          - username
-          type: object
-          properties:
-            rankGrade:
-              type: string
-              description: 📊 사용자 랭킹 등급
-            profileImgUrl:
-              type: string
-              description: 🖼️ 사용자 프로필 이미지 URL
-            followingCount:
-              type: number
-              description: 👥 GitHub 팔로잉 수
-            followerCount:
-              type: number
-              description: 👥 GitHub 팔로워 수
-            userId:
-              type: number
-              description: 👦 사용자 ID
-            rankPoint:
-              type: number
-              description: 🌟 사용자 랭킹 점수
-            username:
-              type: string
-              description: 🙋 사용자 이름
         status:
           type: number
           description: ✅ 응답 상태 코드

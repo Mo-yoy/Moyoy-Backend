@@ -4,14 +4,39 @@ spring:
       region:
         static: ap-northeast-2
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 5000
+            read-timeout: 5000
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+      circuitbreaker:
+        enabled: true
 
+  authorized-client:
+    crypto:
+      password: ${AUTHORIZED_CLIENT_CRYPTO_PASSWORD}
+      salt: ${AUTHORIZED_CLIENT_CRYPTO_SALT}
+
+discord:
+  webhook-uri:
+    id: ${DISCORD_WEBHOOK_ID}
+    token : ${DISCORD_WEBHOOK_TOKEN}
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 5s
+        failure-rate-threshold: 50
+        permitted-number-of-calls-in-half-open-state: 10
+        record-failure-predicate: com.moyoy.infra.external.github.support.GithubExceptionRecordFailurePredicate
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 6000
+        cancel-running-future: true

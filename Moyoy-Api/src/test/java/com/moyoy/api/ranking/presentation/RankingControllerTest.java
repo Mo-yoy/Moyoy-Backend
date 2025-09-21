@@ -33,10 +33,8 @@ import com.epages.restdocs.apispec.SimpleType;
 import com.moyoy.api.common.ApiControllerAdvice;
 import com.moyoy.api.ranking.application.RankingService;
 import com.moyoy.api.ranking.application.response.RankingSearchResult;
-import com.moyoy.api.ranking.application.response.RankingUserView;
-import com.moyoy.domain.ranking.Ranking;
-import com.moyoy.domain.user.Role;
-import com.moyoy.domain.user.User;
+
+import com.moyoy.infra.database.mysql.query.dto.UserRankingView;
 
 @WebMvcTest(value = RankingController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs
@@ -55,37 +53,18 @@ class RankingControllerTest {
 	void 모든_개인유저_랭킹조회() throws Exception {
 
 		// given
-		User mockUser = User.builder()
-			.id(1L)
-			.githubUserId(1)
-			.username("테스터1")
-			.profileImgUrl("img/url")
-			.role(Role.USER)
-			.build();
-
-		Ranking mockRanking = Ranking.builder()
-			.id(1L)
-			.userId(1L)
-			.grade("A")
-			.weeklyPoint(100)
-			.monthlyPoint(1000)
-			.yearlyPoint(10000)
-			.build();
-
-		RankingUserView mockRankingUserView = new RankingUserView(mockRanking, mockUser);
-
-		List<RankingUserView> rankingUserViews = List.of(mockRankingUserView);
+		UserRankingView userRankingView = new UserRankingView(1L, "image", "moyoy", 1234);
+		List<UserRankingView> rankingUserViews = List.of(userRankingView);
 		RankingSearchResult rankingSearchResult = new RankingSearchResult(rankingUserViews, true);
 
-		Mockito.when(rankingService.searchAllUserRanking(any()))
-			.thenReturn(rankingSearchResult);
+		Mockito.when(rankingService.searchAllUserRanking(any())).thenReturn(rankingSearchResult);
 
 		mockMvc.perform(get("/api/v1/rankings")
 			.param("period", "month")
-			.param("lastReviewId", "0")
+			.param("page", "0")
 			.param("size", "10"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.data.userList").isArray())
+			.andExpect(jsonPath("$.data.rankingList").isArray())
 			.andExpect(jsonPath("$.data.lastPage").value(true))
 
 			// REST Docs
@@ -95,18 +74,28 @@ class RankingControllerTest {
 					.summary("전체 개인 랭킹 조회 API")
 					.description("우리 서비스의 전체 개인 랭킹을 조회합니다.")
 					.queryParameters(
-						parameterWithName("period").description("조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year").type(SimpleType.STRING),
-						parameterWithName("lastReviewId").description("조회할 페이지 (default: 0)").type(SimpleType.INTEGER).optional(),
-						parameterWithName("size").description("페이징 사이즈 (default: 20)").type(SimpleType.INTEGER).optional())
+						parameterWithName("period")
+							.description("조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year")
+							.type(SimpleType.STRING)
+							.defaultValue("week"),
+						parameterWithName("page")
+							.description("조회할 페이지 (default: 0)")
+							.type(SimpleType.INTEGER)
+							.optional(),
+						parameterWithName("size")
+							.description("페이징 사이즈 (default: 20)")
+							.type(SimpleType.INTEGER)
+							.optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 응답 코드"),
 						fieldWithPath("message").description("📝 응답 메시지"),
 						subsectionWithPath("data").description("응답 데이터"),
-						subsectionWithPath("data.userList").description("👤 탐지된 사용자 목록"),
-						fieldWithPath("data.userList[].profileImageUrl").description("사용자 프로필 이미지 URL"),
-						fieldWithPath("data.userList[].username").description("사용자 이름"),
-						fieldWithPath("data.userList[].rankPoint").description("사용자 랭킹 점수"),
+						subsectionWithPath("data.rankingList").description("👤 탐지된 사용자 목록"),
+						fieldWithPath("data.rankingList[].userId").description("사용자 Id"),
+						fieldWithPath("data.rankingList[].profileImageUrl").description("사용자 프로필 이미지 URL"),
+						fieldWithPath("data.rankingList[].username").description("사용자 이름"),
+						fieldWithPath("data.rankingList[].rankPoint").description("사용자 랭킹 점수"),
 						fieldWithPath("data.lastPage").description("📌 마지막 페이지 여부"))
 					.build())));
 

@@ -2,7 +2,7 @@ package com.moyoy.api.auth.jwt.presentation;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.moyoy.domain.support.error.auth.AuthErrorCode.*;
+import static com.moyoy.api.auth.error.AuthErrorCode.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -14,39 +14,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseCookie;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
+import com.moyoy.api.auth.error.AuthErrorCode;
 import com.moyoy.api.auth.jwt.application.JwtReissueService;
-import com.moyoy.api.auth.jwt.implement.ReissuedTokens;
-import com.moyoy.api.common.ApiControllerAdvice;
-import com.moyoy.api.common.util.CookieUtils;
-import com.moyoy.domain.support.error.MoyoException;
-import com.moyoy.domain.support.error.auth.AuthErrorCode;
+import com.moyoy.api.auth.jwt.application.response.ReissueJwtResult;
+import com.moyoy.api.auth.jwt.support.RefreshTokenCookieFactory;
+
+import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.error.MoyoException;
 
 import jakarta.servlet.http.Cookie;
 
-@WebMvcTest(value = JwtReissueController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
-@AutoConfigureRestDocs
-@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@Import(ApiControllerAdvice.class)
+@ControllerTest(controllers = JwtReissueController.class)
 class JwtReissueControllerTest {
 
 	@Autowired
@@ -56,17 +43,17 @@ class JwtReissueControllerTest {
 	private JwtReissueService jwtReissueService;
 
 	@MockitoBean
-	private CookieUtils cookieUtils;
+	private RefreshTokenCookieFactory cookieFactory;
 
 	@Test
 	void 쿠키에_유효한_리프레시_토큰을_전달해서_토큰_재발급을_진행_할_수있다() throws Exception {
 
 		// given
 		String fakeRefreshToken = "fakeRefreshTokenValue";
-		ReissuedTokens reissuedTokens = new ReissuedTokens("newAccessToken", "newRefreshToken");
+		ReissueJwtResult reissueJwtResult = new ReissueJwtResult("newAccessToken", "newRefreshToken");
 
-		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissuedTokens);
-		given(cookieUtils.createJwtRefreshTokenCookie(reissuedTokens.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
+		given(jwtReissueService.reIssueJwt(fakeRefreshToken)).willReturn(reissueJwtResult);
+		given(cookieFactory.createRefreshTokenCookie(reissueJwtResult.refreshToken())).willReturn(ResponseCookie.from("refresh", "newRefreshToken").build());
 
 		// when
 		mockMvc.perform(post("/api/v1/auth/reissue/token")

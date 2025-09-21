@@ -54,6 +54,11 @@ subprojects {
     tasks.named('test') {
         useJUnitPlatform()
         finalizedBy jacocoTestReport
+
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
     }
 
     jacoco {
@@ -81,6 +86,10 @@ subprojects {
                                 "**/*Dto*",
                                 "**/*Request*",
                                 "**/*Response*",
+                                "**/*Data*",
+                                "**/*Result*",
+                                "**/*View*",
+                                "**/*Properties*",
                                 "**/*Exception*"
                         ] + Qdomains)
                     })
@@ -88,15 +97,23 @@ subprojects {
         }
     }
 
-
-    tasks.named('build') {
-        dependsOn 'spotlessApply'
+    tasks.named('classes') {
+        dependsOn tasks.named('spotlessApply')
     }
+
+    tasks.matching { it.name == 'jar' }.configureEach {
+        dependsOn tasks.named('spotlessApply')
+    }
+
+    tasks.matching { it.name == 'bootJar' }.configureEach {
+        dependsOn tasks.named('spotlessApply')
+    }
+
 
     spotless {
         java {
             eclipse().configFile("${rootProject.projectDir}/config/spotless/naver-code-convention.xml")
-            importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyo', '')
+            importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyoy.api', 'com.moyoy.batch', 'com.moyoy.domain', 'com.moyoy.infra', 'com.moyoy.common')
             removeUnusedImports()
             trimTrailingWhitespace()
             endWithNewline()
@@ -120,5 +137,25 @@ sonar {
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
                 '**/*Dto*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
 
+    }
+}
+
+project(':Moyoy-Api') {
+    tasks.named('build') {
+        dependsOn(
+                ':Moyoy-Common:check',
+                ':Moyoy-Domain:check',
+                ':Moyoy-Infra:check'
+        )
+    }
+}
+
+project(':Moyoy-Batch') {
+    tasks.named('build') {
+        dependsOn(
+                ':Moyoy-Common:check',
+                ':Moyoy-Domain:check',
+                ':Moyoy-Infra:check'
+        )
     }
 }

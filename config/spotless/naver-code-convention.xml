@@ -9,6 +9,7 @@
 <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_member" value="insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_parameter" value="do not insert"/>
 
+
 <!-- End of Declarations chapter -->
 
 <!-- Start of Indentation chapter -->

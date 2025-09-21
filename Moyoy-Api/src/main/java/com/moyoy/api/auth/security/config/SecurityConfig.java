@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +28,7 @@ import com.moyoy.api.auth.security.component.HttpCookieOAuth2AuthorizationReques
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationFailureHandler;
 import com.moyoy.api.auth.security.component.OAuth2AuthenticationSuccessHandler;
 import com.moyoy.api.auth.security.component.RdbOAuth2AuthorizedClientService;
+import com.moyoy.api.common.filter.RateLimitingFilter;
 import com.moyoy.api.common.filter.RequestInfoMDCFilter;
 import com.moyoy.api.common.filter.UserContextMDCFilter;
 
@@ -46,8 +48,10 @@ public class SecurityConfig {
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 	private final UserContextMDCFilter userContextMDCFilter;
 	private final RequestInfoMDCFilter requestInfoMDCFilter;
+	private final RateLimitingFilter rateLimitingFilter;
 
 	@Bean
+	@Order(2)
 	public SecurityFilterChain moyoySecurityFilterChain(HttpSecurity http) throws Exception {
 
 		http
@@ -60,16 +64,16 @@ public class SecurityConfig {
 			.addFilterBefore(jwtAuthenticationFilter, OAuth2AuthorizationRequestRedirectFilter.class)
 			.addFilterBefore(jwtExceptionHandleFilter, JwtAuthenticationFilter.class)
 			.addFilterAfter(userContextMDCFilter, AnonymousAuthenticationFilter.class)
+			.addFilterAfter(rateLimitingFilter, JwtAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/health", "/").permitAll() // Health Check
-				.requestMatchers("/permit/all/test", "/test/**").permitAll() // Test
-				.requestMatchers("/auth/test/admin").hasRole("ADMIN")
 				.requestMatchers("/error/**", "/favicon.ico").permitAll() // Server Default
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI
 				.requestMatchers("/api/v1/rankings").permitAll() // [Domain] Ranking
 				.requestMatchers(GET, "/api/v1/pr-review").permitAll()
 				.requestMatchers("/api/v1/pr-review/{pr-reviewId}").permitAll()
+				.requestMatchers("/actuator/**").permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
 				.authorizationEndpoint(authorization -> authorization

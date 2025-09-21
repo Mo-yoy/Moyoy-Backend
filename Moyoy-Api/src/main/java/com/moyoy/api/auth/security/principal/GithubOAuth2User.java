@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.moyoy.domain.user.User;
+import com.moyoy.api.user.application.response.UserSyncResult;
 
 /**
  *  Spring Security 에서 요구하는 OAuth2User
@@ -26,13 +26,12 @@ public class GithubOAuth2User implements OAuth2User {
 	private final Set<GrantedAuthority> authorities;
 	private final Map<String, Object> attributes;
 
-	public static GithubOAuth2User from(User moyoUser) {
-
+	public static GithubOAuth2User from(UserSyncResult result) {
 		Set<GrantedAuthority> authorities = new HashSet<>();
-		authorities.add(new SimpleGrantedAuthority(moyoUser.getRole().getValue()));
+		authorities.add(new SimpleGrantedAuthority(result.role().getValue()));
 
 		Map<String, Object> attributes = new HashMap<>();
-		attributes.put("id", moyoUser.getId());
+		attributes.put("id", result.id());
 
 		return new GithubOAuth2User(authorities, attributes);
 	}

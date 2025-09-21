@@ -13,7 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.domain.support.error.MoyoException;
+
+import com.moyoy.common.error.MoyoException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

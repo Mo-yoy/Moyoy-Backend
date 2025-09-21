@@ -1,54 +1,83 @@
 package com.moyoy.api.user.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.moyoy.api.user.application.request.GithubUserProfileDto;
-import com.moyoy.api.user.application.request.UserGithubFollowStats;
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.request.UserSyncData;
+import com.moyoy.api.user.application.response.UserProfileQueryResult;
+import com.moyoy.api.user.application.response.UserSyncResult;
+
 import com.moyoy.domain.ranking.Ranking;
 import com.moyoy.domain.ranking.RankingRepository;
-import com.moyoy.domain.support.error.ranking.RankingNotFoundException;
-import com.moyoy.domain.support.error.user.UserNotFoundException;
+import com.moyoy.domain.user.SocialSize;
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserCreate;
 import com.moyoy.domain.user.UserRepository;
-import com.moyoy.infra.external.github.common.GithubOAuthTokenReader;
-import com.moyoy.infra.external.github.dto.GithubProfileResponse;
-import com.moyoy.infra.external.github.feign.GithubProfileClient;
+import com.moyoy.domain.user.dto.UserCreate;
+import com.moyoy.domain.user.error.UserGithubAccountTypeNotAllowException;
+import com.moyoy.domain.user.error.UserNotFoundException;
 
+import com.moyoy.infra.database.mysql.query.dto.UserProfileView;
+import com.moyoy.infra.database.mysql.query.port.UserRankingReader;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
 	private final UserRepository userRepository;
 	private final RankingRepository rankingRepository;
-	private final GithubOAuthTokenReader githubOAuthTokenReader;
-	private final GithubProfileClient githubProfileClient;
+	private final UserRankingReader userRankingReader;
 
-	public UserProfileResult getUserProfile(Long userId) {
+	///  도메인 모델이 필요없는 단순 조회
+	public UserProfileQueryResult getUserProfile(Long userId) {
 
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Ranking ranking = rankingRepository.findById(userId).orElseThrow(RankingNotFoundException::new);
+		UserProfileView userProfileView = userRankingReader.findByUserId(userId).orElseThrow(UserNotFoundException::new);
 
-		Integer githubUserId = user.getGithubUserId();
-		String accessToken = githubOAuthTokenReader.getGithubAccessToken(userId);
-		GithubProfileResponse githubProfileResponse = githubProfileClient.fetchUserProfile(accessToken, githubUserId);
-		UserGithubFollowStats userGithubFollowStats = UserGithubFollowStats.from(githubProfileResponse);
-
-		return UserProfileResult.from(user, ranking, userGithubFollowStats);
+		return UserProfileQueryResult.from(userProfileView);
 	}
 
-	public User signUp(GithubUserProfileDto githubUserProfileDto) {
+	@Transactional
+	public UserSyncResult syncOrSignUp(UserSyncData userSyncData) {
 
-		UserCreate userCreate = new UserCreate(githubUserProfileDto.githubUserId(), githubUserProfileDto.username(), githubUserProfileDto.profileImgUrl());
-		User user = User.from(userCreate);
+		Integer githubUserId = userSyncData.githubUserId();
+
+		return userRepository.findByGithubUserId(githubUserId)
+			.map(user -> sync(user, userSyncData))
+			.orElseGet(() -> signUp(userSyncData));
+	}
+
+	private UserSyncResult sync(User user, UserSyncData data) {
+
+		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
+
+		user.changeSocialSize(socialSize);
+		user.changeProfile(data.username(), data.profileImgUrl());
 		userRepository.save(user);
 
-		Ranking ranking = Ranking.createInitial(user.getId());
+		log.info("기존 회원 GitHub 프로필 업데이트, userId={}", user.getId());
+
+		return UserSyncResult.from(user);
+	}
+
+	private UserSyncResult signUp(UserSyncData data) {
+
+		if (!data.type().equals("User"))
+			throw new UserGithubAccountTypeNotAllowException();
+
+		SocialSize socialSize = SocialSize.of(data.followers(), data.following());
+
+		UserCreate create = UserCreate.of(data.githubUserId(), data.username(), data.profileImgUrl(), socialSize);
+		User newUser = User.from(create);
+		newUser = userRepository.save(newUser);
+
+		Ranking ranking = Ranking.createInitial(newUser.getId());
 		rankingRepository.save(ranking);
 
-		return user;
+		log.info("신규 회원 가입, userId={}, githubUserId={}, socialSize={}", newUser.getId(), newUser.getGithubUserId(), newUser.getSocialSize());
+
+		return UserSyncResult.from(newUser);
 	}
 }

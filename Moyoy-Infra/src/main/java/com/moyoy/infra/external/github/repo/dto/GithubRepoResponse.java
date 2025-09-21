@@ -1,0 +1,69 @@
+package com.moyoy.infra.external.github.repo.dto;
+
+import java.time.ZonedDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record GithubRepoResponse(
+	Long id,
+
+	@JsonProperty("node_id") String nodeId,
+
+	String name,
+
+	@JsonProperty("full_name") String fullName,
+
+	@JsonProperty("private") boolean isPrivate,
+
+	Owner owner,
+
+	@JsonProperty("html_url") String htmlUrl,
+
+	String description,
+	boolean fork,
+
+	@JsonProperty("created_at") ZonedDateTime createdAt,
+
+	@JsonProperty("updated_at") ZonedDateTime updatedAt,
+
+	@JsonProperty("pushed_at") ZonedDateTime pushedAt,
+
+	@JsonProperty("stargazers_count") int stargazersCount,
+
+	@JsonProperty("watchers_count") int watchersCount,
+
+	String language,
+
+	@JsonProperty("forks_count") int forksCount,
+
+	@JsonProperty("open_issues_count") int openIssuesCount) {
+	public record Owner(
+		String login,
+		Long id,
+
+		@JsonProperty("avatar_url") String avatarUrl,
+
+		@JsonProperty("html_url") String htmlUrl) {
+	}
+
+	public static GithubRepoResponse createForTest(String fullName, String ownerName, int stargazersCount) {
+		return new GithubRepoResponse(
+			1L,
+			"node-1",
+			fullName.substring(fullName.indexOf("/") + 1),
+			fullName,
+			false,
+			new Owner(ownerName, 100L, "avatar.png", "https://github.com/" + ownerName),
+			"https://github.com/" + fullName,
+			"test repo",
+			false,
+			ZonedDateTime.now(),
+			ZonedDateTime.now(),
+			ZonedDateTime.now(),
+			stargazersCount,
+			10,
+			"Java",
+			0,
+			0);
+	}
+}

@@ -15,16 +15,18 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.moyoy.api.common.response.ApiResponse;
-import com.moyoy.domain.support.error.CommonErrorCode;
-import com.moyoy.domain.support.error.ErrorReason;
-import com.moyoy.domain.support.error.MoyoException;
+
+import com.moyoy.infra.external.github.support.error.GithubApiError;
+
+import com.moyoy.common.error.CommonErrorCode;
+import com.moyoy.common.error.ErrorReason;
+import com.moyoy.common.error.MoyoException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -39,24 +41,20 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
 		ErrorReason errorReason = ex.getErrorReason();
 
-		log.warn("Custom Exception 발생 : {}|{}", errorReason.getCode(), errorReason.getErrorMessage());
+		log.warn("Custom Exception 발생 : {} | {}", errorReason.getCode(), errorReason.getErrorMessage());
 
 		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
-	// HTTP Client Error Exception
-	@ExceptionHandler(HttpClientErrorException.class)
-	public ResponseEntity<ApiResponse<?>> handleHttpClientErrorException(HttpClientErrorException ex) {
+	// Github API Exception
+	@ExceptionHandler(GithubApiError.class)
+	public ResponseEntity<ApiResponse<Void>> handleGithubApiError(GithubApiError ex) {
 
-		ErrorReason errorReason = CommonErrorCode.HTTP_CLIENT_ERROR.getErrorReason();
+		ErrorReason errorReason = ex.getErrorReason();
 
-		String detailMessage = " Github Error Message : " + ex.getResponseBodyAsString();
+		log.warn("Github API 관련 Exception 발생 : {} | {}", errorReason.getCode(), errorReason.getErrorMessage());
 
-		errorReason.addDetailErrorMessage(detailMessage);
-
-		log.error("HTTP Client 에러 발생", ex);
-
-		return ResponseEntity.status(500).body(ApiResponse.fail(errorReason));
+		return ResponseEntity.status(errorReason.getStatus()).body(ApiResponse.fail(errorReason));
 	}
 
 	// @Valid
@@ -159,7 +157,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
 		ErrorReason errorReason = new ErrorReason(statusCode.value(), "COMMON_" + statusCode.value(), ex.getMessage());
 
-		log.warn("Spring ResponseEntityExceptionHandler 에서 알 수 없는 에러를 처리했습니다.", ex);
+		log.warn("Spring ResponseEntityExceptionHandler 에서 예외를 처리했습니다.", ex);
 
 		return ResponseEntity.status(statusCode).body(ApiResponse.fail(errorReason));
 	}

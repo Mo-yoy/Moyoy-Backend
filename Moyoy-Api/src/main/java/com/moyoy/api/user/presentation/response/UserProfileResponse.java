@@ -1,25 +1,21 @@
 package com.moyoy.api.user.presentation.response;
 
-import com.moyoy.api.user.application.response.UserProfileResult;
+import com.moyoy.api.user.application.response.UserProfileQueryResult;
 
 public record UserProfileResponse(
 	Long userId,
 	String username,
 	long rankPoint,
 	String rankGrade,
-	String profileImgUrl,
-	int followerCount,
-	int followingCount) {
+	String profileImgUrl) {
 
-	public static UserProfileResponse from(UserProfileResult userProfileResult) {
+	public static UserProfileResponse from(UserProfileQueryResult userProfileQueryResult) {
 
 		return new UserProfileResponse(
-			userProfileResult.userId(),
-			userProfileResult.username(),
-			userProfileResult.yearlyRankPoint(),
-			userProfileResult.yearlyRankGrade(),
-			userProfileResult.profileImgUrl(),
-			userProfileResult.githubFollowerCount(),
-			userProfileResult.githubFollowingCount());
+			userProfileQueryResult.userId(),
+			userProfileQueryResult.username(),
+			userProfileQueryResult.yearlyRankPoint(),
+			userProfileQueryResult.yearlyRankGrade(),
+			userProfileQueryResult.profileImgUrl());
 	}
 }
