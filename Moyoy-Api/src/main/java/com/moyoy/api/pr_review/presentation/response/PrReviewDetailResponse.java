@@ -15,6 +15,7 @@ public record PrReviewDetailResponse(
 	String title,
 	int hitCount,
 	LocalDateTime createdAt,
+	LocalDateTime closedAt,
 	String content,
 	String prUrl) {
 
@@ -29,6 +30,7 @@ public record PrReviewDetailResponse(
 			result.title(),
 			result.hitCount(),
 			result.createdAt(),
+			result.closedAt(),
 			result.content(),
 			result.prUrl());
 	}

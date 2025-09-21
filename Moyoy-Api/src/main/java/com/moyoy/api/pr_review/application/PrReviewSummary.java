@@ -2,22 +2,22 @@ package com.moyoy.api.pr_review.application;
 
 import com.moyoy.domain.pr_review.PrReview;
 
-import static com.moyoy.common.util.TimeSinceFormatter.*;
+import java.time.LocalDateTime;
 
 public record PrReviewSummary(
-	String profileImageUrl,
-	String username,
-	String position,
-	String title,
-	String since,
-	int hitCount) {
+		String profileImageUrl,
+		String username,
+		String position,
+		String title,
+		LocalDateTime createdAt,
+		int hitCount) {
 	public static PrReviewSummary from(PrReview pr) {
 		return new PrReviewSummary(
 			pr.getAuthor().profileImgUrl(),
 			pr.getAuthor().username(),
 			pr.getPosition().toString(),
 			pr.getTitle(),
-			formatTimeSince(pr.getCreatedAt()),
+			pr.getCreatedAt(),
 			pr.getHitCount());
 	}
 }

@@ -2,7 +2,7 @@ package com.moyoy.api.pr_review.application.response;
 
 import com.moyoy.api.pr_review.application.PrReviewSummary;
 import com.moyoy.domain.pr_review.PrReview;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.SliceResult;
 
 import java.util.List;
 

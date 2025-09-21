@@ -1,4 +1,4 @@
-package com.moyoy.domain.support.page;
+package com.moyoy.common.page;
 
 import java.util.List;
 

@@ -48,7 +48,7 @@ import com.moyoy.common.annotation.WithMockMoyoyUser;
 import com.moyoy.domain.follow.FollowUser;
 import com.moyoy.domain.support.error.MoyoException;
 import com.moyoy.domain.support.error.github.GithubErrorCode;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.SliceResult;
 
 @WebMvcTest(value = GithubFollowController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {OncePerRequestFilter.class})})
 @AutoConfigureRestDocs

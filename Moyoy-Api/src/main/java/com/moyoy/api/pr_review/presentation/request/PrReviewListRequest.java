@@ -1,22 +1,30 @@
 package com.moyoy.api.pr_review.presentation.request;
 
-import com.moyoy.api.pr_review.application.request.SearchCondition;
+import com.moyoy.api.pr_review.application.request.SearchConditionData;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record PrReviewListRequest(
-	@NotBlank String status,
+	@NotBlank @Pattern(regexp = "open|closed")String status,
 	String order,
 	String position,
-	Integer page,
-	Integer size) {
+	@Min(0) Long lastReviewId,
+	@Min(1) @Max(100) Integer size) {
+
 	public PrReviewListRequest {
-		status = (status.equals("open")) ? "open" : "closed";
-		order = (order == null) ? "createdAt-desc" : order;
-		page = (page == null) ? 0 : page;
-		size = (size == null) ? 10 : size;
+		if (order == null)
+			order = "createdAt-desc";
+
+		if (lastReviewId == null)
+			lastReviewId = 0L;
+
+		if (size == null)
+			size = 20;
 	}
 
-	public SearchCondition toSearchCondition() {
-		return SearchCondition.of(status, order, position, page, size);
+	public SearchConditionData toSearchCondition() {
+		return SearchConditionData.of(status, order, position, lastReviewId, size);
 	}
 }

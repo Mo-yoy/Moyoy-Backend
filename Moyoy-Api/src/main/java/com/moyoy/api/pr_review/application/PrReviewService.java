@@ -3,7 +3,7 @@ package com.moyoy.api.pr_review.application;
 import com.moyoy.api.pr_review.application.request.PrReviewContentData;
 import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
 import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
-import com.moyoy.api.pr_review.application.request.SearchCondition;
+import com.moyoy.api.pr_review.application.request.SearchConditionData;
 import com.moyoy.api.pr_review.application.response.PrReviewContentResult;
 import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
@@ -13,8 +13,8 @@ import com.moyoy.domain.pr_review.PrReviewRepository;
 import com.moyoy.domain.support.error.pr_review.PrReviewDeleteForbiddenException;
 import com.moyoy.domain.support.error.pr_review.PrReviewEditForbiddenException;
 import com.moyoy.domain.support.error.pr_review.PrReviewNotFoundException;
-import com.moyoy.domain.support.page.PageData;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.PageData;
+import com.moyoy.common.page.SliceResult;
 import com.moyoy.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,25 +27,26 @@ public class PrReviewService {
 	private final PrReviewRepository prReviewRepository;
 	private final UserRepository userRepository;
 
-	public PrReviewListResult getPrReviewList(SearchCondition condition) {
+	///  조회에 필요한 데이터는 repository에서 그대로 뷰 반환 -> -->
+	public PrReviewListResult getPrReviewList(SearchConditionData condition) {
 
 		SliceResult<PrReview> prReviewSlice = prReviewRepository.findAllByStatusAndPosition(
 				condition.status(),
 				condition.position(),
-				PageData.of(condition.page(), condition.size(), condition.order())
+				PageData.of(condition.lastReviewId(), condition.size(), condition.order())
 		);
 
 		return PrReviewListResult.from(prReviewSlice);
 	}
 
 	///  TODO : 범용적으로 getPrReviewList By UserId?
-	public PrReviewListResult getMyPrReviewList(Long userId, SearchCondition condition) {
+	public PrReviewListResult getMyPrReviewList(Long userId, SearchConditionData condition) {
 
 		SliceResult<PrReview> prReviewSlice = prReviewRepository.findAllByUserIdAndStatusAndPosition(
 				userId,
 				condition.status(),
 				condition.position(),
-				PageData.of(condition.page(), condition.size(), condition.order())
+				PageData.of(condition.lastReviewId(), condition.size(), condition.order())
 		);
 
 		return PrReviewListResult.from(prReviewSlice);
@@ -81,18 +82,6 @@ public class PrReviewService {
 
 		///  TODO : of vs create
 		return PrReviewCreateResult.from(createdReviewId);
-	}
-
-	public PrReviewContentResult getPrReviewUpdateForm(Long reviewId, Long userId) {
-
-		PrReview prReview = prReviewRepository.findById(reviewId)
-				.orElseThrow(PrReviewNotFoundException::new);
-
-		if (prReview.getAuthor().id().equals(userId)) {
-			throw new PrReviewEditForbiddenException();
-		}
-
-		return PrReviewContentResult.from(prReview);
 	}
 
 	@Transactional

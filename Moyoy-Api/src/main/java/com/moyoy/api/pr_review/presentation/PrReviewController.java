@@ -3,14 +3,14 @@ package com.moyoy.api.pr_review.presentation;
 import com.moyoy.api.common.annotation.LoginUserId;
 import com.moyoy.api.common.response.ApiResponse;
 import com.moyoy.api.pr_review.application.request.PrReviewContentData;
-import com.moyoy.api.pr_review.application.request.SearchCondition;
+import com.moyoy.api.pr_review.application.request.SearchConditionData;
 import com.moyoy.api.pr_review.application.response.*;
-import com.moyoy.api.pr_review.presentation.request.PrReviewFormRequest;
+import com.moyoy.api.pr_review.presentation.request.PrReviewCreateRequest;
 import com.moyoy.api.pr_review.presentation.request.PrReviewListRequest;
+import com.moyoy.api.pr_review.presentation.request.PrReviewUpdateRequest;
 import com.moyoy.api.pr_review.presentation.response.PrReviewDetailResponse;
 import com.moyoy.api.pr_review.presentation.response.PrReviewListResponse;
 import com.moyoy.api.pr_review.presentation.response.PrReviewRedirectResponse;
-import com.moyoy.api.pr_review.presentation.response.PrReviewUpdateFormResponse;
 import com.moyoy.api.pr_review.application.PrReviewService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,33 +26,30 @@ public class PrReviewController {
 
 	private final PrReviewService prReviewService;
 
-	///  TODO pr-review -> pr-reviews
-	
-	@GetMapping("/pr-review")
+	@GetMapping("/pr-reviews")
 	public ResponseEntity<ApiResponse<PrReviewListResponse>> getPrReviewList(
 		@Valid @ModelAttribute PrReviewListRequest request) {
 
-		///  TODO : XXXDATA <-> RESULT
-		SearchCondition condition = request.toSearchCondition();
-		PrReviewListResult result = prReviewService.getPrReviewList(condition);
+		SearchConditionData data = request.toSearchCondition();
+		PrReviewListResult result = prReviewService.getPrReviewList(data);
 
 		PrReviewListResponse response = PrReviewListResponse.from(result);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/pr-review/me")
+	@GetMapping("/pr-reviews/me")
 	public ResponseEntity<ApiResponse<PrReviewListResponse>> getMyPrReviewList(
 		@LoginUserId Long userId,
 		@Valid @ModelAttribute PrReviewListRequest request) {
 
-		SearchCondition condition = request.toSearchCondition();
-		PrReviewListResult result = prReviewService.getMyPrReviewList(userId, condition);
+		SearchConditionData data = request.toSearchCondition();
+		PrReviewListResult result = prReviewService.getMyPrReviewList(userId, data);
 
 		PrReviewListResponse response = PrReviewListResponse.from(result);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/pr-review/{pr-reviewId}")
+	@GetMapping("/pr-reviews/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<PrReviewDetailResponse>> getPrReviewDetail(
 		@LoginUserId Long userId,
 		@PathVariable("pr-reviewId") Long reviewId) {
@@ -63,10 +60,10 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@PostMapping("/pr-review")
+	@PostMapping("/pr-reviews")
 	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> create(
 		@LoginUserId Long userId,
-		@RequestBody PrReviewFormRequest request) {
+		@Valid @RequestBody PrReviewCreateRequest request) {
 
 		PrReviewContentData content = request.toContent();
 		PrReviewCreateResult result = prReviewService.createPrReview(content, userId);
@@ -75,22 +72,11 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/pr-review/{pr-reviewId}/form")
-	public ResponseEntity<ApiResponse<PrReviewUpdateFormResponse>> updateForm(
-		@LoginUserId Long userId,
-		@PathVariable("pr-reviewId") Long reviewId) {
-
-		PrReviewContentResult result = prReviewService.getPrReviewUpdateForm(reviewId, userId);
-
-		PrReviewUpdateFormResponse response = PrReviewUpdateFormResponse.from(result);
-		return ResponseEntity.ok(ApiResponse.success(response));
-	}
-
-	@PatchMapping("/pr-review/{pr-reviewId}")
+	@PatchMapping("/pr-reviews/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> update(
 		@LoginUserId Long userId,
 		@PathVariable("pr-reviewId") Long reviewId,
-		@RequestBody PrReviewFormRequest request) {
+		@Valid @RequestBody PrReviewUpdateRequest request) {
 
 		PrReviewContentData content = request.toContent();
 		PrReviewUpdateResult result = prReviewService.updatePrReview(reviewId, content, userId);
@@ -99,7 +85,7 @@ public class PrReviewController {
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@DeleteMapping("/pr-review/{pr-reviewId}")
+	@DeleteMapping("/pr-reviews/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
 		@LoginUserId Long userId,
 		@PathVariable("pr-reviewId") Long reviewId) {

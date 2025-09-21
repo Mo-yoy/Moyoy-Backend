@@ -14,6 +14,7 @@ public record PrReviewDetailResult(
 	String title,
 	int hitCount,
 	LocalDateTime createdAt,
+	LocalDateTime closedAt,
 	String content,
 	String prUrl) {
 	public static PrReviewDetailResult from(PrReview prReview, boolean isWriter) {
@@ -27,6 +28,7 @@ public record PrReviewDetailResult(
 			prReview.getTitle(),
 			prReview.getHitCount(),
 			prReview.getCreatedAt(),
+			prReview.getClosedAt(),
 			prReview.getContent(),
 			prReview.getPrUrl());
 	}

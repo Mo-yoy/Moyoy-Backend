@@ -9,15 +9,16 @@ import java.time.LocalDateTime;
 @Builder
 public class PrReview {
 	private Long id;
-	private Author author;
+	private Author author; // User id를 넣어두고 query repository로 조회해서 반환받을 것.
 	private String title;
 	private String content;
 	private String prUrl;
 	private Position position;
 	private int hitCount;
-	private Status status; // FIXME: open, closed 여부. boolean 변환 하지않고 그냥 Enum으로 관리하는게 좋을듯. 성능 < 유지보수
+	private Status status;
 	private boolean adopted;
-	private LocalDateTime deadline; // FIXME: 일주일씩 추가 가능하도록 관리 필요. createdAt도 따로 추가해야 하나 싶음. DateTimeFormmater
+	private LocalDateTime createdAt;
+	private LocalDateTime closedAt;
 
 	public void increaseHitCount() {
 		this.hitCount++;
@@ -35,7 +36,8 @@ public class PrReview {
 			0,
 			Status.OPEN,
 			false,
-			null
+			null,
+			prReviewCreate.closedAt()
 		);
 	}
 

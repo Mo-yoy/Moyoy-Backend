@@ -1,7 +1,7 @@
 package com.moyoy.domain.pr_review;
 
-import com.moyoy.domain.support.page.PageData;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.PageData;
+import com.moyoy.common.page.SliceResult;
 
 import java.util.Optional;
 
@@ -18,6 +18,4 @@ public interface PrReviewRepository {
 	Long update(PrReview prReview);
 
 	void deleteById(Long reviewId);
-
-
 }

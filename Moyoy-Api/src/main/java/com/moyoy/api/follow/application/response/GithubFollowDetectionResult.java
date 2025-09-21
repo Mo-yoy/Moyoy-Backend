@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.moyoy.api.follow.application.request.GithubFollowDetection;
 import com.moyoy.domain.follow.FollowUser;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.SliceResult;
 
 public record GithubFollowDetectionResult(
 

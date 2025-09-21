@@ -82,7 +82,7 @@ class RankingControllerTest {
 
 		mockMvc.perform(get("/api/v1/rankings")
 			.param("period", "month")
-			.param("page", "0")
+			.param("lastReviewId", "0")
 			.param("size", "10"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.userList").isArray())
@@ -96,7 +96,7 @@ class RankingControllerTest {
 					.description("우리 서비스의 전체 개인 랭킹을 조회합니다.")
 					.queryParameters(
 						parameterWithName("period").description("조회할 랭킹 기간 <br/><br/> week <br/> month <br/> year").type(SimpleType.STRING),
-						parameterWithName("page").description("조회할 페이지 (default: 0)").type(SimpleType.INTEGER).optional(),
+						parameterWithName("lastReviewId").description("조회할 페이지 (default: 0)").type(SimpleType.INTEGER).optional(),
 						parameterWithName("size").description("페이징 사이즈 (default: 20)").type(SimpleType.INTEGER).optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),

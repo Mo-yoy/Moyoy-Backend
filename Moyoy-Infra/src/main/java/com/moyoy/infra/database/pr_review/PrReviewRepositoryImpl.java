@@ -8,10 +8,9 @@ import java.util.stream.Collectors;
 
 import com.moyoy.domain.pr_review.*;
 import com.moyoy.domain.support.error.user.UserNotFoundException;
-import com.moyoy.domain.support.page.PageData;
-import com.moyoy.domain.support.page.SliceResult;
+import com.moyoy.common.page.PageData;
+import com.moyoy.common.page.SliceResult;
 import com.moyoy.domain.user.User;
-import com.moyoy.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import static com.moyoy.domain.pr_review.Status.OPEN;
 import static com.moyoy.infra.database.pr_review.SortConverter.*;
 
 @Repository
@@ -28,7 +26,7 @@ import static com.moyoy.infra.database.pr_review.SortConverter.*;
 public class PrReviewRepositoryImpl implements PrReviewRepository {
 
 	private final PrReviewJpaRepository prReviewJpaRepository;
-	private final UserRepository userRepository;
+	private final PrReviewQueryDslRepository prReviewQueryDslRepository;
 
 	@Override
 	public PrReview save(PrReview prReview) {
