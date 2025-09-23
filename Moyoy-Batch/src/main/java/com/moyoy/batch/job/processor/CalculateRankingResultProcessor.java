@@ -25,6 +25,7 @@ public class CalculateRankingResultProcessor implements ItemProcessor<UserSummar
 
 	@Override
 	public UserRankResult process(UserSummaryContext userSummaryContext) {
+
 		List<GithubRepoDetails> candidateRepos = userSummaryContext.repoCandidatesContext().candidateRepos();
 		UserProfileContext userProfileContext = userSummaryContext.repoCandidatesContext().userProfileContext();
 		Long userId = userProfileContext.auth().userId();
