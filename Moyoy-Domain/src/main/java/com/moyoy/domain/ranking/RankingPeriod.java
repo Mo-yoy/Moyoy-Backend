@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RankingPeriod {
 
-	WEEK("week", 7),
-	MONTH("month", 31),
-	YEAR("year", 365);
+	WEEK("week", 1.0 / 52),
+	MONTH("month", 1.0 / 12),
+	YEAR("year", 1.0);
 
 	private final String value;
-	private final long weight;
+	private final double weight;
 }
