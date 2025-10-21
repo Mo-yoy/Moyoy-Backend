@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GithubFollowCacheStore {
@@ -62,11 +64,12 @@ public class GithubFollowCacheStore {
 
 			Long result = stringRedisTemplate.execute(
 					RedisScript.of(script, Long.class),
-					Collections.singletonList("github:follow:" + userId),
+					Collections.singletonList(FOLLOW_CACHE_NAME + "::" + userId),
 					jsonString,
 					expectedVersion.toString()
 			);
 
+			log.info("{} 낙관락 결과", result);
 			return result == 1;
 
 		} catch (JsonProcessingException e) {
