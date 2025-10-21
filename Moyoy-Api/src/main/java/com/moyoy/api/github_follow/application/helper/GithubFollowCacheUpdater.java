@@ -1,5 +1,7 @@
 package com.moyoy.api.github_follow.application.helper;
 
+import com.moyoy.infra.redis.cache.github_follow.GithubFollowSnapshot;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
@@ -11,20 +13,45 @@ import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
 @Component
 @RequiredArgsConstructor
-public class GithubFollowCacheUpdaterL {
+public class GithubFollowCacheUpdater {
 
 	private final GithubFollowCacheStore followCacheStore;
 
 	public void addFollowingToCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
+		int maxRetries = 3;
 
-		followCacheStore.findFollowSnapshot(currentUserId)
-			.ifPresent(snapshot -> {
+		for (int attempt = 0; attempt < maxRetries; attempt++) {
+			Optional<GithubFollowSnapshot> optionalSnapshot = followCacheStore.findFollowSnapshot(currentUserId);
+			if (optionalSnapshot.isEmpty()) {
+				return;
+			}
 
-				GithubUserProfile targetGithubProfile = targetSupplier.get();
-				snapshot.addFollowing(targetGithubProfile);
-				followCacheStore.save(currentUserId, snapshot);
-			}); 
+			GithubFollowSnapshot snapshot = optionalSnapshot.get();
+			Long currentVersion = snapshot.getVersion();
+
+			GithubUserProfile targetGithubProfile = targetSupplier.get();
+			snapshot.addFollowing(targetGithubProfile);
+			snapshot.versionUp();
+
+			if (followCacheStore.saveWithVersionCheck(currentUserId, snapshot, currentVersion)) {
+				return;
+			}
+		}
+
+		followCacheStore.delete(currentUserId);
 	}
+
+
+//	public void addFollowingToCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
+//
+//		followCacheStore.findFollowSnapshot(currentUserId)
+//			.ifPresent(snapshot -> {
+//
+//				GithubUserProfile targetGithubProfile = targetSupplier.get();
+//				snapshot.addFollowing(targetGithubProfile);
+//				followCacheStore.save(currentUserId, snapshot);
+//			});
+//	}
 
 	public void addFollowerToCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {
 

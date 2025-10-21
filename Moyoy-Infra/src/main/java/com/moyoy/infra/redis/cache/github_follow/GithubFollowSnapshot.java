@@ -20,13 +20,16 @@ public class GithubFollowSnapshot {
 	private Set<GithubUserProfile> githubFollowers;
 	private Set<GithubUserProfile> githubFollowings;
 	private LocalDateTime snapshotTime;
+	private Long version;
 
 	public static GithubFollowSnapshot of(List<GithubUserProfile> githubFollowers, List<GithubUserProfile> githubFollowings, LocalDateTime snapshotTime) {
 
 		return new GithubFollowSnapshot(
 			new TreeSet<>(githubFollowers),
 			new TreeSet<>(githubFollowings),
-			snapshotTime);
+			snapshotTime,
+			1L
+			);
 	}
 
 	public List<GithubUserProfile> filterByDetectType(DetectType detectType) {
@@ -74,5 +77,9 @@ public class GithubFollowSnapshot {
 	public boolean canRefresh() {
 
 		return snapshotTime.plusMinutes(5).isBefore(LocalDateTime.now());
+	}
+
+	public void versionUp() {
+		version++;
 	}
 }
