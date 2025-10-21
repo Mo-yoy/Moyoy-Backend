@@ -11,7 +11,7 @@ import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
 @Component
 @RequiredArgsConstructor
-public class GithubFollowCacheUpdater {
+public class GithubFollowCacheUpdaterL {
 
 	private final GithubFollowCacheStore followCacheStore;
 
@@ -23,7 +23,7 @@ public class GithubFollowCacheUpdater {
 				GithubUserProfile targetGithubProfile = targetSupplier.get();
 				snapshot.addFollowing(targetGithubProfile);
 				followCacheStore.save(currentUserId, snapshot);
-			});
+			}); 
 	}
 
 	public void addFollowerToCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {

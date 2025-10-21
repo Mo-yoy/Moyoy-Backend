@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
+import org.redisson.api.RedissonClient;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;

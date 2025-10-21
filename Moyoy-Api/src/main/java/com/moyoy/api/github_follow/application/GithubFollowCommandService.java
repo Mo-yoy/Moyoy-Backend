@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import com.moyoy.api.github_follow.application.helper.GithubFollowCacheUpdater;
+import com.moyoy.api.github_follow.application.helper.GithubFollowCacheUpdaterL;
 
 import com.moyoy.domain.user.User;
 import com.moyoy.domain.user.UserRepository;
@@ -25,11 +25,12 @@ import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 @RequiredArgsConstructor
 public class GithubFollowCommandService {
 
-	private final GithubFollowCacheUpdater followCacheUpdater;
+	private final GithubFollowCacheUpdaterL followCacheUpdater;
 	private final GithubTokenReader githubTokenReader;
 	private final GithubFollowClient githubFollowClient;
 	private final UserRepository userRepository;
 	private final GithubUserClient githubUserClient;
+
 
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
@@ -46,8 +47,7 @@ public class GithubFollowCommandService {
 			});
 
 		Optional<User> targetUserOpt = userRepository.findByGithubUserId(targetUserGithubId);
-		if (targetUserOpt.isEmpty())
-			return;
+		if (targetUserOpt.isEmpty()) return;
 
 		followCacheUpdater.addFollowerToCache(
 			targetUserOpt.get().getId(),
