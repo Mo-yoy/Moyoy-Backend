@@ -6,83 +6,67 @@ import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.moyoy.infra.redis.cache.github_follow.GithubFollowCacheStore;
 import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GithubFollowCacheUpdater {
 
+	private static final int MAX_RETRIES = 3;
 	private final GithubFollowCacheStore followCacheStore;
 
 	public void addFollowingToCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
-		int maxRetries = 3;
+		updateCacheWithRetry(currentUserId, targetSupplier, GithubFollowSnapshot::addFollowing);
+	}
 
-		for (int attempt = 0; attempt < maxRetries; attempt++) {
-			Optional<GithubFollowSnapshot> optionalSnapshot = followCacheStore.findFollowSnapshot(currentUserId);
-			if (optionalSnapshot.isEmpty()) {
+	public void addFollowerToCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {
+		updateCacheWithRetry(targetUserId, currentSupplier, GithubFollowSnapshot::addFollower);
+	}
+
+	public void removeFollowingFromCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
+		updateCacheWithRetry(currentUserId, targetSupplier, GithubFollowSnapshot::removeFollowing);
+	}
+
+	public void removeFollowerFromCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {
+		updateCacheWithRetry(targetUserId, currentSupplier, GithubFollowSnapshot::removeFollower);
+	}
+
+	private void updateCacheWithRetry(
+			Long userId,
+			Supplier<GithubUserProfile> profileSupplier,
+			CacheUpdateOperation operation) {
+
+		for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+			Optional<GithubFollowSnapshot> snapshotOpt = followCacheStore.findFollowSnapshot(userId);
+
+			if (snapshotOpt.isEmpty()) {
 				return;
 			}
 
-			GithubFollowSnapshot snapshot = optionalSnapshot.get();
+			GithubFollowSnapshot snapshot = snapshotOpt.get();
 			Long currentVersion = snapshot.getVersion();
 
-			GithubUserProfile targetGithubProfile = targetSupplier.get();
-			snapshot.addFollowing(targetGithubProfile);
+			GithubUserProfile profile = profileSupplier.get();
+			operation.update(snapshot, profile);
 			snapshot.versionUp();
 
-			if (followCacheStore.saveWithVersionCheck(currentUserId, snapshot, currentVersion)) {
+			if (followCacheStore.saveWithVersionCheck(userId, snapshot, currentVersion)) {
 				return;
 			}
 		}
 
-		followCacheStore.delete(currentUserId);
+		log.warn("캐시 업데이트 최대 재시도 초과 - 캐시 삭제: userId: {}", userId);
+		followCacheStore.delete(userId);
 	}
 
-
-//	public void addFollowingToCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
-//
-//		followCacheStore.findFollowSnapshot(currentUserId)
-//			.ifPresent(snapshot -> {
-//
-//				GithubUserProfile targetGithubProfile = targetSupplier.get();
-//				snapshot.addFollowing(targetGithubProfile);
-//				followCacheStore.save(currentUserId, snapshot);
-//			});
-//	}
-
-	public void addFollowerToCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {
-
-		followCacheStore.findFollowSnapshot(targetUserId)
-			.ifPresent(snapshot -> {
-
-				GithubUserProfile currentGithubProfile = currentSupplier.get();
-				snapshot.addFollower(currentGithubProfile);
-				followCacheStore.save(targetUserId, snapshot);
-			});
+	@FunctionalInterface
+	private interface CacheUpdateOperation {
+		void update(GithubFollowSnapshot snapshot, GithubUserProfile profile);
 	}
 
-	public void removeFollowingFromCache(Long currentUserId, Supplier<GithubUserProfile> targetSupplier) {
-
-		followCacheStore.findFollowSnapshot(currentUserId)
-			.ifPresent(snapshot -> {
-
-				GithubUserProfile targetGithubUserProfile = targetSupplier.get();
-				snapshot.removeFollowing(targetGithubUserProfile);
-				followCacheStore.save(currentUserId, snapshot);
-			});
-	}
-
-	public void removeFollowerFromCache(Long targetUserId, Supplier<GithubUserProfile> currentSupplier) {
-
-		followCacheStore.findFollowSnapshot(targetUserId)
-			.ifPresent(snapshot -> {
-
-				GithubUserProfile currentGithubProfile = currentSupplier.get();
-				snapshot.removeFollower(currentGithubProfile);
-				followCacheStore.save(targetUserId, snapshot);
-			});
-	}
 }
