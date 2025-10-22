@@ -31,6 +31,7 @@ public class GithubFollowCommandService {
 	private final UserRepository userRepository;
 	private final GithubUserClient githubUserClient;
 
+
 	public void follow(Long currentUserId, Integer targetUserGithubId) {
 
 		String bearerToken = githubTokenReader.findAccessBearerToken(currentUserId)
@@ -46,8 +47,7 @@ public class GithubFollowCommandService {
 			});
 
 		Optional<User> targetUserOpt = userRepository.findByGithubUserId(targetUserGithubId);
-		if (targetUserOpt.isEmpty())
-			return;
+		if (targetUserOpt.isEmpty()) return;
 
 		followCacheUpdater.addFollowerToCache(
 			targetUserOpt.get().getId(),
