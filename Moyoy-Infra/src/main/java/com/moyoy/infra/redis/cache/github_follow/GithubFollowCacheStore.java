@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 public class GithubFollowCacheStore {
 
 	private static final String FOLLOW_CACHE_NAME = "followSnapshot";
+	private static final String FOLLOW_CACHE_TTL = "900";
 
 	private final CacheManager cacheManager;
 	private final StringRedisTemplate stringRedisTemplate;
@@ -51,12 +52,11 @@ public class GithubFollowCacheStore {
 			String script =
 					"local current = redis.call('GET', KEYS[1]) " +
 							"if current == false then " +
-							"  redis.call('SET', KEYS[1], ARGV[1]) " +
 							"  return 1 " +
 							"end " +
 							"local currentVersion = cjson.decode(current).version " +
 							"if currentVersion == tonumber(ARGV[2]) then " +
-							"  redis.call('SET', KEYS[1], ARGV[1]) " +
+							"  redis.call('SET', KEYS[1], ARGV[1], 'EX', ARGV[3]) " +
 							"  return 1 " +
 							"else " +
 							"  return 0 " +
@@ -66,10 +66,11 @@ public class GithubFollowCacheStore {
 					RedisScript.of(script, Long.class),
 					Collections.singletonList(FOLLOW_CACHE_NAME + "::" + userId),
 					jsonString,
-					expectedVersion.toString()
+					expectedVersion.toString(),
+					FOLLOW_CACHE_TTL
 			);
 
-			log.info("{} 낙관락 결과", result);
+			log.info("{}의 캐시 보정 | 낙관락 결과 = {}", userId, result);
 			return result == 1;
 
 		} catch (JsonProcessingException e) {
