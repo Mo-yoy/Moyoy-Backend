@@ -1,9 +1,8 @@
 package com.moyoy.api.pr_review.presentation.response;
 
+import java.time.LocalDateTime;
 
 import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
-
-import java.time.LocalDateTime;
 
 public record PrReviewDetailResponse(
 	String status,

@@ -1,12 +1,12 @@
-package com.moyoy.domain.support.error.pr_review;
+package com.moyoy.domain.pr_review.error;
+
+import static com.moyoy.common.constant.MoyoConstants.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import com.moyoy.domain.support.error.BaseErrorCode;
-import com.moyoy.domain.support.error.ErrorReason;
-
-import static com.moyoy.common.constant.MoyoConstants.*;
+import com.moyoy.common.error.BaseErrorCode;
+import com.moyoy.common.error.ErrorReason;
 
 @Getter
 @AllArgsConstructor

@@ -1,8 +1,8 @@
 package com.moyoy.api.pr_review.application.response;
 
-import com.moyoy.domain.pr_review.PrReview;
-
 import java.time.LocalDateTime;
+
+import com.moyoy.infra.database.mysql.pr_review.response.PrReviewDetailData;
 
 public record PrReviewDetailResult(
 	String status,
@@ -17,19 +17,20 @@ public record PrReviewDetailResult(
 	LocalDateTime closedAt,
 	String content,
 	String prUrl) {
-	public static PrReviewDetailResult from(PrReview prReview, boolean isWriter) {
+
+	public static PrReviewDetailResult from(PrReviewDetailData data, boolean isWriter) {
 		return new PrReviewDetailResult(
-			prReview.getStatus().getValue(),
+			data.status().getValue(),
 			isWriter,
-			prReview.isAdopted(),
-			prReview.getAuthor().profileImgUrl(),
-			prReview.getAuthor().username(),
-			prReview.getPosition().getValue(),
-			prReview.getTitle(),
-			prReview.getHitCount(),
-			prReview.getCreatedAt(),
-			prReview.getClosedAt(),
-			prReview.getContent(),
-			prReview.getPrUrl());
+			data.adopted(),
+			data.profileImageUrl(),
+			data.username(),
+			data.position().name(),
+			data.title(),
+			data.hitCount(),
+			data.createdAt(),
+			data.closedAt(),
+			data.content(),
+			data.prUrl());
 	}
 }

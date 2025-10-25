@@ -1,9 +1,9 @@
 package com.moyoy.api.pr_review.presentation.response;
 
-import com.moyoy.api.pr_review.application.response.PrReviewListResult;
-import com.moyoy.api.pr_review.application.PrReviewSummary;
-
 import java.util.List;
+
+import com.moyoy.api.pr_review.application.PrReviewSummary;
+import com.moyoy.api.pr_review.application.response.PrReviewListResult;
 
 public record PrReviewListResponse(
 	List<PrReviewSummary> prReviews,

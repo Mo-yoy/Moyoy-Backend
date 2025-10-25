@@ -1,6 +1,5 @@
 package com.moyoy.api.pr_review.presentation.response;
 
-
 import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
 import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
 

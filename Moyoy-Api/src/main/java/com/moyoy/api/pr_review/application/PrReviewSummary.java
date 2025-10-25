@@ -1,23 +1,23 @@
 package com.moyoy.api.pr_review.application;
 
-import com.moyoy.domain.pr_review.PrReview;
-
 import java.time.LocalDateTime;
 
+import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
+
 public record PrReviewSummary(
-		String profileImageUrl,
-		String username,
-		String position,
-		String title,
-		LocalDateTime createdAt,
-		int hitCount) {
-	public static PrReviewSummary from(PrReview pr) {
+	String profileImageUrl,
+	String username,
+	String position,
+	String title,
+	int hitCount,
+	LocalDateTime createdAt) {
+	public static PrReviewSummary from(PrReviewSummaryData data) {
 		return new PrReviewSummary(
-			pr.getAuthor().profileImgUrl(),
-			pr.getAuthor().username(),
-			pr.getPosition().toString(),
-			pr.getTitle(),
-			pr.getCreatedAt(),
-			pr.getHitCount());
+			data.profileImageUrl(),
+			data.username(),
+			data.position().toString(),
+			data.title(),
+			data.hitCount(),
+			data.createdAt());
 	}
 }

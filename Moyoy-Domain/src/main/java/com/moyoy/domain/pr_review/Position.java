@@ -1,10 +1,11 @@
 package com.moyoy.domain.pr_review;
 
-import com.moyoy.domain.support.error.pr_review.PositionNotFoundException;
+import java.util.Arrays;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
+import com.moyoy.domain.pr_review.error.PositionNotFoundException;
 
 @Getter
 @RequiredArgsConstructor

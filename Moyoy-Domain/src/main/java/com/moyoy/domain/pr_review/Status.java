@@ -1,27 +1,28 @@
 package com.moyoy.domain.pr_review;
 
-import com.moyoy.domain.support.error.pr_review.StatusNotFoundException;
+import java.util.Arrays;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
+import com.moyoy.domain.pr_review.error.StatusNotFoundException;
 
 @Getter
 @RequiredArgsConstructor
 public enum Status {
-    OPEN("open"),
-    CLOSED("closed");
+	OPEN("OPEN"),
+	CLOSED("CLOSED");
 
-    private final String value;
+	private final String value;
 
-    public static Status from(String value) {
-        return Arrays.stream(Status.values())
-                .filter(status -> status.name().equalsIgnoreCase(value) || status.value.equals(value))
-                .findFirst()
-                .orElseThrow(StatusNotFoundException::new);
-    }
+	public static Status from(String value) {
+		return Arrays.stream(Status.values())
+			.filter(status -> status.name().equalsIgnoreCase(value) || status.value.equals(value))
+			.findFirst()
+			.orElseThrow(StatusNotFoundException::new);
+	}
 
-    public boolean isclosed() {
-        return this == CLOSED;
-    }
+	public boolean isClosed() {
+		return this == CLOSED;
+	}
 }
