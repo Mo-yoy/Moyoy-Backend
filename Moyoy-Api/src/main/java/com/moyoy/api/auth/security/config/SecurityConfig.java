@@ -71,8 +71,8 @@ public class SecurityConfig {
 				.requestMatchers("/api/v1/auth/reissue/token").permitAll() // Token Reissue
 				.requestMatchers("/swagger-ui.html", "/static/swagger-ui/**").permitAll() // Swagger UI
 				.requestMatchers("/api/v1/rankings").permitAll() // [Domain] Ranking
-				.requestMatchers(GET, "/api/v1/pr-review").permitAll()
-				.requestMatchers("/api/v1/pr-review/{pr-reviewId}").permitAll()
+				.requestMatchers(GET, "/api/v1/pr-reviews").permitAll()
+				.requestMatchers("/api/v1/pr-reviews/{pr-reviewId}").permitAll()
 				.requestMatchers("/actuator/**").permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth2 -> oauth2
