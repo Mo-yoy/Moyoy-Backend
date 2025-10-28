@@ -15,7 +15,7 @@ import com.moyoy.infra.database.mysql.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "pr_review")
+@Table(name = "pr_reviews")
 @Getter
 @Builder
 @AllArgsConstructor
