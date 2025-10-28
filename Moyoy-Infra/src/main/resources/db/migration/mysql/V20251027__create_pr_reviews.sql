@@ -1,4 +1,4 @@
-CREATE TABLE pr_review (
+CREATE TABLE pr_reviews (
     pr_review_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
