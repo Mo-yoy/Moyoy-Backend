@@ -3,6 +3,7 @@ package com.moyoy.api.pr_review.presentation;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.moyoy.common.constant.TestConstant.*;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -33,6 +34,7 @@ import com.moyoy.domain.pr_review.Status;
 import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
 
 import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.annotation.WithMockMoyoyUser;
 import com.moyoy.common.error.CommonErrorCode;
 
 @ControllerTest(controllers = PrReviewController.class)
@@ -210,5 +212,74 @@ class PrReviewControllerTest {
 				.param("size", "10000000000001"))
 				.andExpect(status().isBadRequest());
 		}
+	}
+
+	@Test
+	@WithMockMoyoyUser(id = 93702146L)
+	@DisplayName("내 PR 리뷰 요청글 전체 조회 성공 - 200 OK")
+	void getMyPrReviewList_success() throws Exception {
+		// given
+		PrReviewSummary summary1 = new PrReviewSummary(
+			"https://avatars.githubusercontent.com/u/93702146?v=4",
+			"zzaekkii",
+			"BACKEND",
+			"Refactor: 서비스 레이어 리팩터링 및 예외 처리 개선",
+			52,
+			LocalDateTime.of(2025, 11, 7, 17, 30, 0));
+
+		PrReviewSummary summary2 = new PrReviewSummary(
+			"https://avatars.githubusercontent.com/u/93702146?v=4",
+			"zzaekkii",
+			"FRONTEND",
+			"feat: 문서화 테스트 추가",
+			38,
+			LocalDateTime.of(2025, 11, 2, 22, 10, 0));
+
+		PrReviewListResult result = new PrReviewListResult(List.of(summary1, summary2), true);
+
+		given(prReviewService.getPrReviewList(any()))
+			.willReturn(result);
+
+		// when
+		mockMvc.perform(get("/api/v1/pr-reviews/me")
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+			.param("status", "open")
+			.param("order", "createdAt-desc")
+			.param("position", "")
+			.param("lastReviewId", "0")
+			.param("size", "20"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.prReviews").isArray())
+			.andExpect(jsonPath("$.data.isLast").value(true))
+			.andDo(document("내-PR-리뷰-요청글-전체-조회",
+				resource(ResourceSnippetParameters.builder()
+					.tag("💬 PR 리뷰 요청")
+					.summary("내 PR 리뷰 요청글 전체 조회 API")
+					.description("""
+						로그인된 사용자의 PR 리뷰 요청글을 조회합니다.<br/>
+						게시글 상태(open/closed), 정렬 기준(createdAt-desc, hitCount-desc), 직무 태그 필터링이 가능합니다.
+						""")
+					.queryParameters(
+						parameterWithName("status").description("PR 상태 (open 또는 closed)").type(SimpleType.STRING).optional(),
+						parameterWithName("order").description("정렬 기준 (예: createdAt-desc, hitCount-desc)").type(SimpleType.STRING).optional(),
+						parameterWithName("position").description("직군 필터 (예: BACKEND, FRONTEND)").type(SimpleType.STRING).optional(),
+						parameterWithName("lastReviewId").description("이전 페이지의 마지막 요청글 ID (기본값: 0)").type(SimpleType.INTEGER).optional(),
+						parameterWithName("size").description("페이지 크기 (1~100, 기본값: 20)").type(SimpleType.INTEGER).optional())
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						subsectionWithPath("data.prReviews").description("PR 리뷰 요청글 전체 목록"),
+						fieldWithPath("data.prReviews[].profileImageUrl").description("작성자 프로필 이미지 URL"),
+						fieldWithPath("data.prReviews[].username").description("작성자 이름"),
+						fieldWithPath("data.prReviews[].position").description("요청글 직무 태그"),
+						fieldWithPath("data.prReviews[].title").description("요청글 제목"),
+						fieldWithPath("data.prReviews[].hitCount").description("조회수"),
+						fieldWithPath("data.prReviews[].createdAt").description("작성일자"),
+						fieldWithPath("data.isLast").description("마지막 페이지 여부"))
+					.build())));
+
+		verify(prReviewService).getPrReviewList(
+			argThat(condition -> condition.userId().equals(93702146L)));
 	}
 }
