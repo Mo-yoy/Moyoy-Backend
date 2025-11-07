@@ -1,12 +1,12 @@
 package com.moyoy.api.pr_review.application.request;
 
+import java.util.List;
+
 import com.moyoy.domain.pr_review.Position;
 import com.moyoy.domain.pr_review.Status;
-
 import com.moyoy.domain.pr_review.error.InvalidOrderException;
-import com.moyoy.infra.database.mysql.pr_review.request.PrReviewQueryConditionData;
 
-import java.util.List;
+import com.moyoy.infra.database.mysql.pr_review.request.PrReviewQueryConditionData;
 
 public record SearchConditionData(
 	Long userId,
@@ -30,7 +30,8 @@ public record SearchConditionData(
 	}
 
 	private static void validateOrder(String order) {
-		if (order == null || order.isBlank()) return;
+		if (order == null || order.isBlank())
+			return;
 
 		List<String> validFields = List.of("createdAt", "hitCount");
 		List<String> validDirections = List.of("asc", "desc");

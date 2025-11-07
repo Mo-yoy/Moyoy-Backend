@@ -22,7 +22,7 @@ public enum Position {
 	public static Position from(String value) {
 
 		if (value == null)
-			return null; // 직군 태그 null 허용할 건지, 다음 회의 안건 등록. FIXME
+			return null;
 
 		return Arrays.stream(Position.values())
 			.filter(position -> position.name().equalsIgnoreCase(value) || position.value.equals(value))

@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -27,7 +29,11 @@ import com.moyoy.api.pr_review.application.PrReviewService;
 import com.moyoy.api.pr_review.application.PrReviewSummary;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
 
+import com.moyoy.domain.pr_review.Status;
+import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
+
 import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.error.CommonErrorCode;
 
 @ControllerTest(controllers = PrReviewController.class)
 class PrReviewControllerTest {
@@ -107,5 +113,102 @@ class PrReviewControllerTest {
 						fieldWithPath("data.prReviews[].createdAt").description("작성일자"),
 						fieldWithPath("data.isLast").description("마지막 페이지 여부"))
 					.build())));
+	}
+
+	@Nested
+	@DisplayName("PR 리뷰 요청글 조회")
+	class PrReviewValidationTest {
+
+		@Test
+		@DisplayName("잘못된 요청글 상태(status) - 400 BAD REQUEST")
+		void invalidStatus_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("status", "invalid")
+				.param("order", "")
+				.param("position", "")
+				.param("lastReviewId", "0")
+				.param("size", "20"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_STATUS.getCode()));
+		}
+
+		@Test
+		@DisplayName("파라미터 입력 값이 null - 각각 기본값 적용")
+		void nullParams_defaultsApplied() throws Exception {
+			// given
+			given(prReviewService.getPrReviewList(any()))
+				.willReturn(new PrReviewListResult(List.of(), true));
+
+			// when & then
+			mockMvc.perform(get("/api/v1/pr-reviews"))
+				.andExpect(status().isOk());
+
+			verify(prReviewService).getPrReviewList(
+				argThat(req -> req.status().equals(Status.OPEN) &&
+					req.order().equals("createdAt-desc") &&
+					req.position() == null &&
+					req.lastReviewId() == 0 &&
+					req.size() == 20));
+		}
+
+		@Test
+		@DisplayName("잘못된 정렬 기준 - 400 BAD REQUEST")
+		void invalidOrder_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("order", "invalid-order"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_ORDER.getCode()));
+		}
+
+		@Test
+		@DisplayName("잘못된 직무 태그(position) - 400 BAD REQUEST")
+		void invalidPosition_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("position", "프론트엔도"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_POSITION.getCode()));
+		}
+
+		@Test
+		@DisplayName("한글 직무 태그(position) - 영어로 자동 변환")
+		void koreanPosition_englishTranslated() throws Exception {
+			// given
+			given(prReviewService.getPrReviewList(any()))
+				.willReturn(new PrReviewListResult(List.of(), true));
+
+			// when & then
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("position", "프론트엔드"))
+				.andExpect(status().isOk());
+		}
+
+		@Test
+		@DisplayName("lastReviewId가 음수 - 400 BAD REQUEST")
+		void lastReviewIdNegative_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("lastReviewId", "-1"))
+				.andExpect(status().isBadRequest());
+		}
+
+		@Test
+		@DisplayName("size가 0 이하 - 400 BAD REQUEST")
+		void sizeTooSmall_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("size", "0"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value(CommonErrorCode.INVALID_PARAM.getCode()));
+		}
+
+		@Test
+		@DisplayName("size가 100 초과 - 400 BAD REQUEST")
+		void sizeTooLarge_returnsBadRequest() throws Exception {
+			mockMvc.perform(get("/api/v1/pr-reviews")
+				.param("status", "open")
+				.param("order", "createdAt-desc")
+				.param("position", "BACKEND")
+				.param("lastReviewId", "0")
+				.param("size", "10000000000001"))
+				.andExpect(status().isBadRequest());
+		}
 	}
 }
