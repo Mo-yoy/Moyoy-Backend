@@ -1,29 +1,5 @@
 package com.moyoy.api.pr_review.presentation;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.epages.restdocs.apispec.SimpleType;
-import com.moyoy.api.pr_review.application.PrReviewService;
-import com.moyoy.api.pr_review.application.PrReviewSummary;
-import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
-import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
-import com.moyoy.api.pr_review.application.response.PrReviewListResult;
-import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
-import com.moyoy.common.annotation.ControllerTest;
-import com.moyoy.common.annotation.WithMockMoyoyUser;
-import com.moyoy.common.error.CommonErrorCode;
-import com.moyoy.domain.pr_review.Status;
-import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
-import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -34,6 +10,35 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.SimpleType;
+
+import com.moyoy.api.pr_review.application.PrReviewService;
+import com.moyoy.api.pr_review.application.PrReviewSummary;
+import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
+import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
+import com.moyoy.api.pr_review.application.response.PrReviewListResult;
+import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
+
+import com.moyoy.domain.pr_review.Status;
+import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
+import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
+
+import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.annotation.WithMockMoyoyUser;
+import com.moyoy.common.constant.MoyoConstants;
+import com.moyoy.common.error.CommonErrorCode;
 
 @ControllerTest(controllers = PrReviewController.class)
 class PrReviewControllerTest {
@@ -249,7 +254,7 @@ class PrReviewControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.prReviews").isArray())
 			.andExpect(jsonPath("$.data.isLast").value(true))
-			.andDo(document("내 PR 리뷰 요청글 전체 조회",
+			.andDo(document("내 PR 리뷰 요청글 전체 조회 성공",
 				resource(ResourceSnippetParameters.builder()
 					.tag("💬 PR 리뷰 요청")
 					.summary("내 PR 리뷰 요청글 전체 조회 API")
@@ -313,7 +318,7 @@ class PrReviewControllerTest {
 			.andExpect(jsonPath("$.data.title").value("Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리"))
 			.andExpect(jsonPath("$.data.username").value("zzaekkii"))
 			.andExpect(jsonPath("$.data.isWriter").value(true))
-			.andDo(document("PR 리뷰 요청글 상세 조회",
+			.andDo(document("PR 리뷰 요청글 상세 조회 성공",
 				resource(ResourceSnippetParameters.builder()
 					.tag("💬 PR 리뷰 요청")
 					.summary("PR 리뷰 요청글 상세 조회 API")
@@ -370,7 +375,7 @@ class PrReviewControllerTest {
 				"""))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.prReviewId").value("200"))
-			.andDo(document("PR 리뷰 요청글 생성",
+			.andDo(document("PR 리뷰 요청글 생성 성공",
 				resource(ResourceSnippetParameters.builder()
 					.tag("💬 PR 리뷰 요청")
 					.summary("PR 리뷰 요청글 생성 API")
@@ -466,7 +471,7 @@ class PrReviewControllerTest {
 					"""))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.prReviewId").value(reviewId))
-				.andDo(document("PR 리뷰 요청글 수정",
+				.andDo(document("PR 리뷰 요청글 수정 성공",
 					resource(ResourceSnippetParameters.builder()
 						.tag("💬 PR 리뷰 요청")
 						.summary("PR 리뷰 요청글 수정 API")
@@ -518,7 +523,7 @@ class PrReviewControllerTest {
 				.andDo(document("PR 리뷰 요청글 수정 권한 없음",
 					resource(ResourceSnippetParameters.builder()
 						.tag("💬 PR 리뷰 요청")
-						.summary("PR 리뷰 요청글 수정 실패 - 작성자가 아님")
+						.summary("PR 리뷰 요청글 수정 API")
 						.description("""
 							요청글의 작성자가 아닌 유저가 PR 리뷰 요청글을 수정하려 하면,<br/>
 							403 FORBIDDEN과 함께 `PR_REVIEW_403_1` 코드가 반환됩니다.
@@ -532,5 +537,35 @@ class PrReviewControllerTest {
 							fieldWithPath("data").description("null").optional())
 						.build())));
 		}
+	}
+
+	@Test
+	@WithMockMoyoyUser(id = 93702146L)
+	@DisplayName("PR 리뷰 요청글 삭제 성공 - 204 NO CONTENT")
+	void deletePrReview_success() throws Exception {
+		// given
+		long reviewId = 200L;
+
+		willDoNothing()
+			.given(prReviewService).deletePrReview(eq(reviewId), eq(93702146L));
+
+		// when
+		mockMvc.perform(delete("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.status").value(MoyoConstants.NO_CONTENT))
+			.andDo(document("pr 리뷰 요청글 삭제 성공",
+				resource(ResourceSnippetParameters.builder()
+					.tag("💬 PR 리뷰 요청")
+					.summary("PR 리뷰 요청글 삭제 API")
+					.description("작성자가 본인의 PR 리뷰 요청글을 삭제합니다.")
+					.pathParameters(
+						parameterWithName("pr-reviewId").description("삭제할 PR 리뷰 요청글 ID"))
+					.responseFields(
+						fieldWithPath("status").description("HTTP 상태 코드"),
+						fieldWithPath("code").description("응답 코드"),
+						fieldWithPath("message").description("응답 메시지"),
+						fieldWithPath("data").description("").optional())
+					.build())));
 	}
 }

@@ -77,23 +77,14 @@ paths:
       description: |
         새 PR 리뷰 요청글을 등록합니다.<br/>
         PR URL은 유효한 GitHub PR 링크 형식이어야 하고, 제목/내용에 최소 길이 제약이 있습니다.
-      operationId: PR
+      operationId: PR 리뷰 요청글 생성 성공
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/api-v1-pr-reviews67169538"
+              $ref: "#/components/schemas/api-v1-pr-reviews-569288172"
             examples:
-              PR 리뷰 요청글 생성:
-                value: |2
-                      {
-                        "title": "Feat: 조회수 중복 증가 방지 적용",
-                        "position": "BACKEND",
-                        "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/200",
-                        "content": "Redis 기반 조회수 중복 증가 방지 로직을 추가했습니다. 코드 리뷰 부탁드립니다!",
-                        "closedAt": "2025-11-15T18:00:00"
-                      }
-              PR-리뷰-요청글-생성:
+              PR 리뷰 요청글 생성 성공:
                 value: |2
                       {
                         "title": "Feat: 조회수 중복 증가 방지 적용",
@@ -110,10 +101,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/api-v1-pr-reviews1369275401"
               examples:
-                PR 리뷰 요청글 생성:
-                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"prReviewId\":200}}"
-                PR-리뷰-요청글-생성:
+                PR 리뷰 요청글 생성 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"prReviewId\":200}}"
       security:
@@ -179,7 +167,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-unfollow-targetUserId-767089392"
+                $ref: "#/components/schemas/api-v1-follow-targetUserId-767089392"
               examples:
                 팔로우 성공:
                   value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
@@ -194,7 +182,7 @@ paths:
       description: |
         로그인된 사용자의 PR 리뷰 요청글을 조회합니다.<br/>
         게시글 상태(open/closed), 정렬 기준(createdAt-desc, hitCount-desc), 직무 태그 필터링이 가능합니다.
-      operationId: 내
+      operationId: 내 PR 리뷰 요청글 전체 조회 성공
       parameters:
       - name: status
         in: query
@@ -236,16 +224,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/api-v1-pr-reviews-1115411379"
               examples:
-                내 PR 리뷰 요청글 전체 조회:
-                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"prReviews\":[{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
-                    ,\"username\":\"zzaekkii\",\"position\":\"BACKEND\",\"title\"\
-                    :\"Refactor: 서비스 레이어 리팩터링 및 예외 처리 개선\",\"hitCount\":52,\"createdAt\"\
-                    :\"2025-11-07T17:30:00\"},{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
-                    ,\"username\":\"zzaekkii\",\"position\":\"FRONTEND\",\"title\"\
-                    :\"feat: 문서화 테스트 추가\",\"hitCount\":38,\"createdAt\":\"2025-11-02T22:10:00\"\
-                    }],\"isLast\":true}}"
-                내-PR-리뷰-요청글-전체-조회:
+                내 PR 리뷰 요청글 전체 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"prReviews\":[{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
                     ,\"username\":\"zzaekkii\",\"position\":\"BACKEND\",\"title\"\
@@ -265,7 +244,7 @@ paths:
         특정 PR 리뷰 요청글의 상세 정보를 조회합니다.<br/>
         로그인한 사용자는 자신의 글인지 여부(`isWriter`)를 함께 확인할 수 있습니다.<br/>
         `isWriter`는 이후 수정, 삭제, 채택을 판단하기 위한 값입니다.
-      operationId: PR 리뷰 요청글 상세 조회
+      operationId: PR 리뷰 요청글 상세 조회 성공
       parameters:
       - name: pr-reviewId
         in: path
@@ -282,7 +261,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/api-v1-pr-reviews-pr-reviewId-421200023"
               examples:
-                PR 리뷰 요청글 상세 조회:
+                PR 리뷰 요청글 상세 조회 성공:
                   value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
                     :{\"status\":\"open\",\"isWriter\":true,\"isAdopted\":false,\"\
                     profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
@@ -294,14 +273,40 @@ paths:
                     }}"
       security:
       - bearerAuthJWT: []
+    delete:
+      tags:
+      - 💬 PR 리뷰 요청
+      summary: PR 리뷰 요청글 삭제 API
+      description: 작성자가 본인의 PR 리뷰 요청글을 삭제합니다.
+      operationId: pr 리뷰 요청글 삭제 성공
+      parameters:
+      - name: pr-reviewId
+        in: path
+        description: 삭제할 PR 리뷰 요청글 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-pr-reviews-pr-reviewId-1789622481"
+              examples:
+                pr 리뷰 요청글 삭제 성공:
+                  value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
+                    data\":null}"
+      security:
+      - bearerAuthJWT: []
     patch:
       tags:
       - 💬 PR 리뷰 요청
       summary: PR 리뷰 요청글 수정 API
       description: |
-        기존에 작성한 PR 리뷰 요청글을 수정합니다.<br/>
-        작성자 본인의 글만 수정할 수 있습니다.
-      operationId: PR 리뷰 요청글 수정
+        요청글의 작성자가 아닌 유저가 PR 리뷰 요청글을 수정하려 하면,<br/>
+        403 FORBIDDEN과 함께 `PR_REVIEW_403_1` 코드가 반환됩니다.
+      operationId: 'PR 리뷰 요청글 수정 '
       parameters:
       - name: pr-reviewId
         in: path
@@ -315,11 +320,6 @@ paths:
             schema:
               $ref: "#/components/schemas/api-v1-pr-reviews-pr-reviewId-619357752"
             examples:
-              PR 리뷰 요청글 수정:
-                value: "\t{\n\t  \"title\": \"Fix: 조회수 중복 증가 방지 버그 수정\",\n\t  \"position\"\
-                  : \"BACKEND\",\n\t  \"prUrl\": \"https://github.com/Mo-yoy/Moyoy-Backend/pull/201\"\
-                  ,\n\t  \"content\": \"조회수 증가 로직에서 race condition을 해결했습니다.\",\n\t\
-                  \  \"closedAt\": \"2025-11-15T18:00:00\"\n\t}\n"
               PR 리뷰 요청글 수정 권한 없음:
                 value: |2
                       {
@@ -329,17 +329,12 @@ paths:
                         "content": "허허, 본인 글은 아닌데 한번 수정해보려 합니다.",
                         "closedAt": "2025-11-15T18:00:00"
                       }
+              PR 리뷰 요청글 수정 성공:
+                value: "\t{\n\t  \"title\": \"Fix: 조회수 중복 증가 방지 버그 수정\",\n\t  \"position\"\
+                  : \"BACKEND\",\n\t  \"prUrl\": \"https://github.com/Mo-yoy/Moyoy-Backend/pull/201\"\
+                  ,\n\t  \"content\": \"조회수 증가 로직에서 race condition을 해결했습니다.\",\n\t\
+                  \  \"closedAt\": \"2025-11-15T18:00:00\"\n\t}\n"
       responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/api-v1-pr-reviews-pr-reviewId1332457813"
-              examples:
-                PR 리뷰 요청글 수정:
-                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
-                    :{\"prReviewId\":200}}"
         "403":
           description: "403"
           content:
@@ -350,6 +345,16 @@ paths:
                 PR 리뷰 요청글 수정 권한 없음:
                   value: "{\"status\":403,\"code\":\"PR_REVIEW_403_1\",\"message\"\
                     :\"PR 리뷰 요청글을 수정할 권한이 없습니다.\",\"data\":null}"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-pr-reviews-pr-reviewId1332457813"
+              examples:
+                PR 리뷰 요청글 수정 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"prReviewId\":200}}"
       security:
       - bearerAuthJWT: []
   /api/v1/unfollow/{targetUserId}:
@@ -372,7 +377,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/api-v1-unfollow-targetUserId-767089392"
+                $ref: "#/components/schemas/api-v1-follow-targetUserId-767089392"
               examples:
                 언팔로우 성공:
                   value: "{\"status\":204,\"code\":\"NO_CONTENT\",\"message\":null,\"\
@@ -553,7 +558,7 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
-    api-v1-pr-reviews67169538:
+    api-v1-pr-reviews-569288172:
       required:
       - content
       - prUrl
@@ -569,14 +574,14 @@ components:
           nullable: true
         closedAt:
           type: string
-          description: 리뷰 마감 일시 (optional)
+          description: 마감일자
           nullable: true
         title:
           type: string
           description: 요청글 제목 (5~50자)
         content:
           type: string
-          description: 요청글 본문 (10자 이상)
+          description: 요청글 내용 (10자 이상)
     api-v1-pr-reviews-1115411379:
       required:
       - code
@@ -793,7 +798,7 @@ components:
         status:
           type: number
           description: ❌ 응답 상태 코드 (HTTP status)
-    api-v1-unfollow-targetUserId-767089392:
+    api-v1-follow-targetUserId-767089392:
       required:
       - code
       - status
@@ -842,6 +847,19 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
+    api-v1-pr-reviews-pr-reviewId-1789622481:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 응답 코드
+        status:
+          type: number
+          description: HTTP 상태 코드
     api-v1-pr-reviews-pr-reviewId-619357752:
       required:
       - content
@@ -903,6 +921,27 @@ components:
         status:
           type: number
           description: ✅ 응답 상태 코드
+    api-v1-auth-reissue-token1995903112:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - accessToken
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: 🔑 새로 발급된 Access Token
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
     api-v1-rankings-897472962:
       required:
       - code
@@ -947,27 +986,6 @@ components:
                     type: string
                     description: 사용자 이름
           description: 응답 데이터
-        status:
-          type: number
-          description: ✅ 응답 상태 코드
-    api-v1-auth-reissue-token1995903112:
-      required:
-      - code
-      - message
-      - status
-      type: object
-      properties:
-        code:
-          type: string
-          description: 🔢 응답 코드
-        data:
-          required:
-          - accessToken
-          type: object
-          properties:
-            accessToken:
-              type: string
-              description: 🔑 새로 발급된 Access Token
         status:
           type: number
           description: ✅ 응답 상태 코드
