@@ -5,7 +5,7 @@ import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.moyoy.domain.pr_review.error.PositionNotFoundException;
+import com.moyoy.domain.pr_review.error.InvalidPositionException;
 
 @Getter
 @RequiredArgsConstructor
@@ -27,6 +27,6 @@ public enum Position {
 		return Arrays.stream(Position.values())
 			.filter(position -> position.name().equalsIgnoreCase(value) || position.value.equals(value))
 			.findFirst()
-			.orElseThrow(PositionNotFoundException::new);
+			.orElseThrow(InvalidPositionException::new);
 	}
 }
