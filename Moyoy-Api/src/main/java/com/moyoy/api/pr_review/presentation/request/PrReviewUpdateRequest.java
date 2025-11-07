@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record PrReviewUpdateRequest(
-	@NotBlank(message = "제목은 필수입니다.") @Size(min = 5, max = 20, message = "제목은 5~20자여야 합니다.") String title,
+	@NotBlank(message = "제목은 필수입니다.") @Size(min = 5, max = 50, message = "제목은 5~50자여야 합니다.") String title,
 
 	String position,
 
