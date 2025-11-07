@@ -28,6 +28,7 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyoy.api.pr_review.application.PrReviewService;
 import com.moyoy.api.pr_review.application.PrReviewSummary;
+import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
 
 import com.moyoy.domain.pr_review.Status;
@@ -281,5 +282,69 @@ class PrReviewControllerTest {
 
 		verify(prReviewService).getPrReviewList(
 			argThat(condition -> condition.userId().equals(93702146L)));
+	}
+
+	@Test
+	@WithMockMoyoyUser(id = 93702146L)
+	@DisplayName("PR 리뷰 요청글 상세 조회 성공 - 200 OK")
+	void getPrReviewDetail_success() throws Exception {
+		// given
+		long reviewId = 101L;
+
+		PrReviewDetailResult result = new PrReviewDetailResult(
+			"open",
+			true,
+			false,
+			"https://avatars.githubusercontent.com/u/93702146?v=4",
+			"zzaekkii",
+			"BACKEND",
+			"Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리",
+			128,
+			LocalDateTime.of(2025, 11, 8, 0, 52, 0),
+			null,
+			"조회수 관리 문제를 어떻게 풀어낼 지 고민 중이라, 이 부분은 아직 구현하지 않았지만 코드 리뷰 부탁드립니다!",
+			"https://github.com/Mo-yoy/Moyoy-Backend/pull/168");
+
+		given(prReviewService.getPrReviewDetail(anyLong(), anyLong()))
+			.willReturn(result);
+
+		// when & then
+		mockMvc.perform(get("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.status").value("open"))
+			.andExpect(jsonPath("$.data.title").value("Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리"))
+			.andExpect(jsonPath("$.data.username").value("zzaekkii"))
+			.andExpect(jsonPath("$.data.isWriter").value(true))
+			.andDo(document("PR 리뷰 요청글 상세 조회",
+				resource(ResourceSnippetParameters.builder()
+					.tag("💬 PR 리뷰 요청")
+					.summary("PR 리뷰 요청글 상세 조회 API")
+					.description("""
+						특정 PR 리뷰 요청글의 상세 정보를 조회합니다.<br/>
+						로그인한 사용자는 자신의 글인지 여부(`isWriter`)를 함께 확인할 수 있습니다.<br/>
+						`isWriter`는 이후 수정, 삭제, 채택을 판단하기 위한 값입니다.
+						""")
+					.pathParameters(
+						parameterWithName("pr-reviewId")
+							.description("조회할 PR 리뷰 요청글의 ID")
+							.type(SimpleType.INTEGER))
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						fieldWithPath("data.status").description("PR 상태 (open/closed)"),
+						fieldWithPath("data.isWriter").description("현재 로그인한 사용자가 작성자인지 여부"),
+						fieldWithPath("data.isAdopted").description("리뷰가 채택되었는지 여부"),
+						fieldWithPath("data.profileImageUrl").description("작성자 프로필 이미지 URL"),
+						fieldWithPath("data.username").description("작성자 이름"),
+						fieldWithPath("data.position").description("작성자 직무 태그"),
+						fieldWithPath("data.title").description("요청글 제목"),
+						fieldWithPath("data.hitCount").description("조회수"),
+						fieldWithPath("data.createdAt").description("작성일시"),
+						fieldWithPath("data.closedAt").description("마감일시 (closed 상태일 때만 존재)").optional(),
+						fieldWithPath("data.content").description("요청글 본문 내용"),
+						fieldWithPath("data.prUrl").description("관련된 Pull Request URL"))
+					.build())));
 	}
 }
