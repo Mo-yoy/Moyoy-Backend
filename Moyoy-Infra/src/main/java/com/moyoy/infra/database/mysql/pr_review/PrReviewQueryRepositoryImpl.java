@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.moyoy.domain.pr_review.error.InvalidOrderException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Repository;
@@ -114,7 +115,7 @@ public class PrReviewQueryRepositoryImpl implements PrReviewQueryRepository {
 				return switch (field) {
 					case "hitCount" -> asc ? prReviewEntity.hitCount.asc() : prReviewEntity.hitCount.desc();
 					case "createdAt" -> asc ? prReviewEntity.createdAt.asc() : prReviewEntity.createdAt.desc();
-					default -> prReviewEntity.createdAt.desc();
+					default -> throw new InvalidOrderException();
 				};
 			})
 			.toArray(OrderSpecifier<?>[]::new);
