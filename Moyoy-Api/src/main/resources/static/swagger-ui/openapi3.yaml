@@ -8,6 +8,72 @@ servers:
 - url: http://localhost:8080
 tags: []
 paths:
+  /api/v1/pr-reviews:
+    get:
+      tags:
+      - 💬 PR 리뷰 요청
+      - 💬 PR 리뷰
+      summary: PR 리뷰 요청글 전체 조회 API
+      description: |
+        게시된 PR 리뷰 요청글 전체를 조회합니다.<br/>
+        게시글 상태(open/closed), 정렬 기준(최신순, 조회수순), 직무태그 필터링이 가능합니다.
+      operationId: PR 리뷰 요청글 전체 조회 성공pr-review-list-success
+      parameters:
+      - name: status
+        in: query
+        description: PR 상태 (open 또는 closed)
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: "정렬 기준 (예: createdAt-desc, hitCount-desc)"
+        required: false
+        schema:
+          type: string
+      - name: position
+        in: query
+        description: "직군 필터 (예: BACKEND, FRONTEND)"
+        required: false
+        schema:
+          type: string
+      - name: lastReviewId
+        in: query
+        description: "이전 페이지의 마지막 요청글 ID (기본값: 0)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: "페이지 크기 (1~100, 기본값: 20)"
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/api-v1-pr-reviews-1115411379"
+              examples:
+                PR 리뷰 요청글 전체 조회 성공:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"prReviews\":[{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
+                    ,\"username\":\"zzaekkii\",\"position\":\"BACKEND\",\"title\"\
+                    :\"Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리\",\"hitCount\":52,\"\
+                    createdAt\":\"2025-11-05T17:30:00\"},{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/100277876?s=80&v=4\"\
+                    ,\"username\":\"seungryul99\",\"position\":\"BACKEND\",\"title\"\
+                    :\"fix: Add missing TTL when updating cache\",\"hitCount\":52,\"\
+                    createdAt\":\"2025-10-22T21:55:00\"}],\"isLast\":true}}"
+                pr-review-list-success:
+                  value: "{\"status\":200,\"code\":\"OK\",\"message\":null,\"data\"\
+                    :{\"prReviews\":[{\"profileImageUrl\":\"https://avatars.githubusercontent.com/u/93702146?v=4\"\
+                    ,\"username\":\"zzaekkii\",\"position\":\"BACKEND\",\"title\"\
+                    :\"Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리\",\"hitCount\":52,\"\
+                    createdAt\":\"2025-11-05T17:30:00\"}],\"isLast\":true}}"
   /api/v1/rankings:
     get:
       tags:
@@ -355,6 +421,59 @@ components:
             username:
               type: string
               description: 🙋 사용자 이름
+        status:
+          type: number
+          description: ✅ 응답 상태 코드
+    api-v1-pr-reviews-1115411379:
+      required:
+      - code
+      - message
+      - status
+      type: object
+      properties:
+        code:
+          type: string
+          description: 🔢 응답 코드
+        data:
+          required:
+          - isLast
+          - prReviews
+          type: object
+          properties:
+            isLast:
+              type: boolean
+              description: 마지막 페이지 여부
+            prReviews:
+              type: array
+              description: PR 리뷰 요청글 전체 목록
+              items:
+                required:
+                - createdAt
+                - hitCount
+                - position
+                - profileImageUrl
+                - title
+                - username
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 작성일자
+                  hitCount:
+                    type: number
+                    description: 조회수
+                  position:
+                    type: string
+                    description: 요청글 직무 태그
+                  title:
+                    type: string
+                    description: 요청글 제목
+                  profileImageUrl:
+                    type: string
+                    description: 작성자 프로필 이미지 URL
+                  username:
+                    type: string
+                    description: 작성자 이름
         status:
           type: number
           description: ✅ 응답 상태 코드
