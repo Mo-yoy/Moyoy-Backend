@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +28,7 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.moyoy.api.pr_review.application.PrReviewService;
 import com.moyoy.api.pr_review.application.PrReviewSummary;
+import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
 import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
 
@@ -345,6 +346,53 @@ class PrReviewControllerTest {
 						fieldWithPath("data.closedAt").description("마감일시 (closed 상태일 때만 존재)").optional(),
 						fieldWithPath("data.content").description("요청글 본문 내용"),
 						fieldWithPath("data.prUrl").description("관련된 Pull Request URL"))
+					.build())));
+	}
+
+	@Test
+	@WithMockMoyoyUser(id = 93702146L)
+	@DisplayName("PR 리뷰 요청글 생성 성공 - 200 OK")
+	void createPrReview_success() throws Exception {
+		// given
+		PrReviewCreateResult result = new PrReviewCreateResult(200L);
+
+		given(prReviewService.createPrReview(any(), anyLong()))
+			.willReturn(result);
+
+		// when & then
+		mockMvc.perform(post("/api/v1/pr-reviews")
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+			.contentType("application/json")
+			.content("""
+				    {
+				      "title": "Feat: 조회수 중복 증가 방지 적용",
+				      "position": "BACKEND",
+				      "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/200",
+				      "content": "Redis 기반 조회수 중복 증가 방지 로직을 추가했습니다. 코드 리뷰 부탁드립니다!",
+				      "closedAt": "2025-11-15T18:00:00"
+				    }
+				"""))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.prReviewId").value("200"))
+			.andDo(document("PR-리뷰-요청글-생성",
+				resource(ResourceSnippetParameters.builder()
+					.tag("💬 PR 리뷰 요청")
+					.summary("PR 리뷰 요청글 생성 API")
+					.description("""
+						새 PR 리뷰 요청글을 등록합니다.<br/>
+						PR URL은 유효한 GitHub PR 링크 형식이어야 하고, 제목/내용에 최소 길이 제약이 있습니다.
+						""")
+					.requestFields(
+						fieldWithPath("title").description("요청글 제목 (5~50자)"),
+						fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
+						fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
+						fieldWithPath("content").description("요청글 본문 (10자 이상)"),
+						fieldWithPath("closedAt").description("리뷰 마감 일시 (optional)").optional())
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						fieldWithPath("data.prReviewId").description("생성된 PR 리뷰 요청글의 ID (리다이렉트 시 사용)"))
 					.build())));
 	}
 }
