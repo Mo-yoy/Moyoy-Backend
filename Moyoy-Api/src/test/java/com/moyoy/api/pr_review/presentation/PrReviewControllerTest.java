@@ -395,4 +395,49 @@ class PrReviewControllerTest {
 						fieldWithPath("data.prReviewId").description("생성된 PR 리뷰 요청글의 ID (리다이렉트 시 사용)"))
 					.build())));
 	}
+
+	@Nested
+	@DisplayName("PR 요청글 생성")
+	class ValidationTest {
+
+		@Test
+		@WithMockMoyoyUser
+		@DisplayName("잘못된 PR URL 형식 - 400 BAD REQUEST")
+		void createPrReview_fail_invalidUrl() throws Exception {
+			mockMvc.perform(post("/api/v1/pr-reviews")
+				.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+				.contentType("application/json")
+				.content("""
+					    {
+					      "title": "유효성 테스트",
+					      "position": "BACKEND",
+					      "prUrl": "http://invalid-url.com",
+					      "content": "10자를 채워보겠습니다, 하하",
+					      "closedAt": "2025-11-15T18:00:00"
+					    }
+					"""))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("유효한 GitHub PR URL")));
+		}
+
+		@Test
+		@WithMockMoyoyUser
+		@DisplayName("잘못된 직무 태그(position) - 400 BAD REQUEST")
+		void invalidPosition_returnsBadRequest() throws Exception {
+			mockMvc.perform(post("/api/v1/pr-reviews")
+				.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+				.contentType("application/json")
+				.content("""
+						{
+						  "title": "잘못된 직무 태그 테스트",
+						  "position": "해킹",
+						  "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/200",
+						  "content": "내용은 10자가 넘어야 하니께 한번 적어보자고",
+						  "closedAt": "2025-11-15T18:00:00"
+						}
+					"""))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_POSITION.getCode()));
+		}
+	}
 }
