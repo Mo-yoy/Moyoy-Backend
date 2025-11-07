@@ -254,7 +254,7 @@ class PrReviewControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.prReviews").isArray())
 			.andExpect(jsonPath("$.data.isLast").value(true))
-			.andDo(document("내-PR-리뷰-요청글-전체-조회",
+			.andDo(document("내 PR 리뷰 요청글 전체 조회",
 				resource(ResourceSnippetParameters.builder()
 					.tag("💬 PR 리뷰 요청")
 					.summary("내 PR 리뷰 요청글 전체 조회 API")
@@ -329,24 +329,24 @@ class PrReviewControllerTest {
 						""")
 					.pathParameters(
 						parameterWithName("pr-reviewId")
-							.description("조회할 PR 리뷰 요청글의 ID")
+							.description("조회할 PR 리뷰 요청글 ID")
 							.type(SimpleType.INTEGER))
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 응답 코드"),
 						fieldWithPath("message").description("📝 응답 메시지"),
-						fieldWithPath("data.status").description("PR 상태 (open/closed)"),
+						fieldWithPath("data.status").description("요청글 상태 (open/closed)"),
 						fieldWithPath("data.isWriter").description("현재 로그인한 사용자가 작성자인지 여부"),
-						fieldWithPath("data.isAdopted").description("리뷰가 채택되었는지 여부"),
+						fieldWithPath("data.isAdopted").description("리뷰어를 채택했는지 여부"),
 						fieldWithPath("data.profileImageUrl").description("작성자 프로필 이미지 URL"),
 						fieldWithPath("data.username").description("작성자 이름"),
-						fieldWithPath("data.position").description("작성자 직무 태그"),
+						fieldWithPath("data.position").description("요청글 직무태그"),
 						fieldWithPath("data.title").description("요청글 제목"),
 						fieldWithPath("data.hitCount").description("조회수"),
-						fieldWithPath("data.createdAt").description("작성일시"),
-						fieldWithPath("data.closedAt").description("마감일시 (closed 상태일 때만 존재)").optional(),
-						fieldWithPath("data.content").description("요청글 본문 내용"),
-						fieldWithPath("data.prUrl").description("관련된 Pull Request URL"))
+						fieldWithPath("data.createdAt").description("작성일자"),
+						fieldWithPath("data.closedAt").description("마감일자").optional(),
+						fieldWithPath("data.content").description("요청글 내용"),
+						fieldWithPath("data.prUrl").description("PR 링크"))
 					.build())));
 	}
 
@@ -375,7 +375,7 @@ class PrReviewControllerTest {
 				"""))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.prReviewId").value("200"))
-			.andDo(document("PR-리뷰-요청글-생성",
+			.andDo(document("PR 리뷰 요청글 생성",
 				resource(ResourceSnippetParameters.builder()
 					.tag("💬 PR 리뷰 요청")
 					.summary("PR 리뷰 요청글 생성 API")
@@ -387,8 +387,8 @@ class PrReviewControllerTest {
 						fieldWithPath("title").description("요청글 제목 (5~50자)"),
 						fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
 						fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
-						fieldWithPath("content").description("요청글 본문 (10자 이상)"),
-						fieldWithPath("closedAt").description("리뷰 마감 일시 (optional)").optional())
+						fieldWithPath("content").description("요청글 내용 (10자 이상)"),
+						fieldWithPath("closedAt").description("마감일자").optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 응답 코드"),
@@ -482,8 +482,8 @@ class PrReviewControllerTest {
 						fieldWithPath("title").description("수정할 제목 (5~50자)"),
 						fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
 						fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
-						fieldWithPath("content").description("본문 내용 (10자 이상)"),
-						fieldWithPath("closedAt").description("리뷰 마감 일시 (optional)").optional())
+						fieldWithPath("content").description("요청글 내용 (10자 이상)"),
+						fieldWithPath("closedAt").description("마감일자").optional())
 					.responseFields(
 						fieldWithPath("status").description("✅ 응답 상태 코드"),
 						fieldWithPath("code").description("🔢 응답 코드"),
