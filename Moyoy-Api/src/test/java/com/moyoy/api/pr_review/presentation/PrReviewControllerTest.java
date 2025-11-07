@@ -31,6 +31,7 @@ import com.moyoy.api.pr_review.application.PrReviewSummary;
 import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
 import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
+import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
 
 import com.moyoy.domain.pr_review.Status;
 import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
@@ -439,5 +440,55 @@ class PrReviewControllerTest {
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_POSITION.getCode()));
 		}
+	}
+
+	@Test
+	@WithMockMoyoyUser(id = 93702146L)
+	@DisplayName("PR 리뷰 요청글 수정 성공 - 200 OK")
+	void updatePrReview_success() throws Exception {
+		// given
+		long reviewId = 200L;
+		PrReviewUpdateResult result = new PrReviewUpdateResult(reviewId);
+
+		given(prReviewService.updatePrReview(eq(reviewId), any(), eq(93702146L)))
+			.willReturn(result);
+
+		// when & then
+		mockMvc.perform(patch("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
+			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+			.contentType("application/json")
+			.content("""
+				    {
+				      "title": "Fix: 조회수 중복 증가 방지 버그 수정",
+				      "position": "BACKEND",
+				      "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/201",
+				      "content": "조회수 증가 로직에서 race condition을 해결했습니다.",
+				      "closedAt": "2025-11-15T18:00:00"
+				    }
+				"""))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.prReviewId").value(reviewId))
+			.andDo(document("PR 리뷰 요청글 수정",
+				resource(ResourceSnippetParameters.builder()
+					.tag("💬 PR 리뷰 요청")
+					.summary("PR 리뷰 요청글 수정 API")
+					.description("""
+						기존에 작성한 PR 리뷰 요청글을 수정합니다.<br/>
+						작성자 본인의 글만 수정할 수 있습니다.
+						""")
+					.pathParameters(
+						parameterWithName("pr-reviewId").description("수정할 PR 리뷰 요청글 ID"))
+					.requestFields(
+						fieldWithPath("title").description("수정할 제목 (5~50자)"),
+						fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
+						fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
+						fieldWithPath("content").description("본문 내용 (10자 이상)"),
+						fieldWithPath("closedAt").description("리뷰 마감 일시 (optional)").optional())
+					.responseFields(
+						fieldWithPath("status").description("✅ 응답 상태 코드"),
+						fieldWithPath("code").description("🔢 응답 코드"),
+						fieldWithPath("message").description("📝 응답 메시지"),
+						fieldWithPath("data.prReviewId").description("수정된 PR 리뷰 요청글 ID"))
+					.build())));
 	}
 }
