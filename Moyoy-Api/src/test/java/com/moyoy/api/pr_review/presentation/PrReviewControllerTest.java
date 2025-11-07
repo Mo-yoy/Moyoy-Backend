@@ -1,21 +1,19 @@
 package com.moyoy.api.pr_review.presentation;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.moyoy.common.constant.TestConstant.*;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.SimpleType;
+import com.moyoy.api.pr_review.application.PrReviewService;
+import com.moyoy.api.pr_review.application.PrReviewSummary;
+import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
+import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
+import com.moyoy.api.pr_review.application.response.PrReviewListResult;
+import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
+import com.moyoy.common.annotation.ControllerTest;
+import com.moyoy.common.annotation.WithMockMoyoyUser;
+import com.moyoy.common.error.CommonErrorCode;
+import com.moyoy.domain.pr_review.Status;
+import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
+import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,22 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.epages.restdocs.apispec.SimpleType;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import com.moyoy.api.pr_review.application.PrReviewService;
-import com.moyoy.api.pr_review.application.PrReviewSummary;
-import com.moyoy.api.pr_review.application.response.PrReviewCreateResult;
-import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
-import com.moyoy.api.pr_review.application.response.PrReviewListResult;
-import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
-
-import com.moyoy.domain.pr_review.Status;
-import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
-
-import com.moyoy.common.annotation.ControllerTest;
-import com.moyoy.common.annotation.WithMockMoyoyUser;
-import com.moyoy.common.error.CommonErrorCode;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.moyoy.common.constant.TestConstant.MOCK_JWT_ACCESS_TOKEN;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest(controllers = PrReviewController.class)
 class PrReviewControllerTest {
@@ -442,53 +437,100 @@ class PrReviewControllerTest {
 		}
 	}
 
-	@Test
-	@WithMockMoyoyUser(id = 93702146L)
-	@DisplayName("PR 리뷰 요청글 수정 성공 - 200 OK")
-	void updatePrReview_success() throws Exception {
-		// given
-		long reviewId = 200L;
-		PrReviewUpdateResult result = new PrReviewUpdateResult(reviewId);
+	@Nested
+	@DisplayName("PR 리뷰 요청글 수정")
+	class UpdateTests {
+		@Test
+		@WithMockMoyoyUser(id = 93702146L)
+		@DisplayName("PR 리뷰 요청글 수정 성공 - 200 OK")
+		void updatePrReview_success() throws Exception {
+			// given
+			long reviewId = 200L;
+			PrReviewUpdateResult result = new PrReviewUpdateResult(reviewId);
 
-		given(prReviewService.updatePrReview(eq(reviewId), any(), eq(93702146L)))
-			.willReturn(result);
+			given(prReviewService.updatePrReview(eq(reviewId), any(), eq(93702146L)))
+				.willReturn(result);
 
-		// when & then
-		mockMvc.perform(patch("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
-			.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
-			.contentType("application/json")
-			.content("""
-				    {
-				      "title": "Fix: 조회수 중복 증가 방지 버그 수정",
-				      "position": "BACKEND",
-				      "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/201",
-				      "content": "조회수 증가 로직에서 race condition을 해결했습니다.",
-				      "closedAt": "2025-11-15T18:00:00"
-				    }
-				"""))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.data.prReviewId").value(reviewId))
-			.andDo(document("PR 리뷰 요청글 수정",
-				resource(ResourceSnippetParameters.builder()
-					.tag("💬 PR 리뷰 요청")
-					.summary("PR 리뷰 요청글 수정 API")
-					.description("""
-						기존에 작성한 PR 리뷰 요청글을 수정합니다.<br/>
-						작성자 본인의 글만 수정할 수 있습니다.
-						""")
-					.pathParameters(
-						parameterWithName("pr-reviewId").description("수정할 PR 리뷰 요청글 ID"))
-					.requestFields(
-						fieldWithPath("title").description("수정할 제목 (5~50자)"),
-						fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
-						fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
-						fieldWithPath("content").description("요청글 내용 (10자 이상)"),
-						fieldWithPath("closedAt").description("마감일자").optional())
-					.responseFields(
-						fieldWithPath("status").description("✅ 응답 상태 코드"),
-						fieldWithPath("code").description("🔢 응답 코드"),
-						fieldWithPath("message").description("📝 응답 메시지"),
-						fieldWithPath("data.prReviewId").description("수정된 PR 리뷰 요청글 ID"))
-					.build())));
+			// when & then
+			mockMvc.perform(patch("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
+				.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+				.contentType("application/json")
+				.content("""
+						{
+						  "title": "Fix: 조회수 중복 증가 방지 버그 수정",
+						  "position": "BACKEND",
+						  "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/201",
+						  "content": "조회수 증가 로직에서 race condition을 해결했습니다.",
+						  "closedAt": "2025-11-15T18:00:00"
+						}
+					"""))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.prReviewId").value(reviewId))
+				.andDo(document("PR 리뷰 요청글 수정",
+					resource(ResourceSnippetParameters.builder()
+						.tag("💬 PR 리뷰 요청")
+						.summary("PR 리뷰 요청글 수정 API")
+						.description("""
+							기존에 작성한 PR 리뷰 요청글을 수정합니다.<br/>
+							작성자 본인의 글만 수정할 수 있습니다.
+							""")
+						.pathParameters(
+							parameterWithName("pr-reviewId").description("수정할 PR 리뷰 요청글 ID"))
+						.requestFields(
+							fieldWithPath("title").description("수정할 제목 (5~50자)"),
+							fieldWithPath("position").description("직무 태그 (예: BACKEND, FRONTEND, IOS, ANDROID, DEVOPS)").optional(),
+							fieldWithPath("prUrl").description("PR 링크 (예: https://github.com/org/repo/pull/123)"),
+							fieldWithPath("content").description("요청글 내용 (10자 이상)"),
+							fieldWithPath("closedAt").description("마감일자").optional())
+						.responseFields(
+							fieldWithPath("status").description("✅ 응답 상태 코드"),
+							fieldWithPath("code").description("🔢 응답 코드"),
+							fieldWithPath("message").description("📝 응답 메시지"),
+							fieldWithPath("data.prReviewId").description("수정된 PR 리뷰 요청글 ID"))
+						.build())));
+		}
+
+		@Test
+		@WithMockMoyoyUser(id = 93702146L)
+		@DisplayName("작성자가 아닌 사용자가 수정 시도 - 403 FORBIDDEN")
+		void updatePrReview_forbidden_whenNotWriter() throws Exception {
+			// given
+			long reviewId = 200L;
+
+			// mock 서비스니까 일단 같은 id로 줌.
+			willThrow(new PrReviewEditForbiddenException())
+				.given(prReviewService).updatePrReview(eq(reviewId), any(), eq(93702146L));
+
+			mockMvc.perform(patch("/api/v1/pr-reviews/{pr-reviewId}", reviewId)
+				.header("Authorization", "Bearer " + MOCK_JWT_ACCESS_TOKEN)
+				.contentType("application/json")
+				.content("""
+					    {
+					      "title": "타인의 글 수정 시도",
+					      "position": "BACKEND",
+					      "prUrl": "https://github.com/Mo-yoy/Moyoy-Backend/pull/200",
+					      "content": "허허, 본인 글은 아닌데 한번 수정해보려 합니다.",
+					      "closedAt": "2025-11-15T18:00:00"
+					    }
+					"""))
+				.andExpect(status().isForbidden())
+				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.PR_REVIEW_EDIT_FORBIDDEN.getCode()))
+				.andDo(document("PR 리뷰 요청글 수정 권한 없음",
+					resource(ResourceSnippetParameters.builder()
+						.tag("💬 PR 리뷰 요청")
+						.summary("PR 리뷰 요청글 수정 실패 - 작성자가 아님")
+						.description("""
+							요청글의 작성자가 아닌 유저가 PR 리뷰 요청글을 수정하려 하면,<br/>
+							403 FORBIDDEN과 함께 `PR_REVIEW_403_1` 코드가 반환됩니다.
+							""")
+						.pathParameters(
+							parameterWithName("pr-reviewId").description("수정할 PR 리뷰 요청글 ID"))
+						.responseFields(
+							fieldWithPath("status").description("HTTP 상태 코드"),
+							fieldWithPath("code").description("에러 코드 (PR_REVIEW_403_1)"),
+							fieldWithPath("message").description("에러 메시지"),
+							fieldWithPath("data").description("null").optional())
+						.build())));
+		}
 	}
 }
