@@ -21,6 +21,8 @@ import com.moyoy.api.pr_review.presentation.response.PrReviewRedirectResponse;
 
 import jakarta.validation.Valid;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -102,7 +104,7 @@ public class PrReviewController {
 		@LoginUserId Long userId,
 		@PathVariable("pr-reviewId") Long reviewId) {
 
-		PrReviewCloseResult result = prReviewService.closePrReview(reviewId, userId);
+		PrReviewCloseResult result = prReviewService.closePrReview(reviewId, userId, LocalDateTime.now());
 
 		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
 

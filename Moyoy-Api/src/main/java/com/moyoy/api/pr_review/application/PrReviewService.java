@@ -21,6 +21,8 @@ import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
 
 import com.moyoy.common.page.SliceResult;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class PrReviewService {
@@ -89,7 +91,7 @@ public class PrReviewService {
 		prReviewRepository.deleteById(reviewId);
 	}
 
-	public PrReviewCloseResult closePrReview(Long reviewId, Long userId) {
+	public PrReviewCloseResult closePrReview(Long reviewId, Long userId, LocalDateTime eventTime) {
 
 		PrReview prReview = prReviewRepository.findById(reviewId)
 			.orElseThrow(PrReviewNotFoundException::new);
@@ -98,7 +100,7 @@ public class PrReviewService {
 			throw new PrReviewEditForbiddenException();
 		}
 
-		prReview.close();
+		prReview.close(eventTime);
 
 		Long closedReviewId = prReviewRepository.save(prReview).getId();
 
