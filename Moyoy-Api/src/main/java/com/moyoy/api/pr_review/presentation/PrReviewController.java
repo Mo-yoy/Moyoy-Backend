@@ -96,4 +96,16 @@ public class PrReviewController {
 
 		return ResponseEntity.ok(ApiResponse.noContent());
 	}
+
+	@PatchMapping("/pr-reviews{pr-reviewId}/status")
+	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> close(
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId) {
+
+		PrReviewCloseResult result = prReviewService.closePrReview(reviewId, userId);
+
+		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
+
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
 }

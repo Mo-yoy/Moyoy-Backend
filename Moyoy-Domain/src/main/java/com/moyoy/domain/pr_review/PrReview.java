@@ -49,4 +49,9 @@ public class PrReview {
 		this.content = content.content();
 		this.closedAt = content.closedAt();
 	}
+
+	public void close() {
+		this.status = Status.CLOSED;
+		this.closedAt = LocalDateTime.now();
+	}
 }
