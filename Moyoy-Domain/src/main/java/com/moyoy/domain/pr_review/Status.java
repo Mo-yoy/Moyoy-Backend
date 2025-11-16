@@ -16,6 +16,10 @@ public enum Status {
 	private final String value;
 
 	public static Status from(String value) {
+		if (value == null) {
+			return null;
+		}
+
 		return Arrays.stream(Status.values())
 			.filter(status -> status.name().equalsIgnoreCase(value) || status.value.equals(value))
 			.findFirst()
