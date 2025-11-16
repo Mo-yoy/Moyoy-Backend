@@ -54,6 +54,7 @@ public class PrReviewQueryRepositoryImpl implements PrReviewQueryRepository {
 				PrReviewSummaryData.class,
 				userEntity.profileImgUrl,
 				userEntity.username,
+				prReviewEntity.status,
 				prReviewEntity.position,
 				prReviewEntity.title,
 				prReviewEntity.hitCount,
