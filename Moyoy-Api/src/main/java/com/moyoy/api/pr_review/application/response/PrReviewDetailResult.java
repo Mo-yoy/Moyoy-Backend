@@ -20,7 +20,7 @@ public record PrReviewDetailResult(
 
 	public static PrReviewDetailResult from(PrReviewDetailData data, boolean isWriter) {
 		return new PrReviewDetailResult(
-			data.status().getValue(),
+			data.status().name(),
 			isWriter,
 			data.adopted(),
 			data.profileImageUrl(),

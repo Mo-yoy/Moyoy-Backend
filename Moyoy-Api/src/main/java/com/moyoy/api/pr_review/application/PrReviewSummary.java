@@ -17,7 +17,7 @@ public record PrReviewSummary(
 			data.profileImageUrl(),
 			data.username(),
 			data.status().name(),
-			data.position().toString(),
+			data.position().name(),
 			data.title(),
 			data.hitCount(),
 			data.createdAt());
