@@ -33,8 +33,10 @@ public class PrReviewQueryRepositoryImpl implements PrReviewQueryRepository {
 	public SliceResult<PrReviewSummaryData> findAll(PrReviewQueryConditionData condition) {
 
 		BooleanBuilder builder = new BooleanBuilder();
-		builder.and(prReviewEntity.status.eq(condition.status()));
 
+		if (condition.status() != null) {
+			builder.and(prReviewEntity.status.eq(condition.status()));
+		}
 		if (condition.userId() != null) {
 			builder.and(prReviewEntity.userId.eq(condition.userId()));
 		}
