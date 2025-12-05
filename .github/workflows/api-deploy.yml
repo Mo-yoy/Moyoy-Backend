@@ -1,11 +1,9 @@
-name: Moyoy API Dev Server Deploy
+name: API SERVER DEPLOY
 
 on:
   push:
-    branches:
-      - develop
-    path:
-      - Moyoy-Api/**
+    tags:
+      - 'api-v*'
 
 jobs:
   deploy:
@@ -34,7 +32,7 @@ jobs:
       - name: gradlew 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: 빌드
+      - name: API 빌드
         run: ./gradlew :Moyoy-Api:clean :Moyoy-Api:build
 
       - name: 빌드된 JAR 파일 이름 변경
@@ -43,24 +41,24 @@ jobs:
       - name: EC2 서버로 JAR 파일 전송
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.DEV_SERVER_EC2_HOST }}
-          username: ${{ secrets.DEV_SERVER_EC2_USERNAME }}
-          key: ${{ secrets.DEV_SERVER_EC2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: moyoy-api.jar
-          target: /home/ubuntu/moyoy-dev/api/tobe
+          target: /home/ubuntu/moyoy/api/tobe
 
       - name: SSH로 EC2에 접속 후 애플리케이션 실행
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEV_SERVER_EC2_HOST }}
-          username: ${{ secrets.DEV_SERVER_EC2_USERNAME }}
-          key: ${{ secrets.DEV_SERVER_EC2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ubuntu/moyoy-dev/api/current
-            mkdir /home/ubuntu/moyoy-dev/api/current
-            mv /home/ubuntu/moyoy-dev/api/tobe/moyoy-api.jar /home/ubuntu/moyoy-dev/api/current/moyoy-api.jar
-            cd /home/ubuntu/moyoy-dev/api/current
+            rm -rf /home/ubuntu/moyoy/api/current
+            mkdir /home/ubuntu/moyoy/api/current
+            mv /home/ubuntu/moyoy/api/tobe/moyoy-api.jar /home/ubuntu/moyoy/api/current/moyoy-api.jar
+            cd /home/ubuntu/moyoy/api/current
             sudo fuser -k -n tcp 8080 || true    
-            nohup java -Duser.timezone=Asia/Seoul -jar moyoy-api.jar --spring.profiles.active=dev > ./output.log 2>&1 &
-            rm -rf /home/ubuntu/moyoy-dev/api/tobe
+            nohup java -Duser.timezone=Asia/Seoul -jar moyoy-api.jar --spring.profiles.active=prod > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/moyoy/api/tobe

@@ -28,8 +28,7 @@ public class GithubFollowSnapshot {
 			new TreeSet<>(githubFollowers),
 			new TreeSet<>(githubFollowings),
 			snapshotTime,
-			1L
-			);
+			1L);
 	}
 
 	public List<GithubUserProfile> filterByDetectType(DetectType detectType) {

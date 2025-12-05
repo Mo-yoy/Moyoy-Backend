@@ -1,15 +1,15 @@
 package com.moyoy.api.github_follow.application.helper;
 
-import com.moyoy.infra.redis.cache.github_follow.GithubFollowSnapshot;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import com.moyoy.infra.redis.cache.github_follow.GithubFollowCacheStore;
+import com.moyoy.infra.redis.cache.github_follow.GithubFollowSnapshot;
 import com.moyoy.infra.redis.cache.github_follow.GithubUserProfile;
 
 @Slf4j
@@ -37,9 +37,9 @@ public class GithubFollowCacheUpdater {
 	}
 
 	private void updateCacheWithRetry(
-			Long userId,
-			Supplier<GithubUserProfile> profileSupplier,
-			CacheUpdateOperation operation) {
+		Long userId,
+		Supplier<GithubUserProfile> profileSupplier,
+		CacheUpdateOperation operation) {
 
 		for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
 			Optional<GithubFollowSnapshot> snapshotOpt = followCacheStore.findFollowSnapshot(userId);

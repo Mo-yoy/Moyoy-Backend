@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      - "aws-parameterstore:/config/moyoy-prod/"
+      - "aws-parameterstore:/config/moyoy/"
 
   flyway:
     enabled: true
@@ -27,5 +27,5 @@ aws:
   parameterstore:
     enabled: true
     prefix: /config
-    name: moyoy-prod
+    name: moyoy
     

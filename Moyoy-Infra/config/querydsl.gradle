@@ -1,0 +1,20 @@
+// Q클래스 생성 경로 지정
+def querydslSrcDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+// 컴파일 시 Q클래스를 여기에 생성
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslSrcDir))
+}
+
+// 생성된 Q클래스를 소스 경로에 포함
+sourceSets {
+    main {
+        java {
+            srcDirs += querydslSrcDir
+        }
+    }
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
