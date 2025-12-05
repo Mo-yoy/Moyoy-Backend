@@ -1,5 +1,7 @@
 package com.moyoy.api.pr_review.presentation;
 
+import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -95,5 +97,17 @@ public class PrReviewController {
 		prReviewService.deletePrReview(reviewId, userId);
 
 		return ResponseEntity.ok(ApiResponse.noContent());
+	}
+
+	@PatchMapping("/pr-reviews{pr-reviewId}/status")
+	public ResponseEntity<ApiResponse<PrReviewRedirectResponse>> close(
+		@LoginUserId Long userId,
+		@PathVariable("pr-reviewId") Long reviewId) {
+
+		PrReviewCloseResult result = prReviewService.closePrReview(reviewId, userId, LocalDateTime.now());
+
+		PrReviewRedirectResponse response = PrReviewRedirectResponse.from(result);
+
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 }

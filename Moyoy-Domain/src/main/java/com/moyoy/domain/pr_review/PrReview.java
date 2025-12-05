@@ -49,4 +49,16 @@ public class PrReview {
 		this.content = content.content();
 		this.closedAt = content.closedAt();
 	}
+
+	public void close(LocalDateTime eventTime) {
+		if (this.status == Status.CLOSED) {
+			if (eventTime.isBefore(this.closedAt)) {
+				this.closedAt = eventTime;
+			}
+			return;
+		}
+
+		this.status = Status.CLOSED;
+		this.closedAt = eventTime;
+	}
 }
