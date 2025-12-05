@@ -132,7 +132,6 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectKey", "Mo-yoy_Moyo-Backend"
         property "sonar.organization", "mo-yoy"
-
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
         property 'sonar.sourceEncoding', 'UTF-8'
