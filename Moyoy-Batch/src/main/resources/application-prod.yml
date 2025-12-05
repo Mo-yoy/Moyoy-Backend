@@ -1,4 +1,4 @@
 spring:
   batch:
     jdbc:
-      initialize-schema: always # TODO 최초 실행 후 never로 변경
+      initialize-schema: never
