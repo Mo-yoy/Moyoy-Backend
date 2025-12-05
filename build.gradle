@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'java-library'
+//    id 'checkstyle'
     id 'com.diffplug.spotless' version "6.25.0" apply false
     id "org.sonarqube" version "6.2.0.5505"
     id 'org.springframework.boot' version '3.5.4' apply false
@@ -22,9 +23,10 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
+//    apply plugin: 'checkstyle'
+    apply plugin: 'com.diffplug.spotless'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'com.diffplug.spotless'
     apply plugin: 'jacoco'
 
     repositories {
@@ -66,6 +68,11 @@ subprojects {
         dependsOn("spotlessApply")
     }
 
+//    checkstyle {
+//        toolVersion = '10.12.4'
+//        configFile = file("${rootDir}/convention/checkstyle/naver-code-convention.xml")
+//    }
+
     sonarqube {
         properties {
             property 'sonar.java.binaries', "${buildDir}/classes"
@@ -82,6 +89,15 @@ subprojects {
             exceptionFormat "full"
         }
     }
+
+//    tasks.withType(Checkstyle).configureEach {
+//        reports {
+//            html.required = false
+//            xml.required = false
+//        }
+//
+//        showViolations = true
+//    }
 
     jacoco {
         toolVersion = "0.8.12"
