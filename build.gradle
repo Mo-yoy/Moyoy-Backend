@@ -1,10 +1,10 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'com.diffplug.spotless' version "6.25.0" apply false
     id "org.sonarqube" version "6.2.0.5505"
     id 'org.springframework.boot' version '3.5.4' apply false
     id 'io.spring.dependency-management' version '1.1.7' apply false
-    id 'com.diffplug.spotless' version "6.25.0" apply false
     id 'com.epages.restdocs-api-spec' version '0.19.2' apply false
 }
 
@@ -44,6 +44,26 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    spotless {
+        java {
+            eclipse().configFile("${rootProject.projectDir}/convention/spotless/naver-code-format.xml")
+            importOrder(
+                    'java', 'javax' , 'lombok' , 'org', 'com',
+                    'com.moyoy.api',
+                    'com.moyoy.batch',
+                    'com.moyoy.domain',
+                    'com.moyoy.infra',
+                    'com.moyoy.common'
+            )
+            target("**/*.java")
+            targetExclude("**/build/**/*.java")
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        dependsOn("spotlessApply")
     }
 
     sonarqube {
@@ -99,30 +119,6 @@ subprojects {
         }
     }
 
-    tasks.named('classes') {
-        dependsOn tasks.named('spotlessApply')
-    }
-
-    tasks.matching { it.name == 'jar' }.configureEach {
-        dependsOn tasks.named('spotlessApply')
-    }
-
-    tasks.matching { it.name == 'bootJar' }.configureEach {
-        dependsOn tasks.named('spotlessApply')
-    }
-
-
-    spotless {
-        java {
-            eclipse().configFile("${rootProject.projectDir}/config/spotless/naver-code-convention.xml")
-            importOrder('java', 'javax' , 'lombok' , 'org', 'com', 'com.moyoy.api', 'com.moyoy.batch', 'com.moyoy.domain', 'com.moyoy.infra', 'com.moyoy.common')
-            removeUnusedImports()
-            trimTrailingWhitespace()
-            endWithNewline()
-            targetExclude("build/generated/querydsl/**")
-        }
-    }
-
     bootJar.enabled = false
     jar.enabled = false
 }
@@ -142,22 +138,22 @@ sonar {
     }
 }
 
-project(':Moyoy-Api') {
-    tasks.named('build') {
+project(":Moyoy-Api") {
+    tasks.named("build") {
         dependsOn(
-                ':Moyoy-Common:check',
-                ':Moyoy-Domain:check',
-                ':Moyoy-Infra:check'
+                ":Moyoy-Common:check",
+                ":Moyoy-Domain:check",
+                ":Moyoy-Infra:check"
         )
     }
 }
 
-project(':Moyoy-Batch') {
-    tasks.named('build') {
+project(":Moyoy-Batch") {
+    tasks.named("build") {
         dependsOn(
-                ':Moyoy-Common:check',
-                ':Moyoy-Domain:check',
-                ':Moyoy-Infra:check'
+                ":Moyoy-Common:check",
+                ":Moyoy-Domain:check",
+                ":Moyoy-Infra:check"
         )
     }
 }
