@@ -27,7 +27,6 @@ dependencies {
     implementation "io.github.openfeign.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}:jpa"
 
-
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.43.0'
