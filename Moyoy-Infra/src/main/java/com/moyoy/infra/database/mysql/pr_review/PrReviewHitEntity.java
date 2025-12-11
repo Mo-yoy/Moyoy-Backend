@@ -2,10 +2,7 @@ package com.moyoy.infra.database.mysql.pr_review;
 
 import com.moyoy.infra.database.mysql.support.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PrReviewHitEntity extends BaseTimeEntity {
 
     @Id
