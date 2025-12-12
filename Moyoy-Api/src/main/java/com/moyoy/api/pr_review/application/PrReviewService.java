@@ -130,7 +130,6 @@ public class PrReviewService {
 
 		prReviewRepository.increaseHitCount(reviewId);
 
-		hit.updateLastTime(now);
 		prReviewHitRepository.updateLastIncreasedAt(hit.getId(), now);
 	}
 }

@@ -26,10 +26,6 @@ public class PrReviewHit {
 			dto.lastIncreasedAt());
 	}
 
-	public void updateLastTime(LocalDateTime now) {
-		this.lastIncreasedAt = now;
-	}
-
 	public boolean canIncrease(LocalDateTime now) {
 		if (lastIncreasedAt.equals(now)) {
 			return true;
