@@ -1,34 +1,36 @@
 package com.moyoy.api.pr_review.application;
 
-import java.time.LocalDateTime;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import com.moyoy.api.pr_review.application.request.PrReviewCreateData;
 import com.moyoy.api.pr_review.application.request.PrReviewUpdateData;
 import com.moyoy.api.pr_review.application.request.SearchConditionData;
 import com.moyoy.api.pr_review.application.response.*;
-
+import com.moyoy.common.page.SliceResult;
 import com.moyoy.domain.pr_review.PrReview;
+import com.moyoy.domain.pr_review.PrReviewHit;
+import com.moyoy.domain.pr_review.PrReviewHitRepository;
 import com.moyoy.domain.pr_review.PrReviewRepository;
+import com.moyoy.domain.pr_review.dto.PrReviewHitCreate;
 import com.moyoy.domain.pr_review.error.PrReviewDeleteForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewNotFoundException;
-
 import com.moyoy.infra.database.mysql.pr_review.PrReviewQueryRepository;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewDetailData;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.moyoy.common.page.SliceResult;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class PrReviewService {
 
+	private final PrReviewService self;
 	private final PrReviewRepository prReviewRepository;
 	private final PrReviewQueryRepository prReviewQueryRepository;
+	private final PrReviewHitRepository prReviewHitRepository;
 
 	public PrReviewListResult getPrReviewList(SearchConditionData condition) {
 
@@ -44,8 +46,9 @@ public class PrReviewService {
 
 		boolean isWriter = data.userId().equals(userId);
 
-		/// TODO 2. 조회수 증가 관리 (중복 증가 방지 조사 후 적용)
+		/// TODO: 조회수 관리 (v1: 브릿지 테이블, v2: Redis, v3: Redis 기록/누적조회 일괄 업데이트, v4: hyperloglog/누적조회 일괄 업데이트)
 		///  특히 조회수 증가는 도메인 서비스인데, 뷰목적 dto 뿐아니라 entity로 도메인도 가져와야함.
+		self.increaseHitAsync(reviewId, userId);
 
 		return PrReviewDetailResult.from(data, isWriter);
 	}
@@ -105,5 +108,30 @@ public class PrReviewService {
 		Long closedReviewId = prReviewRepository.save(prReview).getId();
 
 		return new PrReviewCloseResult(closedReviewId);
+	}
+
+	@Async("hitsExecutor")
+	@Transactional
+	public void increaseHitAsync(Long reviewId, Long userId) {
+		/// 해당 트랜잭션이 실패하면, 후처리를 할 것인가.
+
+		LocalDateTime now = LocalDateTime.now();
+
+		PrReviewHit hit = prReviewHitRepository.saveIfNotExist(
+			PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, now))
+		);
+
+		if (!hit.canIncrease(now)) return;
+
+		PrReview review = prReviewRepository.findById(reviewId)
+			.orElseThrow(PrReviewNotFoundException::new);
+
+		/// TODO: 동시성 문제 해결 필요
+		review.increaseHitCount();
+		prReviewRepository.save(review);
+
+		/// TODO: 마찬가지
+		hit.updateLastTime(now);
+		prReviewHitRepository.updateLastIncreasedAt(hit.getId(), now);
 	}
 }
