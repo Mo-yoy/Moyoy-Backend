@@ -17,7 +17,7 @@ import jakarta.persistence.*;
 public class PrReviewHitEntity extends BaseTimeEntity {
 
 	@Id
-	@Column(name = "pr_review_hit_id")
+	@Column(name = "hit_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
