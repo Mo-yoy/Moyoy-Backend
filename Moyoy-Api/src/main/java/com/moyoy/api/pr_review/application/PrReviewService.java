@@ -122,7 +122,7 @@ public class PrReviewService {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		PrReviewHit hit = prReviewHitRepository.saveIfNotExist(
+		PrReviewHit hit = prReviewHitRepository.findOrCreate(
 			PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, now)));
 
 		if (!hit.canIncrease(now))
