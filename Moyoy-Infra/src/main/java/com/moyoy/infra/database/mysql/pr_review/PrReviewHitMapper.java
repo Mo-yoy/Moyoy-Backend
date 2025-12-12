@@ -12,13 +12,4 @@ public class PrReviewHitMapper {
 			.lastIncreasedAt(entity.getLastIncreasedAt())
 			.build();
 	}
-
-	public static PrReviewHitEntity toEntity(PrReviewHit model) {
-		return PrReviewHitEntity.builder()
-			.id(model.getId())
-			.prReviewId(model.getPrReviewId())
-			.userId(model.getUserId())
-			.lastIncreasedAt(model.getLastIncreasedAt())
-			.build();
-	}
 }
