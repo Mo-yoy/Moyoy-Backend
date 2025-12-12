@@ -8,5 +8,7 @@ public interface PrReviewRepository {
 
 	Optional<PrReview> findById(Long reviewId);
 
+	void increaseHitCount(Long reviewId);
+
 	void deleteById(Long reviewId);
 }

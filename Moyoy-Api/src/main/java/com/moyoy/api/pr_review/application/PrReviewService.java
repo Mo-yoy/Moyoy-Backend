@@ -1,10 +1,18 @@
 package com.moyoy.api.pr_review.application;
 
+import java.time.LocalDateTime;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.moyoy.api.pr_review.application.request.PrReviewCreateData;
 import com.moyoy.api.pr_review.application.request.PrReviewUpdateData;
 import com.moyoy.api.pr_review.application.request.SearchConditionData;
 import com.moyoy.api.pr_review.application.response.*;
-import com.moyoy.common.page.SliceResult;
+
 import com.moyoy.domain.pr_review.PrReview;
 import com.moyoy.domain.pr_review.PrReviewHit;
 import com.moyoy.domain.pr_review.PrReviewHitRepository;
@@ -13,15 +21,12 @@ import com.moyoy.domain.pr_review.dto.PrReviewHitCreate;
 import com.moyoy.domain.pr_review.error.PrReviewDeleteForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewNotFoundException;
+
 import com.moyoy.infra.database.mysql.pr_review.PrReviewQueryRepository;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewDetailData;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
-import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import com.moyoy.common.page.SliceResult;
 
 @Service
 @RequiredArgsConstructor
@@ -118,19 +123,13 @@ public class PrReviewService {
 		LocalDateTime now = LocalDateTime.now();
 
 		PrReviewHit hit = prReviewHitRepository.saveIfNotExist(
-			PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, now))
-		);
+			PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, now)));
 
-		if (!hit.canIncrease(now)) return;
+		if (!hit.canIncrease(now))
+			return;
 
-		PrReview review = prReviewRepository.findById(reviewId)
-			.orElseThrow(PrReviewNotFoundException::new);
+		prReviewRepository.increaseHitCount(reviewId);
 
-		/// TODO: 동시성 문제 해결 필요
-		review.increaseHitCount();
-		prReviewRepository.save(review);
-
-		/// TODO: 마찬가지
 		hit.updateLastTime(now);
 		prReviewHitRepository.updateLastIncreasedAt(hit.getId(), now);
 	}
