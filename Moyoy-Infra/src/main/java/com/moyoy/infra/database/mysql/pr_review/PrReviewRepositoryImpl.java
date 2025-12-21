@@ -31,6 +31,11 @@ public class PrReviewRepositoryImpl implements PrReviewRepository {
 	}
 
 	@Override
+	public void increaseHitCount(Long reviewId) {
+		prReviewJpaRepository.increaseHitCount(reviewId);
+	}
+
+	@Override
 	public void deleteById(Long reviewId) {
 		prReviewJpaRepository.deleteById(reviewId);
 	}

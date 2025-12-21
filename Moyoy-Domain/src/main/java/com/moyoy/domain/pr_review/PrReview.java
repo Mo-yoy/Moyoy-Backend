@@ -23,10 +23,6 @@ public class PrReview {
 	private LocalDateTime createdAt;
 	private LocalDateTime closedAt;
 
-	public void increaseHitCount() {
-		this.hitCount++;
-	} // TODO
-
 	public static PrReview create(PrReviewCreate prReviewCreate) {
 		return new PrReview(
 			null,
