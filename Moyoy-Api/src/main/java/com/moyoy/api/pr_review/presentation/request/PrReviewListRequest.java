@@ -4,9 +4,10 @@ import com.moyoy.api.pr_review.application.request.SearchConditionData;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 public record PrReviewListRequest(
-	String status,
+	@Pattern(regexp = "open|closed") String status,
 	String order,
 	String position,
 	@Min(0) Long lastReviewId,
@@ -14,13 +15,10 @@ public record PrReviewListRequest(
 
 	public PrReviewListRequest {
 		if (status == null || status.isBlank())
-			status = "open";
+			status = null;
 
-		if (order == null || order.isBlank())
+		if (order == null)
 			order = "createdAt-desc";
-
-		if (position == null || position.isBlank())
-			position = null;
 
 		if (lastReviewId == null)
 			lastReviewId = 0L;

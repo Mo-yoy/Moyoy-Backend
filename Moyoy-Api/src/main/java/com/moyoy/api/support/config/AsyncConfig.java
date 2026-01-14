@@ -24,4 +24,18 @@ public class AsyncConfig {
 		executor.initialize();
 		return executor;
 	}
+
+	@Bean(name = "hitsExecutor")
+	public Executor hitsExecutor() {
+
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+		executor.setCorePoolSize(3);
+		executor.setMaxPoolSize(3);
+		executor.setQueueCapacity(300);
+		executor.setThreadNamePrefix("PrReviewHits-");
+
+		executor.initialize();
+		return executor;
+	}
 }

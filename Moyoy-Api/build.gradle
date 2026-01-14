@@ -39,7 +39,7 @@ bootJar {
 
 openapi3 {
     servers = [
-            { url = "https://api.moyoy-test.shop"},
+            { url = "https://api.moyoy.shop"},
             { url = "http://localhost:8080" }
     ]
     title = "Moyoy API Server"

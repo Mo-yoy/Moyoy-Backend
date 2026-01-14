@@ -27,7 +27,8 @@ public class ActuatorSecurityConfig {
 			.securityMatcher("/actuator/**")
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/actuator/prometheus")
-				.hasRole("MONITORING"))
+				.hasRole("MONITORING")
+				.requestMatchers("/actuator/metrics/**").permitAll())
 			.httpBasic(Customizer.withDefaults())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.build();

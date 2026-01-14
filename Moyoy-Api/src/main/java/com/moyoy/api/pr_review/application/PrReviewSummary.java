@@ -7,6 +7,7 @@ import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
 public record PrReviewSummary(
 	String profileImageUrl,
 	String username,
+	String status,
 	String position,
 	String title,
 	int hitCount,
@@ -15,7 +16,8 @@ public record PrReviewSummary(
 		return new PrReviewSummary(
 			data.profileImageUrl(),
 			data.username(),
-			data.position().toString(),
+			data.status().name(),
+			data.position().name(),
 			data.title(),
 			data.hitCount(),
 			data.createdAt());

@@ -23,10 +23,6 @@ public class PrReview {
 	private LocalDateTime createdAt;
 	private LocalDateTime closedAt;
 
-	public void increaseHitCount() {
-		this.hitCount++;
-	} // TODO
-
 	public static PrReview create(PrReviewCreate prReviewCreate) {
 		return new PrReview(
 			null,
@@ -48,5 +44,17 @@ public class PrReview {
 		this.prUrl = content.prUrl();
 		this.content = content.content();
 		this.closedAt = content.closedAt();
+	}
+
+	public void close(LocalDateTime eventTime) {
+		if (this.status == Status.CLOSED) {
+			if (eventTime.isBefore(this.closedAt)) {
+				this.closedAt = eventTime;
+			}
+			return;
+		}
+
+		this.status = Status.CLOSED;
+		this.closedAt = eventTime;
 	}
 }
