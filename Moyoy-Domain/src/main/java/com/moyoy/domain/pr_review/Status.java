@@ -5,7 +5,7 @@ import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.moyoy.domain.pr_review.error.StatusNotFoundException;
+import com.moyoy.domain.pr_review.error.InvalidStatusException;
 
 @Getter
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public enum Status {
 		return Arrays.stream(Status.values())
 			.filter(status -> status.name().equalsIgnoreCase(value) || status.value.equals(value))
 			.findFirst()
-			.orElseThrow(StatusNotFoundException::new);
+			.orElseThrow(InvalidStatusException::new);
 	}
 
 	public boolean isClosed() {

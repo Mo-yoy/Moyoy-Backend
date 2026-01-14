@@ -16,6 +16,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.moyoy.domain.pr_review.error.InvalidOrderException;
+
 import com.moyoy.infra.database.mysql.pr_review.request.PrReviewQueryConditionData;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewDetailData;
 import com.moyoy.infra.database.mysql.pr_review.response.PrReviewSummaryData;
@@ -117,7 +119,7 @@ public class PrReviewQueryRepositoryImpl implements PrReviewQueryRepository {
 				return switch (field) {
 					case "hitCount" -> asc ? prReviewEntity.hitCount.asc() : prReviewEntity.hitCount.desc();
 					case "createdAt" -> asc ? prReviewEntity.createdAt.asc() : prReviewEntity.createdAt.desc();
-					default -> prReviewEntity.createdAt.desc();
+					default -> throw new InvalidOrderException();
 				};
 			})
 			.toArray(OrderSpecifier<?>[]::new);

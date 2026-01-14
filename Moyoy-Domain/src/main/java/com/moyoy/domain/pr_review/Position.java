@@ -5,7 +5,7 @@ import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.moyoy.domain.pr_review.error.PositionNotFoundException;
+import com.moyoy.domain.pr_review.error.InvalidPositionException;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,11 +22,11 @@ public enum Position {
 	public static Position from(String value) {
 
 		if (value == null)
-			return null; // 직군 태그 null 허용할 건지, 다음 회의 안건 등록. FIXME
+			return null;
 
 		return Arrays.stream(Position.values())
 			.filter(position -> position.name().equalsIgnoreCase(value) || position.value.equals(value))
 			.findFirst()
-			.orElseThrow(PositionNotFoundException::new);
+			.orElseThrow(InvalidPositionException::new);
 	}
 }
