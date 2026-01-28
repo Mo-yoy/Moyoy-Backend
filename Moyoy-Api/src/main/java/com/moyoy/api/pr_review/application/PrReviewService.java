@@ -12,7 +12,6 @@ import com.moyoy.api.pr_review.application.request.SearchConditionData;
 import com.moyoy.api.pr_review.application.response.*;
 
 import com.moyoy.domain.pr_review.PrReview;
-import com.moyoy.domain.pr_review.PrReviewHitRepository;
 import com.moyoy.domain.pr_review.PrReviewRepository;
 import com.moyoy.domain.pr_review.error.PrReviewDeleteForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
@@ -68,11 +67,7 @@ public class PrReviewService {
 		PrReview prReview = prReviewRepository.findById(reviewId)
 			.orElseThrow(PrReviewNotFoundException::new);
 
-		if (!prReview.getUserId().equals(userId)) {
-			throw new PrReviewEditForbiddenException();
-		}
-
-		prReview.updateDetail(data.toCommand());
+		prReview.updateDetail(userId, data.toCommand());
 
 		Long updatedReviewId = prReviewRepository.save(prReview).getId();
 
