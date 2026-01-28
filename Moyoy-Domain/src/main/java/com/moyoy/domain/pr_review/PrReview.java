@@ -1,5 +1,7 @@
 package com.moyoy.domain.pr_review;
 
+import com.moyoy.domain.pr_review.error.PrReviewEditConflictException;
+import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
 import java.time.LocalDateTime;
 
 import lombok.Builder;
@@ -38,12 +40,25 @@ public class PrReview {
 			prReviewCreate.closedAt());
 	}
 
-	public void updateDetail(PrReviewUpdate content) {
+	public void updateDetail(Long userId, PrReviewUpdate content) {
+
+		validateUpdateAvailable(userId);
+
 		this.title = content.title();
 		this.position = content.position();
 		this.prUrl = content.prUrl();
 		this.content = content.content();
 		this.closedAt = content.closedAt();
+	}
+
+	private void validateUpdateAvailable(Long userId) {
+		if (!this.userId.equals(userId)) {
+			throw new PrReviewEditForbiddenException();
+		}
+
+		if (status.isClosed()) {
+			throw new PrReviewEditConflictException();
+		}
 	}
 
 	public void close(LocalDateTime eventTime) {

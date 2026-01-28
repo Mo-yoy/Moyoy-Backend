@@ -25,7 +25,8 @@ public enum PrReviewErrorCode implements BaseErrorCode {
 	PR_REVIEW_NOT_FOUND(NOT_FOUND, "PR_REVIEW_404_1", "존재하지 않는 PR 리뷰 요청글입니다."),
 
 	// 409: 상태 충돌
-	PR_REVIEW_DELETE_CONFLICT(CONFLICT, "PR_REVIEW_409_1", "종료된 PR 리뷰 요청글은 삭제할 수 없습니다.");
+	PR_REVIEW_EDIT_CONFLICT(CONFLICT, "PR_REVIEW_409_1", "종료된 PR 리뷰 요청글은 수정할 수 없습니다."),
+	PR_REVIEW_DELETE_CONFLICT(CONFLICT, "PR_REVIEW_409_2", "종료된 PR 리뷰 요청글은 삭제할 수 없습니다.");
 
 	private final Integer status;
 	private final String code;
