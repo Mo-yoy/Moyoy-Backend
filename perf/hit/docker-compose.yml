@@ -1,0 +1,21 @@
+# 조회수 관리 버전별 비교용 로컬 측정 환경
+# 프리티어(1 vCPU, 1GB) 수준으로 자원을 제한해서 버전 간 상대 비교에 사용
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: moyoy-perf-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: moyoy
+    ports:
+      - "3306:3306"
+    cpus: 1.0
+    mem_limit: 1g
+
+  redis:
+    image: redis:7.4
+    container_name: moyoy-perf-redis
+    ports:
+      - "6379:6379"
+    cpus: 0.5
+    mem_limit: 256m
