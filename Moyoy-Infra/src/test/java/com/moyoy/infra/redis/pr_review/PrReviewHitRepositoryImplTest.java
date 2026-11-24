@@ -76,8 +76,9 @@ class PrReviewHitRepositoryImplTest {
 
 		prReviewHitRepository.saveIfAbsent(hit);
 
+		long windowSeconds = PrReviewHit.DUPLICATE_WINDOW.getSeconds();
 		Long ttl = stringRedisTemplate.getExpire("pr_review_hit::1::user::10");
-		assertThat(ttl).isBetween(PrReviewHit.DUPLICATE_WINDOW.getSeconds() - 5, PrReviewHit.DUPLICATE_WINDOW.getSeconds());
+		assertThat(ttl).isBetween(windowSeconds - 5, windowSeconds);
 	}
 
 	@Test
@@ -103,8 +104,9 @@ class PrReviewHitRepositoryImplTest {
 		for (int i = 0; i < requestCount; i++) {
 			executor.submit(() -> {
 				try {
-					if (prReviewHitRepository.saveIfAbsent(hit))
+					if (prReviewHitRepository.saveIfAbsent(hit)) {
 						savedCount.incrementAndGet();
+					}
 				} finally {
 					latch.countDown();
 				}

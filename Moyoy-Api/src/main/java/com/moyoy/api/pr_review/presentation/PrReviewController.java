@@ -61,7 +61,8 @@ public class PrReviewController {
 		@PathVariable("pr-reviewId") Long reviewId,
 		HttpServletRequest request) {
 
-		PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId, ClientIpUtils.extract(request));
+		String clientIp = ClientIpUtils.extract(request);
+		PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId, clientIp);
 
 		PrReviewDetailResponse response = PrReviewDetailResponse.from(result);
 		return ResponseEntity.ok(ApiResponse.success(response));

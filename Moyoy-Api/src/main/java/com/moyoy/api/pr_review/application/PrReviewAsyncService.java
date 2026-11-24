@@ -23,8 +23,9 @@ public class PrReviewAsyncService {
 
 		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, clientIp));
 
-		if (!prReviewHitRepository.saveIfAbsent(hit))
+		if (!prReviewHitRepository.saveIfAbsent(hit)) {
 			return;
+		}
 
 		prReviewRepository.increaseHitCount(reviewId);
 	}
