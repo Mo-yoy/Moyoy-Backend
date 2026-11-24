@@ -1,12 +1,13 @@
 package com.moyoy.api.pr_review.application;
 
+import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.moyoy.domain.pr_review.PrReviewHit;
-import com.moyoy.domain.pr_review.PrReviewHitCountRepository;
 import com.moyoy.domain.pr_review.PrReviewHitRepository;
 import com.moyoy.domain.pr_review.dto.PrReviewHitCreate;
 
@@ -15,18 +16,13 @@ import com.moyoy.domain.pr_review.dto.PrReviewHitCreate;
 public class PrReviewAsyncService {
 
 	private final PrReviewHitRepository prReviewHitRepository;
-	private final PrReviewHitCountRepository prReviewHitCountRepository;
 
-	/// 조회수 증가분은 Redis에 누적하고, RDB 반영은 Batch에서 주기적으로 일괄 처리
+	/// 1시간 구간별로 조회자를 기록하고, 구간이 끝나면 Batch에서 고유 조회자 수를 RDB에 일괄 반영
 	@Async("hitsExecutor")
 	public void increaseHitAsync(Long reviewId, Long userId, String clientIp) {
 
-		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, clientIp));
+		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, clientIp, LocalDateTime.now()));
 
-		if (!prReviewHitRepository.saveIfAbsent(hit)) {
-			return;
-		}
-
-		prReviewHitCountRepository.increase(reviewId);
+		prReviewHitRepository.save(hit);
 	}
 }
