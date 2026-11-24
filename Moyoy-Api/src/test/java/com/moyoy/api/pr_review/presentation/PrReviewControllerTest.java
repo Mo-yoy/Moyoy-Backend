@@ -31,7 +31,6 @@ import com.moyoy.api.pr_review.application.response.PrReviewDetailResult;
 import com.moyoy.api.pr_review.application.response.PrReviewListResult;
 import com.moyoy.api.pr_review.application.response.PrReviewUpdateResult;
 
-import com.moyoy.domain.pr_review.Status;
 import com.moyoy.domain.pr_review.error.PrReviewEditForbiddenException;
 import com.moyoy.domain.pr_review.error.PrReviewErrorCode;
 
@@ -57,6 +56,7 @@ class PrReviewControllerTest {
 		PrReviewSummary summary1 = new PrReviewSummary(
 			"https://avatars.githubusercontent.com/u/93702146?v=4",
 			"zzaekkii",
+			"OPEN",
 			"BACKEND",
 			"Refactor: 아키텍처 변경 + 도메인 모델과 JPA 엔티티 분리",
 			52,
@@ -64,6 +64,7 @@ class PrReviewControllerTest {
 		PrReviewSummary summary2 = new PrReviewSummary(
 			"https://avatars.githubusercontent.com/u/100277876?s=80&v=4",
 			"seungryul99",
+			"OPEN",
 			"BACKEND",
 			"fix: Add missing TTL when updating cache",
 			120,
@@ -71,6 +72,7 @@ class PrReviewControllerTest {
 		PrReviewSummary summary3 = new PrReviewSummary(
 			"https://avatars.githubusercontent.com/u/60962533?s=80&v=4",
 			"jungwoo3490",
+			"OPEN",
 			"FRONTEND",
 			"fix: Video asset 경로 이슈 수정",
 			187,
@@ -112,6 +114,7 @@ class PrReviewControllerTest {
 						subsectionWithPath("data.prReviews").description("PR 리뷰 요청글 전체 목록"),
 						fieldWithPath("data.prReviews[].profileImageUrl").description("작성자 프로필 이미지 URL"),
 						fieldWithPath("data.prReviews[].username").description("작성자 이름"),
+						fieldWithPath("data.prReviews[].status").description("요청글 상태 (OPEN, CLOSED)"),
 						fieldWithPath("data.prReviews[].position").description("요청글 직무 태그"),
 						fieldWithPath("data.prReviews[].title").description("요청글 제목"),
 						fieldWithPath("data.prReviews[].hitCount").description("조회수"),
@@ -134,7 +137,7 @@ class PrReviewControllerTest {
 				.param("lastReviewId", "0")
 				.param("size", "20"))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code").value(PrReviewErrorCode.INVALID_STATUS.getCode()));
+				.andExpect(jsonPath("$.code").value(CommonErrorCode.INVALID_PARAM.getCode()));
 		}
 
 		@Test
@@ -149,7 +152,7 @@ class PrReviewControllerTest {
 				.andExpect(status().isOk());
 
 			verify(prReviewService).getPrReviewList(
-				argThat(req -> req.status().equals(Status.OPEN) &&
+				argThat(req -> req.status() == null &&
 					req.order().equals("createdAt-desc") &&
 					req.position() == null &&
 					req.lastReviewId() == 0 &&
@@ -225,6 +228,7 @@ class PrReviewControllerTest {
 		PrReviewSummary summary1 = new PrReviewSummary(
 			"https://avatars.githubusercontent.com/u/93702146?v=4",
 			"zzaekkii",
+			"OPEN",
 			"BACKEND",
 			"Refactor: 서비스 레이어 리팩터링 및 예외 처리 개선",
 			52,
@@ -233,6 +237,7 @@ class PrReviewControllerTest {
 		PrReviewSummary summary2 = new PrReviewSummary(
 			"https://avatars.githubusercontent.com/u/93702146?v=4",
 			"zzaekkii",
+			"OPEN",
 			"FRONTEND",
 			"feat: 문서화 테스트 추가",
 			38,
@@ -275,6 +280,7 @@ class PrReviewControllerTest {
 						subsectionWithPath("data.prReviews").description("PR 리뷰 요청글 전체 목록"),
 						fieldWithPath("data.prReviews[].profileImageUrl").description("작성자 프로필 이미지 URL"),
 						fieldWithPath("data.prReviews[].username").description("작성자 이름"),
+						fieldWithPath("data.prReviews[].status").description("요청글 상태 (OPEN, CLOSED)"),
 						fieldWithPath("data.prReviews[].position").description("요청글 직무 태그"),
 						fieldWithPath("data.prReviews[].title").description("요청글 제목"),
 						fieldWithPath("data.prReviews[].hitCount").description("조회수"),
