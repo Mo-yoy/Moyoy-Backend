@@ -2,8 +2,6 @@ package com.moyoy.domain.pr_review;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,37 +10,20 @@ import com.moyoy.domain.pr_review.dto.PrReviewHitCreate;
 class PrReviewHitTest {
 
 	@Test
-	@DisplayName("lastIncreasedAt이 now면 조회수 증가할 수 있다.")
-	void canIncrease_sameTime() {
-		LocalDateTime now = LocalDateTime.now();
+	@DisplayName("로그인 사용자는 회원 ID로 조회자를 식별한다.")
+	void create_loginUser() {
+		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(1L, 10L, "127.0.0.1"));
 
-		PrReviewHit hit = PrReviewHit.create(
-			new PrReviewHitCreate(1L, 10L, now));
-
-		assertThat(hit.canIncrease(now)).isTrue();
+		assertThat(hit.getPrReviewId()).isEqualTo(1L);
+		assertThat(hit.getViewerKey()).isEqualTo("user::10");
 	}
 
 	@Test
-	@DisplayName("TTL 1시간 이내이면 중복 증가로 판단한다.")
-	void canIncrease_withinTTL() {
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime last = now.minusMinutes(30);
+	@DisplayName("익명 사용자는 IP로 조회자를 식별한다.")
+	void create_anonymousUser() {
+		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(1L, null, "127.0.0.1"));
 
-		PrReviewHit hit = PrReviewHit.create(
-			new PrReviewHitCreate(1L, 10L, last));
-
-		assertThat(hit.canIncrease(now)).isFalse();
-	}
-
-	@Test
-	@DisplayName("TTL 1시간 범위를 초과했다면 증가 가능하다.")
-	void canIncrease_afterTTL() {
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime last = now.minusHours(1).minusSeconds(1);
-
-		PrReviewHit hit = PrReviewHit.create(
-			new PrReviewHitCreate(1L, 10L, last));
-
-		assertThat(hit.canIncrease(now)).isTrue();
+		assertThat(hit.getPrReviewId()).isEqualTo(1L);
+		assertThat(hit.getViewerKey()).isEqualTo("ip::127.0.0.1");
 	}
 }

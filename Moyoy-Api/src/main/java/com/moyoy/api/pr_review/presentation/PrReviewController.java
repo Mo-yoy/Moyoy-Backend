@@ -20,7 +20,9 @@ import com.moyoy.api.pr_review.presentation.request.PrReviewUpdateRequest;
 import com.moyoy.api.pr_review.presentation.response.PrReviewDetailResponse;
 import com.moyoy.api.pr_review.presentation.response.PrReviewListResponse;
 import com.moyoy.api.pr_review.presentation.response.PrReviewRedirectResponse;
+import com.moyoy.api.support.ClientIpUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -56,9 +58,11 @@ public class PrReviewController {
 	@GetMapping("/pr-reviews/{pr-reviewId}")
 	public ResponseEntity<ApiResponse<PrReviewDetailResponse>> getPrReviewDetail(
 		@LoginUserId Long userId,
-		@PathVariable("pr-reviewId") Long reviewId) {
+		@PathVariable("pr-reviewId") Long reviewId,
+		HttpServletRequest request) {
 
-		PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId);
+		String clientIp = ClientIpUtils.extract(request);
+		PrReviewDetailResult result = prReviewService.getPrReviewDetail(reviewId, userId, clientIp);
 
 		PrReviewDetailResponse response = PrReviewDetailResponse.from(result);
 		return ResponseEntity.ok(ApiResponse.success(response));

@@ -313,7 +313,7 @@ class PrReviewControllerTest {
 			"조회수 관리 문제를 어떻게 풀어낼 지 고민 중이라, 이 부분은 아직 구현하지 않았지만 코드 리뷰 부탁드립니다!",
 			"https://github.com/Mo-yoy/Moyoy-Backend/pull/168");
 
-		given(prReviewService.getPrReviewDetail(anyLong(), anyLong()))
+		given(prReviewService.getPrReviewDetail(anyLong(), anyLong(), anyString()))
 			.willReturn(result);
 
 		// when & then
