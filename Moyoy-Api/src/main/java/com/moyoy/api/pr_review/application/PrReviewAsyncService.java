@@ -1,7 +1,5 @@
 package com.moyoy.api.pr_review.application;
 
-import java.time.LocalDateTime;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.scheduling.annotation.Async;
@@ -22,19 +20,13 @@ public class PrReviewAsyncService {
 
 	@Async("hitsExecutor")
 	@Transactional
-	public void increaseHitAsync(Long reviewId, Long userId) {
-		/// 해당 트랜잭션이 실패하면, 후처리를 할 것인가.
+	public void increaseHitAsync(Long reviewId, Long userId, String clientIp) {
 
-		LocalDateTime now = LocalDateTime.now();
+		PrReviewHit hit = PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, clientIp));
 
-		PrReviewHit hit = prReviewHitRepository.findOrCreate(
-			PrReviewHit.create(new PrReviewHitCreate(reviewId, userId, now)));
-
-		if (!hit.canIncrease(now))
+		if (!prReviewHitRepository.saveIfAbsent(hit))
 			return;
 
 		prReviewRepository.increaseHitCount(reviewId);
-
-		prReviewHitRepository.updateLastIncreasedAt(hit.getId(), now);
 	}
 }

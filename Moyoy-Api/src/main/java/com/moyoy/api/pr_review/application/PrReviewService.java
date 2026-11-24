@@ -39,7 +39,7 @@ public class PrReviewService {
 		return PrReviewListResult.from(slice);
 	}
 
-	public PrReviewDetailResult getPrReviewDetail(Long reviewId, Long userId) {
+	public PrReviewDetailResult getPrReviewDetail(Long reviewId, Long userId, String clientIp) {
 
 		PrReviewDetailData data = prReviewQueryRepository.findById(reviewId) /// TODO querydsl 데이터 반환
 			.orElseThrow(PrReviewNotFoundException::new);
@@ -48,7 +48,7 @@ public class PrReviewService {
 
 		/// TODO: 조회수 관리 (v1: 브릿지 테이블, v2: Redis, v3: Redis 기록/누적조회 일괄 업데이트, v4: hyperloglog/누적조회 일괄 업데이트)
 		///  특히 조회수 증가는 도메인 서비스인데, 뷰목적 dto 뿐아니라 entity로 도메인도 가져와야함.
-		prReviewAsyncService.increaseHitAsync(reviewId, userId);
+		prReviewAsyncService.increaseHitAsync(reviewId, userId, clientIp);
 
 		return PrReviewDetailResult.from(data, isWriter);
 	}
