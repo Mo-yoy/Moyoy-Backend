@@ -16,7 +16,7 @@ mysql_query() {
 }
 
 db_snapshot() {
-	mysql_query "SHOW GLOBAL STATUS WHERE Variable_name IN ('Com_insert', 'Com_update', 'Com_select');"
+	mysql_query "SHOW GLOBAL STATUS WHERE Variable_name IN ('Com_insert', 'Com_update', 'Com_select', 'Com_commit');"
 	echo "hit_count_sum $(mysql_query 'SELECT COALESCE(SUM(hit_count), 0) FROM pr_reviews;')"
 }
 
@@ -50,6 +50,9 @@ AFTER=$(db_snapshot)
 	echo "version=${VERSION} scenario=${SCENARIO} rate=${RATE}/s duration=${DURATION}"
 	echo "--- DB (after - before)"
 	join <(echo "$BEFORE" | sort) <(echo "$AFTER" | sort) | awk '{ printf "%s %d\n", $1, $3 - $2 }'
+	echo "--- Redis"
+	echo "hit_keys $(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit::*' | wc -l | tr -d ' ')"
+	echo "used_memory $(docker exec moyoy-perf-redis redis-cli INFO memory | sed -n 's/^used_memory:\([0-9]*\).*/\1/p')"
 	echo "--- hitsExecutor"
 	echo "completed $(awk -v a="$(executor_metric executor.completed)" -v b="$COMPLETED_BEFORE" 'BEGIN { printf "%d", a - b }')"
 	echo "queued $(executor_metric executor.queued)"
