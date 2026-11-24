@@ -44,12 +44,20 @@ for _ in $(seq 1 60); do
 	sleep 1
 done
 
+# v3 이후: Redis에 누적된 조회수가 Batch에서 RDB로 모두 반영될 때까지 대기 (최대 2분)
+FLUSH_WAIT=0
+while [[ $FLUSH_WAIT -lt 120 && -n "$(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit_count::*' | head -1)" ]]; do
+	sleep 1
+	FLUSH_WAIT=$((FLUSH_WAIT + 1))
+done
+
 AFTER=$(db_snapshot)
 
 {
 	echo "version=${VERSION} scenario=${SCENARIO} rate=${RATE}/s duration=${DURATION}"
 	echo "--- DB (after - before)"
 	join <(echo "$BEFORE" | sort) <(echo "$AFTER" | sort) | awk '{ printf "%s %d\n", $1, $3 - $2 }'
+	echo "flush_wait_seconds ${FLUSH_WAIT}"
 	echo "--- Redis"
 	echo "hit_keys $(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit::*' | wc -l | tr -d ' ')"
 	echo "used_memory $(docker exec moyoy-perf-redis redis-cli INFO memory | sed -n 's/^used_memory:\([0-9]*\).*/\1/p')"

@@ -10,6 +10,6 @@ public interface PrReviewJpaRepository extends JpaRepository<PrReviewEntity, Lon
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE PrReviewEntity r SET r.hitCount = r.hitCount + 1 WHERE r.id = :reviewId")
-	void increaseHitCount(@Param("reviewId") Long reviewId);
+	@Query("UPDATE PrReviewEntity r SET r.hitCount = r.hitCount + :count WHERE r.id = :reviewId")
+	void increaseHitCount(@Param("reviewId") Long reviewId, @Param("count") int count);
 }
