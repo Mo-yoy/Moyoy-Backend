@@ -1,3 +1,6 @@
+// Docker Engine 29 이상과 호환되는 Testcontainers 버전 (Boot BOM 기본값 1.21.3은 API 버전 불일치로 실패)
+ext['testcontainers.version'] = '1.21.4'
+
 dependencies {
     implementation project(':Moyoy-Common')
     implementation project(':Moyoy-Domain')
@@ -16,6 +19,7 @@ dependencies {
 
     // Test
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.testcontainers:junit-jupiter'
 
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
