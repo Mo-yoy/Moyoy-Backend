@@ -17,6 +17,9 @@ public record PrReviewListRequest(
 		if (status == null || status.isBlank())
 			status = null;
 
+		if (position == null || position.isBlank())
+			position = null;
+
 		if (order == null)
 			order = "createdAt-desc";
 
