@@ -44,9 +44,14 @@ for _ in $(seq 1 60); do
 	sleep 1
 done
 
-# v3 이후: Redis에 누적된 조회수가 Batch에서 RDB로 모두 반영될 때까지 대기 (최대 2분)
+# 조회 기록이 차지하는 Redis 메모리 (v4는 반영 후 키가 지워지므로 반영 전에 측정)
+HIT_KEYS=$(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit::*' | wc -l | tr -d ' ')
+HIT_MEMORY=$(docker exec moyoy-perf-redis redis-cli EVAL "local t = 0 for _, k in ipairs(redis.call('KEYS', 'pr_review_hit::*')) do t = t + redis.call('MEMORY', 'USAGE', k) end return t" 0)
+
+# v3 이후: Redis에 쌓인 조회수가 Batch에서 RDB로 모두 반영될 때까지 대기 (v4는 1시간 구간이 끝나야 반영되므로 FLUSH_TIMEOUT 조정)
+FLUSH_TIMEOUT=${FLUSH_TIMEOUT:-120}
 FLUSH_WAIT=0
-while [[ $FLUSH_WAIT -lt 120 && -n "$(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit_count::*' | head -1)" ]]; do
+while [[ $FLUSH_WAIT -lt $FLUSH_TIMEOUT && -n "$(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit_count::*' | head -1)$(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit_window::*' | head -1)" ]]; do
 	sleep 1
 	FLUSH_WAIT=$((FLUSH_WAIT + 1))
 done
@@ -59,7 +64,8 @@ AFTER=$(db_snapshot)
 	join <(echo "$BEFORE" | sort) <(echo "$AFTER" | sort) | awk '{ printf "%s %d\n", $1, $3 - $2 }'
 	echo "flush_wait_seconds ${FLUSH_WAIT}"
 	echo "--- Redis"
-	echo "hit_keys $(docker exec moyoy-perf-redis redis-cli --scan --pattern 'pr_review_hit::*' | wc -l | tr -d ' ')"
+	echo "hit_keys ${HIT_KEYS}"
+	echo "hit_memory_bytes ${HIT_MEMORY}"
 	echo "used_memory $(docker exec moyoy-perf-redis redis-cli INFO memory | sed -n 's/^used_memory:\([0-9]*\).*/\1/p')"
 	echo "--- hitsExecutor"
 	echo "completed $(awk -v a="$(executor_metric executor.completed)" -v b="$COMPLETED_BEFORE" 'BEGIN { printf "%d", a - b }')"

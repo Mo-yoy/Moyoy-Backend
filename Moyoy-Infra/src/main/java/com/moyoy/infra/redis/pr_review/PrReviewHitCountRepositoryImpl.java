@@ -20,14 +20,6 @@ public class PrReviewHitCountRepositoryImpl implements PrReviewHitCountRepositor
 
 	private final StringRedisTemplate stringRedisTemplate;
 
-	/// 증가분을 먼저 누적한 뒤 갱신 목록에 추가해야, 반영 중에 들어온 증가분도 다음 반영 때 빠지지 않음
-	@Override
-	public void increase(Long prReviewId) {
-
-		stringRedisTemplate.opsForValue().increment(COUNT_KEY_PREFIX + prReviewId);
-		stringRedisTemplate.opsForSet().add(UPDATED_REVIEW_IDS_KEY, String.valueOf(prReviewId));
-	}
-
 	/// 시작 시점의 갱신 목록 크기만큼만 꺼내서, 반영 중에 계속 들어오는 요청 때문에 끝나지 않는 일이 없게 함
 	@Override
 	public List<PrReviewHitCount> popAll() {
@@ -56,6 +48,7 @@ public class PrReviewHitCountRepositoryImpl implements PrReviewHitCountRepositor
 		return hitCounts;
 	}
 
+	/// 증가분을 먼저 누적한 뒤 갱신 목록에 추가해야, 꺼내는 중에 들어온 증가분도 다음 반영 때 빠지지 않음
 	@Override
 	public void restore(PrReviewHitCount hitCount) {
 

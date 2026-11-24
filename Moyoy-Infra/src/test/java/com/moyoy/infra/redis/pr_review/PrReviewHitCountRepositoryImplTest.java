@@ -47,12 +47,16 @@ class PrReviewHitCountRepositoryImplTest {
 		stringRedisTemplate.getConnectionFactory().getConnection().serverCommands().flushDb();
 	}
 
+	private PrReviewHitCount hitCount(Long prReviewId, int count) {
+		return PrReviewHitCount.builder().prReviewId(prReviewId).count(count).build();
+	}
+
 	@Test
-	@DisplayName("요청글별로 누적된 증가분을 모두 꺼낸다.")
+	@DisplayName("요청글별로 보관된 증가분을 모두 꺼낸다.")
 	void popAll() {
-		prReviewHitCountRepository.increase(1L);
-		prReviewHitCountRepository.increase(1L);
-		prReviewHitCountRepository.increase(2L);
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
+		prReviewHitCountRepository.restore(hitCount(2L, 1));
 
 		List<PrReviewHitCount> hitCounts = prReviewHitCountRepository.popAll();
 
@@ -64,19 +68,19 @@ class PrReviewHitCountRepositoryImplTest {
 	@Test
 	@DisplayName("꺼낸 증가분은 비워져서 다시 꺼내지 않는다.")
 	void popAll_clear() {
-		prReviewHitCountRepository.increase(1L);
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
 		prReviewHitCountRepository.popAll();
 
 		assertThat(prReviewHitCountRepository.popAll()).isEmpty();
 	}
 
 	@Test
-	@DisplayName("꺼낸 뒤에 들어온 증가분은 다음 반영 때 꺼낸다.")
+	@DisplayName("꺼낸 뒤에 보관된 증가분은 다음 반영 때 꺼낸다.")
 	void popAll_afterPop() {
-		prReviewHitCountRepository.increase(1L);
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
 		prReviewHitCountRepository.popAll();
 
-		prReviewHitCountRepository.increase(1L);
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
 
 		assertThat(prReviewHitCountRepository.popAll())
 			.extracting(PrReviewHitCount::getPrReviewId, PrReviewHitCount::getCount)
@@ -84,13 +88,10 @@ class PrReviewHitCountRepositoryImplTest {
 	}
 
 	@Test
-	@DisplayName("되돌린 증가분은 새로 들어온 증가분과 합쳐서 다시 꺼낸다.")
-	void restore() {
-		prReviewHitCountRepository.increase(1L);
-		PrReviewHitCount failed = prReviewHitCountRepository.popAll().get(0);
-
-		prReviewHitCountRepository.increase(1L);
-		prReviewHitCountRepository.restore(failed);
+	@DisplayName("같은 요청글의 증가분은 합쳐서 꺼낸다.")
+	void restore_merge() {
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
+		prReviewHitCountRepository.restore(hitCount(1L, 1));
 
 		assertThat(prReviewHitCountRepository.popAll())
 			.extracting(PrReviewHitCount::getPrReviewId, PrReviewHitCount::getCount)
@@ -98,8 +99,8 @@ class PrReviewHitCountRepositoryImplTest {
 	}
 
 	@Test
-	@DisplayName("동시에 100번 증가해도 유실 없이 누적된다.")
-	void increase_concurrent() throws InterruptedException {
+	@DisplayName("동시에 100번 보관해도 유실 없이 누적된다.")
+	void restore_concurrent() throws InterruptedException {
 		int requestCount = 100;
 		ExecutorService executor = Executors.newFixedThreadPool(32);
 		CountDownLatch latch = new CountDownLatch(requestCount);
@@ -107,7 +108,7 @@ class PrReviewHitCountRepositoryImplTest {
 		for (int i = 0; i < requestCount; i++) {
 			executor.submit(() -> {
 				try {
-					prReviewHitCountRepository.increase(1L);
+					prReviewHitCountRepository.restore(hitCount(1L, 1));
 				} finally {
 					latch.countDown();
 				}

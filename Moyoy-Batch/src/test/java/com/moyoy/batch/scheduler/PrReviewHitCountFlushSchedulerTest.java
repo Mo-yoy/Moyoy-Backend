@@ -12,10 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.moyoy.domain.pr_review.PrReviewHitCount;
 import com.moyoy.domain.pr_review.PrReviewHitCountRepository;
+import com.moyoy.domain.pr_review.PrReviewHitRepository;
 import com.moyoy.domain.pr_review.PrReviewRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PrReviewHitCountFlushSchedulerTest {
+
+	@Mock
+	private PrReviewHitRepository prReviewHitRepository;
 
 	@Mock
 	private PrReviewHitCountRepository prReviewHitCountRepository;
@@ -27,12 +31,13 @@ class PrReviewHitCountFlushSchedulerTest {
 	private PrReviewHitCountFlushScheduler scheduler;
 
 	@Test
-	void 누적된_증가분을_요청글별로_RDB에_반영한다() {
+	void 종료된_구간의_고유_조회자_수와_이전에_실패한_증가분을_RDB에_반영한다() {
 
 		// given
-		PrReviewHitCount review1 = PrReviewHitCount.builder().prReviewId(1L).count(3).build();
-		PrReviewHitCount review2 = PrReviewHitCount.builder().prReviewId(2L).count(5).build();
-		given(prReviewHitCountRepository.popAll()).willReturn(List.of(review1, review2));
+		PrReviewHitCount closedWindow = hitCount(1L, 3);
+		PrReviewHitCount previouslyFailed = hitCount(2L, 5);
+		given(prReviewHitRepository.popClosedWindowCounts(any())).willReturn(List.of(closedWindow));
+		given(prReviewHitCountRepository.popAll()).willReturn(List.of(previouslyFailed));
 
 		// when
 		scheduler.flush();
@@ -44,12 +49,13 @@ class PrReviewHitCountFlushSchedulerTest {
 	}
 
 	@Test
-	void 반영에_실패한_증가분은_되돌리고_나머지는_계속_반영한다() {
+	void 반영에_실패한_증가분은_보관하고_나머지는_계속_반영한다() {
 
 		// given
-		PrReviewHitCount failed = PrReviewHitCount.builder().prReviewId(1L).count(3).build();
-		PrReviewHitCount succeeded = PrReviewHitCount.builder().prReviewId(2L).count(5).build();
-		given(prReviewHitCountRepository.popAll()).willReturn(List.of(failed, succeeded));
+		PrReviewHitCount failed = hitCount(1L, 3);
+		PrReviewHitCount succeeded = hitCount(2L, 5);
+		given(prReviewHitRepository.popClosedWindowCounts(any())).willReturn(List.of(failed, succeeded));
+		given(prReviewHitCountRepository.popAll()).willReturn(List.of());
 		willThrow(new RuntimeException("DB 장애")).given(prReviewRepository).increaseHitCount(1L, 3);
 
 		// when
@@ -58,5 +64,9 @@ class PrReviewHitCountFlushSchedulerTest {
 		// then
 		then(prReviewHitCountRepository).should().restore(failed);
 		then(prReviewRepository).should().increaseHitCount(2L, 5);
+	}
+
+	private PrReviewHitCount hitCount(Long prReviewId, int count) {
+		return PrReviewHitCount.builder().prReviewId(prReviewId).count(count).build();
 	}
 }
